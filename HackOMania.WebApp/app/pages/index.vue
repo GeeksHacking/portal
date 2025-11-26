@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { useQuery } from '@tanstack/vue-query'
-
-const { data, error } = useQuery(authQueries.whoAmI)
+await navigateTo('https://hackomania.geekshacking.com', { external: true })
 </script>
 
 <template>
-  <span>{{ data }} {{ error }}</span>
+  <div />
 </template>

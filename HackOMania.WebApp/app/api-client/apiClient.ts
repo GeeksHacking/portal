@@ -4,8 +4,6 @@
 // @ts-ignore
 import { AuthRequestBuilderNavigationMetadata, type AuthRequestBuilder } from './auth/index.js';
 // @ts-ignore
-import { CallbackRequestBuilderNavigationMetadata, type CallbackRequestBuilder } from './callback/index.js';
-// @ts-ignore
 import { apiClientProxifier, ParseNodeFactoryRegistry, SerializationWriterFactoryRegistry, type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type RequestAdapter } from '@microsoft/kiota-abstractions';
 // @ts-ignore
 import { FormParseNodeFactory, FormSerializationWriterFactory } from '@microsoft/kiota-serialization-form';
@@ -24,10 +22,6 @@ export interface ApiClient extends BaseRequestBuilder<ApiClient> {
      * The auth property
      */
     get auth(): AuthRequestBuilder;
-    /**
-     * The callback property
-     */
-    get callback(): CallbackRequestBuilder;
 }
 /**
  * Instantiates a new {@link ApiClient} and sets the default values.
@@ -73,9 +67,6 @@ export const ApiClientUriTemplate = "{+baseurl}";
 export const ApiClientNavigationMetadata: Record<Exclude<keyof ApiClient, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     auth: {
         navigationMetadata: AuthRequestBuilderNavigationMetadata,
-    },
-    callback: {
-        navigationMetadata: CallbackRequestBuilderNavigationMetadata,
     },
 };
 /* tslint:enable */

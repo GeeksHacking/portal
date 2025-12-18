@@ -21,9 +21,7 @@ public class Hackathon
     /// <summary>
     /// When enabled, participants will be able to see and join the hackathon using the short code
     /// </summary>
-    [SugarColumn(OldColumnName = "IsAcceptingParticipants")]
     public bool IsPublished { get; set; }
-    public bool AllowSubsequentInvitesIfInitialParticipantIsAccepted { get; set; }
 
     public DateTimeOffset EventStartDate { get; set; }
 
@@ -38,17 +36,23 @@ public class Hackathon
     public DateTimeOffset JudgingEndDate { get; set; }
 
     [Navigate(NavigateType.OneToMany, nameof(Participant.HackathonId))]
-    public List<Participant> Participants { get; set; }
+    public List<Participant> Participants { get; set; } = null!;
 
     [Navigate(NavigateType.OneToMany, nameof(Organizer.HackathonId))]
-    public List<Organizer> Organizers { get; set; }
+    public List<Organizer> Organizers { get; set; } = null!;
 
     [Navigate(NavigateType.OneToMany, nameof(Team.HackathonId), nameof(Id))]
-    public List<Team> Teams { get; set; }
+    public List<Team> Teams { get; set; } = null!;
 
     [Navigate(NavigateType.OneToMany, nameof(Resource.HackathonId))]
-    public List<Resource> Resources { get; set; }
+    public List<Resource> Resources { get; set; } = null!;
+
+    [Navigate(NavigateType.OneToMany, nameof(Challenge.HackathonId))]
+    public List<Challenge> Challenges { get; set; } = null!;
+
+    [Navigate(NavigateType.OneToMany, nameof(ChallengeSubmission.HackathonId))]
+    public List<ChallengeSubmission> Submissions { get; set; } = null!;
 
     [Navigate(NavigateType.OneToMany, nameof(Judge.HackathonId))]
-    public List<Judge> Judges { get; set; }
+    public List<Judge> Judges { get; set; } = null!;
 }

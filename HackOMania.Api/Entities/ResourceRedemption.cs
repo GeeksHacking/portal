@@ -11,5 +11,7 @@ public class ResourceRedemption
 
     public Guid ResourceId { get; set; }
 
+    public Guid HackathonId { get; set; }
+
     public Guid RedeemerId { get; set; }
 }

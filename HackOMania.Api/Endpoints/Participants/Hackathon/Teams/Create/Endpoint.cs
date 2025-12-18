@@ -1,0 +1,84 @@
+using FastEndpoints;
+using HackOMania.Api.Authorization;
+using HackOMania.Api.Entities;
+using HackOMania.Api.Extensions;
+using HackOMania.Api.Services;
+using SqlSugar;
+
+namespace HackOMania.Api.Endpoints.Participants.Hackathon.Teams.Create;
+
+public class Endpoint(ISqlSugarClient sql, MembershipService membership)
+    : Endpoint<Request, Response>
+{
+    public override void Configure()
+    {
+        Post("participants/hackathons/{Id}/teams");
+        Policies(PolicyNames.ParticipantForHackathon);
+        Description(b => b.WithTags("Participants", "Teams"));
+        Summary(s =>
+        {
+            s.Summary = "Create a team";
+            s.Description =
+                "Creates a new team for the hackathon and adds the current user as a member.";
+        });
+    }
+
+    public override async Task HandleAsync(Request req, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(req.Id))
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
+        var hackathon = await membership.FindHackathon(req.Id, ct);
+        if (hackathon is null || !hackathon.IsPublished)
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
+        var userId = User.GetUserId<Guid>();
+        var participant = await membership.GetParticipant(userId, hackathon.Id, ct);
+
+        if (participant is null)
+        {
+            AddError("You must join the hackathon as a participant before you can create a team.");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
+
+        if (participant.TeamId.HasValue)
+        {
+            AddError(r => r.Name, "You are already in a team for this hackathon.");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
+
+        var team = new Team
+        {
+            Id = Guid.NewGuid(),
+            Name = req.Name,
+            Description = req.Description ?? string.Empty,
+            HackathonId = hackathon.Id,
+            CreatedByUserId = userId,
+        };
+
+        await sql.Insertable(team).ExecuteCommandAsync(ct);
+
+        participant.TeamId = team.Id;
+        await sql.Updateable(participant).ExecuteCommandAsync(ct);
+
+        await Send.OkAsync(
+            new Response
+            {
+                Id = team.Id,
+                HackathonId = team.HackathonId,
+                Name = team.Name,
+                Description = team.Description,
+                JoinCode = team.JoinCode,
+            },
+            ct
+        );
+    }
+}

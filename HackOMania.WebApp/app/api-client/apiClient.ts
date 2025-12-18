@@ -4,6 +4,10 @@
 // @ts-ignore
 import { AuthRequestBuilderNavigationMetadata, type AuthRequestBuilder } from './auth/index.js';
 // @ts-ignore
+import { OrganizersRequestBuilderNavigationMetadata, type OrganizersRequestBuilder } from './organizers/index.js';
+// @ts-ignore
+import { ParticipantsRequestBuilderNavigationMetadata, type ParticipantsRequestBuilder } from './participants/index.js';
+// @ts-ignore
 import { apiClientProxifier, ParseNodeFactoryRegistry, SerializationWriterFactoryRegistry, type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type RequestAdapter } from '@microsoft/kiota-abstractions';
 // @ts-ignore
 import { FormParseNodeFactory, FormSerializationWriterFactory } from '@microsoft/kiota-serialization-form';
@@ -22,6 +26,14 @@ export interface ApiClient extends BaseRequestBuilder<ApiClient> {
      * The auth property
      */
     get auth(): AuthRequestBuilder;
+    /**
+     * The organizers property
+     */
+    get organizers(): OrganizersRequestBuilder;
+    /**
+     * The participants property
+     */
+    get participants(): ParticipantsRequestBuilder;
 }
 /**
  * Instantiates a new {@link ApiClient} and sets the default values.
@@ -67,6 +79,12 @@ export const ApiClientUriTemplate = "{+baseurl}";
 export const ApiClientNavigationMetadata: Record<Exclude<keyof ApiClient, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     auth: {
         navigationMetadata: AuthRequestBuilderNavigationMetadata,
+    },
+    organizers: {
+        navigationMetadata: OrganizersRequestBuilderNavigationMetadata,
+    },
+    participants: {
+        navigationMetadata: ParticipantsRequestBuilderNavigationMetadata,
     },
 };
 /* tslint:enable */

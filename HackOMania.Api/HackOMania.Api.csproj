@@ -9,10 +9,12 @@
     <PackageReference Include="FastEndpoints" Version="7.1.1" />
     <PackageReference Include="FastEndpoints.Swagger" Version="7.1.1" />
     <PackageReference Include="FastEndpoints.Security" Version="7.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
+    <PackageReference Include="FastEndpoints.Generator" Version="7.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.1" />
     <PackageReference Include="OpenIddict.AspNetCore" Version="7.2.0" />
     <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="7.2.0" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.11.6" />
     <PackageReference Include="SqlSugarCore" Version="5.1.4.210" />
   </ItemGroup>
 

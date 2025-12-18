@@ -11,11 +11,13 @@ import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type Requ
  */
 export interface WhoamiRequestBuilder extends BaseRequestBuilder<WhoamiRequestBuilder> {
     /**
+     * Returns the current authenticated user's information including GitHub details.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {Promise<HackOManiaApiEndpointsAuthWhoAmIResponse>}
      */
      get(requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<HackOManiaApiEndpointsAuthWhoAmIResponse | undefined>;
     /**
+     * Returns the current authenticated user's information including GitHub details.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {RequestInformation}
      */

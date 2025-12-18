@@ -1,10 +1,14 @@
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
+using HackOMania.Api.Authorization;
 using HackOMania.Api.Options;
+using HackOMania.Api.Services;
 using HackOMania.Api.Workers;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 using SqlSugar;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +17,7 @@ builder.AddServiceDefaults();
 
 builder.Services.AddOptions<AppOptions>().Bind(builder.Configuration.GetSection("App"));
 builder.Services.AddOptions<GitHubOptions>().Bind(builder.Configuration.GetSection("GitHub"));
+builder.Services.AddOptions<AdminOptions>().Bind(builder.Configuration.GetSection("Admin"));
 
 builder.Services.AddSingleton<ISqlSugarClient>(s =>
 {
@@ -66,7 +71,21 @@ builder
     .Services.AddAuthenticationCookie(validFor: TimeSpan.FromDays(7))
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(
+        "OrganizerForHackathon",
+        policy => policy.Requirements.Add(new OrganizerForHackathonRequirement())
+    );
+    options.AddPolicy(
+        "ParticipantForHackathon",
+        policy => policy.Requirements.Add(new ParticipantForHackathonRequirement())
+    );
+    options.AddPolicy(
+        "TeamMemberForHackathonTeam",
+        policy => policy.Requirements.Add(new TeamMemberForHackathonTeamRequirement())
+    );
+});
 
 builder.Services.AddCors(options =>
 {
@@ -84,13 +103,35 @@ builder.Services.AddCors(options =>
 builder.Services.AddFastEndpoints();
 builder.Services.SwaggerDocument(options =>
 {
+    options.EnableJWTBearerAuth = false;
+    options.AutoTagPathSegmentIndex = 0; // Disable auto-tagging, we'll use explicit tags
     options.DocumentSettings = settings =>
     {
         settings.Title = "HackOMania Event Platform API";
-        settings.DocumentName = "api";
-        settings.Version = "v1";
+        settings.DocumentName = "v1";
+        settings.Description =
+            "API for managing hackathon events, teams, challenges, and submissions";
+    };
+    options.TagDescriptions = t =>
+    {
+        t["Auth"] = "Authentication and user identity endpoints";
+        t["Hackathons"] = "Hackathon event management";
+        t["Challenges"] = "Challenge/track management within hackathons";
+        t["Teams"] = "Team creation and management";
+        t["Submissions"] = "Project submission management";
+        t["Resources"] = "Event resources and redemption";
+        t["Participants"] = "Participant management and reviews";
+        t["Organizers"] = "Organizer management";
+        t["Judges"] = "Judge management and scoring";
     };
 });
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<MembershipService>();
+builder.Services.AddScoped<IAuthorizationHandler, OrganizerForHackathonHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, ParticipantForHackathonHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, TeamMemberForHackathonTeamHandler>();
 
 builder.Services.AddHostedService<DatabaseInitBackgroundService>();
 
@@ -102,5 +143,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseFastEndpoints();
 app.UseSwaggerGen(options => options.Path = "/openapi/{documentName}.json");
+app.MapScalarApiReference();
 
 app.Run();

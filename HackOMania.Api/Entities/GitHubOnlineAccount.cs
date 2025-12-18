@@ -2,5 +2,6 @@ namespace HackOMania.Api.Entities;
 
 public class GitHubOnlineAccount : OnlineAccount
 {
-    public string? UserLogin { get; set; }
+    public long GitHubId { get; set; }
+    public string GitHubLogin { get; set; } = null!;
 }

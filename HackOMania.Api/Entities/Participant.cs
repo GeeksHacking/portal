@@ -4,7 +4,10 @@ namespace HackOMania.Api.Entities;
 
 public class Participant : HackathonUser
 {
-    public Guid TeamId { get; set; }
+    [SugarColumn(IsNullable = true)]
+    public Guid? TeamId { get; set; }
+
+    public DateTimeOffset JoinedAt { get; set; } = DateTimeOffset.UtcNow;
 
     [Navigate(NavigateType.ManyToOne, nameof(TeamId), nameof(Team.Id))]
     public Team Team { get; set; } = null!;

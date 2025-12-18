@@ -4,6 +4,12 @@ namespace HackOMania.Api.Entities;
 
 public class ParticipantReview
 {
+    public enum ParticipantReviewStatus
+    {
+        Accepted,
+        Rejected,
+    }
+
     [SugarColumn(IsPrimaryKey = true)]
     public Guid Id { get; set; }
 

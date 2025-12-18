@@ -19,32 +19,7 @@ public class Team
     /// <summary>
     /// Team / project description
     /// </summary>
-    [SugarColumn(IsNullable = true)]
-    public string? Description { get; set; }
-
-    /// <summary>
-    /// Team / project location
-    /// </summary>
-    [SugarColumn(IsNullable = true)]
-    public string? Location { get; set; }
-
-    /// <summary>
-    /// Project Devpost link
-    /// </summary>
-    [SugarColumn(IsNullable = true)]
-    public string? DevpostUri { get; set; }
-
-    /// <summary>
-    /// Project presentation slides link
-    /// </summary>
-    [SugarColumn(IsNullable = true)]
-    public string? SlidesUri { get; set; }
-
-    /// <summary>
-    /// Project code repository link
-    /// </summary>
-    [SugarColumn(IsNullable = true)]
-    public string? RepositoryUri { get; set; }
+    public string Description { get; set; } = null!;
 
     /// <summary>
     /// Secret code to join team
@@ -53,7 +28,13 @@ public class Team
         Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
 
     public Guid HackathonId { get; set; }
+    public Guid CreatedByUserId { get; set; }
+
+    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
     [Navigate(NavigateType.OneToMany, nameof(Participant.TeamId))]
     public List<Participant> Members { get; set; } = null!;
+
+    [Navigate(NavigateType.OneToMany, nameof(ChallengeSubmission.TeamId))]
+    public List<ChallengeSubmission> Submissions { get; set; } = null!;
 }

@@ -2,7 +2,6 @@ using FastEndpoints;
 using HackOMania.Api.Authorization;
 using HackOMania.Api.Entities;
 using HackOMania.Api.Extensions;
-using HackOMania.Api.Services;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Create;
@@ -12,13 +11,13 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     public override void Configure()
     {
         Post("organizers/hackathons");
-        Policies(PolicyNames.Root);
+        Policies(PolicyNames.CreateHackathon);
         Description(b => b.WithTags("Organizers", "Hackathons"));
         Summary(s =>
         {
             s.Summary = "Create a new hackathon";
             s.Description =
-                "Creates a new hackathon event. Only root/admin users can create hackathons.";
+                "Creates a new hackathon event. Permissions depend on the platform configuration.";
         });
     }
 

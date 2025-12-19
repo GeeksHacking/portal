@@ -14,7 +14,6 @@ public class DatabaseInitBackgroundService(
         sql.DbMaintenance.CreateDatabase();
         sql.CodeFirst.InitTables<Entities.GitHubOnlineAccount>();
         sql.CodeFirst.InitTables<Entities.Hackathon>();
-        sql.CodeFirst.InitTables<Entities.HackathonUser>();
         sql.CodeFirst.InitTables<Entities.Judge>();
         sql.CodeFirst.InitTables<Entities.OnlineAccount>();
         sql.CodeFirst.InitTables<Entities.Organizer>();

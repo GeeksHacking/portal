@@ -1,8 +1,5 @@
-using System;
-using System.Linq;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
+using HackOMania.Api.Constants;
 
 namespace HackOMania.Api.Extensions;
 
@@ -10,26 +7,14 @@ public static class PrincipalExtensions
 {
     extension(ClaimsPrincipal principal)
     {
-        public Guid? GetUserId()
-        {
-            var claim = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (claim is null)
-            {
-                return null;
-            }
-
-            return Guid.TryParse(claim.Value, out var id) ? id : null;
-        }
-
         public T GetUserId<T>()
             where T : IParsable<T>
         {
-            var raw = principal.Claims.Single(c =>
-                c.Type == ClaimTypes.NameIdentifier
-                && c.Issuer == CookieAuthenticationDefaults.AuthenticationScheme
-            );
+            var raw = principal.Claims.Single(c => c is { Type: CustomClaimTypes.UserId });
 
-            return T.Parse(raw.Value, null);
+            return T.TryParse(raw.Value, null, out var v)
+                ? v
+                : throw new InvalidOperationException("Invalid user ID");
         }
     }
 }

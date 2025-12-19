@@ -71,21 +71,25 @@ builder
     .Services.AddAuthenticationCookie(validFor: TimeSpan.FromDays(7))
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy(
-        "OrganizerForHackathon",
+builder
+    .Services.AddAuthorizationBuilder()
+    .AddPolicy(PolicyNames.Root, policy => policy.Requirements.Add(new RootRequirement()))
+    .AddPolicy(
+        PolicyNames.OrganizerForHackathon,
         policy => policy.Requirements.Add(new OrganizerForHackathonRequirement())
-    );
-    options.AddPolicy(
-        "ParticipantForHackathon",
+    )
+    .AddPolicy(
+        PolicyNames.ParticipantForHackathon,
         policy => policy.Requirements.Add(new ParticipantForHackathonRequirement())
-    );
-    options.AddPolicy(
-        "TeamMemberForHackathonTeam",
+    )
+    .AddPolicy(
+        PolicyNames.TeamMemberForHackathonTeam,
         policy => policy.Requirements.Add(new TeamMemberForHackathonTeamRequirement())
+    )
+    .AddPolicy(
+        PolicyNames.CreateHackathon,
+        policy => policy.Requirements.Add(new CreateHackathonRequirement())
     );
-});
 
 builder.Services.AddCors(options =>
 {
@@ -129,6 +133,8 @@ builder.Services.SwaggerDocument(options =>
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<MembershipService>();
+builder.Services.AddScoped<IAuthorizationHandler, RootHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, CreateHackathonHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, OrganizerForHackathonHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, ParticipantForHackathonHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, TeamMemberForHackathonTeamHandler>();

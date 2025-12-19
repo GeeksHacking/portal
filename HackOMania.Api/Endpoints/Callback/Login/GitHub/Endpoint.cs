@@ -1,7 +1,7 @@
 using System.Security.Claims;
-using Dm.util;
 using FastEndpoints;
 using FastEndpoints.Security;
+using HackOMania.Api.Constants;
 using HackOMania.Api.Entities;
 using HackOMania.Api.Options;
 using Microsoft.AspNetCore.Authentication;
@@ -46,10 +46,12 @@ public class Endpoint(
         ArgumentException.ThrowIfNullOrWhiteSpace(email);
 
         var existingAccount = await db.Queryable<GitHubOnlineAccount>()
+            .Includes(a => a.User)
             .Where(a => a.GitHubLogin == githubLogin)
             .SingleAsync();
 
-        User? accountUser = null;
+        User? accountUser;
+        Guid githubAccountId;
 
         if (existingAccount is null)
         {
@@ -60,57 +62,39 @@ public class Endpoint(
             if (existingUser is null)
             {
                 accountUser = new User { Name = name, Email = email };
-                await db.InsertNav(
-                        new GitHubOnlineAccount
-                        {
-                            GitHubLogin = githubLogin,
-                            GitHubId = long.Parse(githubId),
-                            User = accountUser,
-                        }
-                    )
-                    .Include(a => a.User)
-                    .ExecuteCommandAsync();
+                var newAccount = new GitHubOnlineAccount
+                {
+                    GitHubLogin = githubLogin,
+                    GitHubId = long.Parse(githubId),
+                    User = accountUser,
+                };
+                await db.InsertNav(newAccount).Include(a => a.User).ExecuteCommandAsync();
+                githubAccountId = newAccount.Id;
             }
             else
             {
                 accountUser = existingUser;
-                await db.Insertable(
-                        new GitHubOnlineAccount
-                        {
-                            GitHubLogin = githubLogin,
-                            GitHubId = long.Parse(githubId),
-                            UserId = existingUser.Id,
-                        }
-                    )
-                    .ExecuteCommandAsync(ct);
+                var newAccount = new GitHubOnlineAccount
+                {
+                    GitHubLogin = githubLogin,
+                    GitHubId = long.Parse(githubId),
+                    UserId = existingUser.Id,
+                };
+                await db.Insertable(newAccount).ExecuteCommandAsync(ct);
+                githubAccountId = newAccount.Id;
             }
         }
         else
         {
-            accountUser =
-                existingAccount.User
-                ?? await db.Queryable<User>().InSingleAsync(existingAccount.UserId);
+            accountUser = existingAccount.User;
+            githubAccountId = existingAccount.Id;
         }
 
         await CookieAuth.SignInAsync(o =>
         {
             o.Claims.AddRange(result.Principal.Claims);
-            o.Claims.Add(new Claim(ClaimTypes.NameIdentifier, accountUser.Id.ToString()));
-
-            // Add role claims for ASP.NET/FastEndpoints policy checks
-            var adminEmails = adminOptions.Value.Emails.ToHashSet(StringComparer.OrdinalIgnoreCase);
-            var adminGitHubLogins = adminOptions.Value.GitHubLogins.ToHashSet(
-                StringComparer.OrdinalIgnoreCase
-            );
-
-            if (adminEmails.Contains(accountUser.Email) || adminGitHubLogins.Contains(githubLogin))
-            {
-                o.Claims.Add(new Claim(ClaimTypes.Role, "Root"));
-            }
-            else
-            {
-                o.Claims.Add(new Claim(ClaimTypes.Role, "User"));
-            }
+            o.Claims.Add(new Claim(CustomClaimTypes.UserId, accountUser.Id.ToString()));
+            o.Claims.Add(new Claim(CustomClaimTypes.GitHubLogin, githubAccountId.ToString()));
         });
 
         await Send.RedirectAsync(options.Value.FrontendUrl, allowRemoteRedirects: true);

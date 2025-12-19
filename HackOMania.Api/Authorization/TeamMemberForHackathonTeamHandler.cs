@@ -1,6 +1,5 @@
 using HackOMania.Api.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using static HackOMania.Api.Authorization.AuthorizationHelpers;
 
 namespace HackOMania.Api.Authorization;

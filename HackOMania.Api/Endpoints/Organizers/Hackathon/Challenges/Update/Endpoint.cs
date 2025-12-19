@@ -1,6 +1,5 @@
 using FastEndpoints;
 using HackOMania.Api.Authorization;
-using HackOMania.Api.Extensions;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Challenges.Update;

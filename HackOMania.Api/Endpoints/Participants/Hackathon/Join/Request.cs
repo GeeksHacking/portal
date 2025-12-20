@@ -8,5 +8,5 @@ public class Request
     /// <summary>
     /// Hackathon ID or short code
     /// </summary>
-    public string Id { get; set; } = null!;
+    public string HackathonId { get; set; } = null!;
 }

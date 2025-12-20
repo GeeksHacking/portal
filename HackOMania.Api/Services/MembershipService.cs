@@ -91,6 +91,11 @@ public class MembershipService(ISqlSugarClient sql, IOptions<AdminOptions> admin
             .AnyAsync(p => p.UserId == userId && p.HackathonId == hackathonId, ct);
     }
 
+    public async Task<Hackathon?> FindHackathon(Guid idOrShortCode, CancellationToken ct = default)
+    {
+        return await FindHackathon(idOrShortCode.ToString(), ct);
+    }
+
     public async Task<Hackathon?> FindHackathon(
         string idOrShortCode,
         CancellationToken ct = default

@@ -1,3 +1,4 @@
+using HackOMania.Api.Extensions;
 using HackOMania.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 
@@ -16,13 +17,13 @@ public class OrganizerForHackathonHandler(MembershipService membership)
             return;
         }
 
-        var userId = AuthorizationHelpers.GetUserId(context.User);
+        var userId = context.User.GetUserId();
         if (userId is null)
         {
             return;
         }
 
-        var idValue = AuthorizationHelpers.GetHackathonRoute(httpContext);
+        var idValue = HttpContextRouteExtensions.GetHackathonRoute(httpContext);
         if (string.IsNullOrWhiteSpace(idValue))
         {
             return;

@@ -1,6 +1,7 @@
+using HackOMania.Api.Extensions;
 using HackOMania.Api.Services;
 using Microsoft.AspNetCore.Authorization;
-using static HackOMania.Api.Authorization.AuthorizationHelpers;
+using static HackOMania.Api.Extensions.HttpContextRouteExtensions;
 
 namespace HackOMania.Api.Authorization;
 
@@ -17,14 +18,14 @@ public class TeamMemberForHackathonTeamHandler(MembershipService membership)
             return;
         }
 
-        var userId = GetUserId(context.User);
+        var userId = context.User.GetUserId();
         if (userId is null)
         {
             return;
         }
 
-        var hackathonIdValue = GetHackathonRoute(httpContext);
-        var teamIdValue = GetTeamRoute(httpContext);
+        var hackathonIdValue = httpContext.GetHackathonRoute();
+        var teamIdValue = httpContext.GetTeamRoute();
 
         if (string.IsNullOrWhiteSpace(hackathonIdValue) || string.IsNullOrWhiteSpace(teamIdValue))
         {

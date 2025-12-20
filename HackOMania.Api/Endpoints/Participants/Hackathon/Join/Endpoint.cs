@@ -11,36 +11,34 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 {
     public override void Configure()
     {
-        Post("participants/hackathons/{Id}/join");
+        Post("participants/hackathons/{HackathonId}/join");
         Description(b => b.WithTags("Participants", "Hackathons"));
         Summary(s =>
         {
             s.Summary = "Join a hackathon";
             s.Description = "Registers the current user as a participant in the hackathon.";
         });
-        // Rate limit: 10 join attempts per minute per user
+
         Throttle(hitLimit: 10, durationSeconds: 60);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(req.Id))
+        var userId = User.GetUserId();
+        if (userId is null)
         {
-            await Send.NotFoundAsync(ct);
-            return;
+            throw new ArgumentNullException(nameof(userId));
         }
 
-        var hackathon = await membership.FindHackathon(req.Id, ct);
-
+        var hackathon = await membership.FindHackathon(req.HackathonId, ct);
         if (hackathon is null || !hackathon.IsPublished)
         {
             await Send.NotFoundAsync(ct);
             return;
         }
 
-        var userId = User.GetUserId<Guid>();
         var existing = await sql.Queryable<Participant>()
-            .Where(p => p.HackathonId == hackathon.Id && p.UserId == userId)
+            .Where(p => p.HackathonId == hackathon.Id && p.UserId == userId.Value)
             .FirstAsync(ct);
 
         if (existing is null)
@@ -48,7 +46,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
             existing = new Participant
             {
                 HackathonId = hackathon.Id,
-                UserId = userId,
+                UserId = userId.Value,
                 TeamId = null,
                 JoinedAt = DateTimeOffset.UtcNow,
             };
@@ -60,7 +58,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
             new Response
             {
                 HackathonId = hackathon.Id,
-                UserId = userId,
+                UserId = userId.Value,
                 JoinedAt = existing.JoinedAt,
             },
             ct

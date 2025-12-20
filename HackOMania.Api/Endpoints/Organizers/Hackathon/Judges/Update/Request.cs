@@ -2,7 +2,7 @@ namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Judges.Update;
 
 public class Request
 {
-    public string Id { get; set; } = null!;
+    public Guid HackathonId { get; set; }
     public Guid JudgeId { get; set; }
     public string? Name { get; set; }
     public bool? Active { get; set; }

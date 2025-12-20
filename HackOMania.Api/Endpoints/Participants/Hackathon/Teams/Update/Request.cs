@@ -6,9 +6,9 @@ namespace HackOMania.Api.Endpoints.Participants.Hackathon.Teams.Update;
 public class Request
 {
     /// <summary>
-    /// Hackathon ID or short code
+    /// Hackathon ID
     /// </summary>
-    public string Id { get; set; } = null!;
+    public Guid HackathonId { get; set; }
 
     /// <summary>
     /// Team ID to update

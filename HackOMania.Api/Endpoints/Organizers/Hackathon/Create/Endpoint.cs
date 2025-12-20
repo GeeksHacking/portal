@@ -23,6 +23,12 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        var userId = User.GetUserId();
+        if (!userId.HasValue)
+        {
+            throw new ArgumentNullException(nameof(userId));
+        }
+
         var hackathon = new Entities.Hackathon
         {
             Id = Guid.NewGuid(),
@@ -38,10 +44,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             SubmissionsEndDate = req.SubmissionsEndDate,
             JudgingStartDate = req.JudgingStartDate,
             JudgingEndDate = req.JudgingEndDate,
-            Organizers =
-            [
-                new Organizer { UserId = User.GetUserId<Guid>(), Type = OrganizerType.Admin },
-            ],
+            Organizers = [new Organizer { UserId = userId.Value, Type = OrganizerType.Admin }],
         };
 
         var ent = await sql.InsertNav(hackathon)

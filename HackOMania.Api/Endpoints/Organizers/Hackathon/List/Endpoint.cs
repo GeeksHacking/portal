@@ -21,9 +21,13 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var userId = User.GetUserId<Guid>();
-        var isRoot = await membership.IsRoot(userId, ct);
+        var userId = User.GetUserId();
+        if (userId is null)
+        {
+            ArgumentNullException.ThrowIfNull(userId);
+        }
 
+        var isRoot = await membership.IsRoot(userId.Value, ct);
         var query = sql.Queryable<Entities.Hackathon>();
 
         if (!isRoot)

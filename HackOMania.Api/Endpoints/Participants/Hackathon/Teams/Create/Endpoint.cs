@@ -12,7 +12,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 {
     public override void Configure()
     {
-        Post("participants/hackathons/{Id}/teams");
+        Post("participants/hackathons/{HackathonId}/teams");
         Policies(PolicyNames.ParticipantForHackathon);
         Description(b => b.WithTags("Participants", "Teams"));
         Summary(s =>
@@ -25,21 +25,20 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(req.Id))
-        {
-            await Send.NotFoundAsync(ct);
-            return;
-        }
-
-        var hackathon = await membership.FindHackathon(req.Id, ct);
+        var hackathon = await membership.FindHackathon(req.HackathonId, ct);
         if (hackathon is null || !hackathon.IsPublished)
         {
             await Send.NotFoundAsync(ct);
             return;
         }
 
-        var userId = User.GetUserId<Guid>();
-        var participant = await membership.GetParticipant(userId, hackathon.Id, ct);
+        var userId = User.GetUserId();
+        if (userId is null)
+        {
+            throw new ArgumentNullException(nameof(userId));
+        }
+
+        var participant = await membership.GetParticipant(userId.Value, hackathon.Id, ct);
 
         if (participant is null)
         {
@@ -61,7 +60,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
             Name = req.Name,
             Description = req.Description ?? string.Empty,
             HackathonId = hackathon.Id,
-            CreatedByUserId = userId,
+            CreatedByUserId = userId.Value,
         };
 
         await sql.Insertable(team).ExecuteCommandAsync(ct);

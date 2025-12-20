@@ -9,7 +9,7 @@ namespace HackOMania.Api.Authorization;
 /// <code>
 /// public override void Configure()
 /// {
-///     Get("organizers/hackathons/{Id}");
+///     Get("organizers/hackathons/{HackathonId}");
 ///     Policies(PolicyNames.OrganizerForHackathon);
 /// }
 /// </code>

@@ -11,7 +11,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 {
     public override void Configure()
     {
-        Get("participants/hackathons/{Id}/teams/{TeamId}/submissions");
+        Get("participants/hackathons/{HackathonId}/teams/{TeamId}/submissions");
         Policies(PolicyNames.TeamMemberForHackathonTeam);
         Description(b => b.WithTags("Participants", "Submissions"));
         Summary(s =>
@@ -23,13 +23,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(req.Id))
-        {
-            await Send.NotFoundAsync(ct);
-            return;
-        }
-
-        var hackathon = await membership.FindHackathon(req.Id, ct);
+        var hackathon = await membership.FindHackathon(req.HackathonId, ct);
         if (hackathon is null || !hackathon.IsPublished)
         {
             await Send.NotFoundAsync(ct);
@@ -37,7 +31,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
         }
 
         var team = await sql.Queryable<Team>()
-            .Where(t => t.Id.ToString() == req.TeamId && t.HackathonId == hackathon.Id)
+            .Where(t => t.Id == req.TeamId && t.HackathonId == hackathon.Id)
             .FirstAsync(ct);
 
         if (team is null)
@@ -55,8 +49,6 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
                 ChallengeId = s.ChallengeId,
                 Title = s.Title,
                 Summary = s.Description,
-                Location = s.Location,
-                DevpostUri = s.DevpostUri,
                 RepoUri = s.RepositoryUri,
                 DemoUri = s.DemoUri,
                 SlidesUri = s.SlidesUri,

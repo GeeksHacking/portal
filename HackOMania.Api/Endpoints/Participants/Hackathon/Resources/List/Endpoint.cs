@@ -10,7 +10,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 {
     public override void Configure()
     {
-        Get("participants/hackathons/{Id}/resources");
+        Get("participants/hackathons/{HackathonId}/resources");
         Policies(PolicyNames.ParticipantForHackathon);
         Description(b => b.WithTags("Participants", "Resources"));
         Summary(s =>
@@ -22,14 +22,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var id = req.Id;
-        if (string.IsNullOrWhiteSpace(id))
-        {
-            await Send.NotFoundAsync(ct);
-            return;
-        }
-
-        var hackathon = await membership.FindHackathon(id, ct);
+        var hackathon = await membership.FindHackathon(req.HackathonId, ct);
         if (hackathon is null || !hackathon.IsPublished)
         {
             await Send.NotFoundAsync(ct);

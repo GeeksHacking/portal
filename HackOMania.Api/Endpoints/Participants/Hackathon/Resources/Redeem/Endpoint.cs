@@ -12,7 +12,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 {
     public override void Configure()
     {
-        Post("participants/hackathons/{Id}/resources/{ResourceId}/redemptions");
+        Post("participants/hackathons/{HackathonId}/resources/{ResourceId}/redemptions");
         Policies(PolicyNames.ParticipantForHackathon);
         Description(b => b.WithTags("Participants", "Resources"));
         Summary(s =>
@@ -24,13 +24,13 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(req.Id))
+        var userId = User.GetUserId();
+        if (userId is null)
         {
-            await Send.NotFoundAsync(ct);
-            return;
+            throw new ArgumentNullException(nameof(userId));
         }
 
-        var hackathon = await membership.FindHackathon(req.Id, ct);
+        var hackathon = await membership.FindHackathon(req.HackathonId, ct);
         if (hackathon is null || !hackathon.IsPublished)
         {
             await Send.NotFoundAsync(ct);
@@ -38,7 +38,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
         }
 
         var resource = await sql.Queryable<Resource>()
-            .Where(r => r.Id.ToString() == req.ResourceId && r.HackathonId == hackathon.Id)
+            .Where(r => r.Id == req.ResourceId && r.HackathonId == hackathon.Id)
             .FirstAsync(ct);
 
         if (resource is null)
@@ -52,7 +52,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
             Id = Guid.NewGuid(),
             ResourceId = resource.Id,
             HackathonId = hackathon.Id,
-            RedeemerId = User.GetUserId<Guid>(),
+            RedeemerId = userId.Value,
             CreatedAt = DateTimeOffset.UtcNow,
         };
 

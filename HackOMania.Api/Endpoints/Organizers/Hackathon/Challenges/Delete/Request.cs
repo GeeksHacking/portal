@@ -8,7 +8,7 @@ public class Request
     /// <summary>
     /// Hackathon ID
     /// </summary>
-    public string Id { get; set; } = null!;
+    public Guid HackathonId { get; set; }
 
     /// <summary>
     /// Challenge ID to delete

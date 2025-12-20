@@ -9,7 +9,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Post("organizers/hackathons/{Id}/challenges");
+        Post("organizers/hackathons/{HackathonId}/challenges");
         Policies(PolicyNames.OrganizerForHackathon);
         Description(b => b.WithTags("Organizers", "Challenges"));
         Summary(s =>
@@ -21,7 +21,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathonId = Guid.Parse(req.Id);
+        var hackathonId = req.HackathonId;
 
         var challenge = new Challenge
         {

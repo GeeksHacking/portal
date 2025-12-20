@@ -2,7 +2,7 @@ namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Participants.Review;
 
 public class Request
 {
-    public string Id { get; set; } = null!;
+    public Guid HackathonId { get; set; }
     public Guid ParticipantUserId { get; set; }
 
     /// <summary>

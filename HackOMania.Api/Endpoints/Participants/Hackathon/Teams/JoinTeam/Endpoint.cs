@@ -11,7 +11,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 {
     public override void Configure()
     {
-        Post("participants/hackathons/{Id}/teams/{TeamId}/join");
+        Post("participants/hackathons/{HackathonId}/teams/{TeamId}/join");
         Policies(PolicyNames.ParticipantForHackathon);
         Description(b => b.WithTags("Participants", "Teams"));
         Summary(s =>
@@ -23,13 +23,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(req.Id))
-        {
-            await Send.NotFoundAsync(ct);
-            return;
-        }
-
-        var hackathon = await membership.FindHackathon(req.Id, ct);
+        var hackathon = await membership.FindHackathon(req.HackathonId, ct);
         if (hackathon is null || !hackathon.IsPublished)
         {
             await Send.NotFoundAsync(ct);
@@ -37,7 +31,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
         }
 
         var team = await sql.Queryable<Entities.Team>()
-            .Where(t => t.Id.ToString() == req.TeamId && t.HackathonId == hackathon.Id)
+            .Where(t => t.Id == req.TeamId && t.HackathonId == hackathon.Id)
             .FirstAsync(ct);
 
         if (team is null)
@@ -53,8 +47,13 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
             return;
         }
 
-        var userId = User.GetUserId<Guid>();
-        var participant = await membership.GetParticipant(userId, hackathon.Id, ct);
+        var userId = User.GetUserId();
+        if (userId is null)
+        {
+            throw new ArgumentNullException(nameof(userId));
+        }
+
+        var participant = await membership.GetParticipant(userId.Value, hackathon.Id, ct);
         if (participant is null)
         {
             AddError("You must join the hackathon as a participant before you can join a team.");

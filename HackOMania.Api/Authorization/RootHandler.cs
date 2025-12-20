@@ -11,8 +11,13 @@ public class RootHandler(MembershipService membership) : AuthorizationHandler<Ro
         RootRequirement requirement
     )
     {
-        var userId = context.User.GetUserId<Guid>();
-        if (await membership.IsRoot(userId))
+        var userId = context.User.GetUserId();
+        if (userId is null)
+        {
+            return;
+        }
+
+        if (await membership.IsRoot(userId.Value))
         {
             context.Succeed(requirement);
         }

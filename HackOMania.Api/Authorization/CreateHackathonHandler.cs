@@ -14,7 +14,11 @@ public class CreateHackathonHandler(MembershipService membership, IOptions<AppOp
         CreateHackathonRequirement requirement
     )
     {
-        var userId = context.User.GetUserId<Guid>();
+        var userId = context.User.GetUserId();
+        if (userId is null)
+        {
+            return;
+        }
 
         if (options.Value.CreationMode == HackathonCreationMode.Anyone)
         {
@@ -22,7 +26,7 @@ public class CreateHackathonHandler(MembershipService membership, IOptions<AppOp
             return;
         }
 
-        if (await membership.IsRoot(userId))
+        if (await membership.IsRoot(userId.Value))
         {
             context.Succeed(requirement);
         }

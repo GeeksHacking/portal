@@ -4,7 +4,7 @@ namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Organizers.Add;
 
 public class Request
 {
-    public string Id { get; set; } = null!;
+    public Guid HackathonId { get; set; }
     public required Guid UserId { get; set; }
     public OrganizerType Type { get; set; } = OrganizerType.Volunteer;
 }

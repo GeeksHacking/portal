@@ -8,7 +8,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Get("organizers/hackathons/{Id}/challenges");
+        Get("organizers/hackathons/{HackathonId}/challenges");
         Policies(PolicyNames.OrganizerForHackathon);
         Description(b => b.WithTags("Organizers", "Challenges"));
     }
@@ -16,7 +16,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var hackathon = await sql.Queryable<Entities.Hackathon>()
-            .Where(h => h.Id.ToString() == req.Id)
+            .Where(h => h.Id == req.HackathonId)
             .FirstAsync(ct);
 
         if (hackathon is null)

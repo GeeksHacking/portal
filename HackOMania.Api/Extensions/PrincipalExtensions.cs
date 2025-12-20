@@ -7,14 +7,10 @@ public static class PrincipalExtensions
 {
     extension(ClaimsPrincipal principal)
     {
-        public T GetUserId<T>()
-            where T : IParsable<T>
+        public Guid? GetUserId()
         {
-            var raw = principal.Claims.Single(c => c is { Type: CustomClaimTypes.UserId });
-
-            return T.TryParse(raw.Value, null, out var v)
-                ? v
-                : throw new InvalidOperationException("Invalid user ID");
+            var raw = principal.Claims.SingleOrDefault(c => c is { Type: CustomClaimTypes.UserId });
+            return Guid.TryParse(raw?.Value, out var v) ? v : null;
         }
     }
 }

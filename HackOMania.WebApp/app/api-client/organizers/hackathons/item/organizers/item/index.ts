@@ -5,7 +5,7 @@
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{id}/organizers/{userId}
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/organizers/{userId}
  */
 export interface WithUserItemRequestBuilder extends BaseRequestBuilder<WithUserItemRequestBuilder> {
     /**
@@ -21,7 +21,7 @@ export interface WithUserItemRequestBuilder extends BaseRequestBuilder<WithUserI
 /**
  * Uri template for the request builder.
  */
-export const WithUserItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{id}/organizers/{userId}";
+export const WithUserItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/organizers/{userId}";
 /**
  * Metadata for all the requests in the request builder.
  */

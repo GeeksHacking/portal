@@ -8,17 +8,14 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Patch("organizers/hackathons/{HackathonId}/challenges/{ChallengeId}");
+        Patch("organizers/hackathons/{HackathonId:guid}/challenges/{ChallengeId:guid}");
         Policies(PolicyNames.OrganizerForHackathon);
         Description(b => b.WithTags("Organizers", "Challenges"));
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>()
-            .Where(h => h.Id == req.HackathonId)
-            .FirstAsync(ct);
-
+        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
             await Send.NotFoundAsync(ct);
@@ -26,7 +23,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         }
 
         var challenge = await sql.Queryable<Entities.Challenge>()
-            .Where(c => c.Id.ToString() == req.ChallengeId && c.HackathonId == hackathon.Id)
+            .Where(c => c.Id == req.ChallengeId && c.HackathonId == hackathon.Id)
             .FirstAsync(ct);
 
         if (challenge is null)

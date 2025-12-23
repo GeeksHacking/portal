@@ -4,7 +4,7 @@
 // @ts-ignore
 import { createHackOManiaApiEndpointsOrganizersHackathonCreateResponseFromDiscriminatorValue, createHackOManiaApiEndpointsOrganizersHackathonListResponseFromDiscriminatorValue, serializeHackOManiaApiEndpointsOrganizersHackathonCreateRequest, serializeHackOManiaApiEndpointsOrganizersHackathonCreateResponse, type HackOManiaApiEndpointsOrganizersHackathonCreateRequest, type HackOManiaApiEndpointsOrganizersHackathonCreateResponse, type HackOManiaApiEndpointsOrganizersHackathonListResponse } from '../../models/index.js';
 // @ts-ignore
-import { HackathonsItemRequestBuilderNavigationMetadata, HackathonsItemRequestBuilderRequestsMetadata, type HackathonsItemRequestBuilder } from './item/index.js';
+import { type WithHackathonItemRequestBuilder, WithHackathonItemRequestBuilderNavigationMetadata, WithHackathonItemRequestBuilderRequestsMetadata } from './item/index.js';
 // @ts-ignore
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
@@ -14,10 +14,10 @@ import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type 
 export interface HackathonsRequestBuilder extends BaseRequestBuilder<HackathonsRequestBuilder> {
     /**
      * Gets an item from the ApiSdk.organizers.hackathons.item collection
-     * @param id Unique identifier of the item
-     * @returns {HackathonsItemRequestBuilder}
+     * @param hackathonId Unique identifier of the item
+     * @returns {WithHackathonItemRequestBuilder}
      */
-     byId(id: string) : HackathonsItemRequestBuilder;
+     byHackathonId(hackathonId: string) : WithHackathonItemRequestBuilder;
     /**
      * Retrieves all hackathons the current user has organizer access to.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
@@ -25,7 +25,7 @@ export interface HackathonsRequestBuilder extends BaseRequestBuilder<HackathonsR
      */
      get(requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<HackOManiaApiEndpointsOrganizersHackathonListResponse | undefined>;
     /**
-     * Creates a new hackathon event. Only root/admin users can create hackathons.
+     * Creates a new hackathon event. Permissions depend on the platform configuration.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {Promise<HackOManiaApiEndpointsOrganizersHackathonCreateResponse>}
@@ -38,7 +38,7 @@ export interface HackathonsRequestBuilder extends BaseRequestBuilder<HackathonsR
      */
      toGetRequestInformation(requestConfiguration?: RequestConfiguration<object> | undefined) : RequestInformation;
     /**
-     * Creates a new hackathon event. Only root/admin users can create hackathons.
+     * Creates a new hackathon event. Permissions depend on the platform configuration.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {RequestInformation}
@@ -53,10 +53,10 @@ export const HackathonsRequestBuilderUriTemplate = "{+baseurl}/organizers/hackat
  * Metadata for all the navigation properties in the request builder.
  */
 export const HackathonsRequestBuilderNavigationMetadata: Record<Exclude<keyof HackathonsRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
-    byId: {
-        requestsMetadata: HackathonsItemRequestBuilderRequestsMetadata,
-        navigationMetadata: HackathonsItemRequestBuilderNavigationMetadata,
-        pathParametersMappings: ["id"],
+    byHackathonId: {
+        requestsMetadata: WithHackathonItemRequestBuilderRequestsMetadata,
+        navigationMetadata: WithHackathonItemRequestBuilderNavigationMetadata,
+        pathParametersMappings: ["hackathonId"],
     },
 };
 /**

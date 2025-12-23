@@ -8,12 +8,12 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Get("participants/hackathons/{HackathonId}/submissions/{SubmissionId}");
+        Get("participants/hackathons/{HackathonId:guid}/submissions/{SubmissionId}");
         Policies(PolicyNames.ParticipantForHackathon);
         Description(b => b.WithTags("Participants", "Submissions"));
         Summary(s =>
         {
-            s.Summary = "Get submission details (Participant)";
+            s.Summary = "Get submission details";
             s.Description =
                 "Retrieves detailed information about a submission. Only accessible to team members.";
         });
@@ -21,10 +21,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>()
-            .Where(h => h.Id == req.HackathonId)
-            .FirstAsync(ct);
-
+        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
             await Send.NotFoundAsync(ct);

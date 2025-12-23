@@ -9,7 +9,7 @@ import { type WithJudgeItemRequestBuilder, WithJudgeItemRequestBuilderRequestsMe
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{id}/judges
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/judges
  */
 export interface JudgesRequestBuilder extends BaseRequestBuilder<JudgesRequestBuilder> {
     /**
@@ -19,7 +19,7 @@ export interface JudgesRequestBuilder extends BaseRequestBuilder<JudgesRequestBu
      */
      byJudgeId(judgeId: string) : WithJudgeItemRequestBuilder;
     /**
-     * Retrieves all judges for a hackathon including their secrets. Requires organizer access.
+     * Retrieves all judges for a hackathon including their secrets.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {Promise<HackOManiaApiEndpointsOrganizersHackathonJudgesListResponse>}
      */
@@ -32,7 +32,7 @@ export interface JudgesRequestBuilder extends BaseRequestBuilder<JudgesRequestBu
      */
      post(body: HackOManiaApiEndpointsOrganizersHackathonJudgesCreateRequest, requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<HackOManiaApiEndpointsOrganizersHackathonJudgesCreateResponse | undefined>;
     /**
-     * Retrieves all judges for a hackathon including their secrets. Requires organizer access.
+     * Retrieves all judges for a hackathon including their secrets.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {RequestInformation}
      */
@@ -48,7 +48,7 @@ export interface JudgesRequestBuilder extends BaseRequestBuilder<JudgesRequestBu
 /**
  * Uri template for the request builder.
  */
-export const JudgesRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{id}/judges";
+export const JudgesRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/judges";
 /**
  * Metadata for all the navigation properties in the request builder.
  */

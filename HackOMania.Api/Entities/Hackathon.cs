@@ -14,7 +14,7 @@ public class Hackathon
 
     public string Venue { get; set; } = null!;
 
-    public string HomepageUri { get; set; } = null!;
+    public Uri HomepageUri { get; set; } = null!;
 
     public string ShortCode { get; set; } = null!;
 

@@ -2,13 +2,13 @@ namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Organizers.List;
 
 public class Response
 {
-    public IEnumerable<Response_Organizer> Organizers { get; set; } = [];
+    public IEnumerable<OrganizerItem> Organizers { get; set; } = [];
 
-    public class Response_Organizer
+    public class OrganizerItem
     {
-        public Guid UserId { get; set; }
-        public string Name { get; set; } = null!;
-        public string Email { get; set; } = null!;
-        public string Type { get; set; } = null!;
+        public required Guid UserId { get; set; }
+        public required string Name { get; set; }
+        public required string Email { get; set; }
+        public required string Type { get; set; }
     }
 }

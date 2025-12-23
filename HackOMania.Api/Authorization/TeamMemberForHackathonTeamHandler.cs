@@ -1,11 +1,13 @@
+using HackOMania.Api.Entities;
 using HackOMania.Api.Extensions;
 using HackOMania.Api.Services;
 using Microsoft.AspNetCore.Authorization;
+using SqlSugar;
 using static HackOMania.Api.Extensions.HttpContextRouteExtensions;
 
 namespace HackOMania.Api.Authorization;
 
-public class TeamMemberForHackathonTeamHandler(MembershipService membership)
+public class TeamMemberForHackathonTeamHandler(MembershipService membership, ISqlSugarClient sql)
     : AuthorizationHandler<TeamMemberForHackathonTeamRequirement>
 {
     protected override async Task HandleRequirementAsync(
@@ -24,28 +26,23 @@ public class TeamMemberForHackathonTeamHandler(MembershipService membership)
             return;
         }
 
-        var hackathonIdValue = httpContext.GetHackathonRoute();
-        var teamIdValue = httpContext.GetTeamRoute();
+        var hackathonIdValue = httpContext.GetHackathonIdFromRoute();
+        var teamIdValue = httpContext.GetTeamIdFromRoute();
 
-        if (string.IsNullOrWhiteSpace(hackathonIdValue) || string.IsNullOrWhiteSpace(teamIdValue))
+        if (hackathonIdValue is null || teamIdValue is null)
         {
             return;
         }
 
-        var hackathon = await membership.FindHackathon(hackathonIdValue);
+        var hackathon = await sql.Queryable<Hackathon>().InSingleAsync(hackathonIdValue.Value);
         if (hackathon is null)
-        {
-            return;
-        }
-
-        if (!Guid.TryParse(teamIdValue, out var teamId))
         {
             return;
         }
 
         var participant = await membership.GetParticipant(userId.Value, hackathon.Id);
         if (
-            participant?.TeamId == teamId
+            participant?.TeamId == teamIdValue
             || await membership.IsRoot(userId.Value)
             || await membership.IsOrganizer(userId.Value, hackathon.Id)
         )

@@ -8,22 +8,19 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Patch("organizers/hackathons/{HackathonId}");
+        Patch("organizers/hackathons/{HackathonId:guid}");
         Policies(PolicyNames.OrganizerForHackathon);
         Description(b => b.WithTags("Organizers", "Hackathons"));
         Summary(s =>
         {
             s.Summary = "Update hackathon details";
-            s.Description = "Updates the hackathon information. Requires organizer access.";
+            s.Description = "Updates the hackathon information.";
         });
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>()
-            .Where(h => h.Id == req.HackathonId)
-            .FirstAsync(ct);
-
+        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
             await Send.NotFoundAsync(ct);
@@ -47,7 +44,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         if (req.HomepageUri is not null)
         {
-            hackathon.HomepageUri = req.HomepageUri.ToString();
+            hackathon.HomepageUri = req.HomepageUri;
         }
 
         if (!string.IsNullOrWhiteSpace(req.ShortCode))

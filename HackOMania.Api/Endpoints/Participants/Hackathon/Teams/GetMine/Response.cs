@@ -7,9 +7,9 @@ public class Response
     public string Name { get; set; } = null!;
     public string? Description { get; set; }
     public string JoinCode { get; set; } = null!;
-    public IEnumerable<Response_Member> Members { get; set; } = [];
+    public IEnumerable<MemberItem> Members { get; set; } = [];
 
-    public class Response_Member
+    public class MemberItem
     {
         public Guid UserId { get; set; }
         public string Name { get; set; } = null!;

@@ -4,7 +4,7 @@
 // @ts-ignore
 import { createHackOManiaApiEndpointsParticipantsHackathonListResponseFromDiscriminatorValue, type HackOManiaApiEndpointsParticipantsHackathonListResponse } from '../../models/index.js';
 // @ts-ignore
-import { HackathonsItemRequestBuilderNavigationMetadata, HackathonsItemRequestBuilderRequestsMetadata, type HackathonsItemRequestBuilder } from './item/index.js';
+import { HackathonIdOrShortCodeItemRequestBuilderNavigationMetadata, HackathonIdOrShortCodeItemRequestBuilderRequestsMetadata, type HackathonIdOrShortCodeItemRequestBuilder } from './item/index.js';
 // @ts-ignore
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
@@ -14,10 +14,10 @@ import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type 
 export interface HackathonsRequestBuilder extends BaseRequestBuilder<HackathonsRequestBuilder> {
     /**
      * Gets an item from the ApiSdk.participants.hackathons.item collection
-     * @param id Unique identifier of the item
-     * @returns {HackathonsItemRequestBuilder}
+     * @param hackathonIdOrShortCodeId Unique identifier of the item
+     * @returns {HackathonIdOrShortCodeItemRequestBuilder}
      */
-     byId(id: string) : HackathonsItemRequestBuilder;
+     byHackathonIdOrShortCodeId(hackathonIdOrShortCodeId: string) : HackathonIdOrShortCodeItemRequestBuilder;
     /**
      * Retrieves all published hackathons.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
@@ -39,10 +39,10 @@ export const HackathonsRequestBuilderUriTemplate = "{+baseurl}/participants/hack
  * Metadata for all the navigation properties in the request builder.
  */
 export const HackathonsRequestBuilderNavigationMetadata: Record<Exclude<keyof HackathonsRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
-    byId: {
-        requestsMetadata: HackathonsItemRequestBuilderRequestsMetadata,
-        navigationMetadata: HackathonsItemRequestBuilderNavigationMetadata,
-        pathParametersMappings: ["id"],
+    byHackathonIdOrShortCodeId: {
+        requestsMetadata: HackathonIdOrShortCodeItemRequestBuilderRequestsMetadata,
+        navigationMetadata: HackathonIdOrShortCodeItemRequestBuilderNavigationMetadata,
+        pathParametersMappings: ["hackathonIdOrShortCode%2Did"],
     },
 };
 /**

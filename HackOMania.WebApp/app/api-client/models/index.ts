@@ -43,11 +43,11 @@ export function createHackOManiaApiEndpointsOrganizersHackathonChallengesGetResp
 /**
  * Creates a new instance of the appropriate class based on discriminator value
  * @param parseNode The parse node to use to read the discriminator value and create the object
- * @returns {HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge}
+ * @returns {HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge}
  */
 // @ts-ignore
-export function createHackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_ChallengeFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
-    return deserializeIntoHackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge;
+export function createHackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallengeFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
+    return deserializeIntoHackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge;
 }
 /**
  * Creates a new instance of the appropriate class based on discriminator value
@@ -169,11 +169,11 @@ export function createHackOManiaApiEndpointsOrganizersHackathonJudgesUpdateRespo
 /**
  * Creates a new instance of the appropriate class based on discriminator value
  * @param parseNode The parse node to use to read the discriminator value and create the object
- * @returns {HackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon}
+ * @returns {HackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem}
  */
 // @ts-ignore
-export function createHackOManiaApiEndpointsOrganizersHackathonListResponse_Response_HackathonFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
-    return deserializeIntoHackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon;
+export function createHackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItemFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
+    return deserializeIntoHackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem;
 }
 /**
  * Creates a new instance of the appropriate class based on discriminator value
@@ -205,11 +205,11 @@ export function createHackOManiaApiEndpointsOrganizersHackathonOrganizersAddResp
 /**
  * Creates a new instance of the appropriate class based on discriminator value
  * @param parseNode The parse node to use to read the discriminator value and create the object
- * @returns {HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer}
+ * @returns {HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem}
  */
 // @ts-ignore
-export function createHackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_OrganizerFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
-    return deserializeIntoHackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer;
+export function createHackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItemFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
+    return deserializeIntoHackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem;
 }
 /**
  * Creates a new instance of the appropriate class based on discriminator value
@@ -228,6 +228,15 @@ export function createHackOManiaApiEndpointsOrganizersHackathonOrganizersListRes
 // @ts-ignore
 export function createHackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItemFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
     return deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem;
+}
+/**
+ * Creates a new instance of the appropriate class based on discriminator value
+ * @param parseNode The parse node to use to read the discriminator value and create the object
+ * @returns {HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem}
+ */
+// @ts-ignore
+export function createHackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
+    return deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem;
 }
 /**
  * Creates a new instance of the appropriate class based on discriminator value
@@ -385,11 +394,11 @@ export function createHackOManiaApiEndpointsParticipantsHackathonChallengesGetRe
 /**
  * Creates a new instance of the appropriate class based on discriminator value
  * @param parseNode The parse node to use to read the discriminator value and create the object
- * @returns {HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge}
+ * @returns {HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem}
  */
 // @ts-ignore
-export function createHackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_ChallengeFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
-    return deserializeIntoHackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge;
+export function createHackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItemFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
+    return deserializeIntoHackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem;
 }
 /**
  * Creates a new instance of the appropriate class based on discriminator value
@@ -421,11 +430,11 @@ export function createHackOManiaApiEndpointsParticipantsHackathonJoinResponseFro
 /**
  * Creates a new instance of the appropriate class based on discriminator value
  * @param parseNode The parse node to use to read the discriminator value and create the object
- * @returns {HackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon}
+ * @returns {HackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem}
  */
 // @ts-ignore
-export function createHackOManiaApiEndpointsParticipantsHackathonListResponse_Response_HackathonFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
-    return deserializeIntoHackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon;
+export function createHackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItemFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
+    return deserializeIntoHackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem;
 }
 /**
  * Creates a new instance of the appropriate class based on discriminator value
@@ -439,11 +448,11 @@ export function createHackOManiaApiEndpointsParticipantsHackathonListResponseFro
 /**
  * Creates a new instance of the appropriate class based on discriminator value
  * @param parseNode The parse node to use to read the discriminator value and create the object
- * @returns {HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource}
+ * @returns {HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem}
  */
 // @ts-ignore
-export function createHackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_ResourceFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
-    return deserializeIntoHackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource;
+export function createHackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItemFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
+    return deserializeIntoHackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem;
 }
 /**
  * Creates a new instance of the appropriate class based on discriminator value
@@ -538,11 +547,11 @@ export function createHackOManiaApiEndpointsParticipantsHackathonTeamsCreateResp
 /**
  * Creates a new instance of the appropriate class based on discriminator value
  * @param parseNode The parse node to use to read the discriminator value and create the object
- * @returns {HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member}
+ * @returns {HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem}
  */
 // @ts-ignore
-export function createHackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_MemberFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
-    return deserializeIntoHackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member;
+export function createHackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItemFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
+    return deserializeIntoHackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem;
 }
 /**
  * Creates a new instance of the appropriate class based on discriminator value
@@ -622,9 +631,9 @@ export function deserializeIntoHackOManiaApiEndpointsAuthWhoAmIResponse(hackOMan
 // @ts-ignore
 export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest(hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest: Partial<HackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "criteria": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.criteria = n.getStringValue(); },
         "description": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.description = n.getStringValue(); },
         "isPublished": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.isPublished = n.getBooleanValue(); },
+        "selectionCriteriaStmt": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.selectionCriteriaStmt = n.getStringValue(); },
         "title": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.title = n.getStringValue(); },
     }
 }
@@ -670,24 +679,24 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonChalleng
 // @ts-ignore
 export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonChallengesListResponse(hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse: Partial<HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "challenges": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse.challenges = n.getCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge>(createHackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_ChallengeFromDiscriminatorValue); },
+        "challenges": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse.challenges = n.getCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge>(createHackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallengeFromDiscriminatorValue); },
     }
 }
 /**
  * The deserialization information for the current model
- * @param HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge The instance to deserialize into.
+ * @param HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge The instance to deserialize into.
  * @returns {Record<string, (node: ParseNode) => void>}
  */
 // @ts-ignore
-export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge(hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge: Partial<HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge> | undefined = {}) : Record<string, (node: ParseNode) => void> {
+export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge(hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge: Partial<HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "createdAt": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge.createdAt = n.getDateValue(); },
-        "criteria": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge.criteria = n.getStringValue(); },
-        "description": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge.description = n.getStringValue(); },
-        "id": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge.id = n.getStringValue(); },
-        "isPublished": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge.isPublished = n.getBooleanValue(); },
-        "title": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge.title = n.getStringValue(); },
-        "updatedAt": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge.updatedAt = n.getDateValue(); },
+        "createdAt": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.createdAt = n.getDateValue(); },
+        "criteria": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.criteria = n.getStringValue(); },
+        "description": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.description = n.getStringValue(); },
+        "id": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.id = n.getStringValue(); },
+        "isPublished": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.isPublished = n.getBooleanValue(); },
+        "title": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.title = n.getStringValue(); },
+        "updatedAt": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.updatedAt = n.getDateValue(); },
     }
 }
 /**
@@ -888,30 +897,30 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonJudgesUp
 // @ts-ignore
 export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonListResponse(hackOManiaApiEndpointsOrganizersHackathonListResponse: Partial<HackOManiaApiEndpointsOrganizersHackathonListResponse> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "hackathons": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse.hackathons = n.getCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon>(createHackOManiaApiEndpointsOrganizersHackathonListResponse_Response_HackathonFromDiscriminatorValue); },
+        "hackathons": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse.hackathons = n.getCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem>(createHackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItemFromDiscriminatorValue); },
     }
 }
 /**
  * The deserialization information for the current model
- * @param HackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon The instance to deserialize into.
+ * @param HackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem The instance to deserialize into.
  * @returns {Record<string, (node: ParseNode) => void>}
  */
 // @ts-ignore
-export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon(hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon: Partial<HackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon> | undefined = {}) : Record<string, (node: ParseNode) => void> {
+export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem(hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem: Partial<HackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "description": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.description = n.getStringValue(); },
-        "eventEndDate": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.eventEndDate = n.getDateValue(); },
-        "eventStartDate": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.eventStartDate = n.getDateValue(); },
-        "homepageUri": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.homepageUri = n.getStringValue(); },
-        "id": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.id = n.getStringValue(); },
-        "isPublished": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.isPublished = n.getBooleanValue(); },
-        "judgingEndDate": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.judgingEndDate = n.getDateValue(); },
-        "judgingStartDate": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.judgingStartDate = n.getDateValue(); },
-        "name": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.name = n.getStringValue(); },
-        "shortCode": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.shortCode = n.getStringValue(); },
-        "submissionsEndDate": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.submissionsEndDate = n.getDateValue(); },
-        "submissionsStartDate": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.submissionsStartDate = n.getDateValue(); },
-        "venue": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.venue = n.getStringValue(); },
+        "description": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.description = n.getStringValue(); },
+        "eventEndDate": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.eventEndDate = n.getDateValue(); },
+        "eventStartDate": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.eventStartDate = n.getDateValue(); },
+        "homepageUri": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.homepageUri = n.getStringValue(); },
+        "id": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.id = n.getStringValue(); },
+        "isPublished": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.isPublished = n.getBooleanValue(); },
+        "judgingEndDate": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.judgingEndDate = n.getDateValue(); },
+        "judgingStartDate": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.judgingStartDate = n.getDateValue(); },
+        "name": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.name = n.getStringValue(); },
+        "shortCode": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.shortCode = n.getStringValue(); },
+        "submissionsEndDate": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.submissionsEndDate = n.getDateValue(); },
+        "submissionsStartDate": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.submissionsStartDate = n.getDateValue(); },
+        "venue": n => { hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.venue = n.getStringValue(); },
     }
 }
 /**
@@ -946,21 +955,21 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonOrganize
 // @ts-ignore
 export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse(hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse: Partial<HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "organizers": n => { hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse.organizers = n.getCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer>(createHackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_OrganizerFromDiscriminatorValue); },
+        "organizers": n => { hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse.organizers = n.getCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem>(createHackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItemFromDiscriminatorValue); },
     }
 }
 /**
  * The deserialization information for the current model
- * @param HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer The instance to deserialize into.
+ * @param HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem The instance to deserialize into.
  * @returns {Record<string, (node: ParseNode) => void>}
  */
 // @ts-ignore
-export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer(hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer: Partial<HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer> | undefined = {}) : Record<string, (node: ParseNode) => void> {
+export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem(hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem: Partial<HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "email": n => { hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer.email = n.getStringValue(); },
-        "name": n => { hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer.name = n.getStringValue(); },
-        "type": n => { hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer.type = n.getStringValue(); },
-        "userId": n => { hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer.userId = n.getStringValue(); },
+        "email": n => { hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem.email = n.getStringValue(); },
+        "name": n => { hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem.name = n.getStringValue(); },
+        "type": n => { hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem.type = n.getStringValue(); },
+        "userId": n => { hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem.userId = n.getStringValue(); },
     }
 }
 /**
@@ -971,10 +980,25 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonOrganize
 // @ts-ignore
 export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem(hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem: Partial<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "status": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.status = n.getNumberValue(); },
+        "concludedStatus": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.concludedStatus = n.getNumberValue(); },
+        "id": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.id = n.getStringValue(); },
+        "reviews": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.reviews = n.getCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem>(createHackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemFromDiscriminatorValue); },
         "teamId": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.teamId = n.getStringValue(); },
         "teamName": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.teamName = n.getStringValue(); },
-        "userId": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.userId = n.getStringValue(); },
+    }
+}
+/**
+ * The deserialization information for the current model
+ * @param HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem The instance to deserialize into.
+ * @returns {Record<string, (node: ParseNode) => void>}
+ */
+// @ts-ignore
+export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem(hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem: Partial<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem> | undefined = {}) : Record<string, (node: ParseNode) => void> {
+    return {
+        "createdAt": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.createdAt = n.getDateValue(); },
+        "id": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.id = n.getStringValue(); },
+        "reason": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.reason = n.getStringValue(); },
+        "status": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.status = n.getNumberValue(); },
     }
 }
 /**
@@ -1110,9 +1134,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonSubmissi
         "challengeTitle": n => { hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.challengeTitle = n.getStringValue(); },
         "demoUri": n => { hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.demoUri = n.getStringValue(); },
         "description": n => { hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.description = n.getStringValue(); },
-        "devpostUri": n => { hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.devpostUri = n.getStringValue(); },
         "id": n => { hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.id = n.getStringValue(); },
-        "location": n => { hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.location = n.getStringValue(); },
         "repositoryUri": n => { hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.repositoryUri = n.getStringValue(); },
         "slidesUri": n => { hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.slidesUri = n.getStringValue(); },
         "submittedAt": n => { hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.submittedAt = n.getDateValue(); },
@@ -1228,11 +1250,11 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonUpdateRe
 // @ts-ignore
 export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse(hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse: Partial<HackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "criteria": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.criteria = n.getStringValue(); },
         "description": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.description = n.getStringValue(); },
         "hackathonId": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.hackathonId = n.getStringValue(); },
         "id": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.id = n.getStringValue(); },
         "isPublished": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.isPublished = n.getBooleanValue(); },
+        "selectionCriteriaStmt": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.selectionCriteriaStmt = n.getStringValue(); },
         "title": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.title = n.getStringValue(); },
     }
 }
@@ -1244,21 +1266,21 @@ export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonChalle
 // @ts-ignore
 export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonChallengesListResponse(hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse: Partial<HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "challenges": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse.challenges = n.getCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge>(createHackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_ChallengeFromDiscriminatorValue); },
+        "challenges": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse.challenges = n.getCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem>(createHackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItemFromDiscriminatorValue); },
     }
 }
 /**
  * The deserialization information for the current model
- * @param HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge The instance to deserialize into.
+ * @param HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem The instance to deserialize into.
  * @returns {Record<string, (node: ParseNode) => void>}
  */
 // @ts-ignore
-export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge(hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge: Partial<HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge> | undefined = {}) : Record<string, (node: ParseNode) => void> {
+export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem(hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem: Partial<HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "criteria": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge.criteria = n.getStringValue(); },
-        "description": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge.description = n.getStringValue(); },
-        "id": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge.id = n.getStringValue(); },
-        "title": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge.title = n.getStringValue(); },
+        "description": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.description = n.getStringValue(); },
+        "id": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.id = n.getStringValue(); },
+        "selectionCriteriaStmt": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.selectionCriteriaStmt = n.getStringValue(); },
+        "title": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.title = n.getStringValue(); },
     }
 }
 /**
@@ -1305,30 +1327,30 @@ export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonJoinRe
 // @ts-ignore
 export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonListResponse(hackOManiaApiEndpointsParticipantsHackathonListResponse: Partial<HackOManiaApiEndpointsParticipantsHackathonListResponse> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "hackathons": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse.hackathons = n.getCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon>(createHackOManiaApiEndpointsParticipantsHackathonListResponse_Response_HackathonFromDiscriminatorValue); },
+        "hackathons": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse.hackathons = n.getCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem>(createHackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItemFromDiscriminatorValue); },
     }
 }
 /**
  * The deserialization information for the current model
- * @param HackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon The instance to deserialize into.
+ * @param HackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem The instance to deserialize into.
  * @returns {Record<string, (node: ParseNode) => void>}
  */
 // @ts-ignore
-export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon(hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon: Partial<HackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon> | undefined = {}) : Record<string, (node: ParseNode) => void> {
+export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem(hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem: Partial<HackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "description": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.description = n.getStringValue(); },
-        "eventEndDate": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.eventEndDate = n.getDateValue(); },
-        "eventStartDate": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.eventStartDate = n.getDateValue(); },
-        "homepageUri": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.homepageUri = n.getStringValue(); },
-        "id": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.id = n.getStringValue(); },
-        "isPublished": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.isPublished = n.getBooleanValue(); },
-        "judgingEndDate": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.judgingEndDate = n.getDateValue(); },
-        "judgingStartDate": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.judgingStartDate = n.getDateValue(); },
-        "name": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.name = n.getStringValue(); },
-        "shortCode": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.shortCode = n.getStringValue(); },
-        "submissionsEndDate": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.submissionsEndDate = n.getDateValue(); },
-        "submissionsStartDate": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.submissionsStartDate = n.getDateValue(); },
-        "venue": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.venue = n.getStringValue(); },
+        "description": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.description = n.getStringValue(); },
+        "eventEndDate": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.eventEndDate = n.getDateValue(); },
+        "eventStartDate": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.eventStartDate = n.getDateValue(); },
+        "homepageUri": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.homepageUri = n.getStringValue(); },
+        "id": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.id = n.getStringValue(); },
+        "isPublished": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.isPublished = n.getBooleanValue(); },
+        "judgingEndDate": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.judgingEndDate = n.getDateValue(); },
+        "judgingStartDate": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.judgingStartDate = n.getDateValue(); },
+        "name": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.name = n.getStringValue(); },
+        "shortCode": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.shortCode = n.getStringValue(); },
+        "submissionsEndDate": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.submissionsEndDate = n.getDateValue(); },
+        "submissionsStartDate": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.submissionsStartDate = n.getDateValue(); },
+        "venue": n => { hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.venue = n.getStringValue(); },
     }
 }
 /**
@@ -1339,20 +1361,20 @@ export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonListRe
 // @ts-ignore
 export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonResourcesListResponse(hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse: Partial<HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "resources": n => { hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse.resources = n.getCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource>(createHackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_ResourceFromDiscriminatorValue); },
+        "resources": n => { hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse.resources = n.getCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem>(createHackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItemFromDiscriminatorValue); },
     }
 }
 /**
  * The deserialization information for the current model
- * @param HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource The instance to deserialize into.
+ * @param HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem The instance to deserialize into.
  * @returns {Record<string, (node: ParseNode) => void>}
  */
 // @ts-ignore
-export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource(hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource: Partial<HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource> | undefined = {}) : Record<string, (node: ParseNode) => void> {
+export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem(hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem: Partial<HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "description": n => { hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource.description = n.getStringValue(); },
-        "id": n => { hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource.id = n.getStringValue(); },
-        "name": n => { hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource.name = n.getStringValue(); },
+        "description": n => { hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem.description = n.getStringValue(); },
+        "id": n => { hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem.id = n.getStringValue(); },
+        "name": n => { hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem.name = n.getStringValue(); },
     }
 }
 /**
@@ -1412,14 +1434,12 @@ export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonSubmis
     return {
         "challengeId": n => { hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.challengeId = n.getStringValue(); },
         "demoUri": n => { hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.demoUri = n.getStringValue(); },
-        "devpostUri": n => { hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.devpostUri = n.getStringValue(); },
+        "description": n => { hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.description = n.getStringValue(); },
         "hackathonId": n => { hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.hackathonId = n.getStringValue(); },
         "id": n => { hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.id = n.getStringValue(); },
-        "location": n => { hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.location = n.getStringValue(); },
         "repoUri": n => { hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.repoUri = n.getStringValue(); },
         "slidesUri": n => { hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.slidesUri = n.getStringValue(); },
         "submittedAt": n => { hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.submittedAt = n.getDateValue(); },
-        "summary": n => { hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.summary = n.getStringValue(); },
         "teamId": n => { hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.teamId = n.getStringValue(); },
         "title": n => { hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.title = n.getStringValue(); },
     }
@@ -1517,22 +1537,22 @@ export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonTeamsG
         "hackathonId": n => { hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse.hackathonId = n.getStringValue(); },
         "id": n => { hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse.id = n.getStringValue(); },
         "joinCode": n => { hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse.joinCode = n.getStringValue(); },
-        "members": n => { hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse.members = n.getCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member>(createHackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_MemberFromDiscriminatorValue); },
+        "members": n => { hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse.members = n.getCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem>(createHackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItemFromDiscriminatorValue); },
         "name": n => { hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse.name = n.getStringValue(); },
     }
 }
 /**
  * The deserialization information for the current model
- * @param HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member The instance to deserialize into.
+ * @param HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem The instance to deserialize into.
  * @returns {Record<string, (node: ParseNode) => void>}
  */
 // @ts-ignore
-export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member(hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member: Partial<HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member> | undefined = {}) : Record<string, (node: ParseNode) => void> {
+export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem(hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem: Partial<HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "email": n => { hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member.email = n.getStringValue(); },
-        "isCurrentUser": n => { hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member.isCurrentUser = n.getBooleanValue(); },
-        "name": n => { hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member.name = n.getStringValue(); },
-        "userId": n => { hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member.userId = n.getStringValue(); },
+        "email": n => { hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem.email = n.getStringValue(); },
+        "isCurrentUser": n => { hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem.isCurrentUser = n.getBooleanValue(); },
+        "name": n => { hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem.name = n.getStringValue(); },
+        "userId": n => { hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem.userId = n.getStringValue(); },
     }
 }
 /**
@@ -1623,10 +1643,6 @@ export interface HackOManiaApiEndpointsAuthWhoAmIResponse extends Parsable {
 }
 export interface HackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest extends Parsable {
     /**
-     * The criteria property
-     */
-    criteria?: string | null;
-    /**
      * The description property
      */
     description?: string | null;
@@ -1634,6 +1650,10 @@ export interface HackOManiaApiEndpointsOrganizersHackathonChallengesCreateReques
      * The isPublished property
      */
     isPublished?: boolean | null;
+    /**
+     * The selectionCriteriaStmt property
+     */
+    selectionCriteriaStmt?: string | null;
     /**
      * The title property
      */
@@ -1703,9 +1723,9 @@ export interface HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse
     /**
      * The challenges property
      */
-    challenges?: HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge[] | null;
+    challenges?: HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge[] | null;
 }
-export interface HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge extends Parsable {
+export interface HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge extends Parsable {
     /**
      * The createdAt property
      */
@@ -2043,9 +2063,9 @@ export interface HackOManiaApiEndpointsOrganizersHackathonListResponse extends P
     /**
      * The hackathons property
      */
-    hackathons?: HackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon[] | null;
+    hackathons?: HackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem[] | null;
 }
-export interface HackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon extends Parsable {
+export interface HackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem extends Parsable {
     /**
      * The description property
      */
@@ -2123,9 +2143,9 @@ export interface HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse
     /**
      * The organizers property
      */
-    organizers?: HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer[] | null;
+    organizers?: HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem[] | null;
 }
-export interface HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer extends Parsable {
+export interface HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem extends Parsable {
     /**
      * The email property
      */
@@ -2145,9 +2165,17 @@ export interface HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse
 }
 export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem extends Parsable {
     /**
-     * The status property
+     * The concludedStatus property
      */
-    status?: number | null;
+    concludedStatus?: number | null;
+    /**
+     * The id property
+     */
+    id?: string | null;
+    /**
+     * The reviews property
+     */
+    reviews?: HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem[] | null;
     /**
      * The teamId property
      */
@@ -2156,10 +2184,24 @@ export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsListPartic
      * The teamName property
      */
     teamName?: string | null;
+}
+export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem extends Parsable {
     /**
-     * The userId property
+     * The createdAt property
      */
-    userId?: string | null;
+    createdAt?: Date | null;
+    /**
+     * The id property
+     */
+    id?: string | null;
+    /**
+     * The reason property
+     */
+    reason?: string | null;
+    /**
+     * The status property
+     */
+    status?: number | null;
 }
 export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsListResponse extends Parsable {
     /**
@@ -2321,17 +2363,9 @@ export interface HackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse
      */
     description?: string | null;
     /**
-     * The devpostUri property
-     */
-    devpostUri?: string | null;
-    /**
      * The id property
      */
     id?: string | null;
-    /**
-     * The location property
-     */
-    location?: string | null;
     /**
      * The repositoryUri property
      */
@@ -2527,10 +2561,6 @@ export interface HackOManiaApiEndpointsOrganizersHackathonUpdateResponse extends
 }
 export interface HackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse extends Parsable {
     /**
-     * The criteria property
-     */
-    criteria?: string | null;
-    /**
      * The description property
      */
     description?: string | null;
@@ -2547,6 +2577,10 @@ export interface HackOManiaApiEndpointsParticipantsHackathonChallengesGetRespons
      */
     isPublished?: boolean | null;
     /**
+     * The selectionCriteriaStmt property
+     */
+    selectionCriteriaStmt?: string | null;
+    /**
      * The title property
      */
     title?: string | null;
@@ -2555,13 +2589,9 @@ export interface HackOManiaApiEndpointsParticipantsHackathonChallengesListRespon
     /**
      * The challenges property
      */
-    challenges?: HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge[] | null;
+    challenges?: HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem[] | null;
 }
-export interface HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge extends Parsable {
-    /**
-     * The criteria property
-     */
-    criteria?: string | null;
+export interface HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem extends Parsable {
     /**
      * The description property
      */
@@ -2570,6 +2600,10 @@ export interface HackOManiaApiEndpointsParticipantsHackathonChallengesListRespon
      * The id property
      */
     id?: string | null;
+    /**
+     * The selectionCriteriaStmt property
+     */
+    selectionCriteriaStmt?: string | null;
     /**
      * The title property
      */
@@ -2647,9 +2681,9 @@ export interface HackOManiaApiEndpointsParticipantsHackathonListResponse extends
     /**
      * The hackathons property
      */
-    hackathons?: HackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon[] | null;
+    hackathons?: HackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem[] | null;
 }
-export interface HackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon extends Parsable {
+export interface HackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem extends Parsable {
     /**
      * The description property
      */
@@ -2707,9 +2741,9 @@ export interface HackOManiaApiEndpointsParticipantsHackathonResourcesListRespons
     /**
      * The resources property
      */
-    resources?: HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource[] | null;
+    resources?: HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem[] | null;
 }
-export interface HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource extends Parsable {
+export interface HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem extends Parsable {
     /**
      * The description property
      */
@@ -2807,9 +2841,9 @@ export interface HackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateRes
      */
     demoUri?: string | null;
     /**
-     * The devpostUri property
+     * The description property
      */
-    devpostUri?: string | null;
+    description?: string | null;
     /**
      * The hackathonId property
      */
@@ -2818,10 +2852,6 @@ export interface HackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateRes
      * The id property
      */
     id?: string | null;
-    /**
-     * The location property
-     */
-    location?: string | null;
     /**
      * The repoUri property
      */
@@ -2834,10 +2864,6 @@ export interface HackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateRes
      * The submittedAt property
      */
     submittedAt?: Date | null;
-    /**
-     * The summary property
-     */
-    summary?: string | null;
     /**
      * The teamId property
      */
@@ -3001,13 +3027,13 @@ export interface HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse
     /**
      * The members property
      */
-    members?: HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member[] | null;
+    members?: HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem[] | null;
     /**
      * The name property
      */
     name?: string | null;
 }
-export interface HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member extends Parsable {
+export interface HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem extends Parsable {
     /**
      * The email property
      */
@@ -3100,9 +3126,9 @@ export function serializeHackOManiaApiEndpointsAuthWhoAmIResponse(writer: Serial
 // @ts-ignore
 export function serializeHackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest: Partial<HackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
     if (!hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest || isSerializingDerivedType) { return; }
-    writer.writeStringValue("criteria", hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.criteria);
     writer.writeStringValue("description", hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.description);
     writer.writeBooleanValue("isPublished", hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.isPublished);
+    writer.writeStringValue("selectionCriteriaStmt", hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.selectionCriteriaStmt);
     writer.writeStringValue("title", hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.title);
 }
 /**
@@ -3148,24 +3174,24 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonChallengesGetR
 // @ts-ignore
 export function serializeHackOManiaApiEndpointsOrganizersHackathonChallengesListResponse(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse: Partial<HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
     if (!hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse || isSerializingDerivedType) { return; }
-    writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge>("challenges", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse.challenges, serializeHackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge);
+    writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge>("challenges", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse.challenges, serializeHackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge);
 }
 /**
  * Serializes information the current object
- * @param HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge The instance to serialize from.
+ * @param HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge The instance to serialize from.
  * @param isSerializingDerivedType A boolean indicating whether the serialization is for a derived type.
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeHackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge: Partial<HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
-    if (!hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge || isSerializingDerivedType) { return; }
-    writer.writeDateValue("createdAt", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge.createdAt);
-    writer.writeStringValue("criteria", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge.criteria);
-    writer.writeStringValue("description", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge.description);
-    writer.writeStringValue("id", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge.id);
-    writer.writeBooleanValue("isPublished", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge.isPublished);
-    writer.writeStringValue("title", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge.title);
-    writer.writeDateValue("updatedAt", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_Response_Challenge.updatedAt);
+export function serializeHackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge: Partial<HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
+    if (!hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge || isSerializingDerivedType) { return; }
+    writer.writeDateValue("createdAt", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.createdAt);
+    writer.writeStringValue("criteria", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.criteria);
+    writer.writeStringValue("description", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.description);
+    writer.writeStringValue("id", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.id);
+    writer.writeBooleanValue("isPublished", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.isPublished);
+    writer.writeStringValue("title", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.title);
+    writer.writeDateValue("updatedAt", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.updatedAt);
 }
 /**
  * Serializes information the current object
@@ -3366,30 +3392,30 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonJudgesUpdateRe
 // @ts-ignore
 export function serializeHackOManiaApiEndpointsOrganizersHackathonListResponse(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonListResponse: Partial<HackOManiaApiEndpointsOrganizersHackathonListResponse> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
     if (!hackOManiaApiEndpointsOrganizersHackathonListResponse || isSerializingDerivedType) { return; }
-    writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon>("hackathons", hackOManiaApiEndpointsOrganizersHackathonListResponse.hackathons, serializeHackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon);
+    writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem>("hackathons", hackOManiaApiEndpointsOrganizersHackathonListResponse.hackathons, serializeHackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem);
 }
 /**
  * Serializes information the current object
- * @param HackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon The instance to serialize from.
+ * @param HackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem The instance to serialize from.
  * @param isSerializingDerivedType A boolean indicating whether the serialization is for a derived type.
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeHackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon: Partial<HackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
-    if (!hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon || isSerializingDerivedType) { return; }
-    writer.writeStringValue("description", hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.description);
-    writer.writeDateValue("eventEndDate", hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.eventEndDate);
-    writer.writeDateValue("eventStartDate", hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.eventStartDate);
-    writer.writeStringValue("homepageUri", hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.homepageUri);
-    writer.writeStringValue("id", hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.id);
-    writer.writeBooleanValue("isPublished", hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.isPublished);
-    writer.writeDateValue("judgingEndDate", hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.judgingEndDate);
-    writer.writeDateValue("judgingStartDate", hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.judgingStartDate);
-    writer.writeStringValue("name", hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.name);
-    writer.writeStringValue("shortCode", hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.shortCode);
-    writer.writeDateValue("submissionsEndDate", hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.submissionsEndDate);
-    writer.writeDateValue("submissionsStartDate", hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.submissionsStartDate);
-    writer.writeStringValue("venue", hackOManiaApiEndpointsOrganizersHackathonListResponse_Response_Hackathon.venue);
+export function serializeHackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem: Partial<HackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
+    if (!hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem || isSerializingDerivedType) { return; }
+    writer.writeStringValue("description", hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.description);
+    writer.writeDateValue("eventEndDate", hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.eventEndDate);
+    writer.writeDateValue("eventStartDate", hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.eventStartDate);
+    writer.writeStringValue("homepageUri", hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.homepageUri);
+    writer.writeStringValue("id", hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.id);
+    writer.writeBooleanValue("isPublished", hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.isPublished);
+    writer.writeDateValue("judgingEndDate", hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.judgingEndDate);
+    writer.writeDateValue("judgingStartDate", hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.judgingStartDate);
+    writer.writeStringValue("name", hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.name);
+    writer.writeStringValue("shortCode", hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.shortCode);
+    writer.writeDateValue("submissionsEndDate", hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.submissionsEndDate);
+    writer.writeDateValue("submissionsStartDate", hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.submissionsStartDate);
+    writer.writeStringValue("venue", hackOManiaApiEndpointsOrganizersHackathonListResponse_HackathonItem.venue);
 }
 /**
  * Serializes information the current object
@@ -3424,21 +3450,21 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonOrganizersAddR
 // @ts-ignore
 export function serializeHackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse: Partial<HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
     if (!hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse || isSerializingDerivedType) { return; }
-    writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer>("organizers", hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse.organizers, serializeHackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer);
+    writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem>("organizers", hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse.organizers, serializeHackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem);
 }
 /**
  * Serializes information the current object
- * @param HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer The instance to serialize from.
+ * @param HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem The instance to serialize from.
  * @param isSerializingDerivedType A boolean indicating whether the serialization is for a derived type.
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeHackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer: Partial<HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
-    if (!hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer || isSerializingDerivedType) { return; }
-    writer.writeStringValue("email", hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer.email);
-    writer.writeStringValue("name", hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer.name);
-    writer.writeStringValue("type", hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer.type);
-    writer.writeStringValue("userId", hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_Response_Organizer.userId);
+export function serializeHackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem: Partial<HackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
+    if (!hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem || isSerializingDerivedType) { return; }
+    writer.writeStringValue("email", hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem.email);
+    writer.writeStringValue("name", hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem.name);
+    writer.writeStringValue("type", hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem.type);
+    writer.writeStringValue("userId", hackOManiaApiEndpointsOrganizersHackathonOrganizersListResponse_OrganizerItem.userId);
 }
 /**
  * Serializes information the current object
@@ -3449,10 +3475,25 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonOrganizersList
 // @ts-ignore
 export function serializeHackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem: Partial<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
     if (!hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem || isSerializingDerivedType) { return; }
-    writer.writeNumberValue("status", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.status);
+    writer.writeNumberValue("concludedStatus", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.concludedStatus);
+    writer.writeStringValue("id", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.id);
+    writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem>("reviews", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.reviews, serializeHackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem);
     writer.writeStringValue("teamId", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.teamId);
     writer.writeStringValue("teamName", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.teamName);
-    writer.writeStringValue("userId", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.userId);
+}
+/**
+ * Serializes information the current object
+ * @param HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem The instance to serialize from.
+ * @param isSerializingDerivedType A boolean indicating whether the serialization is for a derived type.
+ * @param writer Serialization writer to use to serialize this model
+ */
+// @ts-ignore
+export function serializeHackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem: Partial<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
+    if (!hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem || isSerializingDerivedType) { return; }
+    writer.writeDateValue("createdAt", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.createdAt);
+    writer.writeStringValue("id", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.id);
+    writer.writeStringValue("reason", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.reason);
+    writer.writeNumberValue("status", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.status);
 }
 /**
  * Serializes information the current object
@@ -3588,9 +3629,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonSubmissionsGet
     writer.writeStringValue("challengeTitle", hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.challengeTitle);
     writer.writeStringValue("demoUri", hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.demoUri);
     writer.writeStringValue("description", hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.description);
-    writer.writeStringValue("devpostUri", hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.devpostUri);
     writer.writeStringValue("id", hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.id);
-    writer.writeStringValue("location", hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.location);
     writer.writeStringValue("repositoryUri", hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.repositoryUri);
     writer.writeStringValue("slidesUri", hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.slidesUri);
     writer.writeDateValue("submittedAt", hackOManiaApiEndpointsOrganizersHackathonSubmissionsGetResponse.submittedAt);
@@ -3706,11 +3745,11 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonUpdateResponse
 // @ts-ignore
 export function serializeHackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse(writer: SerializationWriter, hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse: Partial<HackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
     if (!hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse || isSerializingDerivedType) { return; }
-    writer.writeStringValue("criteria", hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.criteria);
     writer.writeStringValue("description", hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.description);
     writer.writeStringValue("hackathonId", hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.hackathonId);
     writer.writeStringValue("id", hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.id);
     writer.writeBooleanValue("isPublished", hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.isPublished);
+    writer.writeStringValue("selectionCriteriaStmt", hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.selectionCriteriaStmt);
     writer.writeStringValue("title", hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.title);
 }
 /**
@@ -3722,21 +3761,21 @@ export function serializeHackOManiaApiEndpointsParticipantsHackathonChallengesGe
 // @ts-ignore
 export function serializeHackOManiaApiEndpointsParticipantsHackathonChallengesListResponse(writer: SerializationWriter, hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse: Partial<HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
     if (!hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse || isSerializingDerivedType) { return; }
-    writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge>("challenges", hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse.challenges, serializeHackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge);
+    writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem>("challenges", hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse.challenges, serializeHackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem);
 }
 /**
  * Serializes information the current object
- * @param HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge The instance to serialize from.
+ * @param HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem The instance to serialize from.
  * @param isSerializingDerivedType A boolean indicating whether the serialization is for a derived type.
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeHackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge(writer: SerializationWriter, hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge: Partial<HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
-    if (!hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge || isSerializingDerivedType) { return; }
-    writer.writeStringValue("criteria", hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge.criteria);
-    writer.writeStringValue("description", hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge.description);
-    writer.writeStringValue("id", hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge.id);
-    writer.writeStringValue("title", hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_Response_Challenge.title);
+export function serializeHackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem(writer: SerializationWriter, hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem: Partial<HackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
+    if (!hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem || isSerializingDerivedType) { return; }
+    writer.writeStringValue("description", hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.description);
+    writer.writeStringValue("id", hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.id);
+    writer.writeStringValue("selectionCriteriaStmt", hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.selectionCriteriaStmt);
+    writer.writeStringValue("title", hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.title);
 }
 /**
  * Serializes information the current object
@@ -3783,30 +3822,30 @@ export function serializeHackOManiaApiEndpointsParticipantsHackathonJoinResponse
 // @ts-ignore
 export function serializeHackOManiaApiEndpointsParticipantsHackathonListResponse(writer: SerializationWriter, hackOManiaApiEndpointsParticipantsHackathonListResponse: Partial<HackOManiaApiEndpointsParticipantsHackathonListResponse> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
     if (!hackOManiaApiEndpointsParticipantsHackathonListResponse || isSerializingDerivedType) { return; }
-    writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon>("hackathons", hackOManiaApiEndpointsParticipantsHackathonListResponse.hackathons, serializeHackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon);
+    writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem>("hackathons", hackOManiaApiEndpointsParticipantsHackathonListResponse.hackathons, serializeHackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem);
 }
 /**
  * Serializes information the current object
- * @param HackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon The instance to serialize from.
+ * @param HackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem The instance to serialize from.
  * @param isSerializingDerivedType A boolean indicating whether the serialization is for a derived type.
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeHackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon(writer: SerializationWriter, hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon: Partial<HackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
-    if (!hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon || isSerializingDerivedType) { return; }
-    writer.writeStringValue("description", hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.description);
-    writer.writeDateValue("eventEndDate", hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.eventEndDate);
-    writer.writeDateValue("eventStartDate", hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.eventStartDate);
-    writer.writeStringValue("homepageUri", hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.homepageUri);
-    writer.writeStringValue("id", hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.id);
-    writer.writeBooleanValue("isPublished", hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.isPublished);
-    writer.writeDateValue("judgingEndDate", hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.judgingEndDate);
-    writer.writeDateValue("judgingStartDate", hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.judgingStartDate);
-    writer.writeStringValue("name", hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.name);
-    writer.writeStringValue("shortCode", hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.shortCode);
-    writer.writeDateValue("submissionsEndDate", hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.submissionsEndDate);
-    writer.writeDateValue("submissionsStartDate", hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.submissionsStartDate);
-    writer.writeStringValue("venue", hackOManiaApiEndpointsParticipantsHackathonListResponse_Response_Hackathon.venue);
+export function serializeHackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem(writer: SerializationWriter, hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem: Partial<HackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
+    if (!hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem || isSerializingDerivedType) { return; }
+    writer.writeStringValue("description", hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.description);
+    writer.writeDateValue("eventEndDate", hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.eventEndDate);
+    writer.writeDateValue("eventStartDate", hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.eventStartDate);
+    writer.writeStringValue("homepageUri", hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.homepageUri);
+    writer.writeStringValue("id", hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.id);
+    writer.writeBooleanValue("isPublished", hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.isPublished);
+    writer.writeDateValue("judgingEndDate", hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.judgingEndDate);
+    writer.writeDateValue("judgingStartDate", hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.judgingStartDate);
+    writer.writeStringValue("name", hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.name);
+    writer.writeStringValue("shortCode", hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.shortCode);
+    writer.writeDateValue("submissionsEndDate", hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.submissionsEndDate);
+    writer.writeDateValue("submissionsStartDate", hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.submissionsStartDate);
+    writer.writeStringValue("venue", hackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem.venue);
 }
 /**
  * Serializes information the current object
@@ -3817,20 +3856,20 @@ export function serializeHackOManiaApiEndpointsParticipantsHackathonListResponse
 // @ts-ignore
 export function serializeHackOManiaApiEndpointsParticipantsHackathonResourcesListResponse(writer: SerializationWriter, hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse: Partial<HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
     if (!hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse || isSerializingDerivedType) { return; }
-    writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource>("resources", hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse.resources, serializeHackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource);
+    writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem>("resources", hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse.resources, serializeHackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem);
 }
 /**
  * Serializes information the current object
- * @param HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource The instance to serialize from.
+ * @param HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem The instance to serialize from.
  * @param isSerializingDerivedType A boolean indicating whether the serialization is for a derived type.
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeHackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource(writer: SerializationWriter, hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource: Partial<HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
-    if (!hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource || isSerializingDerivedType) { return; }
-    writer.writeStringValue("description", hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource.description);
-    writer.writeStringValue("id", hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource.id);
-    writer.writeStringValue("name", hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_Response_Resource.name);
+export function serializeHackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem(writer: SerializationWriter, hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem: Partial<HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
+    if (!hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem || isSerializingDerivedType) { return; }
+    writer.writeStringValue("description", hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem.description);
+    writer.writeStringValue("id", hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem.id);
+    writer.writeStringValue("name", hackOManiaApiEndpointsParticipantsHackathonResourcesListResponse_ResourceItem.name);
 }
 /**
  * Serializes information the current object
@@ -3890,14 +3929,12 @@ export function serializeHackOManiaApiEndpointsParticipantsHackathonSubmissionsC
     if (!hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse || isSerializingDerivedType) { return; }
     writer.writeStringValue("challengeId", hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.challengeId);
     writer.writeStringValue("demoUri", hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.demoUri);
-    writer.writeStringValue("devpostUri", hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.devpostUri);
+    writer.writeStringValue("description", hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.description);
     writer.writeStringValue("hackathonId", hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.hackathonId);
     writer.writeStringValue("id", hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.id);
-    writer.writeStringValue("location", hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.location);
     writer.writeStringValue("repoUri", hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.repoUri);
     writer.writeStringValue("slidesUri", hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.slidesUri);
     writer.writeDateValue("submittedAt", hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.submittedAt);
-    writer.writeStringValue("summary", hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.summary);
     writer.writeStringValue("teamId", hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.teamId);
     writer.writeStringValue("title", hackOManiaApiEndpointsParticipantsHackathonSubmissionsCreateResponse.title);
 }
@@ -3995,22 +4032,22 @@ export function serializeHackOManiaApiEndpointsParticipantsHackathonTeamsGetMine
     writer.writeStringValue("hackathonId", hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse.hackathonId);
     writer.writeStringValue("id", hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse.id);
     writer.writeStringValue("joinCode", hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse.joinCode);
-    writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member>("members", hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse.members, serializeHackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member);
+    writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem>("members", hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse.members, serializeHackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem);
     writer.writeStringValue("name", hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse.name);
 }
 /**
  * Serializes information the current object
- * @param HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member The instance to serialize from.
+ * @param HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem The instance to serialize from.
  * @param isSerializingDerivedType A boolean indicating whether the serialization is for a derived type.
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeHackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member(writer: SerializationWriter, hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member: Partial<HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
-    if (!hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member || isSerializingDerivedType) { return; }
-    writer.writeStringValue("email", hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member.email);
-    writer.writeBooleanValue("isCurrentUser", hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member.isCurrentUser);
-    writer.writeStringValue("name", hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member.name);
-    writer.writeStringValue("userId", hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_Response_Member.userId);
+export function serializeHackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem(writer: SerializationWriter, hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem: Partial<HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
+    if (!hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem || isSerializingDerivedType) { return; }
+    writer.writeStringValue("email", hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem.email);
+    writer.writeBooleanValue("isCurrentUser", hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem.isCurrentUser);
+    writer.writeStringValue("name", hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem.name);
+    writer.writeStringValue("userId", hackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse_MemberItem.userId);
 }
 /**
  * Serializes information the current object

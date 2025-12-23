@@ -7,7 +7,7 @@ import { createHackOManiaApiEndpointsParticipantsHackathonStatusResponseFromDisc
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /participants/hackathons/{id}/status
+ * Builds and executes requests for operations under /participants/hackathons/{hackathonIdOrShortCode-id}/status
  */
 export interface StatusRequestBuilder extends BaseRequestBuilder<StatusRequestBuilder> {
     /**
@@ -26,7 +26,7 @@ export interface StatusRequestBuilder extends BaseRequestBuilder<StatusRequestBu
 /**
  * Uri template for the request builder.
  */
-export const StatusRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{id}/status";
+export const StatusRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{hackathonIdOrShortCode%2Did}/status";
 /**
  * Metadata for all the requests in the request builder.
  */

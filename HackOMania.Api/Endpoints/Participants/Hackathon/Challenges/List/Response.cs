@@ -2,13 +2,13 @@ namespace HackOMania.Api.Endpoints.Participants.Hackathon.Challenges.List;
 
 public class Response
 {
-    public IEnumerable<Response_Challenge> Challenges { get; set; } = [];
+    public IEnumerable<ChallengeItem> Challenges { get; set; } = [];
 
-    public class Response_Challenge
+    public class ChallengeItem
     {
-        public Guid Id { get; set; }
-        public string Title { get; set; } = null!;
-        public string Description { get; set; } = null!;
-        public string? Criteria { get; set; }
+        public required Guid Id { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string SelectionCriteriaStmt { get; set; }
     }
 }

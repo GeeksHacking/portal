@@ -9,7 +9,7 @@ import { type WithSubmissionItemRequestBuilder, WithSubmissionItemRequestBuilder
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{id}/submissions
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/submissions
  */
 export interface SubmissionsRequestBuilder extends BaseRequestBuilder<SubmissionsRequestBuilder> {
     /**
@@ -19,20 +19,20 @@ export interface SubmissionsRequestBuilder extends BaseRequestBuilder<Submission
      */
      bySubmissionId(submissionId: string) : WithSubmissionItemRequestBuilder;
     /**
-     * Retrieves all submissions for a hackathon. Can filter by challenge or team. Requires organizer access.
+     * Retrieves all submissions for a hackathon. Can filter by challenge or team.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {Promise<HackOManiaApiEndpointsOrganizersHackathonSubmissionsListResponse>}
      */
      get(requestConfiguration?: RequestConfiguration<SubmissionsRequestBuilderGetQueryParameters> | undefined) : Promise<HackOManiaApiEndpointsOrganizersHackathonSubmissionsListResponse | undefined>;
     /**
-     * Retrieves all submissions for a hackathon. Can filter by challenge or team. Requires organizer access.
+     * Retrieves all submissions for a hackathon. Can filter by challenge or team.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {RequestInformation}
      */
      toGetRequestInformation(requestConfiguration?: RequestConfiguration<SubmissionsRequestBuilderGetQueryParameters> | undefined) : RequestInformation;
 }
 /**
- * Retrieves all submissions for a hackathon. Can filter by challenge or team. Requires organizer access.
+ * Retrieves all submissions for a hackathon. Can filter by challenge or team.
  */
 export interface SubmissionsRequestBuilderGetQueryParameters {
     challengeId?: string;
@@ -41,7 +41,7 @@ export interface SubmissionsRequestBuilderGetQueryParameters {
 /**
  * Uri template for the request builder.
  */
-export const SubmissionsRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{id}/submissions{?challengeId*,teamId*}";
+export const SubmissionsRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/submissions{?challengeId*,teamId*}";
 /**
  * Metadata for all the navigation properties in the request builder.
  */

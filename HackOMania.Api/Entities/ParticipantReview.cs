@@ -17,8 +17,7 @@ public class ParticipantReview
 
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
 
-    [SugarColumn(IsNullable = true)]
-    public string? Reason { get; set; }
+    public string Reason { get; set; }
 
     public Guid ParticipantId { get; set; }
 }

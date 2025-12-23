@@ -11,7 +11,7 @@ import { SubmissionsRequestBuilderRequestsMetadata, type SubmissionsRequestBuild
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /participants/hackathons/{id}/teams/{teamId}
+ * Builds and executes requests for operations under /participants/hackathons/{hackathonIdOrShortCode-id}/teams/{teamId}
  */
 export interface WithTeamItemRequestBuilder extends BaseRequestBuilder<WithTeamItemRequestBuilder> {
     /**
@@ -40,7 +40,7 @@ export interface WithTeamItemRequestBuilder extends BaseRequestBuilder<WithTeamI
 /**
  * Uri template for the request builder.
  */
-export const WithTeamItemRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{id}/teams/{teamId}";
+export const WithTeamItemRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{hackathonIdOrShortCode%2Did}/teams/{teamId}";
 /**
  * Metadata for all the navigation properties in the request builder.
  */

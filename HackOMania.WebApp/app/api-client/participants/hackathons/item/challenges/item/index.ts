@@ -7,7 +7,7 @@ import { createHackOManiaApiEndpointsParticipantsHackathonChallengesGetResponseF
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /participants/hackathons/{id}/challenges/{challengeId}
+ * Builds and executes requests for operations under /participants/hackathons/{hackathonIdOrShortCode-id}/challenges/{challengeId}
  */
 export interface WithChallengeItemRequestBuilder extends BaseRequestBuilder<WithChallengeItemRequestBuilder> {
     /**
@@ -26,7 +26,7 @@ export interface WithChallengeItemRequestBuilder extends BaseRequestBuilder<With
 /**
  * Uri template for the request builder.
  */
-export const WithChallengeItemRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{id}/challenges/{challengeId}";
+export const WithChallengeItemRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{hackathonIdOrShortCode%2Did}/challenges/{challengeId}";
 /**
  * Metadata for all the requests in the request builder.
  */

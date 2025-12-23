@@ -2,12 +2,12 @@ namespace HackOMania.Api.Endpoints.Participants.Hackathon.Resources.List;
 
 public class Response
 {
-    public IEnumerable<Response_Resource> Resources { get; set; } = [];
+    public IEnumerable<ResourceItem> Resources { get; set; } = [];
 
-    public class Response_Resource
+    public class ResourceItem
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = null!;
-        public string? Description { get; set; }
+        public required Guid Id { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
     }
 }

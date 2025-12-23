@@ -2,34 +2,34 @@ namespace HackOMania.Api.Endpoints.Organizers.Hackathon.List;
 
 public class Response
 {
-    public class Response_Hackathon
+    public class HackathonItem
     {
-        public Guid Id { get; set; }
+        public required Guid Id { get; set; }
 
-        public string Name { get; set; } = null!;
+        public required string Name { get; set; }
 
-        public string Description { get; set; } = null!;
+        public required string Description { get; set; }
 
-        public string Venue { get; set; } = null!;
+        public required string Venue { get; set; }
 
-        public string HomepageUri { get; set; } = null!;
+        public required Uri HomepageUri { get; set; }
 
-        public string ShortCode { get; set; } = null!;
+        public required string ShortCode { get; set; }
 
-        public bool IsPublished { get; set; }
+        public required bool IsPublished { get; set; }
 
-        public DateTimeOffset EventStartDate { get; set; }
+        public required DateTimeOffset EventStartDate { get; set; }
 
-        public DateTimeOffset EventEndDate { get; set; }
+        public required DateTimeOffset EventEndDate { get; set; }
 
-        public DateTimeOffset SubmissionsStartDate { get; set; }
+        public required DateTimeOffset SubmissionsStartDate { get; set; }
 
-        public DateTimeOffset SubmissionsEndDate { get; set; }
+        public required DateTimeOffset SubmissionsEndDate { get; set; }
 
-        public DateTimeOffset JudgingStartDate { get; set; }
+        public required DateTimeOffset JudgingStartDate { get; set; }
 
-        public DateTimeOffset JudgingEndDate { get; set; }
+        public required DateTimeOffset JudgingEndDate { get; set; }
     }
 
-    public IEnumerable<Response_Hackathon> Hackathons { get; set; } = [];
+    public required IEnumerable<HackathonItem> Hackathons { get; set; } = [];
 }

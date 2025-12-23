@@ -35,7 +35,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             Name = req.Name,
             Description = req.Description,
             Venue = req.Venue,
-            HomepageUri = req.HomepageUri.ToString(),
+            HomepageUri = req.HomepageUri,
             ShortCode = req.ShortCode,
             IsPublished = req.IsPublished,
             EventStartDate = req.EventStartDate,
@@ -52,7 +52,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .ExecuteReturnEntityAsync();
 
         await Send.CreatedAtAsync<Get.Endpoint>(
-            new { Id = ent.Id },
+            new { HackathonId = ent.Id },
             new Response
             {
                 Id = ent.Id,

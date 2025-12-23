@@ -9,7 +9,7 @@ import { type WithChallengeItemRequestBuilder, WithChallengeItemRequestBuilderRe
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{id}/challenges
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/challenges
  */
 export interface ChallengesRequestBuilder extends BaseRequestBuilder<ChallengesRequestBuilder> {
     /**
@@ -24,7 +24,7 @@ export interface ChallengesRequestBuilder extends BaseRequestBuilder<ChallengesR
      */
      get(requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse | undefined>;
     /**
-     * Creates a new challenge for the hackathon. Requires organizer access.
+     * Creates a new challenge for the hackathon..
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {Promise<HackOManiaApiEndpointsOrganizersHackathonChallengesCreateResponse>}
@@ -36,7 +36,7 @@ export interface ChallengesRequestBuilder extends BaseRequestBuilder<ChallengesR
      */
      toGetRequestInformation(requestConfiguration?: RequestConfiguration<object> | undefined) : RequestInformation;
     /**
-     * Creates a new challenge for the hackathon. Requires organizer access.
+     * Creates a new challenge for the hackathon..
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {RequestInformation}
@@ -46,7 +46,7 @@ export interface ChallengesRequestBuilder extends BaseRequestBuilder<ChallengesR
 /**
  * Uri template for the request builder.
  */
-export const ChallengesRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{id}/challenges";
+export const ChallengesRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/challenges";
 /**
  * Metadata for all the navigation properties in the request builder.
  */

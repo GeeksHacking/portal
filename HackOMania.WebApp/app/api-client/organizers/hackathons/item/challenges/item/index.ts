@@ -7,16 +7,16 @@ import { createHackOManiaApiEndpointsOrganizersHackathonChallengesGetResponseFro
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{id}/challenges/{challengeId}
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/challenges/{challengeId}
  */
 export interface WithChallengeItemRequestBuilder extends BaseRequestBuilder<WithChallengeItemRequestBuilder> {
     /**
-     * Deletes a challenge from the hackathon. Requires organizer access.
+     * Deletes a challenge from the hackathon.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      */
      delete(requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<void>;
     /**
-     * Retrieves detailed information about a specific challenge. Requires organizer access.
+     * Retrieves detailed information about a specific challenge.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {Promise<HackOManiaApiEndpointsOrganizersHackathonChallengesGetResponse>}
      */
@@ -28,13 +28,13 @@ export interface WithChallengeItemRequestBuilder extends BaseRequestBuilder<With
      */
      patch(body: HackOManiaApiEndpointsOrganizersHackathonChallengesUpdateRequest, requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<HackOManiaApiEndpointsOrganizersHackathonChallengesUpdateResponse | undefined>;
     /**
-     * Deletes a challenge from the hackathon. Requires organizer access.
+     * Deletes a challenge from the hackathon.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {RequestInformation}
      */
      toDeleteRequestInformation(requestConfiguration?: RequestConfiguration<object> | undefined) : RequestInformation;
     /**
-     * Retrieves detailed information about a specific challenge. Requires organizer access.
+     * Retrieves detailed information about a specific challenge.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {RequestInformation}
      */
@@ -49,7 +49,7 @@ export interface WithChallengeItemRequestBuilder extends BaseRequestBuilder<With
 /**
  * Uri template for the request builder.
  */
-export const WithChallengeItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{id}/challenges/{challengeId}";
+export const WithChallengeItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/challenges/{challengeId}";
 /**
  * Metadata for all the requests in the request builder.
  */

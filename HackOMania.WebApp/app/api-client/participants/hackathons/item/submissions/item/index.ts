@@ -7,7 +7,7 @@ import { createHackOManiaApiEndpointsParticipantsHackathonSubmissionsGetResponse
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /participants/hackathons/{id}/submissions/{submissionId}
+ * Builds and executes requests for operations under /participants/hackathons/{hackathonIdOrShortCode-id}/submissions/{submissionId}
  */
 export interface WithSubmissionItemRequestBuilder extends BaseRequestBuilder<WithSubmissionItemRequestBuilder> {
     /**
@@ -26,7 +26,7 @@ export interface WithSubmissionItemRequestBuilder extends BaseRequestBuilder<Wit
 /**
  * Uri template for the request builder.
  */
-export const WithSubmissionItemRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{id}/submissions/{submissionId}";
+export const WithSubmissionItemRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{hackathonIdOrShortCode%2Did}/submissions/{submissionId}";
 /**
  * Metadata for all the requests in the request builder.
  */

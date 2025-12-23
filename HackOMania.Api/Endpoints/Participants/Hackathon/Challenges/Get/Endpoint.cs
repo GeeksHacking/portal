@@ -1,16 +1,14 @@
 using FastEndpoints;
 using HackOMania.Api.Authorization;
-using HackOMania.Api.Services;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Participants.Hackathon.Challenges.Get;
 
-public class Endpoint(ISqlSugarClient sql, MembershipService membership)
-    : Endpoint<Request, Response>
+public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Get("participants/hackathons/{HackathonId}/challenges/{ChallengeId}");
+        Get("participants/hackathons/{HackathonId:guid}/challenges/{ChallengeId:guid}");
         Policies(PolicyNames.ParticipantForHackathon);
         Description(b => b.WithTags("Participants", "Challenges"));
         Summary(s =>
@@ -22,7 +20,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await membership.FindHackathon(req.HackathonId, ct);
+        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
         if (hackathon is null || !hackathon.IsPublished)
         {
             await Send.NotFoundAsync(ct);
@@ -30,7 +28,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
         }
 
         var challenge = await sql.Queryable<Entities.Challenge>()
-            .Where(c => c.Id.ToString() == req.ChallengeId && c.HackathonId == hackathon.Id)
+            .Where(c => c.Id == req.ChallengeId && c.HackathonId == hackathon.Id)
             .FirstAsync(ct);
 
         if (challenge is null || !challenge.IsPublished)
@@ -46,7 +44,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
                 HackathonId = challenge.HackathonId,
                 Title = challenge.Title,
                 Description = challenge.Description,
-                Criteria = challenge.SelectionCriteriaStmt,
+                SelectionCriteriaStmt = challenge.SelectionCriteriaStmt,
                 IsPublished = challenge.IsPublished,
             },
             ct

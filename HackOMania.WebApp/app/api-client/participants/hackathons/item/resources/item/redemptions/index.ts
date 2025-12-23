@@ -7,7 +7,7 @@ import { createHackOManiaApiEndpointsParticipantsHackathonResourcesRedeemRespons
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /participants/hackathons/{id}/resources/{resourceId}/redemptions
+ * Builds and executes requests for operations under /participants/hackathons/{hackathonIdOrShortCode-id}/resources/{resourceId}/redemptions
  */
 export interface RedemptionsRequestBuilder extends BaseRequestBuilder<RedemptionsRequestBuilder> {
     /**
@@ -26,7 +26,7 @@ export interface RedemptionsRequestBuilder extends BaseRequestBuilder<Redemption
 /**
  * Uri template for the request builder.
  */
-export const RedemptionsRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{id}/resources/{resourceId}/redemptions";
+export const RedemptionsRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{hackathonIdOrShortCode%2Did}/resources/{resourceId}/redemptions";
 /**
  * Metadata for all the requests in the request builder.
  */

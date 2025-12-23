@@ -9,12 +9,12 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Post("organizers/hackathons/{HackathonId}/judges");
+        Post("organizers/hackathons/{HackathonId:guid}/judges");
         Policies(PolicyNames.OrganizerForHackathon);
         Description(b => b.WithTags("Organizers", "Judges"));
         Summary(s =>
         {
-            s.Summary = "Create a judge (Organizer)";
+            s.Summary = "Create a judge";
             s.Description =
                 "Creates a new judge for the hackathon. Returns the judge secret that should be shared with the judge for authentication.";
         });
@@ -22,10 +22,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>()
-            .Where(h => h.Id == req.HackathonId)
-            .FirstAsync(ct);
-
+        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
             await Send.NotFoundAsync(ct);
@@ -44,7 +41,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         await sql.Insertable(judge).ExecuteCommandAsync(ct);
 
         await Send.CreatedAtAsync<Get.Endpoint>(
-            new { HackathonId = req.HackathonId, JudgeId = judge.Id },
+            new { req.HackathonId, JudgeId = judge.Id },
             new Response
             {
                 Id = judge.Id,

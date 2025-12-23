@@ -14,6 +14,11 @@ public class CreateHackathonHandler(MembershipService membership, IOptions<AppOp
         CreateHackathonRequirement requirement
     )
     {
+        if (context.Resource is not HttpContext)
+        {
+            return;
+        }
+
         var userId = context.User.GetUserId();
         if (userId is null)
         {

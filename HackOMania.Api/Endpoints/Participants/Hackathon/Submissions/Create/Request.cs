@@ -3,7 +3,7 @@ namespace HackOMania.Api.Endpoints.Participants.Hackathon.Submissions.Create;
 public class Request
 {
     public required Guid HackathonId { get; set; }
-    public required string TeamId { get; set; }
+    public required Guid TeamId { get; set; }
     public required Guid ChallengeId { get; set; }
     public required string Title { get; set; }
     public required string Summary { get; set; }

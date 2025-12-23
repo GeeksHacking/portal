@@ -7,7 +7,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Get("participants/hackathons/{HackathonId}");
+        Get("participants/hackathons/{HackathonIdOrShortCode}");
         AllowAnonymous();
         Description(b => b.WithTags("Participants", "Hackathons"));
         Summary(s =>
@@ -20,7 +20,10 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var hackathon = await sql.Queryable<Entities.Hackathon>()
-            .Where(h => h.Id == req.HackathonId)
+            .Where(h =>
+                h.Id.ToString() == req.HackathonIdOrShortCode
+                || h.ShortCode == req.HackathonIdOrShortCode
+            )
             .FirstAsync(ct);
 
         if (hackathon is null || !hackathon.IsPublished)

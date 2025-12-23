@@ -2,22 +2,37 @@ namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Participants.List;
 
 public class Response
 {
-    public required List<ParticipantItem> Participants { get; init; }
     public required int TotalCount { get; init; }
     public required int PendingCount { get; init; }
     public required int AcceptedCount { get; init; }
     public required int RejectedCount { get; init; }
+    public required List<ParticipantItem> Participants { get; init; }
 }
 
 public class ParticipantItem
 {
-    public required Guid UserId { get; init; }
-    public required Guid? TeamId { get; init; }
-    public required string? TeamName { get; init; }
-    public required ParticipantStatus Status { get; init; }
+    public required Guid Id { get; init; }
+    public Guid? TeamId { get; init; }
+    public string? TeamName { get; init; }
+    public required ParticipantConcludedStatus ConcludedStatus { get; init; }
+    public required List<ParticipantReviewItem> Reviews { get; init; }
 }
 
-public enum ParticipantStatus
+public class ParticipantReviewItem
+{
+    public enum ParticipantReviewStatus
+    {
+        Accepted,
+        Rejected,
+    }
+
+    public required Guid Id { get; init; }
+    public required ParticipantReviewStatus Status { get; init; }
+    public required string Reason { get; init; }
+    public required DateTimeOffset CreatedAt { get; init; }
+}
+
+public enum ParticipantConcludedStatus
 {
     Pending,
     Accepted,

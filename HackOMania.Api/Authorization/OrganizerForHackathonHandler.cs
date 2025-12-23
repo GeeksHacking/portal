@@ -1,10 +1,12 @@
+using HackOMania.Api.Entities;
 using HackOMania.Api.Extensions;
 using HackOMania.Api.Services;
 using Microsoft.AspNetCore.Authorization;
+using SqlSugar;
 
 namespace HackOMania.Api.Authorization;
 
-public class OrganizerForHackathonHandler(MembershipService membership)
+public class OrganizerForHackathonHandler(MembershipService membership, ISqlSugarClient sql)
     : AuthorizationHandler<OrganizerForHackathonRequirement>
 {
     protected override async Task HandleRequirementAsync(
@@ -23,17 +25,13 @@ public class OrganizerForHackathonHandler(MembershipService membership)
             return;
         }
 
-        var idValue = HttpContextRouteExtensions.GetHackathonRoute(httpContext);
-        if (string.IsNullOrWhiteSpace(idValue))
+        var idValue = httpContext.GetHackathonIdFromRoute();
+        if (idValue is null)
         {
             return;
         }
 
-        var hackathon = await membership.FindHackathon(idValue);
-        if (hackathon is null)
-        {
-            return;
-        }
+        var hackathon = await sql.Queryable<Hackathon>().InSingleAsync(idValue.Value);
 
         if (await membership.IsOrganizerOrRoot(userId.Value, hackathon.Id))
         {

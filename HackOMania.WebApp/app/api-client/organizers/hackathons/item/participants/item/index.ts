@@ -7,7 +7,7 @@ import { ReviewRequestBuilderRequestsMetadata, type ReviewRequestBuilder } from 
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{id}/participants/{participantUserId}
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/participants/{participantUserId}
  */
 export interface WithParticipantUserItemRequestBuilder extends BaseRequestBuilder<WithParticipantUserItemRequestBuilder> {
     /**
@@ -18,7 +18,7 @@ export interface WithParticipantUserItemRequestBuilder extends BaseRequestBuilde
 /**
  * Uri template for the request builder.
  */
-export const WithParticipantUserItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{id}/participants/{participantUserId}";
+export const WithParticipantUserItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/participants/{participantUserId}";
 /**
  * Metadata for all the navigation properties in the request builder.
  */

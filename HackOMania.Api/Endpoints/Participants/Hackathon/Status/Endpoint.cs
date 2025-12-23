@@ -9,7 +9,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Get("participants/hackathons/{HackathonId}/status");
+        Get("participants/hackathons/{HackathonId:guid}/status");
         Description(b => b.WithTags("Participants"));
         Summary(s =>
         {
@@ -21,10 +21,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>()
-            .Where(h => h.Id == req.HackathonId)
-            .FirstAsync(ct);
-
+        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
             await Send.NotFoundAsync(ct);
@@ -33,11 +30,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var currentUserId = User.GetUserId();
 
-        // Check if organizer
         var isOrganizer = await sql.Queryable<Organizer>()
             .AnyAsync(o => o.HackathonId == hackathon.Id && o.UserId == currentUserId, ct);
 
-        // Check if participant
         var participant = await sql.Queryable<Participant>()
             .Where(p => p.HackathonId == hackathon.Id && p.UserId == currentUserId)
             .FirstAsync(ct);
@@ -58,7 +53,6 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             return;
         }
 
-        // Get team info if in a team
         string? teamName = null;
         if (participant.TeamId.HasValue)
         {
@@ -68,7 +62,6 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             teamName = team?.Name;
         }
 
-        // Get latest review status
         var latestReview = await sql.Queryable<ParticipantReview>()
             .Where(r => r.ParticipantId == participant.UserId)
             .OrderByDescending(r => r.CreatedAt)

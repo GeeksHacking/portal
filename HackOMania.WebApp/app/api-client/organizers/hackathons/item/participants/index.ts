@@ -9,7 +9,7 @@ import { type WithParticipantUserItemRequestBuilder, WithParticipantUserItemRequ
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{id}/participants
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/participants
  */
 export interface ParticipantsRequestBuilder extends BaseRequestBuilder<ParticipantsRequestBuilder> {
     /**
@@ -19,28 +19,22 @@ export interface ParticipantsRequestBuilder extends BaseRequestBuilder<Participa
      */
      byParticipantUserId(participantUserId: string) : WithParticipantUserItemRequestBuilder;
     /**
-     * Retrieves all participants for a hackathon with their review status. Requires organizer access.
+     * Retrieves all participants for a hackathon with their review status.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {Promise<HackOManiaApiEndpointsOrganizersHackathonParticipantsListResponse>}
      */
-     get(requestConfiguration?: RequestConfiguration<ParticipantsRequestBuilderGetQueryParameters> | undefined) : Promise<HackOManiaApiEndpointsOrganizersHackathonParticipantsListResponse | undefined>;
+     get(requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<HackOManiaApiEndpointsOrganizersHackathonParticipantsListResponse | undefined>;
     /**
-     * Retrieves all participants for a hackathon with their review status. Requires organizer access.
+     * Retrieves all participants for a hackathon with their review status.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {RequestInformation}
      */
-     toGetRequestInformation(requestConfiguration?: RequestConfiguration<ParticipantsRequestBuilderGetQueryParameters> | undefined) : RequestInformation;
-}
-/**
- * Retrieves all participants for a hackathon with their review status. Requires organizer access.
- */
-export interface ParticipantsRequestBuilderGetQueryParameters {
-    status?: string;
+     toGetRequestInformation(requestConfiguration?: RequestConfiguration<object> | undefined) : RequestInformation;
 }
 /**
  * Uri template for the request builder.
  */
-export const ParticipantsRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{id}/participants{?status*}";
+export const ParticipantsRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/participants";
 /**
  * Metadata for all the navigation properties in the request builder.
  */

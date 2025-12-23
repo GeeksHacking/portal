@@ -26,7 +26,7 @@ public class Endpoint(ISqlSugarClient sql) : EndpointWithoutRequest<Response>
         await Send.OkAsync(
             new Response
             {
-                Hackathons = hackathons.Select(h => new Response.Response_Hackathon
+                Hackathons = hackathons.Select(h => new Response.HackathonItem
                 {
                     Id = h.Id,
                     Name = h.Name,

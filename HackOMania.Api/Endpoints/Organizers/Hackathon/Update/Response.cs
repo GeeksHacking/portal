@@ -6,7 +6,7 @@ public class Response
     public required string Name { get; init; }
     public required string Description { get; init; }
     public required string Venue { get; init; }
-    public required string HomepageUri { get; init; }
+    public required Uri HomepageUri { get; init; }
     public required string ShortCode { get; init; }
     public required bool IsPublished { get; init; }
     public required DateTimeOffset EventStartDate { get; init; }

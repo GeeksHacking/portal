@@ -8,12 +8,12 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Patch("organizers/hackathons/{HackathonId}/judges/{JudgeId}");
+        Patch("organizers/hackathons/{HackathonId:guid}/judges/{JudgeId}");
         Policies(PolicyNames.OrganizerForHackathon);
         Description(b => b.WithTags("Organizers", "Judges"));
         Summary(s =>
         {
-            s.Summary = "Update a judge (Organizer)";
+            s.Summary = "Update a judge";
             s.Description =
                 "Updates judge details. Can regenerate the secret to invalidate old links.";
         });
@@ -21,10 +21,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>()
-            .Where(h => h.Id == req.HackathonId)
-            .FirstAsync(ct);
-
+        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
             await Send.NotFoundAsync(ct);

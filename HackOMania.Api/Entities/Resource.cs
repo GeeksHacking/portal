@@ -9,8 +9,7 @@ public class Resource
 
     public string Name { get; set; } = null!;
 
-    [SugarColumn(IsNullable = true)]
-    public string? Description { get; set; }
+    public string Description { get; set; } = null!;
 
     /// <summary>
     /// Statement condition passed to Jint to evaluate whether redemption is allowed

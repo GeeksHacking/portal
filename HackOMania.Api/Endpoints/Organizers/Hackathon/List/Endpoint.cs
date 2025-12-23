@@ -24,7 +24,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
         var userId = User.GetUserId();
         if (userId is null)
         {
-            ArgumentNullException.ThrowIfNull(userId);
+            throw new ArgumentNullException(nameof(userId));
         }
 
         var isRoot = await membership.IsRoot(userId.Value, ct);
@@ -45,7 +45,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
         await Send.OkAsync(
             new Response
             {
-                Hackathons = hackathons.Select(h => new Response.Response_Hackathon
+                Hackathons = hackathons.Select(h => new Response.HackathonItem
                 {
                     Id = h.Id,
                     Name = h.Name,

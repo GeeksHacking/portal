@@ -8,33 +8,26 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Get("organizers/hackathons/{HackathonId}/challenges/{ChallengeId}");
+        Get("organizers/hackathons/{HackathonId:guid}/challenges/{ChallengeId:guid}");
         Policies(PolicyNames.OrganizerForHackathon);
         Description(b => b.WithTags("Organizers", "Challenges"));
         Summary(s =>
         {
-            s.Summary = "Get challenge details (Organizer)";
-            s.Description =
-                "Retrieves detailed information about a specific challenge. Requires organizer access.";
+            s.Summary = "Get challenge details";
+            s.Description = "Retrieves detailed information about a specific challenge.";
         });
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>()
-            .Where(h => h.Id == req.HackathonId)
-            .FirstAsync(ct);
-
+        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
             await Send.NotFoundAsync(ct);
             return;
         }
 
-        var challenge = await sql.Queryable<Entities.Challenge>()
-            .Where(c => c.HackathonId == hackathon.Id && c.Id.ToString() == req.ChallengeId)
-            .FirstAsync(ct);
-
+        var challenge = await sql.Queryable<Entities.Challenge>().InSingleAsync(req.ChallengeId);
         if (challenge is null)
         {
             await Send.NotFoundAsync(ct);

@@ -9,14 +9,13 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Get("organizers/hackathons/{HackathonId}");
+        Get("organizers/hackathons/{HackathonId:guid}");
         Policies(PolicyNames.OrganizerForHackathon);
         Description(b => b.WithTags("Organizers", "Hackathons"));
         Summary(s =>
         {
-            s.Summary = "Get hackathon details (Organizer)";
-            s.Description =
-                "Retrieves detailed information about a specific hackathon. Requires organizer access.";
+            s.Summary = "Get hackathon details";
+            s.Description = "Retrieves detailed information about a specific hackathon.";
         });
     }
 

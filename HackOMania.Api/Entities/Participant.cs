@@ -14,4 +14,7 @@ public class Participant : HackathonUser
 
     [Navigate(NavigateType.OneToMany, nameof(ParticipantReview.ParticipantId))]
     public List<ParticipantReview> ParticipantReviews { get; set; } = null!;
+
+    public ParticipantReview.ParticipantReviewStatus? ConcludedStatus =>
+        ParticipantReviews.OrderByDescending(x => x.CreatedAt).FirstOrDefault()?.Status;
 }

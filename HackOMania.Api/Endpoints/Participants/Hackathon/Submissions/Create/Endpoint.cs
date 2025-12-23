@@ -12,14 +12,14 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 {
     public override void Configure()
     {
-        Post("participants/hackathons/{HackathonId}/teams/{TeamId}/submissions");
+        Post("participants/hackathons/{HackathonId:guid}/teams/{TeamId:guid}/submissions");
         Policies(PolicyNames.TeamMemberForHackathonTeam);
         Description(b => b.WithTags("Participants", "Submissions"));
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await membership.FindHackathon(req.HackathonId, ct);
+        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
         if (hackathon is null || !hackathon.IsPublished)
         {
             await Send.NotFoundAsync(ct);
@@ -27,7 +27,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
         }
 
         var team = await sql.Queryable<Team>()
-            .Where(t => t.Id.ToString() == req.TeamId && t.HackathonId == hackathon.Id)
+            .Where(t => t.Id == req.TeamId && t.HackathonId == hackathon.Id)
             .FirstAsync(ct);
 
         if (team is null)

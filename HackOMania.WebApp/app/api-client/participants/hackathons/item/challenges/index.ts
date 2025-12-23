@@ -9,7 +9,7 @@ import { type WithChallengeItemRequestBuilder, WithChallengeItemRequestBuilderRe
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /participants/hackathons/{id}/challenges
+ * Builds and executes requests for operations under /participants/hackathons/{hackathonIdOrShortCode-id}/challenges
  */
 export interface ChallengesRequestBuilder extends BaseRequestBuilder<ChallengesRequestBuilder> {
     /**
@@ -34,7 +34,7 @@ export interface ChallengesRequestBuilder extends BaseRequestBuilder<ChallengesR
 /**
  * Uri template for the request builder.
  */
-export const ChallengesRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{id}/challenges";
+export const ChallengesRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{hackathonIdOrShortCode%2Did}/challenges";
 /**
  * Metadata for all the navigation properties in the request builder.
  */

@@ -7,7 +7,7 @@ import { createHackOManiaApiEndpointsParticipantsHackathonTeamsLeaveResponseFrom
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /participants/hackathons/{id}/teams/leave
+ * Builds and executes requests for operations under /participants/hackathons/{hackathonIdOrShortCode-id}/teams/leave
  */
 export interface LeaveRequestBuilder extends BaseRequestBuilder<LeaveRequestBuilder> {
     /**
@@ -26,7 +26,7 @@ export interface LeaveRequestBuilder extends BaseRequestBuilder<LeaveRequestBuil
 /**
  * Uri template for the request builder.
  */
-export const LeaveRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{id}/teams/leave";
+export const LeaveRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{hackathonIdOrShortCode%2Did}/teams/leave";
 /**
  * Metadata for all the requests in the request builder.
  */

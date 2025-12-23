@@ -11,7 +11,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 {
     public override void Configure()
     {
-        Patch("participants/hackathons/{HackathonId}/teams/{TeamId}");
+        Patch("participants/hackathons/{HackathonId:guid}/teams/{TeamId:guid}");
         Policies(PolicyNames.TeamMemberForHackathonTeam);
         Description(b => b.WithTags("Participants", "Teams"));
         Summary(s =>
@@ -23,7 +23,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await membership.FindHackathon(req.HackathonId, ct);
+        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
         if (hackathon is null || !hackathon.IsPublished)
         {
             await Send.NotFoundAsync(ct);

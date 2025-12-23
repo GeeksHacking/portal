@@ -9,13 +9,13 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Post("organizers/hackathons/{HackathonId}/challenges");
+        Post("organizers/hackathons/{HackathonId:guid}/challenges");
         Policies(PolicyNames.OrganizerForHackathon);
         Description(b => b.WithTags("Organizers", "Challenges"));
         Summary(s =>
         {
-            s.Summary = "Create a challenge (Organizer)";
-            s.Description = "Creates a new challenge for the hackathon. Requires organizer access.";
+            s.Summary = "Create a challenge";
+            s.Description = "Creates a new challenge for the hackathon..";
         });
     }
 
@@ -29,7 +29,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             HackathonId = hackathonId,
             Title = req.Title,
             Description = req.Description,
-            SelectionCriteriaStmt = req.Criteria ?? "true",
+            SelectionCriteriaStmt = req.SelectionCriteriaStmt,
             IsPublished = req.IsPublished,
         };
 

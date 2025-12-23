@@ -7,11 +7,11 @@ import { createHackOManiaApiEndpointsOrganizersHackathonJudgesGetResponseFromDis
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{id}/judges/{judgeId}
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/judges/{judgeId}
  */
 export interface WithJudgeItemRequestBuilder extends BaseRequestBuilder<WithJudgeItemRequestBuilder> {
     /**
-     * Retrieves details about a specific judge including their secret. Requires organizer access.
+     * Retrieves details about a specific judge including their secret.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {Promise<HackOManiaApiEndpointsOrganizersHackathonJudgesGetResponse>}
      */
@@ -24,7 +24,7 @@ export interface WithJudgeItemRequestBuilder extends BaseRequestBuilder<WithJudg
      */
      patch(body: HackOManiaApiEndpointsOrganizersHackathonJudgesUpdateRequest, requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<HackOManiaApiEndpointsOrganizersHackathonJudgesUpdateResponse | undefined>;
     /**
-     * Retrieves details about a specific judge including their secret. Requires organizer access.
+     * Retrieves details about a specific judge including their secret.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {RequestInformation}
      */
@@ -40,7 +40,7 @@ export interface WithJudgeItemRequestBuilder extends BaseRequestBuilder<WithJudg
 /**
  * Uri template for the request builder.
  */
-export const WithJudgeItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{id}/judges/{judgeId}";
+export const WithJudgeItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/judges/{judgeId}";
 /**
  * Metadata for all the requests in the request builder.
  */

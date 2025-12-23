@@ -1,17 +1,15 @@
 using FastEndpoints;
 using HackOMania.Api.Entities;
 using HackOMania.Api.Extensions;
-using HackOMania.Api.Services;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Participants.Hackathon.Join;
 
-public class Endpoint(ISqlSugarClient sql, MembershipService membership)
-    : Endpoint<Request, Response>
+public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Post("participants/hackathons/{HackathonId}/join");
+        Post("participants/hackathons/{HackathonId:guid}/join");
         Description(b => b.WithTags("Participants", "Hackathons"));
         Summary(s =>
         {
@@ -30,7 +28,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
             throw new ArgumentNullException(nameof(userId));
         }
 
-        var hackathon = await membership.FindHackathon(req.HackathonId, ct);
+        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
         if (hackathon is null || !hackathon.IsPublished)
         {
             await Send.NotFoundAsync(ct);

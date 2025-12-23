@@ -90,19 +90,4 @@ public class MembershipService(ISqlSugarClient sql, IOptions<AdminOptions> admin
         return await sql.Queryable<Participant>()
             .AnyAsync(p => p.UserId == userId && p.HackathonId == hackathonId, ct);
     }
-
-    public async Task<Hackathon?> FindHackathon(Guid idOrShortCode, CancellationToken ct = default)
-    {
-        return await FindHackathon(idOrShortCode.ToString(), ct);
-    }
-
-    public async Task<Hackathon?> FindHackathon(
-        string idOrShortCode,
-        CancellationToken ct = default
-    )
-    {
-        return await sql.Queryable<Hackathon>()
-            .Where(h => h.Id.ToString() == idOrShortCode || h.ShortCode == idOrShortCode)
-            .FirstAsync(ct);
-    }
 }

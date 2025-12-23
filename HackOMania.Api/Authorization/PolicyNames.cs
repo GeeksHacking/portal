@@ -9,7 +9,7 @@ namespace HackOMania.Api.Authorization;
 /// <code>
 /// public override void Configure()
 /// {
-///     Get("organizers/hackathons/{HackathonId}");
+///     Get("organizers/hackathons/{HackathonId:guid}");
 ///     Policies(PolicyNames.OrganizerForHackathon);
 /// }
 /// </code>
@@ -18,10 +18,17 @@ namespace HackOMania.Api.Authorization;
 public static class PolicyNames
 {
     /// <summary>
-    /// Requires the user to be an organizer for the hackathon specified by {Id} in the route.
+    /// Requires the user to be an organizer for the hackathon specified by {HackathonId} in the route.
     /// The authorization handler will look up the hackathon and verify organizer membership.
+    /// This includes both admins and volunteers.
+    ///
+    /// TODO - we should distinguish between organizer admins and organizer volunteers.
+    /// See <see cref="AdminOrganizersForHackathon"/> and <see cref="AllOrganizersForHackathon"/>
     /// </summary>
     public const string OrganizerForHackathon = nameof(OrganizerForHackathon);
+
+    public const string AdminOrganizersForHackathon = nameof(AdminOrganizersForHackathon);
+    public const string AllOrganizersForHackathon = nameof(AllOrganizersForHackathon);
 
     /// <summary>
     /// Requires the user to be a participant for the hackathon specified by {Id} in the route.
@@ -30,7 +37,7 @@ public static class PolicyNames
     public const string ParticipantForHackathon = nameof(ParticipantForHackathon);
 
     /// <summary>
-    /// Requires the user to be a team member for the team specified by {TeamId} in the route.
+    /// Requires the user to be a team member for the team specified by {TeamId:guid} in the route.
     /// Also requires {Id} for the hackathon. Used for team-specific operations.
     /// </summary>
     public const string TeamMemberForHackathonTeam = nameof(TeamMemberForHackathonTeam);

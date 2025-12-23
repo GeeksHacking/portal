@@ -13,7 +13,7 @@ import { MeRequestBuilderRequestsMetadata, type MeRequestBuilder } from './me/in
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /participants/hackathons/{id}/teams
+ * Builds and executes requests for operations under /participants/hackathons/{hackathonIdOrShortCode-id}/teams
  */
 export interface TeamsRequestBuilder extends BaseRequestBuilder<TeamsRequestBuilder> {
     /**
@@ -48,7 +48,7 @@ export interface TeamsRequestBuilder extends BaseRequestBuilder<TeamsRequestBuil
 /**
  * Uri template for the request builder.
  */
-export const TeamsRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{id}/teams";
+export const TeamsRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{hackathonIdOrShortCode%2Did}/teams";
 /**
  * Metadata for all the navigation properties in the request builder.
  */

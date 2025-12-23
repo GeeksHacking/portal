@@ -7,7 +7,7 @@ import { createHackOManiaApiEndpointsParticipantsHackathonJoinResponseFromDiscri
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /participants/hackathons/{id}/join
+ * Builds and executes requests for operations under /participants/hackathons/{hackathonIdOrShortCode-id}/join
  */
 export interface JoinRequestBuilder extends BaseRequestBuilder<JoinRequestBuilder> {
     /**
@@ -26,7 +26,7 @@ export interface JoinRequestBuilder extends BaseRequestBuilder<JoinRequestBuilde
 /**
  * Uri template for the request builder.
  */
-export const JoinRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{id}/join";
+export const JoinRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{hackathonIdOrShortCode%2Did}/join";
 /**
  * Metadata for all the requests in the request builder.
  */

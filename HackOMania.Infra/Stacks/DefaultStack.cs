@@ -74,7 +74,7 @@ public class DefaultStack : Stack
             }
         );
 
-        _ = new SecretManager.SecretIamMember(
+        var githubClientIdAccessor = new SecretManager.SecretIamMember(
             "github-client-id-accessor",
             new SecretManager.SecretIamMemberArgs
             {
@@ -84,7 +84,7 @@ public class DefaultStack : Stack
             }
         );
 
-        _ = new SecretManager.SecretIamMember(
+        var githubClientSecretAccessor = new SecretManager.SecretIamMember(
             "github-client-secret-accessor",
             new SecretManager.SecretIamMemberArgs
             {

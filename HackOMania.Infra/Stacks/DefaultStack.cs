@@ -4,6 +4,7 @@ using Pulumi.Gcp.CloudRunV2.Inputs;
 using Pulumi.Gcp.ServiceAccount;
 using CloudRun = Pulumi.Gcp.CloudRunV2;
 using ProjectIam = Pulumi.Gcp.Projects;
+using SecretManager = Pulumi.Gcp.SecretManager;
 
 namespace HackOMania.Infra.Stacks;
 
@@ -46,6 +47,50 @@ public class DefaultStack : Stack
                 AccountId = "hackomania-api-deployer",
                 DisplayName = "HackOMania Deployer Service Account",
                 Description = "Service account used by GitHub Actions to deploy the HackOMania API",
+            }
+        );
+
+        var githubClientIdSecret = new SecretManager.Secret(
+            "github-client-id",
+            new SecretManager.SecretArgs
+            {
+                SecretId = "github-client-id",
+                Replication = new SecretManager.Inputs.SecretReplicationArgs
+                {
+                    Auto = new SecretManager.Inputs.SecretReplicationAutoArgs(),
+                },
+            }
+        );
+
+        var githubClientSecretSecret = new SecretManager.Secret(
+            "github-client-secret",
+            new SecretManager.SecretArgs
+            {
+                SecretId = "github-client-secret",
+                Replication = new SecretManager.Inputs.SecretReplicationArgs
+                {
+                    Auto = new SecretManager.Inputs.SecretReplicationAutoArgs(),
+                },
+            }
+        );
+
+        _ = new SecretManager.SecretIamMember(
+            "github-client-id-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = githubClientIdSecret.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
+        _ = new SecretManager.SecretIamMember(
+            "github-client-secret-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = githubClientSecretSecret.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
             }
         );
 
@@ -129,6 +174,32 @@ public class DefaultStack : Stack
                                 {
                                     Name = "ASPNETCORE_ENVIRONMENT",
                                     Value = "Production",
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "GitHub__ClientId",
+                                    ValueSource = new ServiceTemplateContainerEnvValueSourceArgs
+                                    {
+                                        SecretKeyRef =
+                                            new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
+                                            {
+                                                Secret = githubClientIdSecret.SecretId,
+                                                Version = "latest",
+                                            },
+                                    },
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "GitHub__ClientSecret",
+                                    ValueSource = new ServiceTemplateContainerEnvValueSourceArgs
+                                    {
+                                        SecretKeyRef =
+                                            new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
+                                            {
+                                                Secret = githubClientSecretSecret.SecretId,
+                                                Version = "latest",
+                                            },
+                                    },
                                 },
                             },
                         },

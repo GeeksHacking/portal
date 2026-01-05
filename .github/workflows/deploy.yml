@@ -33,6 +33,6 @@ jobs:
       - uses: pulumi/actions@v6
         with:
           command: up
-          stack-name: organization/hackomania-infra/production
+          stack-name: production
           cloud-url: gs://hackomania-pulumi-state
           work-dir: HackOMania.Infra

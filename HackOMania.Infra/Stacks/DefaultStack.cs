@@ -113,7 +113,7 @@ public class DefaultStack : Stack
                     {
                         new ServiceTemplateContainerArgs
                         {
-                            Image = pkg.RegistryUri,
+                            Image = Output.Format($"{pkg.RegistryUri}/hackomania-api"),
                             Ports = new ServiceTemplateContainerPortsArgs
                             {
                                 ContainerPort = 8080,

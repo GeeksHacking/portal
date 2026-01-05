@@ -1,17 +1,14 @@
-name: Deploy
+name: Deploy (Infra)
 
 on:
   push:
+    paths:
+      - 'HackOMania.Infra/**'
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build:
+    concurrency: deploy-infra
     runs-on: ubuntu-latest
 
     permissions:

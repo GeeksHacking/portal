@@ -20,16 +20,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.x
+          
       - uses: google-github-actions/auth@v3
         with:
-          project_id: hackomania-event-portal
           workload_identity_provider: projects/242247218750/locations/global/workloadIdentityPools/github/providers/github
+          service_account: pulumi-deployer@hackomania-event-portal.iam.gserviceaccount.com
+          
       - uses: pulumi/actions@v6
         with:
           command: up
           stack-name: production
           cloud-url: gs://hackomania-pulumi-state
-

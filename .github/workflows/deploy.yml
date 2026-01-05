@@ -2,9 +2,9 @@ name: Deploy
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
 
 env:
   REGISTRY: ghcr.io
@@ -16,68 +16,20 @@ jobs:
 
     permissions:
       contents: read
-      packages: write
       id-token: write
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install cosign
-        if: github.event_name != 'pull_request'
-        uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 #v3.5.0
+      - uses: actions/setup-dotnet@v5
         with:
-          cosign-release: "v2.2.4"
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
-
-      - name: Log into registry ${{ env.REGISTRY }}
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
+          dotnet-version: 10.x
+      - uses: google-github-actions/auth@v3
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
+          project_id: hackomania-event-portal
+          workload_identity_provider: projects/242247218750/locations/global/workloadIdentityPools/github/providers/github
+      - uses: pulumi/actions@v6
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          command: up
+          stack-name: production
+          cloud-url: gs://hackomania-pulumi-state
 
-      - name: Build and push Docker image
-        id: build-and-push
-        uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
-        with:
-          context: .
-          file: HackOMania.Api/Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Sign the published Docker image
-        if: ${{ github.event_name != 'pull_request' }}
-        env:
-          TAGS: ${{ steps.meta.outputs.tags }}
-          DIGEST: ${{ steps.build-and-push.outputs.digest }}
-        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
-
-      # - name: Deploy
-      #   if: ${{ github.event_name != 'pull_request' }}
-      #   uses: appleboy/ssh-action@v1
-      #   with:
-      #     host: ${{ secrets.HOST }}
-      #     username: ${{ secrets.USERNAME }}
-      #     password: ${{ secrets.PASSWORD }}
-      #     port: 22
-      #     script: |
-      #       podman stop hackomania-event-platform;
-      #       podman rm hackomania-event-platform;
-      #       podman pull ghcr.io/geekshacking/hackomania-event-platform:main;
-      #       podman run -d --restart=unless-stopped \
-      #       	--name hackomania-event-platform \
-      #       	-p 5000:8080 \
-      #       	-e ASPNETCORE_FORWARDEDHEADERS_ENABLED="true" \
-      #       	ghcr.io/geekshacking/hackomania-event-platform:main;

@@ -12,7 +12,6 @@ public class DatabaseInitBackgroundService(
     {
         logger.LogInformation("Initializing database...");
 
-        sql.DbMaintenance.CreateDatabase();
         sql.CodeFirst.InitTables<GitHubOnlineAccount>();
         sql.CodeFirst.InitTables<Hackathon>();
         sql.CodeFirst.InitTables<Judge>();

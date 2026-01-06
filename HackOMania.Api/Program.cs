@@ -30,6 +30,8 @@ builder.Services.AddSingleton<ISqlSugarClient>(s =>
 {
     if (builder.Environment.IsProduction())
     {
+        Console.WriteLine("running tidb");
+
         return new SqlSugarScope(
             new ConnectionConfig
             {
@@ -41,6 +43,8 @@ builder.Services.AddSingleton<ISqlSugarClient>(s =>
             _ => { }
         );
     }
+
+    Console.WriteLine("running mysql");
 
     return new SqlSugarScope(
         new ConnectionConfig

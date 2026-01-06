@@ -19,7 +19,7 @@ on:
 
 jobs:
   build-and-deploy:
-    concurrency: deploy-api
+    concurrency: deploy
     runs-on: ubuntu-latest
 
     permissions:

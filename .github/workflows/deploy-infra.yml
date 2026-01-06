@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    concurrency: deploy-infra
+    concurrency: deploy
     runs-on: ubuntu-latest
 
     permissions:

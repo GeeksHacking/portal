@@ -28,24 +28,6 @@ builder.Services.AddOptions<AdminOptions>().Bind(builder.Configuration.GetSectio
 
 builder.Services.AddSingleton<ISqlSugarClient>(s =>
 {
-    if (builder.Environment.IsProduction())
-    {
-        Console.WriteLine("running tidb");
-
-        return new SqlSugarScope(
-            new ConnectionConfig
-            {
-                DbType = DbType.Tidb,
-                ConnectionString = builder.Configuration.GetConnectionString("db"),
-                IsAutoCloseConnection = true,
-                MoreSettings = new ConnMoreSettings { DisableNvarchar = true },
-            },
-            _ => { }
-        );
-    }
-
-    Console.WriteLine("running mysql");
-
     return new SqlSugarScope(
         new ConnectionConfig
         {

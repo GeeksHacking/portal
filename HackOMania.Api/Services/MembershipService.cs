@@ -5,14 +5,13 @@ using SqlSugar;
 
 namespace HackOMania.Api.Services;
 
-public class MembershipService(ISqlSugarClient sql, IOptions<AdminOptions> adminOptions)
+public class MembershipService(ISqlSugarClient sql, IOptions<AppOptions> appOptions)
 {
-    private readonly HashSet<string> _adminEmails = adminOptions.Value.Emails.ToHashSet(
+    private readonly HashSet<string> _adminEmails = appOptions.Value.AdminEmails.ToHashSet(
         StringComparer.OrdinalIgnoreCase
     );
-    private readonly HashSet<string> _adminGitHubLogins = adminOptions.Value.GitHubLogins.ToHashSet(
-        StringComparer.OrdinalIgnoreCase
-    );
+    private readonly HashSet<string> _adminGitHubLogins =
+        appOptions.Value.AdminGitHubLogins.ToHashSet(StringComparer.OrdinalIgnoreCase);
 
     public async Task<User?> GetUser(Guid userId, CancellationToken ct = default)
     {

@@ -24,7 +24,6 @@ if (builder.Environment.IsProduction())
 
 builder.Services.AddOptions<AppOptions>().Bind(builder.Configuration.GetSection("App"));
 builder.Services.AddOptions<GitHubOptions>().Bind(builder.Configuration.GetSection("GitHub"));
-builder.Services.AddOptions<AdminOptions>().Bind(builder.Configuration.GetSection("Admin"));
 
 builder.Services.AddSingleton<ISqlSugarClient>(s =>
 {

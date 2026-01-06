@@ -228,7 +228,7 @@ public class DefaultStack : Stack
                 Location = "asia-southeast1",
                 Metadata = new CloudRunV1.Inputs.DomainMappingMetadataArgs
                 {
-                    Namespace = "hackomania-event-portal",
+                    Namespace = cloudRunService.Project,
                 },
                 Spec = new CloudRunV1.Inputs.DomainMappingSpecArgs
                 {

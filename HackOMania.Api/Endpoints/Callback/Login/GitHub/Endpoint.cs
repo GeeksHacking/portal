@@ -12,11 +12,7 @@ using static OpenIddict.Client.WebIntegration.OpenIddictClientWebIntegrationCons
 
 namespace HackOMania.Api.Endpoints.Callback.Login.GitHub;
 
-public class Endpoint(
-    IOptions<AppOptions> options,
-    IOptions<AdminOptions> adminOptions,
-    ISqlSugarClient db
-) : EndpointWithoutRequest
+public class Endpoint(IOptions<AppOptions> options, ISqlSugarClient db) : EndpointWithoutRequest
 {
     public override void Configure()
     {
@@ -39,11 +35,35 @@ public class Endpoint(
         var githubLogin = result.Principal.GetClaim("login");
         var githubId = result.Principal.GetClaim(ClaimTypes.NameIdentifier);
         var email = result.Principal.GetClaim(ClaimTypes.Email);
-        var name = result.Principal.GetClaim(ClaimTypes.Name) ?? "HackOMan";
+        var name = result.Principal.GetClaim(ClaimTypes.Name);
 
-        ArgumentException.ThrowIfNullOrWhiteSpace(githubLogin);
-        ArgumentException.ThrowIfNullOrWhiteSpace(githubId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(email);
+        if (githubLogin is null)
+        {
+            AddError("GitHub login not found in claims.");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
+
+        if (githubId is null)
+        {
+            AddError("GitHub ID not found in claims.");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
+
+        if (email is null)
+        {
+            AddError("User email not found in claims.");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
+
+        if (name is null)
+        {
+            AddError("User name not found in claims.");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
 
         var existingAccount = await db.Queryable<GitHubOnlineAccount>()
             .Includes(a => a.User)

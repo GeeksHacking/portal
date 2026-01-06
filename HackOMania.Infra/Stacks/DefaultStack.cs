@@ -237,7 +237,7 @@ public class DefaultStack : Stack
                                         SecretKeyRef =
                                             new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
                                             {
-                                                Secret = githubClientSecretSecret.SecretId,
+                                                Secret = tidbConnectionString.SecretId,
                                                 Version = "latest",
                                             },
                                     },

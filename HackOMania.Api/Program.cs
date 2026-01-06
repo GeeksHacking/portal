@@ -35,16 +35,7 @@ builder.Services.AddSingleton<ISqlSugarClient>(s =>
             ConnectionString = builder.Configuration.GetConnectionString("db"),
             IsAutoCloseConnection = true,
         },
-        db =>
-        {
-            var logger = s.CreateScope()
-                .ServiceProvider.GetRequiredService<ILogger<ISqlSugarClient>>();
-
-            db.Aop.OnLogExecuting = (stmt, _) =>
-            {
-                logger.LogDebug("Executed SQL: {Stmt}", stmt);
-            };
-        }
+        db => { }
     );
 });
 

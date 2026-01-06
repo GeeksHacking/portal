@@ -32,6 +32,7 @@ jobs:
           PULUMI_CONFIG_PASSPHRASE: ""
         with:
           command: up
+          refresh: true
           stack-name: production
           cloud-url: gs://hackomania-pulumi-state
           work-dir: HackOMania.Infra

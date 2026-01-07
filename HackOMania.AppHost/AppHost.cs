@@ -15,7 +15,8 @@ var api = builder
     .WithReference(db)
     .WithEnvironment("App:FrontendUrl", appFrontendUrl)
     .WithEnvironment("GitHub:ClientId", githubClientId)
-    .WithEnvironment("GitHub:ClientSecret", githubClientSecret);
+    .WithEnvironment("GitHub:ClientSecret", githubClientSecret)
+    .WaitFor(db);
 
 builder
     .AddJavaScriptApp("app", "../HackOMania.WebApp")

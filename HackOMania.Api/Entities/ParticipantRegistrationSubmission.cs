@@ -7,7 +7,11 @@ namespace HackOMania.Api.Entities;
 /// </summary>
 [SugarIndex(
     "IX_ParticipantRegistrationSubmission_Participant_Question",
-    nameof(HackathonId) + "," + nameof(UserId) + "," + nameof(QuestionId),
+    nameof(HackathonId),
+    OrderByType.Asc,
+    nameof(UserId),
+    OrderByType.Asc,
+    nameof(QuestionId),
     OrderByType.Asc,
     true
 )]
@@ -45,9 +49,4 @@ public class ParticipantRegistrationSubmission
 
     [Navigate(NavigateType.OneToOne, nameof(QuestionId))]
     public RegistrationQuestion Question { get; set; } = null!;
-
-    // Note: SqlSugar doesn't support composite foreign keys well, so we handle the Participant relationship manually
-    // TODO - relook this
-    [SugarColumn(IsIgnore = true)]
-    public Participant Participant { get; set; } = null!;
 }

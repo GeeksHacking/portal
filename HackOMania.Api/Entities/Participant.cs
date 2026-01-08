@@ -18,11 +18,11 @@ public class Participant : HackathonUser
     /// <summary>
     /// Registration submissions for dynamic questions
     /// Note: Manual navigation because SqlSugar doesn't handle composite keys well
-    /// TODO - relook this
     /// </summary>
-    [SugarColumn(IsIgnore = true)]
+    [Navigate(NavigateType.OneToMany, nameof(ParticipantRegistrationSubmission.Id))]
     public List<ParticipantRegistrationSubmission> RegistrationSubmissions { get; set; } = null!;
 
+    [SugarColumn(IsIgnore = true)]
     public ParticipantReview.ParticipantReviewStatus? ConcludedStatus =>
         ParticipantReviews.OrderByDescending(x => x.CreatedAt).FirstOrDefault()?.Status;
 }

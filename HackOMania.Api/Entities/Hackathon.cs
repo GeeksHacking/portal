@@ -1,3 +1,4 @@
+using HackOMania.Api.Converters;
 using SqlSugar;
 
 namespace HackOMania.Api.Entities;
@@ -14,6 +15,7 @@ public class Hackathon
 
     public string Venue { get; set; } = null!;
 
+    [SugarColumn(ColumnDataType = "nvarchar(64)", SqlParameterDbType = typeof(UriConverter))]
     public Uri HomepageUri { get; set; } = null!;
 
     public string ShortCode { get; set; } = null!;

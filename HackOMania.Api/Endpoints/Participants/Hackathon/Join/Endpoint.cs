@@ -10,7 +10,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     public override void Configure()
     {
         Post("participants/hackathons/{HackathonId:guid}/join");
-        Description(b => b.WithTags("Participants", "Hackathons"));
+        Description(b => b.WithTags("Participants", "Hackathons").Accepts<Request>());
         Summary(s =>
         {
             s.Summary = "Join a hackathon";

@@ -24,6 +24,9 @@ public class DatabaseInitBackgroundService(
         sql.CodeFirst.InitTables<ResourceRedemption>();
         sql.CodeFirst.InitTables<Team>();
         sql.CodeFirst.InitTables<User>();
+        sql.CodeFirst.InitTables<RegistrationQuestion>();
+        sql.CodeFirst.InitTables<RegistrationQuestionOption>();
+        sql.CodeFirst.InitTables<ParticipantRegistrationSubmission>();
 
         return Task.CompletedTask;
     }

@@ -15,20 +15,21 @@ public class GlobalHooks
     public static ResourceNotificationService? NotificationService { get; private set; }
 
     // Uncomment out and replace Projects reference with your app host
-    //[Before(TestSession)]
-    //public static async Task SetUp()
-    //{
-    //    // Arrange
-    //    var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.AppHost>();
-    //    appHost.Services.ConfigureHttpClientDefaults(clientBuilder =>
-    //    {
-    //        clientBuilder.AddStandardResilienceHandler();
-    //    });
+    [Before(TestSession)]
+    public static async Task SetUp()
+    {
+        // Arrange
+        var appHost =
+            await DistributedApplicationTestingBuilder.CreateAsync<Projects.HackOMania_AppHost>();
+        appHost.Services.ConfigureHttpClientDefaults(clientBuilder =>
+        {
+            clientBuilder.AddStandardResilienceHandler();
+        });
 
-    //    App = await appHost.BuildAsync();
-    //    NotificationService = App.Services.GetRequiredService<ResourceNotificationService>();
-    //    await App.StartAsync();
-    //}
+        App = await appHost.BuildAsync();
+        NotificationService = App.Services.GetRequiredService<ResourceNotificationService>();
+        await App.StartAsync();
+    }
 
     [After(TestSession)]
     public static void CleanUp()

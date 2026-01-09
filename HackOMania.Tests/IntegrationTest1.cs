@@ -1,3 +1,5 @@
+using HackOMania.Tests.Data;
+
 namespace HackOMania.Tests
 {
     public class IntegrationTest1
@@ -11,16 +13,16 @@ namespace HackOMania.Tests
         //
         // 2. Uncomment the following example test and update 'Projects.MyAspireApp_AppHost' in GlobalSetup.cs to match your AppHost project:
         //
-        //[ClassDataSource<HttpClientDataClass>]
-        //[Test]
-        //public async Task GetWebResourceRootReturnsOkStatusCode(HttpClientDataClass httpClientData)
-        //{
-        //    // Arrange
-        //    var httpClient = httpClientData.HttpClient;
-        //    // Act
-        //    var response = await httpClient.GetAsync("/");
-        //    // Assert
-        //    await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
-        //}
+        [ClassDataSource<HttpClientDataClass>]
+        [Test]
+        public async Task GetWebResourceRootReturnsOkStatusCode(HttpClientDataClass httpClientData)
+        {
+            // Arrange
+            var httpClient = httpClientData.HttpClient;
+            // Act
+            var response = await httpClient.GetAsync("/");
+            // Assert
+            await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        }
     }
 }

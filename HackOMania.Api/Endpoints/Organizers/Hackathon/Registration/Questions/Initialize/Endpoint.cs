@@ -12,7 +12,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         Post("organizers/hackathons/{HackathonId:guid}/registration/questions/initialize");
         Policies(PolicyNames.OrganizerForHackathon);
-        Description(b => b.WithTags("Organizers", "Registration"));
+        Description(b => b.WithTags("Organizers", "Registration").Accepts<Request>());
         Summary(s =>
         {
             s.Summary = "Initialize standard registration questions";

@@ -7,7 +7,7 @@ var appFrontendUrl = builder.AddParameter("app-frontend-url", "http://localhost:
 var githubClientId = builder.AddParameter("github-client-id");
 var githubClientSecret = builder.AddParameter("github-client-secret");
 
-var mysql = builder.AddMySql("mysql");
+var mysql = builder.AddMySql("mysql").WithDataVolume("hackomania-mysql").WithPhpMyAdmin();
 var db = mysql.AddDatabase("db");
 
 var api = builder

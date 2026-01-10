@@ -61,7 +61,7 @@ import { SOCIAL_LINKS, CONTACT_EMAIL, SPONSOR_EMAIL } from '~/constants/socials'
                 <p
                     class="font-body font-normal text-[14px] md:text-[16px] lg:text-[20px] text-black leading-tight mb-4"
                 >
-                    Join GeekHacking's <br class="hidden md:inline" />Telegram
+                    Join GeeksHacking's <br class="hidden md:inline" />Telegram
                     Channel!
                 </p>
                 <div

@@ -26,7 +26,7 @@ public class Endpoint(IWebHostEnvironment env, ISqlSugarClient db) : Endpoint<Re
 
         var existingAccount = await db.Queryable<GitHubOnlineAccount>()
             .Includes(a => a.User)
-            .Where(a => a.GitHubLogin == req.GitHubLogin)
+            .Where(a => a.GitHubId == req.GitHubId)
             .SingleAsync();
 
         User accountUser;

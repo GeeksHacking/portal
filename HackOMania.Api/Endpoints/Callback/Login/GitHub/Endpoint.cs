@@ -65,9 +65,10 @@ public class Endpoint(IOptions<AppOptions> options, ISqlSugarClient db) : Endpoi
             return;
         }
 
+        var parsedGitHubId = long.Parse(githubId);
         var existingAccount = await db.Queryable<GitHubOnlineAccount>()
             .Includes(a => a.User)
-            .Where(a => a.GitHubLogin == githubLogin)
+            .Where(a => a.GitHubId == parsedGitHubId)
             .SingleAsync();
 
         User? accountUser;
@@ -76,7 +77,7 @@ public class Endpoint(IOptions<AppOptions> options, ISqlSugarClient db) : Endpoi
         if (existingAccount is null)
         {
             var existingUser = !string.IsNullOrEmpty(email)
-                ? await db.Queryable<User>().Where(u => u.Email == email).SingleAsync()
+                ? await db.Queryable<User>().Where(u => u.Email == email).FirstAsync()
                 : null;
 
             if (existingUser is null)
@@ -85,7 +86,7 @@ public class Endpoint(IOptions<AppOptions> options, ISqlSugarClient db) : Endpoi
                 var newAccount = new GitHubOnlineAccount
                 {
                     GitHubLogin = githubLogin,
-                    GitHubId = long.Parse(githubId),
+                    GitHubId = parsedGitHubId,
                     User = accountUser,
                 };
                 await db.InsertNav(newAccount).Include(a => a.User).ExecuteCommandAsync();
@@ -97,7 +98,7 @@ public class Endpoint(IOptions<AppOptions> options, ISqlSugarClient db) : Endpoi
                 var newAccount = new GitHubOnlineAccount
                 {
                     GitHubLogin = githubLogin,
-                    GitHubId = long.Parse(githubId),
+                    GitHubId = parsedGitHubId,
                     UserId = existingUser.Id,
                 };
                 await db.Insertable(newAccount).ExecuteCommandAsync(ct);

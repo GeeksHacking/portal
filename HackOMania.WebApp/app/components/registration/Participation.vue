@@ -6,9 +6,9 @@ import FormField from './FormField.vue'
 
 const router = useRouter()
 
-// Get hackathon ID from route or use a default
-// TODO: This should come from the registration flow context
-const hackathonId = ref('00000000-0000-0000-0000-000000000000')
+// Get hackathon ID from route or context
+// TODO: This should come from the registration flow context or route params
+const hackathonId = ref<string | null>(null)
 
 // Outreach fields
 const howDidYouFindOut = ref('')
@@ -47,7 +47,7 @@ const { mutate: submitRegistration, isPending, isSuccess, isError, error } = use
 
 // Submit form
 const handleSubmit = async () => {
-  if (!isFormValid.value) {
+  if (!isFormValid.value || !hackathonId.value) {
     return
   }
 
@@ -187,7 +187,7 @@ const handleSubmit = async () => {
           ]"
           @click="handleSubmit"
         >
-          <span v-if="isPending">...</span>
+          <span v-if="isPending">Submitting...</span>
           <span v-else>SUBMIT</span>
           <svg
             v-if="!isPending"

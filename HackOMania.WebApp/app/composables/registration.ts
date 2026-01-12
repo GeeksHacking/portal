@@ -1,5 +1,5 @@
 import { queryOptions, useMutation } from '@tanstack/vue-query'
-import { toValue, type MaybeRefOrGetter } from 'vue'
+import { computed, toValue, type MaybeRefOrGetter } from 'vue'
 
 export interface RegistrationSubmission {
   questionId: string
@@ -20,7 +20,7 @@ export interface SubmitRegistrationResponse {
 export const registrationQueries = {
   questions: (hackathonId: MaybeRefOrGetter<string>) =>
     queryOptions({
-      queryKey: ['registration', 'questions', hackathonId] as const,
+      queryKey: computed(() => ['registration', 'questions', toValue(hackathonId)] as const),
       async queryFn() {
         const id = toValue(hackathonId)
         return await useNuxtApp().$apiClient.participants.hackathons.byHackathonId(id).registration.questions.get()
@@ -29,7 +29,7 @@ export const registrationQueries = {
     }),
   submissions: (hackathonId: MaybeRefOrGetter<string>) =>
     queryOptions({
-      queryKey: ['registration', 'submissions', hackathonId] as const,
+      queryKey: computed(() => ['registration', 'submissions', toValue(hackathonId)] as const),
       async queryFn() {
         const id = toValue(hackathonId)
         return await useNuxtApp().$apiClient.participants.hackathons.byHackathonId(id).registration.submissions.get()

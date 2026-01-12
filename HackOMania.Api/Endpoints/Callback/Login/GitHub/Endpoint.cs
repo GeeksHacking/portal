@@ -114,7 +114,7 @@ public class Endpoint(IOptions<AppOptions> options, ISqlSugarClient db) : Endpoi
         {
             o.Claims.AddRange(result.Principal.Claims);
             o.Claims.Add(new Claim(CustomClaimTypes.UserId, accountUser.Id.ToString()));
-            o.Claims.Add(new Claim(CustomClaimTypes.GitHubLogin, githubAccountId.ToString()));
+            o.Claims.Add(new Claim(CustomClaimTypes.GitHubAccountId, githubAccountId.ToString()));
         });
 
         await Send.RedirectAsync(options.Value.FrontendUrl, allowRemoteRedirects: true);

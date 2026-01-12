@@ -15,7 +15,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
     {
         Post("participants/hackathons/{HackathonId:guid}/resources/{ResourceId}/redemptions");
         Policies(PolicyNames.ParticipantForHackathon);
-        Description(b => b.WithTags("Participants", "Resources"));
+        Description(b => b.WithTags("Participants", "Resources").Accepts<Request>());
         Summary(s =>
         {
             s.Summary = "Redeem a resource";

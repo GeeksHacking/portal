@@ -13,27 +13,55 @@ public class GlobalHooks
 {
     public static DistributedApplication? App { get; private set; }
     public static ResourceNotificationService? NotificationService { get; private set; }
+    public static HttpClient? ApiClient { get; private set; }
 
-    // Uncomment out and replace Projects reference with your app host
     [Before(TestSession)]
     public static async Task SetUp()
     {
-        // Arrange
+        // Set environment variables for the test process before creating the AppHost
+        // These will be picked up by the Aspire parameter configuration
+        Environment.SetEnvironmentVariable(
+            "Parameters__github-client-id",
+            Environment.GetEnvironmentVariable("TEST_GITHUB_CLIENT_ID") ?? "test-client-id"
+        );
+        Environment.SetEnvironmentVariable(
+            "Parameters__github-client-secret",
+            Environment.GetEnvironmentVariable("TEST_GITHUB_CLIENT_SECRET") ?? "test-client-secret"
+        );
+        Environment.SetEnvironmentVariable("Parameters__app-frontend-url", "http://localhost:3000");
+
         var appHost =
             await DistributedApplicationTestingBuilder.CreateAsync<Projects.HackOMania_AppHost>();
+
         appHost.Services.ConfigureHttpClientDefaults(clientBuilder =>
         {
+            clientBuilder.ConfigurePrimaryHttpMessageHandler(() =>
+                new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
+                }
+            );
             clientBuilder.AddStandardResilienceHandler();
         });
 
         App = await appHost.BuildAsync();
         NotificationService = App.Services.GetRequiredService<ResourceNotificationService>();
         await App.StartAsync();
+
+        await NotificationService
+            .WaitForResourceAsync("api", KnownResourceStates.Running)
+            .WaitAsync(TimeSpan.FromSeconds(60));
+
+        ApiClient = App.CreateHttpClient("api", "https");
     }
 
     [After(TestSession)]
-    public static void CleanUp()
+    public static async Task CleanUp()
     {
-        Console.WriteLine("...and after!");
+        if (App is not null)
+        {
+            await App.DisposeAsync();
+        }
     }
 }

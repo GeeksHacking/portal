@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using FastEndpoints;
+using HackOMania.Api.Constants;
 using HackOMania.Api.Entities;
 using HackOMania.Api.Services;
 using SqlSugar;
@@ -26,8 +27,8 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
         var gh = await sql.Queryable<GitHubOnlineAccount>()
             .Includes(g => g.User)
             .Where(a =>
-                a.GitHubId
-                == int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value)
+                a.Id.ToString()
+                == User.Claims.First(c => c.Type == CustomClaimTypes.GitHubAccountId).Value
             )
             .FirstAsync(ct);
 

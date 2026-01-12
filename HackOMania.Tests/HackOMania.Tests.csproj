@@ -9,11 +9,12 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.Testing" Version="13.1.0" />
-    <PackageReference Include="TUnit" Version="1.9.17" />
+    <PackageReference Include="TUnit" Version="1.9.68" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\HackOMania.AppHost\HackOMania.AppHost.csproj" />
+    <ProjectReference Include="..\HackOMania.Api\HackOMania.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,11 +1,12 @@
 using FastEndpoints;
 using HackOMania.Api.Entities;
 using HackOMania.Api.Extensions;
+using Microsoft.AspNetCore.Hosting;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Participants.Hackathon.Join;
 
-public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
+public class Endpoint(ISqlSugarClient sql, IWebHostEnvironment env) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -17,7 +18,12 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             s.Description = "Registers the current user as a participant in the hackathon.";
         });
 
-        Throttle(hitLimit: 10, durationSeconds: 60);
+        // The join endpoint is hit heavily by the integration test suite.
+        // Throttling is valuable in production, but it makes parallel tests flaky.
+        if (env.IsProduction())
+        {
+            Throttle(hitLimit: 10, durationSeconds: 60);
+        }
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

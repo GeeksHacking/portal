@@ -29,6 +29,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.x
+
+      - name: Tests
+        run: dotnet test
 
       - name: Authenticate to Google Cloud
         id: auth

@@ -32,6 +32,10 @@ public class OrganizerForHackathonHandler(MembershipService membership, ISqlSuga
         }
 
         var hackathon = await sql.Queryable<Hackathon>().InSingleAsync(idValue.Value);
+        if (hackathon is null)
+        {
+            return;
+        }
 
         if (await membership.IsOrganizerOrRoot(userId.Value, hackathon.Id))
         {

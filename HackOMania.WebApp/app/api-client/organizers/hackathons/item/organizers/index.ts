@@ -9,7 +9,7 @@ import { type WithUserItemRequestBuilder, WithUserItemRequestBuilderRequestsMeta
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/organizers
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}/organizers
  */
 export interface OrganizersRequestBuilder extends BaseRequestBuilder<OrganizersRequestBuilder> {
     /**
@@ -44,7 +44,7 @@ export interface OrganizersRequestBuilder extends BaseRequestBuilder<OrganizersR
 /**
  * Uri template for the request builder.
  */
-export const OrganizersRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/organizers";
+export const OrganizersRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}/organizers";
 /**
  * Metadata for all the navigation properties in the request builder.
  */

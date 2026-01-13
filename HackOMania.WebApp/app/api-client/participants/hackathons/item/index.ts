@@ -18,6 +18,10 @@ import { SubmissionsRequestBuilderNavigationMetadata, type SubmissionsRequestBui
 // @ts-ignore
 import { TeamsRequestBuilderNavigationMetadata, TeamsRequestBuilderRequestsMetadata, type TeamsRequestBuilder } from './teams/index.js';
 // @ts-ignore
+import { type VenueRequestBuilder, VenueRequestBuilderNavigationMetadata } from './venue/index.js';
+// @ts-ignore
+import { type WorkshopsRequestBuilder, WorkshopsRequestBuilderNavigationMetadata, WorkshopsRequestBuilderRequestsMetadata } from './workshops/index.js';
+// @ts-ignore
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
@@ -52,6 +56,14 @@ export interface HackathonIdOrShortCodeItemRequestBuilder extends BaseRequestBui
      * The teams property
      */
     get teams(): TeamsRequestBuilder;
+    /**
+     * The venue property
+     */
+    get venue(): VenueRequestBuilder;
+    /**
+     * The workshops property
+     */
+    get workshops(): WorkshopsRequestBuilder;
     /**
      * Retrieves public details about a hackathon by ID or short code.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
@@ -96,6 +108,13 @@ export const HackathonIdOrShortCodeItemRequestBuilderNavigationMetadata: Record<
     teams: {
         requestsMetadata: TeamsRequestBuilderRequestsMetadata,
         navigationMetadata: TeamsRequestBuilderNavigationMetadata,
+    },
+    venue: {
+        navigationMetadata: VenueRequestBuilderNavigationMetadata,
+    },
+    workshops: {
+        requestsMetadata: WorkshopsRequestBuilderRequestsMetadata,
+        navigationMetadata: WorkshopsRequestBuilderNavigationMetadata,
     },
 };
 /**

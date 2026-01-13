@@ -7,7 +7,7 @@ import { createHackOManiaApiEndpointsOrganizersHackathonParticipantsReviewRespon
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/participants/{participantUserId}/review
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}/participants/{participantUserId}/review
  */
 export interface ReviewRequestBuilder extends BaseRequestBuilder<ReviewRequestBuilder> {
     /**
@@ -28,7 +28,7 @@ export interface ReviewRequestBuilder extends BaseRequestBuilder<ReviewRequestBu
 /**
  * Uri template for the request builder.
  */
-export const ReviewRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/participants/{participantUserId}/review";
+export const ReviewRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}/participants/{participantUserId}/review";
 /**
  * Metadata for all the requests in the request builder.
  */

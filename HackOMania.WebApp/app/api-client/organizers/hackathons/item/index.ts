@@ -20,12 +20,16 @@ import { SubmissionsRequestBuilderNavigationMetadata, SubmissionsRequestBuilderR
 // @ts-ignore
 import { TeamsRequestBuilderRequestsMetadata, type TeamsRequestBuilder } from './teams/index.js';
 // @ts-ignore
+import { type VenueRequestBuilder, VenueRequestBuilderNavigationMetadata } from './venue/index.js';
+// @ts-ignore
+import { type WorkshopsRequestBuilder, WorkshopsRequestBuilderNavigationMetadata, WorkshopsRequestBuilderRequestsMetadata } from './workshops/index.js';
+// @ts-ignore
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}
  */
-export interface WithHackathonItemRequestBuilder extends BaseRequestBuilder<WithHackathonItemRequestBuilder> {
+export interface HackathonItemRequestBuilder extends BaseRequestBuilder<HackathonItemRequestBuilder> {
     /**
      * The challenges property
      */
@@ -59,6 +63,14 @@ export interface WithHackathonItemRequestBuilder extends BaseRequestBuilder<With
      */
     get teams(): TeamsRequestBuilder;
     /**
+     * The venue property
+     */
+    get venue(): VenueRequestBuilder;
+    /**
+     * The workshops property
+     */
+    get workshops(): WorkshopsRequestBuilder;
+    /**
      * Retrieves detailed information about a specific hackathon.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {Promise<HackOManiaApiEndpointsOrganizersHackathonGetResponse>}
@@ -88,11 +100,11 @@ export interface WithHackathonItemRequestBuilder extends BaseRequestBuilder<With
 /**
  * Uri template for the request builder.
  */
-export const WithHackathonItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}";
+export const HackathonItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}";
 /**
  * Metadata for all the navigation properties in the request builder.
  */
-export const WithHackathonItemRequestBuilderNavigationMetadata: Record<Exclude<keyof WithHackathonItemRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
+export const HackathonItemRequestBuilderNavigationMetadata: Record<Exclude<keyof HackathonItemRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     challenges: {
         requestsMetadata: ChallengesRequestBuilderRequestsMetadata,
         navigationMetadata: ChallengesRequestBuilderNavigationMetadata,
@@ -123,19 +135,26 @@ export const WithHackathonItemRequestBuilderNavigationMetadata: Record<Exclude<k
     teams: {
         requestsMetadata: TeamsRequestBuilderRequestsMetadata,
     },
+    venue: {
+        navigationMetadata: VenueRequestBuilderNavigationMetadata,
+    },
+    workshops: {
+        requestsMetadata: WorkshopsRequestBuilderRequestsMetadata,
+        navigationMetadata: WorkshopsRequestBuilderNavigationMetadata,
+    },
 };
 /**
  * Metadata for all the requests in the request builder.
  */
-export const WithHackathonItemRequestBuilderRequestsMetadata: RequestsMetadata = {
+export const HackathonItemRequestBuilderRequestsMetadata: RequestsMetadata = {
     get: {
-        uriTemplate: WithHackathonItemRequestBuilderUriTemplate,
+        uriTemplate: HackathonItemRequestBuilderUriTemplate,
         responseBodyContentType: "application/json",
         adapterMethodName: "send",
         responseBodyFactory:  createHackOManiaApiEndpointsOrganizersHackathonGetResponseFromDiscriminatorValue,
     },
     patch: {
-        uriTemplate: WithHackathonItemRequestBuilderUriTemplate,
+        uriTemplate: HackathonItemRequestBuilderUriTemplate,
         responseBodyContentType: "application/json",
         adapterMethodName: "send",
         responseBodyFactory:  createHackOManiaApiEndpointsOrganizersHackathonUpdateResponseFromDiscriminatorValue,

@@ -7,7 +7,7 @@ import { createHackOManiaApiEndpointsOrganizersHackathonTeamsListResponseFromDis
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/teams
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}/teams
  */
 export interface TeamsRequestBuilder extends BaseRequestBuilder<TeamsRequestBuilder> {
     /**
@@ -26,7 +26,7 @@ export interface TeamsRequestBuilder extends BaseRequestBuilder<TeamsRequestBuil
 /**
  * Uri template for the request builder.
  */
-export const TeamsRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/teams";
+export const TeamsRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}/teams";
 /**
  * Metadata for all the requests in the request builder.
  */

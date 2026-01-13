@@ -11,7 +11,7 @@ public class Endpoint(ISqlSugarClient sql, IWebHostEnvironment env) : Endpoint<R
     public override void Configure()
     {
         Post("participants/hackathons/join");
-        Description(b => b.WithTags("Participants", "Hackathons").Accepts<Request>());
+        Description(b => b.WithTags("Participants", "Hackathons"));
         Summary(s =>
         {
             s.Summary = "Join a hackathon by short code";
@@ -41,6 +41,7 @@ public class Endpoint(ISqlSugarClient sql, IWebHostEnvironment env) : Endpoint<R
 
         if (hackathon is null)
         {
+            Console.WriteLine(req.ShortCode);
             await Send.NotFoundAsync(ct);
             return;
         }

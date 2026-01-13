@@ -56,9 +56,9 @@ public class RegistrationQuestion
     public string? Category { get; set; }
 
     /// <summary>
-    /// Validation rules in JSON format (e.g., {"minLength": 3, "maxLength": 100, "pattern": "regex"})
+    /// Validation rules, see <see cref="HackOMania.Api.Services.RegistrationValidationService.ValidationRules"/>
     /// </summary>
-    [SugarColumn(IsNullable = true)]
+    [SugarColumn(IsNullable = true, ColumnDataType = "longtext")]
     public string? ValidationRules { get; set; }
 
     [Navigate(NavigateType.OneToOne, nameof(HackathonId))]

@@ -39,10 +39,12 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var participant = await sql.Queryable<Participant>()
             .SingleAsync(p => p.UserId == userId.Value && p.HackathonId == req.HackathonId);
 
-        // Invariant because of authz checks
+        // User can access this route if they are an organizer as well
         if (participant is null)
         {
-            throw new UnauthorizedAccessException();
+            AddError("User must be a participant of the hackathon before seeing its questions!");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
         }
 
         var questions = await sql.Queryable<RegistrationQuestion>()

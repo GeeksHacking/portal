@@ -1,4 +1,5 @@
 using HackOMania.Api.Entities;
+using static HackOMania.Api.Services.RegistrationValidationService;
 
 namespace HackOMania.Api.Services;
 
@@ -31,6 +32,11 @@ public class RegistrationQuestionTemplateService
                     DisplayOrder = order++,
                     IsRequired = true,
                     Category = "Contact Information",
+                    ValidationRules = new ValidationRules
+                    {
+                        Pattern = @"^\+?[0-9\s\-()]{7,20}$",
+                        PatternMessage = "Please enter a valid phone number",
+                    }.ToJson(),
                 },
                 []
             )
@@ -50,6 +56,12 @@ public class RegistrationQuestionTemplateService
                     IsRequired = false,
                     Category = "Contact Information",
                     HelpText = "Your Telegram username (e.g., @username)",
+                    ValidationRules = new ValidationRules
+                    {
+                        Pattern = @"^@[a-zA-Z0-9_]{5,32}$",
+                        PatternMessage =
+                            "Telegram handle must start with @ and be 5-32 characters (letters, numbers, underscores)",
+                    }.ToJson(),
                 },
                 []
             )
@@ -68,7 +80,7 @@ public class RegistrationQuestionTemplateService
                     DisplayOrder = order++,
                     IsRequired = true,
                     Category = "Personal Information",
-                    ValidationRules = "{\"min\": 13, \"max\": 150}",
+                    ValidationRules = ValidationRules.NumericRange(min: 13, max: 150).ToJson(),
                 },
                 []
             )
@@ -235,7 +247,7 @@ public class RegistrationQuestionTemplateService
                     IsRequired = false,
                     Category = "Professional Background",
                     ConditionalLogic = "{\"employment_status\": \"working\"}",
-                    ValidationRules = "{\"min\": 0, \"max\": 70}",
+                    ValidationRules = ValidationRules.NumericRange(min: 0, max: 70).ToJson(),
                 },
                 []
             )

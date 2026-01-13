@@ -5,4 +5,3 @@ public class Response
     public int QuestionsCreated { get; set; }
     public string Message { get; set; } = null!;
 }
-

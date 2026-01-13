@@ -15,4 +15,3 @@ public class UpdateHackathonRequest
     public DateTimeOffset? JudgingEndDate { get; set; }
     public bool? IsPublished { get; set; }
 }
-

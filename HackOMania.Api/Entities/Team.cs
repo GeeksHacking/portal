@@ -6,6 +6,7 @@ namespace HackOMania.Api.Entities;
 /// <summary>
 /// Team and project information
 /// </summary>
+[SugarIndex("IX_Team_JoinCode", nameof(JoinCode), OrderByType.Asc, IsUnique = true)]
 public class Team
 {
     [SugarColumn(IsPrimaryKey = true)]

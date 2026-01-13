@@ -2,6 +2,7 @@ using FastEndpoints;
 using HackOMania.Api.Authorization;
 using HackOMania.Api.Entities;
 using HackOMania.Api.Extensions;
+using HackOMania.Api.Services;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Participants.Hackathon.Registration.Submissions.Submit;
@@ -49,6 +50,34 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         if (invalidIds.Count > 0)
         {
             AddError("Some question IDs are invalid or don't belong to this hackathon.");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
+
+        // Validate each submission against the question's validation rules
+        foreach (var submission in req.Submissions)
+        {
+            if (!questionsById.TryGetValue(submission.QuestionId, out var question))
+            {
+                continue;
+            }
+
+            var validationResult = RegistrationValidationService.Validate(
+                question,
+                submission.Value
+            );
+            if (!validationResult.IsValid)
+            {
+                foreach (var error in validationResult.Errors)
+                {
+                    AddError(error);
+                }
+            }
+        }
+
+        // Return errors if any validation failed
+        if (ValidationFailed)
+        {
             await Send.ErrorsAsync(cancellation: ct);
             return;
         }

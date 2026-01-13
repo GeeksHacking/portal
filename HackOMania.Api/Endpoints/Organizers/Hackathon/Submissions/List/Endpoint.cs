@@ -57,8 +57,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         await Send.OkAsync(
             new Response
             {
-                Submissions = submissions
-                    .Select(s => new SubmissionItem
+                Submissions =
+                [
+                    .. submissions.Select(s => new SubmissionItem
                     {
                         Id = s.Id,
                         Title = s.Title,
@@ -67,8 +68,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                         TeamName = teams.GetValueOrDefault(s.TeamId, "Unknown"),
                         ChallengeId = s.ChallengeId,
                         ChallengeTitle = challenges.GetValueOrDefault(s.ChallengeId, "Unknown"),
-                    })
-                    .ToList(),
+                    }),
+                ],
             },
             ct
         );

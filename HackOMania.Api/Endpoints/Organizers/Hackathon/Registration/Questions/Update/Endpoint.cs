@@ -94,8 +94,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 ConditionalLogic = question.ConditionalLogic,
                 Category = question.Category,
                 ValidationRules = question.ValidationRules,
-                Options = question
-                    .Options.Select(o => new OptionResponse
+                Options =
+                [
+                    .. question.Options.Select(o => new OptionResponse
                     {
                         Id = o.Id,
                         OptionText = o.OptionText,
@@ -103,8 +104,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                         DisplayOrder = o.DisplayOrder,
                         HasFollowUpText = o.HasFollowUpText,
                         FollowUpPlaceholder = o.FollowUpPlaceholder,
-                    })
-                    .ToList(),
+                    }),
+                ],
             },
             ct
         );

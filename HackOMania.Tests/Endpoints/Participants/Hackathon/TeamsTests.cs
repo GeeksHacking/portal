@@ -247,4 +247,185 @@ public class TeamsTests
             .IsEqualTo(HttpStatusCode.Forbidden)
             .Or.IsEqualTo(HttpStatusCode.BadRequest);
     }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task JoinTeamByCode_WithValidCode_ReturnsOk(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Arrange - Create a hackathon and team with the first user
+        var hackathonId = await CreatePublishedHackathonAndJoinAsync(client);
+        var createRequest = new { Name = "Join Code Team", Description = "Team to join by code" };
+        var createResponse = await client.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathonId}/teams",
+            createRequest
+        );
+        var createdTeam = await createResponse.Content.ReadFromJsonAsync<CreateTeamResponse>();
+
+        // Create a second user to join the team
+        var secondUser = new AuthenticatedHttpClientDataClass
+        {
+            GitHubId = 999,
+            GitHubLogin = "second-user",
+            Name = "Second User",
+            Email = "second@example.com",
+        };
+        await secondUser.InitializeAsync();
+
+        // Second user joins the hackathon as participant
+        await secondUser.HttpClient.PostAsync($"/participants/hackathons/{hackathonId}/join", null);
+
+        // Act - Second user joins the team using the code
+        var response = await secondUser.HttpClient.PostAsJsonAsync(
+            "/participants/teams/join",
+            new { createdTeam!.JoinCode }
+        );
+        var result = await response.Content.ReadFromJsonAsync<JoinTeamByCodeResponse>();
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result!.TeamId).IsEqualTo(createdTeam.Id);
+        await Assert.That(result.HackathonId).IsEqualTo(hackathonId);
+        await Assert.That(result.AutoJoinedHackathon).IsFalse();
+
+        // Cleanup
+        await secondUser.DisposeAsync();
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task JoinTeamByCode_WithoutBeingParticipant_AutoJoinsHackathon(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Arrange - First user creates hackathon and team
+        var hackathonRequest = CreateValidHackathonRequest(Guid.NewGuid().ToString()[..8]);
+        var hackathonResponse = await client.HttpClient.PostAsJsonAsync(
+            "/organizers/hackathons",
+            hackathonRequest
+        );
+        var hackathon = await hackathonResponse.Content.ReadFromJsonAsync<HackathonResponse>();
+
+        // Join as participant and create team
+        await client.HttpClient.PostAsync($"/participants/hackathons/{hackathon!.Id}/join", null);
+        var createRequest = new
+        {
+            Name = "Auto Join Team",
+            Description = "Team for auto-join test",
+        };
+        var createResponse = await client.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathon.Id}/teams",
+            createRequest
+        );
+        var createdTeam = await createResponse.Content.ReadFromJsonAsync<CreateTeamResponse>();
+
+        // Create a second user who is NOT a participant
+        var secondUser = new AuthenticatedHttpClientDataClass
+        {
+            GitHubId = 998,
+            GitHubLogin = "third-user",
+            Name = "Third User",
+            Email = "third@example.com",
+        };
+        await secondUser.InitializeAsync();
+
+        // Act - Second user joins using the code (NOT a participant yet)
+        var response = await secondUser.HttpClient.PostAsJsonAsync(
+            "/participants/teams/join",
+            new { createdTeam!.JoinCode }
+        );
+        var result = await response.Content.ReadFromJsonAsync<JoinTeamByCodeResponse>();
+
+        // Assert - Should work and auto-join the hackathon
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result!.AutoJoinedHackathon).IsTrue();
+        await Assert.That(result.TeamId).IsEqualTo(createdTeam.Id);
+        await Assert.That(result.HackathonId).IsEqualTo(hackathon.Id);
+
+        // Cleanup
+        await secondUser.DisposeAsync();
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task JoinTeamByCode_WithInvalidCode_ReturnsError(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Act
+        var response = await client.HttpClient.PostAsJsonAsync(
+            "/participants/teams/join",
+            new { JoinCode = "INVALID_JOIN_CODE_DOES_NOT_EXIST" }
+        );
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task JoinTeamByCode_WhenAlreadyInTeam_ReturnsError(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Arrange - Create a hackathon and two teams
+        var hackathonId = await CreatePublishedHackathonAndJoinAsync(client);
+
+        // Create first team (user joins it automatically)
+        var createRequest1 = new { Name = "First Team", Description = "User's current team" };
+        await client.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathonId}/teams",
+            createRequest1
+        );
+
+        // Leave first team and create second team
+        await client.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathonId}/teams/leave",
+            new { }
+        );
+        var createRequest2 = new { Name = "Second Team", Description = "Team to try to join" };
+        var createResponse2 = await client.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathonId}/teams",
+            createRequest2
+        );
+        var secondTeam = await createResponse2.Content.ReadFromJsonAsync<CreateTeamResponse>();
+
+        // Leave and rejoin first team
+        await client.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathonId}/teams/leave",
+            new { }
+        );
+        await client.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathonId}/teams",
+            createRequest1
+        );
+
+        // Act - Try to join second team while already in first team
+        var response = await client.HttpClient.PostAsJsonAsync(
+            "/participants/teams/join",
+            new { secondTeam!.JoinCode }
+        );
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+    }
+
+    [Test]
+    [ClassDataSource<HttpClientDataClass>]
+    public async Task JoinTeamByCode_WithoutAuthentication_ReturnsUnauthorized(
+        HttpClientDataClass client
+    )
+    {
+        // Act
+        var response = await client.HttpClient.PostAsJsonAsync(
+            "/participants/teams/join",
+            new { JoinCode = "ANYCODE" }
+        );
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
+    }
 }

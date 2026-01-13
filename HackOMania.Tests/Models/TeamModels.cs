@@ -33,6 +33,13 @@ public class JoinTeamResponse
     public Guid HackathonId { get; set; }
 }
 
+public class JoinTeamByCodeResponse
+{
+    public Guid TeamId { get; set; }
+    public Guid HackathonId { get; set; }
+    public bool AutoJoinedHackathon { get; set; }
+}
+
 public class LeaveTeamResponse
 {
     public string Message { get; set; } = "";

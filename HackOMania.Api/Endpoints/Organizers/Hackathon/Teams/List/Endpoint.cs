@@ -47,16 +47,17 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         await Send.OkAsync(
             new Response
             {
-                Teams = teams
-                    .Select(t => new TeamItem
+                Teams =
+                [
+                    .. teams.Select(t => new TeamItem
                     {
                         Id = t.Id,
                         Name = t.Name,
                         Description = t.Description,
                         CreatedAt = t.CreatedAt,
                         MemberCount = memberCountDict.GetValueOrDefault(t.Id, 0),
-                    })
-                    .ToList(),
+                    }),
+                ],
             },
             ct
         );

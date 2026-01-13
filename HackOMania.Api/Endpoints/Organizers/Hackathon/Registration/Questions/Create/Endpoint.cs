@@ -62,8 +62,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var options = new List<RegistrationQuestionOption>();
         if (req.Options is { Count: > 0 })
         {
-            options = req
-                .Options.Select(o => new RegistrationQuestionOption
+            options =
+            [
+                .. req.Options.Select(o => new RegistrationQuestionOption
                 {
                     Id = Guid.NewGuid(),
                     QuestionId = question.Id,
@@ -72,8 +73,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     DisplayOrder = o.DisplayOrder,
                     HasFollowUpText = o.HasFollowUpText,
                     FollowUpPlaceholder = o.FollowUpPlaceholder,
-                })
-                .ToList();
+                }),
+            ];
 
             await sql.Insertable(options).ExecuteCommandAsync(ct);
         }
@@ -92,8 +93,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 ConditionalLogic = question.ConditionalLogic,
                 Category = question.Category,
                 ValidationRules = question.ValidationRules,
-                Options = options
-                    .Select(o => new OptionResponse
+                Options =
+                [
+                    .. options.Select(o => new OptionResponse
                     {
                         Id = o.Id,
                         OptionText = o.OptionText,
@@ -101,8 +103,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                         DisplayOrder = o.DisplayOrder,
                         HasFollowUpText = o.HasFollowUpText,
                         FollowUpPlaceholder = o.FollowUpPlaceholder,
-                    })
-                    .ToList(),
+                    }),
+                ],
             },
             cancellation: ct
         );

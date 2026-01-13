@@ -31,4 +31,3 @@ public class OptionDto
     public bool HasFollowUpText { get; set; }
     public string? FollowUpPlaceholder { get; set; }
 }
-

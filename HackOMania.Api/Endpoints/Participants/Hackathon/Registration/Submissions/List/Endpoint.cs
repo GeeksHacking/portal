@@ -55,8 +55,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         await Send.OkAsync(
             new Response
             {
-                Submissions = submissions
-                    .Select(s => new SubmissionDto
+                Submissions =
+                [
+                    .. submissions.Select(s => new SubmissionDto
                     {
                         QuestionId = s.QuestionId,
                         QuestionKey = s.Question.QuestionKey,
@@ -65,8 +66,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                         Value = s.Value,
                         FollowUpValue = s.FollowUpValue,
                         UpdatedAt = s.UpdatedAt,
-                    })
-                    .ToList(),
+                    }),
+                ],
                 TotalQuestions = totalQuestions,
                 AnsweredQuestions = submissions.Count,
                 RequiredQuestionsRemaining = requiredRemaining,

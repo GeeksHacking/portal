@@ -63,8 +63,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     TeamId = p.TeamId,
                     TeamName = p.TeamId.HasValue ? teams.GetValueOrDefault(p.TeamId.Value) : null,
                     ConcludedStatus = concludedStatus,
-                    Reviews = p
-                        .ParticipantReviews.Select(r => new ParticipantReviewItem
+                    Reviews =
+                    [
+                        .. p.ParticipantReviews.Select(r => new ParticipantReviewItem
                         {
                             Id = r.Id,
                             Status = r.Status switch
@@ -77,8 +78,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                             },
                             Reason = r.Reason,
                             CreatedAt = r.CreatedAt,
-                        })
-                        .ToList(),
+                        }),
+                    ],
                 };
             })
             .ToList();

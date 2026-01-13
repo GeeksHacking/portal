@@ -54,41 +54,45 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .Select(g => new CategoryDto
             {
                 Name = g.Key,
-                Questions = g.OrderBy(q => q.DisplayOrder)
-                    .Select(q =>
-                    {
-                        submissionsByQuestionId.TryGetValue(q.Id, out var submission);
-                        return new QuestionDto
+                Questions =
+                [
+                    .. g.OrderBy(q => q.DisplayOrder)
+                        .Select(q =>
                         {
-                            Id = q.Id,
-                            QuestionText = q.QuestionText,
-                            QuestionKey = q.QuestionKey,
-                            Type = q.Type,
-                            IsRequired = q.IsRequired,
-                            HelpText = q.HelpText,
-                            ConditionalLogic = q.ConditionalLogic,
-                            ValidationRules = q.ValidationRules,
-                            Options = q
-                                .Options.OrderBy(o => o.DisplayOrder)
-                                .Select(o => new OptionDto
-                                {
-                                    Id = o.Id,
-                                    OptionText = o.OptionText,
-                                    OptionValue = o.OptionValue,
-                                    HasFollowUpText = o.HasFollowUpText,
-                                    FollowUpPlaceholder = o.FollowUpPlaceholder,
-                                })
-                                .ToList(),
-                            CurrentSubmission = submission is not null
-                                ? new SubmissionDto
-                                {
-                                    Value = submission.Value,
-                                    FollowUpValue = submission.FollowUpValue,
-                                }
-                                : null,
-                        };
-                    })
-                    .ToList(),
+                            submissionsByQuestionId.TryGetValue(q.Id, out var submission);
+                            return new QuestionDto
+                            {
+                                Id = q.Id,
+                                QuestionText = q.QuestionText,
+                                QuestionKey = q.QuestionKey,
+                                Type = q.Type,
+                                IsRequired = q.IsRequired,
+                                HelpText = q.HelpText,
+                                ConditionalLogic = q.ConditionalLogic,
+                                ValidationRules = q.ValidationRules,
+                                Options =
+                                [
+                                    .. q
+                                        .Options.OrderBy(o => o.DisplayOrder)
+                                        .Select(o => new OptionDto
+                                        {
+                                            Id = o.Id,
+                                            OptionText = o.OptionText,
+                                            OptionValue = o.OptionValue,
+                                            HasFollowUpText = o.HasFollowUpText,
+                                            FollowUpPlaceholder = o.FollowUpPlaceholder,
+                                        }),
+                                ],
+                                CurrentSubmission = submission is not null
+                                    ? new SubmissionDto
+                                    {
+                                        Value = submission.Value,
+                                        FollowUpValue = submission.FollowUpValue,
+                                    }
+                                    : null,
+                            };
+                        }),
+                ],
             })
             .ToList();
 

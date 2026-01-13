@@ -18,4 +18,3 @@ public class SubmissionDto
     public string? FollowUpValue { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
 }
-

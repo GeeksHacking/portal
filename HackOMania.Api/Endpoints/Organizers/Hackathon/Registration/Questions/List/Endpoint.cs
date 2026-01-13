@@ -36,8 +36,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var response = new Response
         {
-            Questions = questions
-                .Select(q => new QuestionDto
+            Questions =
+            [
+                .. questions.Select(q => new QuestionDto
                 {
                     Id = q.Id,
                     QuestionText = q.QuestionText,
@@ -49,20 +50,22 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     ConditionalLogic = q.ConditionalLogic,
                     Category = q.Category,
                     ValidationRules = q.ValidationRules,
-                    Options = q
-                        .Options.OrderBy(o => o.DisplayOrder)
-                        .Select(o => new OptionDto
-                        {
-                            Id = o.Id,
-                            OptionText = o.OptionText,
-                            OptionValue = o.OptionValue,
-                            DisplayOrder = o.DisplayOrder,
-                            HasFollowUpText = o.HasFollowUpText,
-                            FollowUpPlaceholder = o.FollowUpPlaceholder,
-                        })
-                        .ToList(),
-                })
-                .ToList(),
+                    Options =
+                    [
+                        .. q
+                            .Options.OrderBy(o => o.DisplayOrder)
+                            .Select(o => new OptionDto
+                            {
+                                Id = o.Id,
+                                OptionText = o.OptionText,
+                                OptionValue = o.OptionValue,
+                                DisplayOrder = o.DisplayOrder,
+                                HasFollowUpText = o.HasFollowUpText,
+                                FollowUpPlaceholder = o.FollowUpPlaceholder,
+                            }),
+                    ],
+                }),
+            ],
         };
 
         await Send.OkAsync(response, ct);

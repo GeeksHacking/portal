@@ -222,4 +222,129 @@ public class JoinAndStatusTests
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
     }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task JoinHackathonByShortCode_WithValidShortCode_ReturnsOk(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Arrange
+        var shortCode = $"SC{Guid.NewGuid().ToString()[..6]}";
+        var hackathonRequest = CreateValidHackathonRequest(Guid.NewGuid().ToString()[..8]);
+        hackathonRequest.ShortCode = shortCode;
+        var createResponse = await client.HttpClient.PostAsJsonAsync(
+            "/organizers/hackathons",
+            hackathonRequest
+        );
+        var hackathon = await createResponse.Content.ReadFromJsonAsync<HackathonResponse>();
+
+        // Act
+        var response = await client.HttpClient.PostAsJsonAsync(
+            "/participants/hackathons/join",
+            new { ShortCode = shortCode }
+        );
+        var result = await response.Content.ReadFromJsonAsync<HackathonJoinResponse>();
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result!.HackathonId).IsEqualTo(hackathon!.Id);
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task JoinHackathonByShortCode_AlreadyJoined_ReturnsOk(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Arrange
+        var shortCode = $"SC{Guid.NewGuid().ToString()[..6]}";
+        var hackathonRequest = CreateValidHackathonRequest(Guid.NewGuid().ToString()[..8]);
+        hackathonRequest.ShortCode = shortCode;
+        await client.HttpClient.PostAsJsonAsync("/organizers/hackathons", hackathonRequest);
+
+        // Join the first time
+        await client.HttpClient.PostAsJsonAsync(
+            "/participants/hackathons/join",
+            new { ShortCode = shortCode }
+        );
+
+        // Act - Join again
+        var response = await client.HttpClient.PostAsJsonAsync(
+            "/participants/hackathons/join",
+            new { ShortCode = shortCode }
+        );
+
+        // Assert - Should still return OK (idempotent)
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task JoinHackathonByShortCode_WithUnpublishedHackathon_ReturnsNotFound(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Arrange - Create an unpublished hackathon
+        var shortCode = $"UNP{Guid.NewGuid().ToString()[..5]}";
+        var now = DateTimeOffset.UtcNow;
+        var request = new CreateHackathonRequest
+        {
+            Name = "Unpublished ShortCode Test",
+            Description = "An unpublished hackathon",
+            Venue = "Virtual",
+            HomepageUri = new Uri("https://example.com/hackathon"),
+            ShortCode = shortCode,
+            EventStartDate = now.AddDays(7),
+            EventEndDate = now.AddDays(9),
+            SubmissionsStartDate = now.AddDays(7).AddHours(2),
+            SubmissionsEndDate = now.AddDays(8).AddHours(20),
+            JudgingStartDate = now.AddDays(8).AddHours(21),
+            JudgingEndDate = now.AddDays(9).AddHours(-2),
+            IsPublished = false,
+        };
+        await client.HttpClient.PostAsJsonAsync("/organizers/hackathons", request);
+
+        // Act
+        var response = await client.HttpClient.PostAsJsonAsync(
+            "/participants/hackathons/join",
+            new { ShortCode = shortCode }
+        );
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task JoinHackathonByShortCode_WithInvalidShortCode_ReturnsNotFound(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Act
+        var response = await client.HttpClient.PostAsJsonAsync(
+            "/participants/hackathons/join",
+            new { ShortCode = "INVALID_CODE_DOES_NOT_EXIST" }
+        );
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
+    }
+
+    [Test]
+    [ClassDataSource<HttpClientDataClass>]
+    public async Task JoinHackathonByShortCode_WithoutAuthentication_ReturnsUnauthorized(
+        HttpClientDataClass client
+    )
+    {
+        // Act
+        var response = await client.HttpClient.PostAsJsonAsync(
+            "/participants/hackathons/join",
+            new { ShortCode = "ANYCODE" }
+        );
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
+    }
 }

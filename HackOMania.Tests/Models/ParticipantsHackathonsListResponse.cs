@@ -21,4 +21,3 @@ public class ParticipantsHackathonsListResponse
         public DateTimeOffset JudgingEndDate { get; set; }
     }
 }
-

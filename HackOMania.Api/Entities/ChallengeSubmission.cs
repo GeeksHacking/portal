@@ -8,17 +8,17 @@ public class ChallengeSubmission
     [SugarColumn(IsPrimaryKey = true)]
     public Guid Id { get; set; }
 
-    public string Title { get; set; }
-    public string Description { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
 
     [SugarColumn(ColumnDataType = "nvarchar(64)", SqlParameterDbType = typeof(UriConverter))]
-    public Uri RepositoryUri { get; set; }
+    public Uri RepositoryUri { get; set; } = null!;
 
     [SugarColumn(ColumnDataType = "nvarchar(64)", SqlParameterDbType = typeof(UriConverter))]
-    public Uri DemoUri { get; set; }
+    public Uri DemoUri { get; set; } = null!;
 
     [SugarColumn(ColumnDataType = "nvarchar(64)", SqlParameterDbType = typeof(UriConverter))]
-    public Uri SlidesUri { get; set; }
+    public Uri SlidesUri { get; set; } = null!;
 
     public DateTimeOffset SubmittedAt { get; set; } = DateTimeOffset.UtcNow;
 

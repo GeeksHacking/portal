@@ -45,7 +45,7 @@ public class SubmissionsTests
         {
             Title = "Submission Test Challenge",
             Description = "A challenge for submission tests",
-            SelectionCriteriaStmt = "Test criteria",
+            SelectionCriteriaStmt = "true",
             IsPublished = true,
         };
         var challengeResponse = await client.HttpClient.PostAsJsonAsync(
@@ -97,6 +97,7 @@ public class SubmissionsTests
             $"/participants/hackathons/{hackathonId}/teams/{teamId}/submissions",
             request
         );
+        Console.WriteLine(await response.Content.ReadAsStringAsync());
         var result = await response.Content.ReadFromJsonAsync<CreateSubmissionResponse>();
 
         // Assert

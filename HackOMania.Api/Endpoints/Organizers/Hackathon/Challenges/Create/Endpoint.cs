@@ -29,7 +29,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             HackathonId = hackathonId,
             Title = req.Title,
             Description = req.Description,
-            SelectionCriteriaStmt = req.SelectionCriteriaStmt,
+            SelectionCriteriaStmt = req.SelectionCriteriaStmt ?? "true",
             IsPublished = req.IsPublished,
         };
 

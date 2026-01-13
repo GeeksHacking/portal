@@ -3,12 +3,12 @@ using HackOMania.Api.Authorization;
 using HackOMania.Api.Entities;
 using HackOMania.Api.Extensions;
 using HackOMania.Api.Services;
+using Jint;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Participants.Hackathon.Submissions.Create;
 
-public class Endpoint(ISqlSugarClient sql, MembershipService membership)
-    : Endpoint<Request, Response>
+public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -42,16 +42,63 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
             throw new ArgumentNullException(nameof(userId));
         }
 
-        var challengeExists = await sql.Queryable<Challenge>()
-            .AnyAsync(
-                c => c.Id == req.ChallengeId && c.HackathonId == hackathon.Id && c.IsPublished,
-                ct
-            );
+        var challenge = await sql.Queryable<Challenge>()
+            .Where(c => c.Id == req.ChallengeId && c.HackathonId == hackathon.Id && c.IsPublished)
+            .FirstAsync(ct);
 
-        if (!challengeExists)
+        if (challenge is null)
         {
             AddError(r => r.ChallengeId, "Challenge not found for this hackathon.");
             await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
+
+        // Get all submissions for this challenge
+        var challengeSubmissions = await sql.Queryable<ChallengeSubmission>()
+            .Where(s => s.ChallengeId == challenge.Id)
+            .Includes(s => s.TeamId)
+            .ToListAsync(ct);
+
+        // Get team information with members
+        var teamWithMembers = await sql.Queryable<Team>()
+            .Where(t => t.Id == team.Id)
+            .Includes(t => t.Members)
+            .FirstAsync(ct);
+
+        var teamSize = teamWithMembers?.Members?.Count ?? 0;
+        var currentTeamsInChallenge = challengeSubmissions.Select(s => s.TeamId).Distinct().Count();
+
+        // Get total participants in hackathon
+        var totalParticipants = await sql.Queryable<Participant>()
+            .Where(p => p.HackathonId == hackathon.Id)
+            .CountAsync(ct);
+
+        // Evaluate SelectionCriteriaStmt using Jint
+        var engine = new Engine(options =>
+        {
+            options.LimitMemory(4_000_000);
+            options.TimeoutInterval(TimeSpan.FromSeconds(5));
+            options.CancellationToken(ct);
+        });
+
+        var allowed = engine
+            .SetValue("challenge", challenge)
+            .SetValue("teamSize", teamSize)
+            .SetValue("currentTeamsInChallenge", currentTeamsInChallenge)
+            .SetValue("totalParticipants", totalParticipants)
+            .SetValue("totalSubmissions", challengeSubmissions.Count)
+            .Evaluate(challenge.SelectionCriteriaStmt)
+            .ToObject();
+
+        if (allowed is not bool)
+        {
+            throw new InvalidOperationException("SelectionCriteriaStmt did not return a boolean.");
+        }
+
+        if (allowed is false)
+        {
+            AddError("Team does not meet the challenge selection criteria.");
+            await Send.ErrorsAsync(400, ct);
             return;
         }
 
@@ -63,10 +110,10 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
             ChallengeId = req.ChallengeId,
             SubmittedByUserId = userId.Value,
             Title = req.Title,
-            Description = req.Summary,
-            RepositoryUri = req.RepoUri,
-            DemoUri = req.DemoUri,
-            SlidesUri = req.SlidesUri,
+            Description = req.Summary ?? string.Empty,
+            RepositoryUri = req.RepoUri ?? new Uri("https://example.com"),
+            DemoUri = req.DemoUri ?? new Uri("https://example.com"),
+            SlidesUri = req.SlidesUri ?? new Uri("https://example.com"),
             SubmittedAt = DateTimeOffset.UtcNow,
         };
 

@@ -28,7 +28,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             Id = Guid.NewGuid(),
             HackathonId = hackathon.Id,
             Name = req.Name,
-            Description = req.Description,
+            Description = req.Description ?? string.Empty,
             RedemptionStmt = req.RedemptionStmt,
         };
 

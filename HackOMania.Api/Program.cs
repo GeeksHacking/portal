@@ -145,6 +145,7 @@ builder.Services.SwaggerDocument(options =>
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<MembershipService>();
+builder.Services.AddScoped<IJintEvaluationService, JintEvaluationService>();
 builder.Services.AddScoped<IAuthorizationHandler, RootHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, CreateHackathonHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, OrganizerForHackathonHandler>();

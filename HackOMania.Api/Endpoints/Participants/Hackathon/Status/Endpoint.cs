@@ -63,7 +63,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         }
 
         var latestReview = await sql.Queryable<ParticipantReview>()
-            .Where(r => r.ParticipantId == participant.UserId)
+            .Where(r => r.ParticipantId == participant.Id)
             .OrderByDescending(r => r.CreatedAt)
             .FirstAsync(ct);
 

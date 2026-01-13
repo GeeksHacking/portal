@@ -6,8 +6,7 @@ using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Participants.Hackathon.Resources.List;
 
-public class Endpoint(ISqlSugarClient sql, MembershipService membership)
-    : Endpoint<Request, Response>
+public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {

@@ -6,10 +6,10 @@ public class Response
     public Guid HackathonId { get; set; }
     public Guid TeamId { get; set; }
     public Guid ChallengeId { get; set; }
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public Uri RepoUri { get; set; }
-    public Uri DemoUri { get; set; }
-    public Uri SlidesUri { get; set; }
+    public required string Title { get; set; }
+    public required string Description { get; set; }
+    public required Uri RepoUri { get; set; }
+    public required Uri DemoUri { get; set; }
+    public required Uri SlidesUri { get; set; }
     public DateTimeOffset SubmittedAt { get; set; }
 }

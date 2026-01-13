@@ -54,9 +54,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var review = new ParticipantReview
         {
             Id = Guid.NewGuid(),
-            ParticipantId = participant.UserId,
+            ParticipantId = participant.Id,
             Status = status,
-            Reason = req.Reason,
+            Reason = req.Reason ?? string.Empty,
             CreatedAt = DateTimeOffset.UtcNow,
         };
 
@@ -65,7 +65,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         await Send.OkAsync(
             new Response
             {
-                ParticipantUserId = participant.UserId,
+                ParticipantId = participant.Id,
                 Status = status.ToString(),
                 ReviewedAt = review.CreatedAt,
             },

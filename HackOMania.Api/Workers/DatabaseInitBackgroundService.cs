@@ -26,7 +26,9 @@ public class DatabaseInitBackgroundService(
         sql.CodeFirst.InitTables<User>();
         sql.CodeFirst.InitTables<RegistrationQuestion>();
         sql.CodeFirst.InitTables<RegistrationQuestionOption>();
-        sql.CodeFirst.InitTables<ParticipantRegistrationSubmission>();
+        sql.CodeFirst.InitTables<VenueCheckIn>();
+        sql.CodeFirst.InitTables<Workshop>();
+        sql.CodeFirst.InitTables<WorkshopParticipant>();
 
         return Task.CompletedTask;
     }

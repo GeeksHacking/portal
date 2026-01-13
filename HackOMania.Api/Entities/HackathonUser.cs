@@ -5,9 +5,10 @@ namespace HackOMania.Api.Entities;
 public abstract class HackathonUser
 {
     [SugarColumn(IsPrimaryKey = true)]
+    public Guid Id { get; set; }
+
     public Guid HackathonId { get; set; }
 
-    [SugarColumn(IsPrimaryKey = true)]
     public Guid UserId { get; set; }
 
     [Navigate(NavigateType.OneToMany, nameof(ResourceRedemption.RedeemerId))]

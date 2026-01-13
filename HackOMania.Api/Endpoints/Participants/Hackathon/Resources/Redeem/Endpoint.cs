@@ -49,6 +49,33 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
             return;
         }
 
+        // Get participant and team information
+        var participant = await sql.Queryable<Participant>()
+            .Includes(p => p.Team, t => t.Members)
+            .FirstAsync(p => p.UserId == userId && p.HackathonId == hackathon.Id, ct);
+
+        if (participant is null)
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
+        // Count redemptions by this participant
+        var participantRedemptions =
+            resource.Redemptions?.Count(r => r.RedeemerId == userId.Value) ?? 0;
+
+        // Count redemptions by this participant's team (if they have one)
+        int teamRedemptions = 0;
+        int teamSize = 0;
+        if (participant.TeamId.HasValue && participant.Team is not null)
+        {
+            var teamMemberIds =
+                participant.Team.Members?.Select(m => m.UserId).ToList() ?? new List<Guid>();
+            teamRedemptions =
+                resource.Redemptions?.Count(r => teamMemberIds.Contains(r.RedeemerId)) ?? 0;
+            teamSize = participant.Team.Members?.Count ?? 0;
+        }
+
         var engine = new Engine(options =>
         {
             options.LimitMemory(4_000_000);
@@ -56,8 +83,14 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
             options.CancellationToken(ct);
         });
 
+        // Set evaluation parameters
         var res = engine
             .SetValue("resource", resource)
+            .SetValue("participantRedemptions", participantRedemptions)
+            .SetValue("teamRedemptions", teamRedemptions)
+            .SetValue("teamSize", teamSize)
+            .SetValue("totalRedemptions", resource.Redemptions?.Count ?? 0)
+            .SetValue("hasTeam", participant.TeamId.HasValue)
             .Evaluate(resource.RedemptionStmt)
             .ToObject();
 

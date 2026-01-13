@@ -17,7 +17,7 @@ public class ParticipantReview
 
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
 
-    public string Reason { get; set; }
+    public string Reason { get; set; } = string.Empty;
 
     public Guid ParticipantId { get; set; }
 }

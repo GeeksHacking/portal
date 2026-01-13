@@ -35,8 +35,11 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             throw new UnauthorizedAccessException();
         }
 
+        var participant = await sql.Queryable<Participant>()
+            .SingleAsync(p => p.UserId == userId.Value && p.HackathonId == req.HackathonId);
+
         var submissions = await sql.Queryable<ParticipantRegistrationSubmission>()
-            .Where(s => s.HackathonId == req.HackathonId && s.UserId == userId.Value)
+            .Where(s => s.ParticipantId == participant.Id)
             .Includes(s => s.Question)
             .ToListAsync(ct);
 

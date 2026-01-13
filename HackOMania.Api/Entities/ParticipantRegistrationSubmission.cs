@@ -7,9 +7,7 @@ namespace HackOMania.Api.Entities;
 /// </summary>
 [SugarIndex(
     "IX_ParticipantRegistrationSubmission_Participant_Question",
-    nameof(HackathonId),
-    OrderByType.Asc,
-    nameof(UserId),
+    nameof(ParticipantId),
     OrderByType.Asc,
     nameof(QuestionId),
     OrderByType.Asc,
@@ -20,16 +18,7 @@ public class ParticipantRegistrationSubmission
     [SugarColumn(IsPrimaryKey = true)]
     public Guid Id { get; set; }
 
-    /// <summary>
-    /// The hackathon ID (part of the composite key for Participant)
-    /// </summary>
-    public Guid HackathonId { get; set; }
-
-    /// <summary>
-    /// The user ID (part of the composite key for Participant)
-    /// </summary>
-    public Guid UserId { get; set; }
-
+    public Guid ParticipantId { get; set; }
     public Guid QuestionId { get; set; }
 
     /// <summary>

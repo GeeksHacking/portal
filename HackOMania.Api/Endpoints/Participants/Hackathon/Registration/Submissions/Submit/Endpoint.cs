@@ -37,6 +37,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             throw new UnauthorizedAccessException();
         }
 
+        var participant = await sql.Queryable<Participant>()
+            .SingleAsync(p => p.UserId == userId.Value && p.HackathonId == req.HackathonId);
+
         // Validate that all questions exist and are for this hackathon
         var questionIds = req.Submissions.Select(s => s.QuestionId).ToList();
         var questions = await sql.Queryable<RegistrationQuestion>()
@@ -95,11 +98,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         // Delete existing submissions for the questions being updated
         await sql.Deleteable<ParticipantRegistrationSubmission>()
-            .Where(s =>
-                s.HackathonId == req.HackathonId
-                && s.UserId == userId.Value
-                && questionIds.Contains(s.QuestionId)
-            )
+            .Where(s => s.ParticipantId == participant.Id && questionIds.Contains(s.QuestionId))
             .ExecuteCommandAsync(ct);
 
         // Insert new submissions
@@ -108,8 +107,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .Submissions.Select(s => new ParticipantRegistrationSubmission
             {
                 Id = Guid.NewGuid(),
-                HackathonId = req.HackathonId,
-                UserId = userId.Value,
+                ParticipantId = participant.Id,
                 QuestionId = s.QuestionId,
                 Value = s.Value,
                 FollowUpValue = s.FollowUpValue,

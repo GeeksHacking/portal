@@ -36,6 +36,15 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             throw new UnauthorizedAccessException();
         }
 
+        var participant = await sql.Queryable<Participant>()
+            .SingleAsync(p => p.UserId == userId.Value && p.HackathonId == req.HackathonId);
+
+        // Invariant because of authz checks
+        if (participant is null)
+        {
+            throw new UnauthorizedAccessException();
+        }
+
         var questions = await sql.Queryable<RegistrationQuestion>()
             .Where(q => q.HackathonId == req.HackathonId)
             .Includes(q => q.Options)
@@ -43,7 +52,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .ToListAsync(ct);
 
         var submissions = await sql.Queryable<ParticipantRegistrationSubmission>()
-            .Where(s => s.HackathonId == req.HackathonId && s.UserId == userId.Value)
+            .Where(s => s.ParticipantId == participant.Id)
             .ToListAsync(ct);
 
         var submissionsByQuestionId = submissions.ToDictionary(s => s.QuestionId);

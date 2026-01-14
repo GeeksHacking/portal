@@ -10,4 +10,15 @@ export const challengeQueries = {
           .challenges.get()
       },
     }),
+
+  detail: (hackathonId: string, challengeId: string) =>
+    queryOptions({
+      queryKey: ['hackathons', hackathonId, 'challenges', challengeId],
+      async queryFn() {
+        return await useNuxtApp()
+          .$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(hackathonId)
+          .challenges.byChallengeId(challengeId)
+          .get()
+      },
+    }),
 }

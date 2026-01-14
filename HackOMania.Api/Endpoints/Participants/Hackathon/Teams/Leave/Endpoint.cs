@@ -12,7 +12,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         Post("participants/hackathons/{HackathonId:guid}/teams/leave");
         Policies(PolicyNames.ParticipantForHackathon);
-        Description(b => b.WithTags("Participants", "Teams"));
+        Description(b => b.WithTags("Participants", "Teams").Accepts<Request>());
         Summary(s =>
         {
             s.Summary = "Leave current team";

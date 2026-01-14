@@ -9,14 +9,14 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/fonts',
   ],
-  devtools: { enabled: true },
   ssr: false,
+  devtools: { enabled: true },
 
   css: ['~/assets/css/main.css'],
 
   runtimeConfig: {
     public: {
-      api: process.env['services__api__http__0'] || process.env.SERVICES__API_HTTP_0,
+      api: process.env['services__api__https__0'] || process.env.SERVICES__API_HTTPS_0,
     },
   },
   compatibilityDate: '2025-07-15',

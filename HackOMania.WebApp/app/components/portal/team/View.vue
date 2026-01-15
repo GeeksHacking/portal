@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import type { HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse } from '~/api-client/models'
 
 const props = defineProps<{
@@ -17,11 +17,13 @@ const isEditingName = ref(false)
 const isEditingDescription = ref(false)
 
 // Form inputs
-const newTeamName = ref('')
-const newTeamDescription = ref('')
-const joinCode = ref('')
-const editedTeamName = ref('')
-const editedTeamDescription = ref('')
+const form = reactive({
+  newTeamName: '',
+  newTeamDescription: '',
+  joinCode: '',
+  editedTeamName: '',
+  editedTeamDescription: '',
+})
 
 // Mutations
 const createTeamMutation = useCreateTeam(hackathonIdRef)
@@ -35,23 +37,23 @@ const memberCount = computed(() => props.team?.members?.length ?? 0)
 
 // Handlers
 function handleCreateTeam() {
-  if (!newTeamName.value.trim()) return
+  if (!form.newTeamName.trim()) return
   createTeamMutation.mutate({
-    name: newTeamName.value.trim(),
-    description: newTeamDescription.value.trim() || undefined,
+    name: form.newTeamName.trim(),
+    description: form.newTeamDescription.trim() || undefined,
   }, {
     onSuccess() {
-      newTeamName.value = ''
-      newTeamDescription.value = ''
+      form.newTeamName = ''
+      form.newTeamDescription = ''
     },
   })
 }
 
 function handleJoinTeam() {
-  if (!joinCode.value.trim()) return
-  joinTeamMutation.mutate(joinCode.value.trim(), {
+  if (!form.joinCode.trim()) return
+  joinTeamMutation.mutate(form.joinCode.trim(), {
     onSuccess() {
-      joinCode.value = ''
+      form.joinCode = ''
     },
   })
 }
@@ -68,13 +70,13 @@ function handleLeaveTeam() {
 }
 
 function startEditingName() {
-  editedTeamName.value = props.team?.name ?? ''
+  form.editedTeamName = props.team?.name ?? ''
   isEditingName.value = true
 }
 
 function saveTeamName() {
-  if (!editedTeamName.value.trim()) return
-  updateTeamMutation.mutate({ name: editedTeamName.value.trim() }, {
+  if (!form.editedTeamName.trim()) return
+  updateTeamMutation.mutate({ name: form.editedTeamName.trim() }, {
     onSuccess() {
       isEditingName.value = false
     },
@@ -82,12 +84,12 @@ function saveTeamName() {
 }
 
 function startEditingDescription() {
-  editedTeamDescription.value = props.team?.description ?? ''
+  form.editedTeamDescription = props.team?.description ?? ''
   isEditingDescription.value = true
 }
 
 function saveTeamDescription() {
-  updateTeamMutation.mutate({ description: editedTeamDescription.value.trim() }, {
+  updateTeamMutation.mutate({ description: form.editedTeamDescription.trim() }, {
     onSuccess() {
       isEditingDescription.value = false
     },
@@ -111,7 +113,7 @@ function copyJoinCode() {
           <!-- Editable Team Name -->
           <div v-if="isEditingName" class="flex items-center gap-2">
             <input
-              v-model="editedTeamName"
+              v-model="form.editedTeamName"
               type="text"
               class="font-['Zalando_Sans_Expanded'] text-3xl font-bold border-b-2 border-[#FF5B84] outline-none bg-transparent"
               @keyup.enter="saveTeamName"
@@ -150,7 +152,7 @@ function copyJoinCode() {
         <h4 class="font-['Zalando_Sans_Expanded'] text-lg mb-2">Description</h4>
         <div v-if="isEditingDescription" class="flex flex-col gap-2">
           <textarea
-            v-model="editedTeamDescription"
+            v-model="form.editedTeamDescription"
             class="font-['Raleway'] border border-gray-300 rounded-lg p-3 outline-none focus:border-[#FF5B84]"
             rows="3"
             @keyup.escape="isEditingDescription = false"
@@ -284,7 +286,7 @@ function copyJoinCode() {
           <div>
             <label class="block font-['Raleway'] font-semibold mb-2">Team Name *</label>
             <input
-              v-model="newTeamName"
+              v-model="form.newTeamName"
               type="text"
               placeholder="Enter your team name"
               class="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-[#FF5B84] font-['Raleway']"
@@ -293,7 +295,7 @@ function copyJoinCode() {
           <div>
             <label class="block font-['Raleway'] font-semibold mb-2">Description (optional)</label>
             <textarea
-              v-model="newTeamDescription"
+              v-model="form.newTeamDescription"
               placeholder="Tell us about your team"
               rows="3"
               class="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-[#FF5B84] font-['Raleway']"
@@ -301,7 +303,7 @@ function copyJoinCode() {
           </div>
           <button
             class="w-full bg-[#FF5B84] text-white py-3 rounded-lg font-['Raleway'] font-semibold hover:bg-[#FF5B84]/80 disabled:opacity-50"
-            :disabled="!newTeamName.trim() || createTeamMutation.isPending.value"
+            :disabled="!form.newTeamName.trim() || createTeamMutation.isPending.value"
             @click="handleCreateTeam"
           >
             {{ createTeamMutation.isPending.value ? 'Creating Team...' : 'Create Team' }}
@@ -318,7 +320,7 @@ function copyJoinCode() {
           <div>
             <label class="block font-['Raleway'] font-semibold mb-2">Join Code *</label>
             <input
-              v-model="joinCode"
+              v-model="form.joinCode"
               type="text"
               placeholder="Enter the team join code"
               class="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-[#FF5B84] font-['Raleway'] font-mono"
@@ -329,7 +331,7 @@ function copyJoinCode() {
           </p>
           <button
             class="w-full bg-[#FF5B84] text-white py-3 rounded-lg font-['Raleway'] font-semibold hover:bg-[#FF5B84]/80 disabled:opacity-50"
-            :disabled="!joinCode.trim() || joinTeamMutation.isPending.value"
+            :disabled="!form.joinCode.trim() || joinTeamMutation.isPending.value"
             @click="handleJoinTeam"
           >
             {{ joinTeamMutation.isPending.value ? 'Joining Team...' : 'Join Team' }}

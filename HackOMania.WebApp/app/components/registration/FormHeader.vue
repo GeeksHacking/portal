@@ -16,12 +16,12 @@ const steps = [
 
 <template>
   <div class="w-full">
-    <div class="py-6 px-4 sm:px-8 lg:px-[120px]">
+    <div class="py-6 px-4 sm:px-8 lg:px-32">
       <div class="flex flex-col gap-4 mb-6">
         <!-- Exit Registration link -->
         <NuxtLink
           to="/"
-          class="font-raleway text-[14px] sm:text-[16px] font-normal text-black underline"
+          class="font-raleway text-sm sm:text-base font-normal text-black underline"
         >
           Exit Registration
         </NuxtLink>
@@ -30,19 +30,19 @@ const steps = [
         <img
           src="/logos/logo-hackomania2026-typography.svg"
           alt="HackOMania 2026"
-          class="w-full max-w-[300px] sm:max-w-[468px] h-auto mx-auto"
+          class="w-full max-w-xs sm:max-w-md h-auto mx-auto"
         >
       </div>
 
       <!-- top horizontal line -->
-      <div class="h-[1px] bg-black mb-0" />
+      <div class="h-px bg-black mb-0" />
 
       <!-- Steps - Desktop: horizontal, Mobile: vertical -->
       <div class="hidden lg:flex border-x border-black">
         <div
           v-for="(step, idx) in steps"
           :key="idx"
-          class="flex-1 h-[71px] flex items-center text-[18px] xl:text-[20px] font-normal text-black font-zalando pl-[24px] border-r border-black last:border-r-0"
+          class="flex-1 h-18 flex items-center text-lg xl:text-xl font-normal text-black font-zalando pl-6 border-r border-black last:border-r-0"
           :class="{ 'bg-gray-200': currentIndex >= step.index }"
         >
           {{ idx + 1 }}. {{ step.label }}
@@ -63,14 +63,14 @@ const steps = [
           >
             {{ idx + 1 }}
           </div>
-          <span class="text-[16px] font-normal text-black font-zalando">
+          <span class="text-base font-normal text-black font-zalando">
             {{ step.label }}
           </span>
         </div>
       </div>
 
       <!-- bottom horizontal line -->
-      <div class="h-[1px] bg-black" />
+      <div class="h-px bg-black" />
     </div>
   </div>
 </template>

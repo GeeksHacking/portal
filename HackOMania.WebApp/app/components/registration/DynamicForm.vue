@@ -170,7 +170,7 @@ const isCurrentPageValid = computed(() => {
 
 <template>
   <div class="min-h-screen flex flex-col items-center bg-white px-4 pt-8 md:pt-16 pb-24">
-    <div class="w-full max-w-[600px]">
+    <div class="w-full max-w-2xl">
       <div
         v-if="showMainPageTitle"
         class="flex items-center mb-10"
@@ -219,7 +219,7 @@ const isCurrentPageValid = computed(() => {
                 :class="[question.isLong ? 'md:col-span-2' : 'col-span-1']"
               >
                 <template #label>
-                  <span class="font-raleway text-[16px] font-normal text-black">
+                  <span class="font-raleway text-base font-normal text-black">
                     {{ question.questionText ?? '' }}
                   </span>
                 </template>
@@ -235,7 +235,7 @@ const isCurrentPageValid = computed(() => {
                   placeholder="Select options"
                   class="w-full"
                   :ui="{
-                    base: 'bg-white rounded-lg min-h-[42px] border border-black/50 text-black font-raleway',
+                    base: 'bg-white rounded-lg min-h-11 border border-black/50 text-black font-raleway',
                   }"
                 />
 
@@ -248,7 +248,7 @@ const isCurrentPageValid = computed(() => {
                   placeholder="Select one"
                   class="w-full"
                   :ui="{
-                    base: 'bg-white rounded-lg h-[42px] border border-black/50 text-black font-raleway',
+                    base: 'bg-white rounded-lg h-11 border border-black/50 text-black font-raleway',
                   }"
                 />
 
@@ -258,7 +258,7 @@ const isCurrentPageValid = computed(() => {
                   type="text"
                   class="w-full"
                   :ui="{
-                    base: 'bg-white rounded-lg h-[42px] border border-black/50 text-black font-raleway',
+                    base: 'bg-white rounded-lg h-11 border border-black/50 text-black font-raleway',
                   }"
                 />
 
@@ -266,7 +266,7 @@ const isCurrentPageValid = computed(() => {
                   v-if="fieldErrors[question.questionKey ?? '']"
                   class="mt-1"
                 >
-                  <span class="font-raleway text-[12px] text-red-600">
+                  <span class="font-raleway text-xs text-red-600">
                     {{ fieldErrors[question.questionKey ?? ''] }}
                   </span>
                 </div>
@@ -280,7 +280,7 @@ const isCurrentPageValid = computed(() => {
             <button
               v-if="showPreviousButton"
               type="button"
-              class="font-raleway text-[16px] font-normal text-black underline cursor-pointer"
+              class="font-raleway text-base font-normal text-black underline cursor-pointer"
               @click="goToPrevious"
             >
               Previous
@@ -300,7 +300,7 @@ const isCurrentPageValid = computed(() => {
             v-if="submissionError && isLastPage"
             class="mt-2 text-right"
           >
-            <span class="font-raleway text-[14px] text-red-600">
+            <span class="font-raleway text-sm text-red-600">
               One or more errors in the fields, please check!
             </span>
           </div>

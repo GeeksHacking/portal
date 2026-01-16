@@ -111,7 +111,7 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
             builder.Environment.IsDevelopment()
                 ? ["http://localhost:3000"]
-                : ["https://hackomania.geekshacking.org"]
+                : ["https://portal.geekshacking.org"]
         );
 
         policy.AllowAnyHeader().AllowAnyMethod().AllowCredentials();

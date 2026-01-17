@@ -21,6 +21,10 @@ jobs:
   build-and-deploy:
     concurrency: deploy
     runs-on: ubuntu-latest
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_NOLOGO: true
+      NUGET_XMLDOC_MODE: skip
 
     permissions:
       contents: read
@@ -33,9 +37,13 @@ jobs:
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.x
+          cache: true
+          cache-dependency-path: |
+            global.json
+            **/*.csproj
 
       - name: Tests
-        run: dotnet test
+        run: dotnet test 
 
       - name: Authenticate to Google Cloud
         id: auth

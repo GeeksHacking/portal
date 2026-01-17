@@ -12,6 +12,12 @@ export default defineNuxtConfig({
   ssr: false,
   devtools: { enabled: true },
 
+  // allows auto-import for constants
+  imports: {
+    dirs: ['composables/constants'],
+  },
+  devtools: { enabled: true },
+
   css: ['~/assets/css/main.css'],
 
   runtimeConfig: {

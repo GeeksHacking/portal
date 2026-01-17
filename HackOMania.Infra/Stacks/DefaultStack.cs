@@ -2,6 +2,8 @@ using Pulumi;
 using Pulumi.Gcp.ArtifactRegistry;
 using Pulumi.Gcp.CloudRunV2.Inputs;
 using Pulumi.Gcp.ServiceAccount;
+using Pulumi.Gcp.Storage;
+using Pulumi.Gcp.Storage.Inputs;
 using CloudRun = Pulumi.Gcp.CloudRunV2;
 using CloudRunV1 = Pulumi.Gcp.CloudRun;
 using ProjectIam = Pulumi.Gcp.Projects;
@@ -19,6 +21,9 @@ public class DefaultStack : Stack
 
     public DefaultStack()
     {
+        var config = new Config("gcp");
+        var projectId = config.Get("project") ?? "hackomania-event-portal";
+
         var pkg = new Repository(
             "hackomania-api-repo",
             new RepositoryArgs
@@ -38,6 +43,18 @@ public class DefaultStack : Stack
                 AccountId = "hackomania-api",
                 DisplayName = "HackOMania API Cloud Run Service Account",
                 Description = "Service account used by Cloud Run to run the HackOMania API",
+            }
+        );
+
+        var dataProtectionBucket = new Bucket(
+            "hackomania-data-protection",
+            new BucketArgs
+            {
+                Name = $"{projectId}-hackomania-data-protection",
+                Location = "ASIA-SOUTHEAST1",
+                ForceDestroy = false,
+                Versioning = new BucketVersioningArgs { Enabled = true },
+                UniformBucketLevelAccess = true,
             }
         );
 
@@ -117,11 +134,41 @@ public class DefaultStack : Stack
             }
         );
 
+        _ = new BucketIAMMember(
+            "hackomania-data-protection-access",
+            new BucketIAMMemberArgs
+            {
+                Bucket = dataProtectionBucket.Name,
+                Role = "roles/storage.objectAdmin",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
+        _ = new ProjectIam.IAMMember(
+            "hackomania-api-logging-writer",
+            new ProjectIam.IAMMemberArgs
+            {
+                Project = projectId,
+                Role = "roles/logging.logWriter",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
+        _ = new ProjectIam.IAMMember(
+            "hackomania-api-trace-agent",
+            new ProjectIam.IAMMemberArgs
+            {
+                Project = projectId,
+                Role = "roles/cloudtrace.agent",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
         _ = new ProjectIam.IAMMember(
             "hackomania-api-deployer-artifact-registry-writer",
             new ProjectIam.IAMMemberArgs
             {
-                Project = "hackomania-event-portal",
+                Project = projectId,
                 Role = "roles/artifactregistry.writer",
                 Member = Output.Format($"serviceAccount:{deployerServiceAccount.Email}"),
             }
@@ -131,7 +178,7 @@ public class DefaultStack : Stack
             "hackomania-api-deployer-cloud-run-admin",
             new ProjectIam.IAMMemberArgs
             {
-                Project = "hackomania-event-portal",
+                Project = projectId,
                 Role = "roles/run.admin",
                 Member = Output.Format($"serviceAccount:{deployerServiceAccount.Email}"),
             }
@@ -141,7 +188,7 @@ public class DefaultStack : Stack
             "hackomania-api-deployer-service-account-user",
             new ProjectIam.IAMMemberArgs
             {
-                Project = "hackomania-event-portal",
+                Project = projectId,
                 Role = "roles/iam.serviceAccountUser",
                 Member = Output.Format($"serviceAccount:{deployerServiceAccount.Email}"),
             }
@@ -206,7 +253,7 @@ public class DefaultStack : Stack
                                 new ServiceTemplateContainerEnvArgs
                                 {
                                     Name = "App__FrontendUrl",
-                                    Value = "https://hackomania.geekshacking.com/dash",
+                                    Value = "https://portal.geekshacking.com/dash",
                                 },
                                 new ServiceTemplateContainerEnvArgs
                                 {
@@ -261,6 +308,16 @@ public class DefaultStack : Stack
                                                 Version = "latest",
                                             },
                                     },
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "DataProtection__BucketName",
+                                    Value = dataProtectionBucket.Name,
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "DataProtection__KeyPrefix",
+                                    Value = "data-protection",
                                 },
                             },
                         },

@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
@@ -24,7 +23,7 @@ builder.AddServiceDefaults();
 
 if (builder.Environment.IsProduction())
 {
-    Console.WriteLine("running in prod");
+    builder.Logging.ClearProviders();
     builder.Logging.AddGoogle(new LoggingServiceOptions { ProjectId = "hackomania-event-portal" });
     builder.Services.AddGoogleTraceForAspNetCore(
         new AspNetCoreTraceOptions

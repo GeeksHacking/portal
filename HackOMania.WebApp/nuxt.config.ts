@@ -22,7 +22,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      api: process.env['services__api__https__0'] || process.env.SERVICES__API_HTTPS_0,
+      api: process.env['services__api__https__0'] || process.env.SERVICES__API_HTTPS_0 || 'https://hackomania-api.geekshacking.com',
     },
   },
   compatibilityDate: '2025-07-15',

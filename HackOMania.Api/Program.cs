@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using SqlSugar;
 
@@ -61,12 +60,6 @@ builder.Services.AddSingleton<ISqlSugarClient>(s =>
     );
 });
 
-builder.Services.AddDbContext<DbContext>(options =>
-{
-    options.UseInMemoryDatabase("Db");
-    options.UseOpenIddict();
-});
-
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
@@ -74,14 +67,11 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 builder
     .Services.AddOpenIddict()
-    .AddCore(options =>
-    {
-        options.UseEntityFrameworkCore().UseDbContext<DbContext>();
-    })
     .AddClient(options =>
     {
         options.AllowAuthorizationCodeFlow();
         options.AddDevelopmentEncryptionCertificate().AddDevelopmentSigningCertificate();
+        options.DisableTokenStorage();
         options.UseAspNetCore().EnableRedirectionEndpointPassthrough();
         options.UseSystemNetHttp();
 

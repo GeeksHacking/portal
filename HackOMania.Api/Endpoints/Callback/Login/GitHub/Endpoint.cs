@@ -118,6 +118,7 @@ public class Endpoint(IOptions<AppOptions> options, ISqlSugarClient db) : Endpoi
             o.Claims.Add(new Claim(CustomClaimTypes.GitHubAccountId, githubAccountId.ToString()));
         });
 
-        await Send.RedirectAsync(options.Value.FrontendUrl, allowRemoteRedirects: true);
+        // i want the callback to redirect to the registration form ..
+        await Send.RedirectAsync($"{options.Value.FrontendUrl}/registration/form", allowRemoteRedirects: true);
     }
 }

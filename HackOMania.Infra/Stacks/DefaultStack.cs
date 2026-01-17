@@ -145,6 +145,26 @@ public class DefaultStack : Stack
         );
 
         _ = new ProjectIam.IAMMember(
+            "hackomania-api-logging-writer",
+            new ProjectIam.IAMMemberArgs
+            {
+                Project = projectId,
+                Role = "roles/logging.logWriter",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
+        _ = new ProjectIam.IAMMember(
+            "hackomania-api-trace-agent",
+            new ProjectIam.IAMMemberArgs
+            {
+                Project = projectId,
+                Role = "roles/cloudtrace.agent",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
+        _ = new ProjectIam.IAMMember(
             "hackomania-api-deployer-artifact-registry-writer",
             new ProjectIam.IAMMemberArgs
             {

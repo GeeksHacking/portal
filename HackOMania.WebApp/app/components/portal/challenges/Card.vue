@@ -16,18 +16,18 @@ const emit = defineEmits<{
     @click="emit('select')"
   >
     <div
-      class="px-4 rounded-lg text-center h-18 flex items-center justify-center"
+      class="px-3 lg:px-4 rounded-lg text-center h-12 lg:h-18 flex items-center justify-center"
       :class="selected ? 'bg-[#FF5B84]' : 'bg-[#FF5B84]/40'"
     >
-      <span class="font-['Zalando_Sans_Expanded'] text-black uppercase text-2xl">
+      <span class="font-['Zalando_Sans_Expanded'] text-black uppercase text-base lg:text-2xl">
         {{ title }}
       </span>
     </div>
-    <div class="bg-white py-12 px-6 text-center flex flex-col gap-8">
-      <div class="font-['Zalando_Sans_Expanded'] font-bold text-7xl">
+    <div class="bg-white py-6 lg:py-12 px-4 lg:px-6 text-center flex flex-col gap-4 lg:gap-8">
+      <div class="font-['Zalando_Sans_Expanded'] font-bold text-4xl lg:text-7xl">
         {{ teamCount }}
       </div>
-      <div class="font-['Zalando_Sans_Expanded'] text-4xl">
+      <div class="font-['Zalando_Sans_Expanded'] text-xl lg:text-4xl">
         Teams
       </div>
     </div>

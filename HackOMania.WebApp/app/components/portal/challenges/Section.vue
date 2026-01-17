@@ -45,33 +45,32 @@ const selectedDescription = computed(() =>
 
     <div
       v-else
-      class="p-8 lg:py-16 lg:px-28"
+      class="flex flex-col items-center p-8 lg:py-16 lg:px-28 mx-auto lg:max-w-300"
     >
       <!-- Challenge cards -->
-      <div class="flex gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
         <PortalChallengesCard
           v-for="(challenge, index) in challenges"
           :key="challenge.id!"
           :title="challenge.title ?? ''"
           :team-count="0"
           :selected="selectedIndex === index"
-          class="flex-1"
           @select="selectedIndex = index"
         />
       </div>
 
       <!-- Challenge details -->
-      <div class="mt-16">
-        <h3 class="font-['Zalando_Sans_Expanded'] text-[32px] font-bold mb-2">
+      <div class="mt-8 lg:mt-16 w-full text-left">
+        <h3 class="font-['Zalando_Sans_Expanded'] text-xl lg:text-[32px] font-bold mb-2">
           {{ selectedIndex !== null ? 'Challenge Statement' : 'Explore' }}
         </h3>
         <p
           v-if="selectedIndex !== null"
-          class="font-['Raleway'] text-xl mb-4"
+          class="font-['Raleway'] text-base lg:text-xl mb-4"
         >
           Sponsor Name
         </p>
-        <p class="font-['Raleway'] text-xl whitespace-pre-line">
+        <p class="font-['Raleway'] text-base lg:text-xl whitespace-pre-line">
           {{ selectedDescription ?? `Each sponsor has designed a unique challenge for this hackathon, reflecting their goals and areas of focus. Browse through the challenges to find the one that excites you the most or best matches your skills!
 
 The dashboard updates live. Feel free to use this dashboard to help you choose your challenge statement!` }}

@@ -81,7 +81,16 @@ builder
     });
 
 builder
-    .Services.AddAuthenticationCookie(validFor: TimeSpan.FromDays(7))
+    .Services.AddAuthenticationCookie(
+        validFor: TimeSpan.FromDays(7),
+        options =>
+        {
+            if (builder.Environment.IsProduction())
+            {
+                options.Cookie.Domain = ".geekshacking.com";
+            }
+        }
+    )
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
 
 builder

@@ -36,7 +36,7 @@ public class Team
 
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
-    [Navigate(NavigateType.OneToOne, nameof(SelectedChallengeId))]
+    [Navigate(NavigateType.ManyToOne, nameof(SelectedChallengeId))]
     public Challenge? SelectedChallenge { get; set; } = null!;
 
     [Navigate(NavigateType.OneToMany, nameof(Participant.TeamId))]

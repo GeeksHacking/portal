@@ -30,7 +30,7 @@ const steps = [
         <!-- Exit Registration link -->
         <NuxtLink
           :to="exitTo"
-          class="font-raleway text-sm sm:text-base font-normal text-black underline"
+          class="font-raleway text-sm sm:text-base font-normal text-gray-900 dark:text-gray-100 underline"
         >
           Exit Registration
         </NuxtLink>
@@ -44,15 +44,15 @@ const steps = [
       </div>
 
       <!-- top horizontal line -->
-      <div class="h-px bg-black mb-0" />
+      <div class="h-px bg-gray-900 dark:bg-gray-100 mb-0" />
 
       <!-- Steps - Desktop: horizontal, Mobile: vertical -->
-      <div class="hidden lg:flex border-x border-black">
+      <div class="hidden lg:flex border-x border-gray-900 dark:border-gray-100">
         <div
           v-for="(step, idx) in steps"
           :key="idx"
-          class="flex-1 h-18 flex items-center text-lg xl:text-xl font-normal text-black font-zalando pl-6 border-r border-black last:border-r-0"
-          :class="{ 'bg-gray-200': currentIndex >= step.index }"
+          class="flex-1 h-18 flex items-center text-lg xl:text-xl font-normal text-gray-900 dark:text-gray-100 font-zalando pl-6 border-r border-gray-900 dark:border-gray-100 last:border-r-0"
+          :class="{ 'bg-gray-200 dark:bg-gray-700': currentIndex >= step.index }"
         >
           {{ idx + 1 }}. {{ step.label }}
         </div>
@@ -63,23 +63,23 @@ const steps = [
         <div
           v-for="(step, idx) in steps"
           :key="idx"
-          class="flex items-center gap-3 p-3 border border-black rounded"
-          :class="{ 'bg-gray-200': currentIndex >= step.index }"
+          class="flex items-center gap-3 p-3 border border-gray-900 dark:border-gray-100 rounded"
+          :class="{ 'bg-gray-200 dark:bg-gray-700': currentIndex >= step.index }"
         >
           <div
-            class="flex-shrink-0 w-8 h-8 rounded-full border-2 border-black flex items-center justify-center font-zalando font-bold"
-            :class="{ 'bg-black text-white': currentIndex === step.index }"
+            class="flex-shrink-0 w-8 h-8 rounded-full border-2 border-gray-900 dark:border-gray-100 flex items-center justify-center font-zalando font-bold"
+            :class="{ 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900': currentIndex === step.index }"
           >
             {{ idx + 1 }}
           </div>
-          <span class="text-base font-normal text-black font-zalando">
+          <span class="text-base font-normal text-gray-900 dark:text-gray-100 font-zalando">
             {{ step.label }}
           </span>
         </div>
       </div>
 
       <!-- bottom horizontal line -->
-      <div class="h-px bg-black" />
+      <div class="h-px bg-gray-900 dark:bg-gray-100" />
     </div>
   </div>
 </template>

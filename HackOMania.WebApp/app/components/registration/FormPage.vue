@@ -66,14 +66,14 @@ const { data: questions, isLoading, error } = useQuery(computed(() => ({
 </script>
 
 <template>
-  <div class="bg-white min-h-screen font-raleway">
+  <div class="bg-white dark:bg-gray-900 min-h-screen font-raleway">
     <RegistrationFormHeader :hackathon-id="hackathonId" />
 
     <div v-if="!hackathonId" class="text-center py-8 space-y-2">
-      <p class="text-black">
+      <p class="text-gray-900 dark:text-gray-100">
         Select a hackathon from the dashboard to start your registration.
       </p>
-      <NuxtLink to="/dash" class="text-blue-600 underline">
+      <NuxtLink to="/dash" class="text-blue-600 dark:text-blue-400 underline">
         Go to dashboard
       </NuxtLink>
     </div>
@@ -82,7 +82,7 @@ const { data: questions, isLoading, error } = useQuery(computed(() => ({
       v-else-if="isLoadingStatus || isLoading"
       class="text-center py-8"
     >
-      <p class="text-black">
+      <p class="text-gray-900 dark:text-gray-100">
         Loading registration questions...
       </p>
     </div>
@@ -91,10 +91,10 @@ const { data: questions, isLoading, error } = useQuery(computed(() => ({
       v-else-if="isNotParticipant"
       class="text-center py-8 space-y-2"
     >
-      <p class="text-black">
+      <p class="text-gray-900 dark:text-gray-100">
         You need to join the hackathon before completing the registration form.
       </p>
-      <NuxtLink to="/dash" class="text-blue-600 underline">
+      <NuxtLink to="/dash" class="text-blue-600 dark:text-blue-400 underline">
         Join from dashboard
       </NuxtLink>
     </div>
@@ -103,7 +103,7 @@ const { data: questions, isLoading, error } = useQuery(computed(() => ({
       v-else-if="statusError"
       class="text-center py-8"
     >
-      <p class="text-red-600">
+      <p class="text-red-600 dark:text-red-400">
         Unable to load your participation status. Please return to the dashboard and try again.
       </p>
     </div>
@@ -112,7 +112,7 @@ const { data: questions, isLoading, error } = useQuery(computed(() => ({
       v-else-if="!setupComplete"
       class="text-center py-8"
     >
-      <p class="text-black">
+      <p class="text-gray-900 dark:text-gray-100">
         Preparing your registration form...
       </p>
     </div>
@@ -122,7 +122,7 @@ const { data: questions, isLoading, error } = useQuery(computed(() => ({
       v-else-if="setupError"
       class="text-center py-8"
     >
-      <p class="text-red-600">
+      <p class="text-red-600 dark:text-red-400">
         {{ setupError }}
       </p>
     </div>
@@ -132,7 +132,7 @@ const { data: questions, isLoading, error } = useQuery(computed(() => ({
       v-else-if="error"
       class="text-center py-8"
     >
-      <p class="text-red-600">
+      <p class="text-red-600 dark:text-red-400">
         Error loading questions: {{ error.message }}
       </p>
     </div>

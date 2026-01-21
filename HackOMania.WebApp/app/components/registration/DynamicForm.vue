@@ -121,8 +121,8 @@ const onSubmit = async () => {
       path: `${registrationPath.value}/complete`,
     })
   }
-  catch {
-    // handle it
+  catch (error) {
+    console.error('[FORM] Submission failed:', error)
   }
 }
 
@@ -183,7 +183,7 @@ const isCurrentPageValid = computed(() => {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col items-center bg-white px-4 pt-8 md:pt-16 pb-24">
+  <div class="min-h-screen flex flex-col items-center bg-white dark:bg-gray-900 px-4 pt-8 md:pt-16 pb-24">
     <div class="w-full max-w-2xl">
       <div
         v-if="showMainPageTitle"
@@ -194,7 +194,7 @@ const isCurrentPageValid = computed(() => {
           alt="icon"
           class="w-8 h-8 md:w-10 md:h-10"
         >
-        <h2 class="ml-3 font-raleway text-lg md:text-xl font-normal text-black">
+        <h2 class="ml-3 font-raleway text-lg md:text-xl font-normal text-gray-900 dark:text-gray-100">
           {{ pageTitle }}
         </h2>
       </div>
@@ -218,7 +218,7 @@ const isCurrentPageValid = computed(() => {
               alt="icon"
               class="w-8 h-8 md:w-10 md:h-10"
             >
-            <h2 class="ml-3 font-raleway text-lg md:text-xl font-normal text-black">
+            <h2 class="ml-3 font-raleway text-lg md:text-xl font-normal text-gray-900 dark:text-gray-100">
               {{ getCategoryGroupName(category.name ?? '') }}
             </h2>
           </div>
@@ -233,7 +233,7 @@ const isCurrentPageValid = computed(() => {
                 :class="[question.isLong ? 'md:col-span-2' : 'col-span-1']"
               >
                 <template #label>
-                  <span class="font-raleway text-base font-normal text-black">
+                  <span class="font-raleway text-base font-normal text-gray-900 dark:text-gray-100">
                     {{ question.questionText ?? '' }}
                   </span>
                 </template>
@@ -249,7 +249,7 @@ const isCurrentPageValid = computed(() => {
                   placeholder="Select options"
                   class="w-full"
                   :ui="{
-                    base: 'bg-white rounded-lg min-h-11 border border-black/50 text-black font-raleway',
+                    base: 'bg-white dark:bg-gray-800 rounded-lg min-h-11 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-gray-100 font-raleway',
                   }"
                 />
 
@@ -262,7 +262,7 @@ const isCurrentPageValid = computed(() => {
                   placeholder="Select one"
                   class="w-full"
                   :ui="{
-                    base: 'bg-white rounded-lg h-11 border border-black/50 text-black font-raleway',
+                    base: 'bg-white dark:bg-gray-800 rounded-lg h-11 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-gray-100 font-raleway',
                   }"
                 />
 
@@ -272,7 +272,7 @@ const isCurrentPageValid = computed(() => {
                   type="text"
                   class="w-full"
                   :ui="{
-                    base: 'bg-white rounded-lg h-11 border border-black/50 text-black font-raleway',
+                    base: 'bg-white dark:bg-gray-800 rounded-lg h-11 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-gray-100 font-raleway',
                   }"
                 />
 
@@ -280,7 +280,7 @@ const isCurrentPageValid = computed(() => {
                   v-if="fieldErrors[question.questionKey ?? '']"
                   class="mt-1"
                 >
-                  <span class="font-raleway text-xs text-red-600">
+                  <span class="font-raleway text-xs text-red-600 dark:text-red-400">
                     {{ fieldErrors[question.questionKey ?? ''] }}
                   </span>
                 </div>
@@ -294,7 +294,7 @@ const isCurrentPageValid = computed(() => {
             <button
               v-if="showPreviousButton"
               type="button"
-              class="font-raleway text-base font-normal text-black underline cursor-pointer"
+              class="font-raleway text-base font-normal text-gray-900 dark:text-gray-100 underline cursor-pointer"
               @click="goToPrevious"
             >
               Previous
@@ -305,7 +305,7 @@ const isCurrentPageValid = computed(() => {
               size="xl"
               :disabled="!isCurrentPageValid || isSubmitting"
               :loading="isSubmitting"
-              class="bg-black text-white px-8 rounded-md font-raleway disabled:opacity-50 disabled:cursor-not-allowed"
+              class="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 px-8 rounded-md font-raleway disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {{ submitButtonText }}
             </UButton>
@@ -314,7 +314,7 @@ const isCurrentPageValid = computed(() => {
             v-if="submissionError && isLastPage"
             class="mt-2 text-right"
           >
-            <span class="font-raleway text-sm text-red-600">
+            <span class="font-raleway text-sm text-red-600 dark:text-red-400">
               One or more errors in the fields, please check!
             </span>
           </div>

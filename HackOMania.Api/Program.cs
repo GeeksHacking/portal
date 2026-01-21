@@ -81,7 +81,7 @@ builder
         options.AddDevelopmentEncryptionCertificate().AddDevelopmentSigningCertificate();
         options.DisableTokenStorage();
 
-        var aspNetOptions = options.UseAspNetCore();
+        var aspNetOptions = options.UseAspNetCore().EnableRedirectionEndpointPassthrough();
 
         if (builder.Environment.IsDevelopment())
         {
@@ -89,6 +89,7 @@ builder
         }
 
         options.UseSystemNetHttp();
+        options.SetRedirectionEndpointUris("/callback/login/github");
 
         options
             .UseWebProviders()
@@ -102,7 +103,7 @@ builder
                     .AddScopes("user:email")
                     .SetClientId(githubOptions.ClientId)
                     .SetClientSecret(githubOptions.ClientSecret)
-                    .SetRedirectUri("callback/login/github");
+                    .SetRedirectUri("/callback/login/github");
             });
     });
 

@@ -47,6 +47,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     TeamId = null,
                     TeamName = null,
                     Status = null,
+                    ReviewReason = null,
+                    ReviewedAt = null,
                 },
                 ct
             );
@@ -84,6 +86,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 TeamId = participant.TeamId,
                 TeamName = teamName,
                 Status = status,
+                ReviewReason = latestReview?.Reason,
+                ReviewedAt = latestReview?.CreatedAt,
             },
             ct
         );

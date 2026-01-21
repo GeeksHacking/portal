@@ -17,6 +17,27 @@ export const hackathonQueries = {
           .status.get()
       },
     }),
+  detail: (hackathonId: string) =>
+    queryOptions({
+      queryKey: ['hackathons', hackathonId, 'detail'],
+      async queryFn() {
+        return await useNuxtApp()
+          .$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(hackathonId)
+          .get()
+      },
+    }),
+}
+
+export const formatParticipantStatus = (status: number | null | undefined, isParticipant?: boolean | null) => {
+  if (!isParticipant) return { label: 'Not joined', color: 'gray' as const }
+  switch (status) {
+    case 1:
+      return { label: 'Accepted', color: 'success' as const }
+    case 2:
+      return { label: 'Rejected', color: 'error' as const }
+    default:
+      return { label: 'Pending review', color: 'warning' as const }
+  }
 }
 
 // for now we just take the first hackathon as current

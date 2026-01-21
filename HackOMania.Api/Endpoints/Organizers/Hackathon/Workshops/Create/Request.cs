@@ -1,7 +1,10 @@
+using FastEndpoints;
+
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Workshops.Create;
 
 public class Request
 {
+    [BindFrom("HackathonId")]
     public Guid HackathonId { get; set; }
     public required string Title { get; set; }
     public required string Description { get; set; }

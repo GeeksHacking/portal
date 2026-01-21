@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex justify-center relative mt-4">
+  <div id="contacts" class="w-full flex justify-center relative mt-4 md:mt-16 lg:mt-32">
     <NuxtImg
       src="/backgrounds/footer-bg.png"
       alt="Footer background"

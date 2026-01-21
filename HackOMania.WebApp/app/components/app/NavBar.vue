@@ -2,12 +2,18 @@
 import { useQuery } from '@tanstack/vue-query'
 
 const items = [
-  { label: 'main page' },
-  { label: 'dashboard' },
-  { label: 'team' },
+  { label: 'home', target: 'home' },
+  { label: 'challenges', target: 'challenges' },
+  { label: 'team', target: 'team' },
+  { label: 'contacts', target: 'contacts' },
 ]
 
 const expanded = ref(false)
+
+function scrollTo(targetId: string) {
+  document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' })
+  expanded.value = false
+}
 const config = useRuntimeConfig()
 const loginUrl = `${config.public.api}/auth/login`
 
@@ -19,7 +25,7 @@ const { data: user, isLoading } = useQuery(authQueries.whoAmI)
     <!-- Desktop -->
     <div class="hidden lg:flex items-center justify-between h-full px-32">
       <div class="flex items-center gap-20">
-        <span v-for="item in items" :key="item.label">{{ item.label }}</span>
+        <button v-for="item in items" :key="item.label" @click="scrollTo(item.target)">{{ item.label }}</button>
       </div>
       <div>
         <span v-if="isLoading">...</span>
@@ -43,7 +49,7 @@ const { data: user, isLoading } = useQuery(authQueries.whoAmI)
       v-if="expanded"
       class="lg:hidden absolute top-12 left-0 w-full bg-white border-b border-black flex flex-col gap-4 py-4 px-3 items-end z-50"
     >
-      <span v-for="item in items" :key="item.label">{{ item.label }}</span>
+      <button v-for="item in items" :key="item.label" @click="scrollTo(item.target)">{{ item.label }}</button>
       <span v-if="isLoading">...</span>
       <span v-else-if="user">{{ user.gitHubLogin }}</span>
       <NuxtLink v-else :to="loginUrl" external>log in</NuxtLink>

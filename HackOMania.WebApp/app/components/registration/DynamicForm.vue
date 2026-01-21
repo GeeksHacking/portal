@@ -5,11 +5,14 @@ import { useQuery } from '@tanstack/vue-query'
 import { useSubmitRegistrationMutation } from '~/composables/question'
 
 const props = defineProps<{
+  hackathonId: string
   questions: HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListResponse
 }>()
 
 const router = useRouter()
 const route = useRoute()
+
+const registrationPath = computed(() => `/dash/${props.hackathonId}/registration`)
 
 // Get authenticated user data for prefilling
 const { data: userData } = useQuery(authQueries.whoAmI)
@@ -79,13 +82,19 @@ watch([() => props.questions, userData], ([newVal]) => {
 }, { immediate: true, deep: true })
 
 // Submit mutation with built-in error handling
-const { mutateAsync, isPending: isSubmitting, fieldErrors, submissionError } = useSubmitRegistrationMutation(allQuestions)
+const { mutateAsync, isPending: isSubmitting, fieldErrors, submissionError } = useSubmitRegistrationMutation(
+  toRef(props, 'hackathonId'),
+  allQuestions,
+)
 
 const onSubmit = async () => {
   const nextIndex = currentPageIndex.value + 1
 
   if (nextIndex < 3) {
-    router.push({ path: '/registration/form', query: { index: String(nextIndex) } })
+    router.push({
+      path: registrationPath.value,
+      query: { index: String(nextIndex) },
+    })
     return
   }
 
@@ -108,7 +117,9 @@ const onSubmit = async () => {
 
   try {
     await mutateAsync({ submissions })
-    router.push('/registration/complete')
+    router.push({
+      path: `${registrationPath.value}/complete`,
+    })
   }
   catch {
     // handle it
@@ -118,7 +129,10 @@ const onSubmit = async () => {
 const goToPrevious = () => {
   const prevIndex = currentPageIndex.value - 1
   if (prevIndex >= 0) {
-    router.push({ path: '/registration/form', query: { index: String(prevIndex) } })
+    router.push({
+      path: registrationPath.value,
+      query: { index: String(prevIndex) },
+    })
   }
 }
 

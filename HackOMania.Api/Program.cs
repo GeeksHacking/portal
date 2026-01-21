@@ -1,3 +1,4 @@
+using System.Diagnostics.Tracing;
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
@@ -79,7 +80,14 @@ builder
         options.AllowAuthorizationCodeFlow();
         options.AddDevelopmentEncryptionCertificate().AddDevelopmentSigningCertificate();
         options.DisableTokenStorage();
-        options.UseAspNetCore().EnableRedirectionEndpointPassthrough();
+
+        var aspNetOptions = options.UseAspNetCore();
+
+        if (builder.Environment.IsDevelopment())
+        {
+            aspNetOptions.DisableTransportSecurityRequirement();
+        }
+
         options.UseSystemNetHttp();
 
         options
@@ -106,6 +114,10 @@ builder
             if (builder.Environment.IsProduction())
             {
                 options.Cookie.Domain = ".geekshacking.com";
+            }
+            else
+            {
+                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
             }
         }
     )
@@ -137,7 +149,7 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
             builder.Environment.IsDevelopment()
-                ? ["http://localhost:3000"]
+                ? ["http://localhost:3000", "https://localhost:3000"]
                 : ["https://portal.geekshacking.com"]
         );
 

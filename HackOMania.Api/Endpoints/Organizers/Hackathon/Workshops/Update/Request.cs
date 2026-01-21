@@ -1,8 +1,13 @@
+using FastEndpoints;
+
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Workshops.Update;
 
 public class Request
 {
+    [BindFrom("HackathonId")]
     public Guid HackathonId { get; set; }
+
+    [BindFrom("WorkshopId")]
     public Guid WorkshopId { get; set; }
     public required string Title { get; set; }
     public required string Description { get; set; }

@@ -601,6 +601,15 @@ export function createHackOManiaApiEndpointsParticipantsHackathonGetResponseFrom
 /**
  * Creates a new instance of the appropriate class based on discriminator value
  * @param parseNode The parse node to use to read the discriminator value and create the object
+ * @returns {HackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeRequest}
+ */
+// @ts-ignore
+export function createHackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeRequestFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
+    return deserializeIntoHackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeRequest;
+}
+/**
+ * Creates a new instance of the appropriate class based on discriminator value
+ * @param parseNode The parse node to use to read the discriminator value and create the object
  * @returns {HackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeResponse}
  */
 // @ts-ignore
@@ -1994,6 +2003,17 @@ export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonGetRes
 }
 /**
  * The deserialization information for the current model
+ * @param HackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeRequest The instance to deserialize into.
+ * @returns {Record<string, (node: ParseNode) => void>}
+ */
+// @ts-ignore
+export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeRequest(hackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeRequest: Partial<HackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeRequest> | undefined = {}) : Record<string, (node: ParseNode) => void> {
+    return {
+        "shortCode": n => { hackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeRequest.shortCode = n.getStringValue(); },
+    }
+}
+/**
+ * The deserialization information for the current model
  * @param HackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeResponse The instance to deserialize into.
  * @returns {Record<string, (node: ParseNode) => void>}
  */
@@ -2237,6 +2257,8 @@ export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonStatus
     return {
         "isOrganizer": n => { hackOManiaApiEndpointsParticipantsHackathonStatusResponse.isOrganizer = n.getBooleanValue(); },
         "isParticipant": n => { hackOManiaApiEndpointsParticipantsHackathonStatusResponse.isParticipant = n.getBooleanValue(); },
+        "reviewedAt": n => { hackOManiaApiEndpointsParticipantsHackathonStatusResponse.reviewedAt = n.getDateValue(); },
+        "reviewReason": n => { hackOManiaApiEndpointsParticipantsHackathonStatusResponse.reviewReason = n.getStringValue(); },
         "status": n => { hackOManiaApiEndpointsParticipantsHackathonStatusResponse.status = n.getNumberValue(); },
         "teamId": n => { hackOManiaApiEndpointsParticipantsHackathonStatusResponse.teamId = n.getStringValue(); },
         "teamName": n => { hackOManiaApiEndpointsParticipantsHackathonStatusResponse.teamName = n.getStringValue(); },
@@ -4186,6 +4208,12 @@ export interface HackOManiaApiEndpointsParticipantsHackathonGetResponse extends 
      */
     venue?: string | null;
 }
+export interface HackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeRequest extends Parsable {
+    /**
+     * The shortCode property
+     */
+    shortCode?: string | null;
+}
 export interface HackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeResponse extends Parsable {
     /**
      * The hackathonId property
@@ -4489,6 +4517,14 @@ export interface HackOManiaApiEndpointsParticipantsHackathonStatusResponse exten
      * The isParticipant property
      */
     isParticipant?: boolean | null;
+    /**
+     * The reviewedAt property
+     */
+    reviewedAt?: Date | null;
+    /**
+     * The reviewReason property
+     */
+    reviewReason?: string | null;
     /**
      * The status property
      */
@@ -5966,6 +6002,17 @@ export function serializeHackOManiaApiEndpointsParticipantsHackathonGetResponse(
 }
 /**
  * Serializes information the current object
+ * @param HackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeRequest The instance to serialize from.
+ * @param isSerializingDerivedType A boolean indicating whether the serialization is for a derived type.
+ * @param writer Serialization writer to use to serialize this model
+ */
+// @ts-ignore
+export function serializeHackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeRequest(writer: SerializationWriter, hackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeRequest: Partial<HackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeRequest> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
+    if (!hackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeRequest || isSerializingDerivedType) { return; }
+    writer.writeStringValue("shortCode", hackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeRequest.shortCode);
+}
+/**
+ * Serializes information the current object
  * @param HackOManiaApiEndpointsParticipantsHackathonJoinByShortCodeResponse The instance to serialize from.
  * @param isSerializingDerivedType A boolean indicating whether the serialization is for a derived type.
  * @param writer Serialization writer to use to serialize this model
@@ -6210,6 +6257,8 @@ export function serializeHackOManiaApiEndpointsParticipantsHackathonStatusRespon
     if (!hackOManiaApiEndpointsParticipantsHackathonStatusResponse || isSerializingDerivedType) { return; }
     writer.writeBooleanValue("isOrganizer", hackOManiaApiEndpointsParticipantsHackathonStatusResponse.isOrganizer);
     writer.writeBooleanValue("isParticipant", hackOManiaApiEndpointsParticipantsHackathonStatusResponse.isParticipant);
+    writer.writeDateValue("reviewedAt", hackOManiaApiEndpointsParticipantsHackathonStatusResponse.reviewedAt);
+    writer.writeStringValue("reviewReason", hackOManiaApiEndpointsParticipantsHackathonStatusResponse.reviewReason);
     writer.writeNumberValue("status", hackOManiaApiEndpointsParticipantsHackathonStatusResponse.status);
     writer.writeStringValue("teamId", hackOManiaApiEndpointsParticipantsHackathonStatusResponse.teamId);
     writer.writeStringValue("teamName", hackOManiaApiEndpointsParticipantsHackathonStatusResponse.teamName);

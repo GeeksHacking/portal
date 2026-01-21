@@ -10,7 +10,6 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
   ],
   ssr: false,
-  devtools: { enabled: true },
 
   // allows auto-import for constants
   imports: {
@@ -22,9 +21,10 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      api: process.env['services__api__https__0'] || process.env.SERVICES__API_HTTPS_0 || 'https://hackomania-api.geekshacking.com',
+      api: process.env['services__api__http__0'] || process.env.SERVICES__API_HTTP_0 || 'https://hackomania-api.geekshacking.com',
     },
   },
+
   compatibilityDate: '2025-07-15',
 
   nitro: {

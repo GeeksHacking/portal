@@ -7,7 +7,7 @@ import { createHackOManiaApiEndpointsOrganizersHackathonVenueOverviewResponseFro
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}/venue/overview
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/venue/overview
  */
 export interface OverviewRequestBuilder extends BaseRequestBuilder<OverviewRequestBuilder> {
     /**
@@ -26,7 +26,7 @@ export interface OverviewRequestBuilder extends BaseRequestBuilder<OverviewReque
 /**
  * Uri template for the request builder.
  */
-export const OverviewRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}/venue/overview";
+export const OverviewRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/venue/overview";
 /**
  * Metadata for all the requests in the request builder.
  */

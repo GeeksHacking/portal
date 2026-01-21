@@ -5,7 +5,7 @@ using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Workshops.Delete;
 
-public class Endpoint(ISqlSugarClient sql) : EndpointWithoutRequest
+public class Endpoint(ISqlSugarClient sql) : Endpoint<Request>
 {
     public override void Configure()
     {
@@ -19,13 +19,10 @@ public class Endpoint(ISqlSugarClient sql) : EndpointWithoutRequest
         });
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathonId = Route<Guid>("HackathonId");
-        var workshopId = Route<Guid>("WorkshopId");
-
         var workshop = await sql.Queryable<Workshop>()
-            .FirstAsync(w => w.Id == workshopId && w.HackathonId == hackathonId, ct);
+            .FirstAsync(w => w.Id == req.WorkshopId && w.HackathonId == req.HackathonId, ct);
 
         if (workshop is null)
         {
@@ -35,7 +32,7 @@ public class Endpoint(ISqlSugarClient sql) : EndpointWithoutRequest
 
         // Delete all participants first
         await sql.Deleteable<WorkshopParticipant>()
-            .Where(wp => wp.WorkshopId == workshopId)
+            .Where(wp => wp.WorkshopId == req.WorkshopId)
             .ExecuteCommandAsync(ct);
 
         await sql.Deleteable(workshop).ExecuteCommandAsync(ct);

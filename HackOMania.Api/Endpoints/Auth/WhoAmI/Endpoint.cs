@@ -24,12 +24,19 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 
     public override async Task HandleAsync(CancellationToken ct)
     {
+        var gitHubAccountId = User
+            .Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.GitHubAccountId)
+            ?.Value;
+
+        if (string.IsNullOrWhiteSpace(gitHubAccountId))
+        {
+            await Send.UnauthorizedAsync(ct);
+            return;
+        }
+
         var gh = await sql.Queryable<GitHubOnlineAccount>()
             .Includes(g => g.User)
-            .Where(a =>
-                a.Id.ToString()
-                == User.Claims.First(c => c.Type == CustomClaimTypes.GitHubAccountId).Value
-            )
+            .Where(a => a.Id.ToString() == gitHubAccountId)
             .FirstAsync(ct);
 
         await Send.OkAsync(

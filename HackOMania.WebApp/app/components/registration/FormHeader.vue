@@ -1,10 +1,19 @@
 <script setup lang="ts">
+const props = defineProps<{
+  hackathonId?: string | null
+}>()
+
 const route = useRoute()
 
 // Get current index from query params, default to 0
 const currentIndex = computed(() => {
   const index = route.query.index
   return index ? Number(index) : 0
+})
+
+const exitTo = computed(() => {
+  if (props.hackathonId) return `/dash/${props.hackathonId}`
+  return '/dash'
 })
 
 const steps = [
@@ -20,7 +29,7 @@ const steps = [
       <div class="flex flex-col gap-4 mb-6">
         <!-- Exit Registration link -->
         <NuxtLink
-          to="/"
+          :to="exitTo"
           class="font-raleway text-sm sm:text-base font-normal text-black underline"
         >
           Exit Registration

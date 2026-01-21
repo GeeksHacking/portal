@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Pulumi" Version="3.96.1" />
-    <PackageReference Include="Pulumi.Gcp" Version="9.9.0" />
+    <PackageReference Include="Pulumi" Version="3.97.0" />
+    <PackageReference Include="Pulumi.Gcp" Version="9.10.0" />
   </ItemGroup>
 </Project>

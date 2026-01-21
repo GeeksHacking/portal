@@ -6,11 +6,8 @@ useHead({
 })
 
 const route = useRoute()
-const hackathonId = computed(() => (route.query.hackathonId as string | undefined) ?? null)
-
-if (hackathonId.value) {
-  await navigateTo(`/dash/${hackathonId.value}/registration/complete`, { replace: true })
-}
+const hackathonId = computed(() => (route.params.hackathonId as string | undefined) ?? null)
+const dashboardPath = computed(() => (hackathonId.value ? `/dash/${hackathonId.value}` : '/dash'))
 </script>
 
 <template>
@@ -43,7 +40,7 @@ if (hackathonId.value) {
 
         <div class="flex flex-col gap-3 mt-8 w-full max-w-sm">
           <NuxtLink
-            to="/dash"
+            :to="dashboardPath"
             class="w-full h-14 bg-black text-white rounded-lg flex items-center justify-center font-raleway text-lg font-normal hover:bg-gray-800 transition-colors"
           >
             Go to Dashboard

@@ -11,10 +11,6 @@ export default defineNuxtPlugin(() => {
       credentials: 'include',
     })
 
-    if (response.status === 401) {
-      await navigateTo(`${config.public.api}/auth/login`, { external: true })
-    }
-
     return response
   })
   const adapter = new FetchRequestAdapter(authProvider, undefined, undefined, httpClient)

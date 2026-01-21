@@ -8,34 +8,13 @@ import {
   QueryClient,
   hydrate,
   dehydrate,
-  QueryCache,
-  MutationCache,
 } from '@tanstack/vue-query'
 
 export default defineNuxtPlugin((nuxt) => {
   const vueQueryState = useState<DehydratedState | null>('vue-query')
-  const config = useRuntimeConfig()
 
   const queryClient = new QueryClient({
     defaultOptions: { queries: { staleTime: 5000 } },
-    queryCache: new QueryCache({
-      async onError(error) {
-        if (error instanceof DefaultApiError) {
-          if (error?.responseStatusCode === 401) {
-            await navigateTo(`${config.public.api}/auth/login`, { external: true })
-          }
-        }
-      },
-    }),
-    mutationCache: new MutationCache({
-      async onError(error) {
-        if (error instanceof DefaultApiError) {
-          if (error?.responseStatusCode === 401) {
-            await navigateTo(`${config.public.api}/auth/login`, { external: true })
-          }
-        }
-      },
-    }),
   })
   const options: VueQueryPluginOptions = { queryClient }
 

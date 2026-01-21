@@ -62,7 +62,7 @@ export function createApiClient(requestAdapter: RequestAdapter) {
     }
     
     if (requestAdapter.baseUrl === undefined || requestAdapter.baseUrl === null || requestAdapter.baseUrl === "") {
-        requestAdapter.baseUrl = "https://hackomania-api.geekshacking.com";
+        requestAdapter.baseUrl = "http://localhost:5227";
     }
     const pathParameters: Record<string, unknown> = {
         "baseurl": requestAdapter.baseUrl,

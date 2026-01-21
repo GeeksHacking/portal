@@ -7,7 +7,7 @@ import { QuestionsRequestBuilderNavigationMetadata, QuestionsRequestBuilderReque
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}/registration
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/registration
  */
 export interface RegistrationRequestBuilder extends BaseRequestBuilder<RegistrationRequestBuilder> {
     /**
@@ -18,7 +18,7 @@ export interface RegistrationRequestBuilder extends BaseRequestBuilder<Registrat
 /**
  * Uri template for the request builder.
  */
-export const RegistrationRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}/registration";
+export const RegistrationRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/registration";
 /**
  * Metadata for all the navigation properties in the request builder.
  */

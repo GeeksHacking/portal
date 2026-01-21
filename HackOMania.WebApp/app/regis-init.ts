@@ -1,8 +1,6 @@
-import { useJoinHackathonMutation } from '~/composables/hackathon'
-import { dev_hackathonid, fetchQuestions, useInitQuestionMutation } from '~/composables/question'
+import { fetchQuestions, useInitQuestionMutation } from '~/composables/question'
 
-export const registrationSetup = async () => {
-  const joinMutation = useJoinHackathonMutation()
+export const registrationSetup = async (hackathonId: string) => {
   const initQuestionMutation = useInitQuestionMutation()
 
   try {
@@ -22,18 +20,18 @@ export const registrationSetup = async () => {
     }
 
     // Check if registration questions exist, if not initialize them
-    const questionsResponse = await fetchQuestions()
+    const questionsResponse = await fetchQuestions(hackathonId)
 
     const categories = questionsResponse?.categories ?? []
     const hasQuestions = categories.some(cat => cat.questions && cat.questions.length > 0)
 
     if (!hasQuestions) {
-      await initQuestionMutation.mutateAsync(dev_hackathonid)
+      await initQuestionMutation.mutateAsync(hackathonId)
     }
 
     return {
       success: true,
-      hackathonId: dev_hackathonid,
+      hackathonId,
     }
   }
   catch (error) {

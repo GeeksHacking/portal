@@ -4,20 +4,20 @@
 // @ts-ignore
 import { createHackOManiaApiEndpointsOrganizersHackathonWorkshopsCreateResponseFromDiscriminatorValue, createHackOManiaApiEndpointsOrganizersHackathonWorkshopsListResponseFromDiscriminatorValue, serializeHackOManiaApiEndpointsOrganizersHackathonWorkshopsCreateRequest, serializeHackOManiaApiEndpointsOrganizersHackathonWorkshopsCreateResponse, type HackOManiaApiEndpointsOrganizersHackathonWorkshopsCreateRequest, type HackOManiaApiEndpointsOrganizersHackathonWorkshopsCreateResponse, type HackOManiaApiEndpointsOrganizersHackathonWorkshopsListResponse } from '../../../../models/index.js';
 // @ts-ignore
-import { type WorkshopItemRequestBuilder, WorkshopItemRequestBuilderRequestsMetadata } from './item/index.js';
+import { type WithWorkshopItemRequestBuilder, WithWorkshopItemRequestBuilderRequestsMetadata } from './item/index.js';
 // @ts-ignore
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}/workshops
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/workshops
  */
 export interface WorkshopsRequestBuilder extends BaseRequestBuilder<WorkshopsRequestBuilder> {
     /**
      * Gets an item from the ApiSdk.organizers.hackathons.item.workshops.item collection
      * @param workshopId Unique identifier of the item
-     * @returns {WorkshopItemRequestBuilder}
+     * @returns {WithWorkshopItemRequestBuilder}
      */
-     byWorkshopId(workshopId: string) : WorkshopItemRequestBuilder;
+     byWorkshopId(workshopId: string) : WithWorkshopItemRequestBuilder;
     /**
      * Lists all workshops for the hackathon.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
@@ -48,14 +48,14 @@ export interface WorkshopsRequestBuilder extends BaseRequestBuilder<WorkshopsReq
 /**
  * Uri template for the request builder.
  */
-export const WorkshopsRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}/workshops";
+export const WorkshopsRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/workshops";
 /**
  * Metadata for all the navigation properties in the request builder.
  */
 export const WorkshopsRequestBuilderNavigationMetadata: Record<Exclude<keyof WorkshopsRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     byWorkshopId: {
-        requestsMetadata: WorkshopItemRequestBuilderRequestsMetadata,
-        pathParametersMappings: ["workshop%2Did"],
+        requestsMetadata: WithWorkshopItemRequestBuilderRequestsMetadata,
+        pathParametersMappings: ["workshopId"],
     },
 };
 /**

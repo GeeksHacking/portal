@@ -27,9 +27,9 @@ import { type WorkshopsRequestBuilder, WorkshopsRequestBuilderNavigationMetadata
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}
  */
-export interface HackathonItemRequestBuilder extends BaseRequestBuilder<HackathonItemRequestBuilder> {
+export interface WithHackathonItemRequestBuilder extends BaseRequestBuilder<WithHackathonItemRequestBuilder> {
     /**
      * The challenges property
      */
@@ -100,11 +100,11 @@ export interface HackathonItemRequestBuilder extends BaseRequestBuilder<Hackatho
 /**
  * Uri template for the request builder.
  */
-export const HackathonItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}";
+export const WithHackathonItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}";
 /**
  * Metadata for all the navigation properties in the request builder.
  */
-export const HackathonItemRequestBuilderNavigationMetadata: Record<Exclude<keyof HackathonItemRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
+export const WithHackathonItemRequestBuilderNavigationMetadata: Record<Exclude<keyof WithHackathonItemRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     challenges: {
         requestsMetadata: ChallengesRequestBuilderRequestsMetadata,
         navigationMetadata: ChallengesRequestBuilderNavigationMetadata,
@@ -146,15 +146,15 @@ export const HackathonItemRequestBuilderNavigationMetadata: Record<Exclude<keyof
 /**
  * Metadata for all the requests in the request builder.
  */
-export const HackathonItemRequestBuilderRequestsMetadata: RequestsMetadata = {
+export const WithHackathonItemRequestBuilderRequestsMetadata: RequestsMetadata = {
     get: {
-        uriTemplate: HackathonItemRequestBuilderUriTemplate,
+        uriTemplate: WithHackathonItemRequestBuilderUriTemplate,
         responseBodyContentType: "application/json",
         adapterMethodName: "send",
         responseBodyFactory:  createHackOManiaApiEndpointsOrganizersHackathonGetResponseFromDiscriminatorValue,
     },
     patch: {
-        uriTemplate: HackathonItemRequestBuilderUriTemplate,
+        uriTemplate: WithHackathonItemRequestBuilderUriTemplate,
         responseBodyContentType: "application/json",
         adapterMethodName: "send",
         responseBodyFactory:  createHackOManiaApiEndpointsOrganizersHackathonUpdateResponseFromDiscriminatorValue,

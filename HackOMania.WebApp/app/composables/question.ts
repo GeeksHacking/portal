@@ -1,15 +1,13 @@
 import { useMutation } from '@tanstack/vue-query'
+import { unref, type MaybeRef, type Ref } from 'vue'
 import type {
   HackOManiaApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitRequest,
   HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto,
 } from '~/api-client/models'
 
-// Hackathon ID from DatabaseInitBackgroundService
-export const dev_hackathonid = '1e2beba8-0dd2-484f-b5b2-4b1b71a084e4'
-
-export async function fetchQuestions() {
+export async function fetchQuestions(hackathonId: string) {
   return await useNuxtApp().$apiClient.participants.hackathons
-    .byHackathonIdOrShortCodeId(dev_hackathonid)
+    .byHackathonIdOrShortCodeId(hackathonId)
     .registration.questions.get()
 }
 
@@ -25,7 +23,7 @@ export function useInitQuestionMutation() {
 
 type Question = HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto
 
-export function useSubmitRegistrationMutation(questions: Ref<Question[]>) {
+export function useSubmitRegistrationMutation(hackathonId: MaybeRef<string>, questions: Ref<Question[]>) {
   const fieldErrors = ref<Record<string, string>>({}) // need to store the field errors because i want them to persist throughout the different pages
   const submissionError = ref(false)
 
@@ -35,8 +33,9 @@ export function useSubmitRegistrationMutation(questions: Ref<Question[]>) {
       fieldErrors.value = {}
       submissionError.value = false
 
+      const id = unref(hackathonId)
       return useNuxtApp().$apiClient.participants.hackathons
-        .byHackathonIdOrShortCodeId(dev_hackathonid)
+        .byHackathonIdOrShortCodeId(id)
         .registration.submissions.post(data)
     },
     onError(error: unknown) {

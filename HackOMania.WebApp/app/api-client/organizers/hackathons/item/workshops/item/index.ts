@@ -7,9 +7,9 @@ import { createHackOManiaApiEndpointsOrganizersHackathonWorkshopsUpdateResponseF
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}/workshops/{workshop-id}
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/workshops/{workshopId}
  */
-export interface WorkshopItemRequestBuilder extends BaseRequestBuilder<WorkshopItemRequestBuilder> {
+export interface WithWorkshopItemRequestBuilder extends BaseRequestBuilder<WithWorkshopItemRequestBuilder> {
     /**
      * Deletes an existing workshop.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
@@ -39,17 +39,17 @@ export interface WorkshopItemRequestBuilder extends BaseRequestBuilder<WorkshopI
 /**
  * Uri template for the request builder.
  */
-export const WorkshopItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}/workshops/{workshop%2Did}";
+export const WithWorkshopItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/workshops/{workshopId}";
 /**
  * Metadata for all the requests in the request builder.
  */
-export const WorkshopItemRequestBuilderRequestsMetadata: RequestsMetadata = {
+export const WithWorkshopItemRequestBuilderRequestsMetadata: RequestsMetadata = {
     delete: {
-        uriTemplate: WorkshopItemRequestBuilderUriTemplate,
+        uriTemplate: WithWorkshopItemRequestBuilderUriTemplate,
         adapterMethodName: "sendNoResponseContent",
     },
     put: {
-        uriTemplate: WorkshopItemRequestBuilderUriTemplate,
+        uriTemplate: WithWorkshopItemRequestBuilderUriTemplate,
         responseBodyContentType: "application/json",
         adapterMethodName: "send",
         responseBodyFactory:  createHackOManiaApiEndpointsOrganizersHackathonWorkshopsUpdateResponseFromDiscriminatorValue,

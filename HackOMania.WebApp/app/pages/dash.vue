@@ -22,6 +22,7 @@ const links = [
       },
     },
   ],
+  [],
 ] satisfies NavigationMenuItem[][]
 </script>
 

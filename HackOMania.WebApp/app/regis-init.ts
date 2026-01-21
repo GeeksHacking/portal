@@ -4,6 +4,21 @@ export const registrationSetup = async (hackathonId: string) => {
   const initQuestionMutation = useInitQuestionMutation()
 
   try {
+    // Check if user is already a participant
+    const statusResponse = await useNuxtApp()
+      .$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(dev_hackathonid)
+      .status.get()
+
+    // Join the hackathon only if not already a participant
+    if (!statusResponse?.isParticipant) {
+      try {
+        await joinMutation.mutateAsync(dev_hackathonid)
+      }
+      catch (joinError) {
+        console.error('[REGIS-INIT] Error joining hackathon:', joinError)
+      }
+    }
+
     // Check if registration questions exist, if not initialize them
     const questionsResponse = await fetchQuestions(hackathonId)
 

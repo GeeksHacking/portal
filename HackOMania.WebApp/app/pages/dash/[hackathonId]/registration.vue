@@ -6,5 +6,9 @@ const hackathonId = computed(() => (route.params.hackathonId as string | undefin
 </script>
 
 <template>
-  <RegistrationFormPage :hackathon-id="hackathonId" />
+  <UDashboardPanel id="registration">
+    <template #body>
+      <RegistrationFormPage :hackathon-id="hackathonId" />
+    </template>
+  </UDashboardPanel>
 </template>

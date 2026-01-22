@@ -33,6 +33,24 @@ public class DatabaseInitBackgroundService(
         sql.CodeFirst.InitTables<Workshop>();
         sql.CodeFirst.InitTables<WorkshopParticipant>();
 
+        try
+        {
+            await sql.Ado.ExecuteCommandAsync("ALTER TABLE Team ADD COLUMN SelectedChallengeId CHAR(36) NULL;");
+        }
+        catch { /* ignore */ }
+
+        try
+        {
+            await sql.Ado.ExecuteCommandAsync("ALTER TABLE Team ADD COLUMN ChallengeSelectedAt DATETIME NULL;");
+        }
+        catch { /* ignore */ }
+
+        try
+        {
+            await sql.Ado.ExecuteCommandAsync("ALTER TABLE Hackathon ADD COLUMN ChallengeSelectionEndDate DATETIME NULL;");
+        }
+        catch { /* ignore */ }
+
         if (env.IsDevelopment() && !await sql.Queryable<Hackathon>().AnyAsync(stoppingToken))
         {
             var hackathonId = new Guid("1e2beba8-0dd2-484f-b5b2-4b1b71a084e4");
@@ -53,6 +71,7 @@ public class DatabaseInitBackgroundService(
                 EventEndDate = eventEnd,
                 SubmissionsStartDate = new DateTimeOffset(2026, 3, 13, 10, 0, 0, TimeSpan.Zero),
                 SubmissionsEndDate = new DateTimeOffset(2026, 3, 15, 12, 0, 0, TimeSpan.Zero),
+                ChallengeSelectionEndDate = new DateTimeOffset(2026, 3, 14, 23, 59, 59, TimeSpan.Zero),
                 JudgingStartDate = new DateTimeOffset(2026, 3, 15, 13, 0, 0, TimeSpan.Zero),
                 JudgingEndDate = new DateTimeOffset(2026, 3, 15, 18, 0, 0, TimeSpan.Zero),
             };

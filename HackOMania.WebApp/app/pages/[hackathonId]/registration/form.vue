@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/vue-query'
 import { computed, ref } from 'vue'
 
 const route = useRoute()
+const config = useRuntimeConfig()
 const hackathonId = computed(() => (route.params.hackathonId as string | undefined) ?? null)
 
 // Track if we should show the form
@@ -23,7 +24,7 @@ watchEffect(() => {
       showForm.value = true
     }
     else if (hackathonId.value) {
-      navigateTo(`/${hackathonId.value}/registration`, { replace: true })
+      navigateTo(`${config.public.api}/auth/login?redirect_uri=${encodeURIComponent(route.fullPath)}`, { external: true })
     }
   }
 })

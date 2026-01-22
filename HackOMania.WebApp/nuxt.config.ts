@@ -9,6 +9,11 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/fonts',
   ],
+
+  colorMode: {
+    preference: 'light',
+  },
+
   ssr: false,
 
   // allows auto-import for constants

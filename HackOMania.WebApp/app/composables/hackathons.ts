@@ -50,3 +50,21 @@ export function useCurrentHackathon() {
   const { data: hackathonsData } = useQuery(hackathonQueries.list)
   return computed(() => hackathonsData.value?.hackathons?.[0] ?? null)
 }
+
+// Get hackathonId from route params
+export function useRouteHackathonId() {
+  const route = useRoute()
+  return computed(() => (route.params.hackathonId as string) ?? null)
+}
+
+// Get full hackathon data based on route param
+export function useRouteHackathon() {
+  const hackathonId = useRouteHackathonId()
+  const { data } = useQuery(
+    computed(() => ({
+      ...hackathonQueries.detail(hackathonId.value ?? ''),
+      enabled: !!hackathonId.value,
+    })),
+  )
+  return computed(() => data.value ?? null)
+}

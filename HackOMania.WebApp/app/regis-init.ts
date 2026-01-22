@@ -1,10 +1,12 @@
-import { fetchQuestions, useInitQuestionMutation } from '~/composables/question'
-import { useJoinHackathonMutation } from '~/composables/hackathon'
+import { fetchQuestions } from '~/composables/question'
 
-export const registrationSetup = async (hackathonId: string) => {
-  const initQuestionMutation = useInitQuestionMutation()
-  const joinMutation = useJoinHackathonMutation()
+interface RegistrationSetupOptions {
+  hackathonId: string
+  joinMutation: { mutateAsync: (id: string) => Promise<unknown> }
+  initQuestionMutation: { mutateAsync: (id: string) => Promise<unknown> }
+}
 
+export const registrationSetup = async ({ hackathonId, joinMutation, initQuestionMutation }: RegistrationSetupOptions) => {
   try {
     // Check if user is already a participant
     const statusResponse = await useNuxtApp()

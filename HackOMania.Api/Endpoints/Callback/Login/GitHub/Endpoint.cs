@@ -118,6 +118,6 @@ public class Endpoint(IOptions<AppOptions> options, ISqlSugarClient db) : Endpoi
             o.Claims.Add(new Claim(CustomClaimTypes.GitHubAccountId, githubAccountId.ToString()));
         });
 
-        await Send.RedirectAsync($"{options.Value.FrontendUrl}/dash", allowRemoteRedirects: true);
+        await Send.RedirectAsync($"{options.Value.FrontendUrl}/hackomania2026/registration/form", allowRemoteRedirects: true);
     }
 }

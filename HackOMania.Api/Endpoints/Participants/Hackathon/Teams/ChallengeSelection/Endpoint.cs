@@ -44,7 +44,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         try
         {
-            sql.BeginTran();
+            sql.Ado.BeginTran();
 
             // Lock the challenge row to serialize selection requests for this specific challenge.
             // This prevents race conditions where multiple teams select simultaneously and exceed the limit.
@@ -55,7 +55,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
             if (challenge is null)
             {
-                sql.RollbackTran();
+                sql.Ado.RollbackTran();
                 AddError(r => r.ChallengeId, "Challenge not found for this hackathon.");
                 await Send.ErrorsAsync(cancellation: ct);
                 return;
@@ -101,7 +101,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
             if (allowed is not bool boolAllowed || !boolAllowed)
             {
-                sql.RollbackTran();
+                sql.Ado.RollbackTran();
                 AddError("Team does not meet the challenge selection criteria.");
                 await Send.ErrorsAsync(400, ct);
                 return;
@@ -114,7 +114,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 .UpdateColumns(t => new { t.SelectedChallengeId, t.ChallengeSelectedAt })
                 .ExecuteCommandAsync(ct);
 
-            sql.CommitTran();
+            sql.Ado.CommitTran();
 
             await Send.OkAsync(new Response 
             { 
@@ -124,7 +124,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         }
         catch
         {
-            sql.RollbackTran();
+            sql.Ado.RollbackTran();
             throw;
         }
     }

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
-import { fetchQuestions } from '~/composables/question'
+import { fetchQuestions, useInitQuestionMutation } from '~/composables/question'
+import { useJoinHackathonMutation } from '~/composables/hackathon'
 import { registrationSetup } from '~/regis-init'
 import { hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
 
@@ -18,6 +19,10 @@ const hackathonId = computed(() => props.hackathonId ?? null)
 const setupComplete = ref(false)
 const setupError = ref<string | null>(null)
 const lastSetupHackathonId = ref<string | null>(null)
+
+// Initialize mutations at component level (must be in setup)
+const initQuestionMutation = useInitQuestionMutation()
+const joinMutation = useJoinHackathonMutation()
 
 // Ensure user is a participant before attempting to load registration data.
 const { data: statusData, isLoading: isLoadingStatus, error: statusError } = useQuery(
@@ -45,7 +50,7 @@ watch(
     setupComplete.value = false
 
     try {
-      await registrationSetup(id)
+      await registrationSetup({ hackathonId: id, joinMutation, initQuestionMutation })
       lastSetupHackathonId.value = id
       setupComplete.value = true
     }

@@ -12,7 +12,7 @@ const props = defineProps<{
 const router = useRouter()
 const route = useRoute()
 
-const registrationPath = computed(() => `/dash/${props.hackathonId}/registration`)
+const registrationPath = computed(() => `/${props.hackathonId}/registration`)
 
 // Get authenticated user data for prefilling
 const { data: userData } = useQuery(authQueries.whoAmI)
@@ -89,10 +89,9 @@ const { mutateAsync, isPending: isSubmitting, fieldErrors, submissionError } = u
 
 const onSubmit = async () => {
   const nextIndex = currentPageIndex.value + 1
-
   if (nextIndex < 3) {
     router.push({
-      path: registrationPath.value,
+      path: registrationPath.value + '/form',
       query: { index: String(nextIndex) },
     })
     return

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { useQuery } from '@tanstack/vue-query'
+import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { fetchQuestions, useInitQuestionMutation } from '~/composables/question'
 import { useJoinHackathonMutation } from '~/composables/hackathon'
 import { registrationSetup } from '~/regis-init'
@@ -19,10 +19,12 @@ const hackathonId = computed(() => props.hackathonId ?? null)
 const setupComplete = ref(false)
 const setupError = ref<string | null>(null)
 const lastSetupHackathonId = ref<string | null>(null)
+const isJoining = ref(false)
 
 // Initialize mutations at component level (must be in setup)
 const initQuestionMutation = useInitQuestionMutation()
 const joinMutation = useJoinHackathonMutation()
+const queryClient = useQueryClient()
 
 // Ensure user is a participant before attempting to load registration data.
 const { data: statusData, isLoading: isLoadingStatus, error: statusError } = useQuery(
@@ -32,17 +34,34 @@ const { data: statusData, isLoading: isLoadingStatus, error: statusError } = use
   })),
 )
 
-const isNotParticipant = computed(() => statusData.value && statusData.value.isParticipant === false)
-
 watch(
   () => ({ id: hackathonId.value, status: statusData.value }),
   async ({ id, status }) => {
     if (!id || status === undefined) return
+
+    // If not a participant, auto-join the hackathon
     if (!status.isParticipant) {
+      if (isJoining.value) return // Prevent duplicate join attempts
+
+      isJoining.value = true
       setupComplete.value = false
       lastSetupHackathonId.value = null
+
+      try {
+        await joinMutation.mutateAsync(id)
+        // Invalidate status query to refetch participant status
+        await queryClient.invalidateQueries({ queryKey: ['hackathons', id, 'status'] })
+      }
+      catch (error) {
+        console.error('[FORM] Failed to join hackathon:', error)
+        setupError.value = 'Failed to join hackathon. Please try again.'
+        isJoining.value = false
+      }
       return
     }
+
+    // Reset joining state once we're a participant
+    isJoining.value = false
 
     if (lastSetupHackathonId.value === id && setupComplete.value) return
 
@@ -93,15 +112,12 @@ const { data: questions, isLoading, error } = useQuery(computed(() => ({
     </div>
 
     <div
-      v-else-if="isNotParticipant"
-      class="text-center py-8 space-y-2"
+      v-else-if="isJoining"
+      class="text-center py-8"
     >
       <p class="text-gray-900 dark:text-gray-100">
-        You need to join the hackathon before completing the registration form.
+        Joining hackathon...
       </p>
-      <NuxtLink to="/dash" class="text-blue-600 dark:text-blue-400 underline">
-        Join from dashboard
-      </NuxtLink>
     </div>
 
     <div

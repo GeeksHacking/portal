@@ -56,7 +56,7 @@ watchEffect(() => {
           <Button
             variant="outline"
             class="w-full sm:w-64 h-14 border-2 border-black bg-transparent text-black cursor-pointer flex items-center justify-center gap-2 rounded-lg"
-            @click="navigateTo(`${config.public.api}/auth/login`, { external: true })"
+            @click="navigateTo(`${config.public.api}/auth/login?redirect_uri=${encodeURIComponent(`/${hackathonId}/registration/form`)}`, { external: true })"
           >
             <UIcon
               name="i-lucide-github"

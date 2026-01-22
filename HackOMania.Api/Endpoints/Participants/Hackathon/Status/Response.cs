@@ -9,6 +9,9 @@ public class Response
     public required ParticipantStatus? Status { get; init; }
     public string? ReviewReason { get; init; }
     public DateTimeOffset? ReviewedAt { get; init; }
+    public Guid? SelectedChallengeId { get; init; }
+    public DateTimeOffset? ChallengeSelectedAt { get; init; }
+    public DateTimeOffset? ChallengeSelectionEndDate { get; init; }
 }
 
 public enum ParticipantStatus

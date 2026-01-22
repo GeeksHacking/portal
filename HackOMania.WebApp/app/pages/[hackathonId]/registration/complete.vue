@@ -9,7 +9,7 @@ const route = useRoute()
 const hackathonId = computed(() => (route.query.hackathonId as string | undefined) ?? null)
 
 if (hackathonId.value) {
-  await navigateTo(`/dash/${hackathonId.value}/registration/complete`, { replace: true })
+  await navigateTo(`${hackathonId.value}/registration/complete`, { replace: true })
 }
 </script>
 
@@ -43,15 +43,8 @@ if (hackathonId.value) {
 
         <div class="flex flex-col gap-3 mt-8 w-full max-w-sm">
           <NuxtLink
-            to="/dash"
+            to="https://hackomania.geekshacking.com/"
             class="w-full h-14 bg-black text-white rounded-lg flex items-center justify-center font-raleway text-lg font-normal hover:bg-gray-800 transition-colors"
-          >
-            Go to Dashboard
-          </NuxtLink>
-
-          <NuxtLink
-            to="/"
-            class="w-full h-14 border border-black bg-transparent text-black rounded-lg flex items-center justify-center font-raleway text-lg font-normal hover:bg-gray-50 transition-colors"
           >
             Back to Home
           </NuxtLink>

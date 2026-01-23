@@ -36,10 +36,10 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var userIds = participants.Select(p => p.UserId).Distinct().ToList();
 
-        var users = await sql.Queryable<User>()
+        var usersList = await sql.Queryable<User>()
             .Where(u => userIds.Contains(u.Id))
-            .ToListAsync(ct)
-            .ContinueWith(t => t.Result.ToDictionary(x => x.Id, x => x.Name), ct);
+            .ToListAsync(ct);
+        var users = usersList.ToDictionary(x => x.Id, x => x.Name);
 
         var teamIds = participants
             .Where(p => p.TeamId.HasValue)
@@ -47,10 +47,10 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .Distinct()
             .ToList();
 
-        var teams = await sql.Queryable<Team>()
+        var teamsList = await sql.Queryable<Team>()
             .Where(t => teamIds.Contains(t.Id))
-            .ToListAsync(ct)
-            .ContinueWith(t => t.Result.ToDictionary(x => x.Id, x => x.Name), ct);
+            .ToListAsync(ct);
+        var teams = teamsList.ToDictionary(x => x.Id, x => x.Name);
 
         var participantResponses = participants
             .Select(p =>

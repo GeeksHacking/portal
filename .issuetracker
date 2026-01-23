@@ -1,0 +1,3 @@
+[issuetracker "GitHub Issue"]
+	regex = "#(\\d+)"
+	url = https://github.com/GeeksHacking/hackomania-event-platform/issues/$1

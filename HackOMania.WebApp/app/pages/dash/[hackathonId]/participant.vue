@@ -28,6 +28,19 @@ const { data: statusData, isLoading: isLoadingStatus, error: statusError } = use
   })),
 )
 
+// Fetch registration submissions to check completion status
+const { data: submissionsData } = useQuery(
+  computed(() => ({
+    queryKey: ['hackathons', hackathonId.value, 'registration', 'submissions'],
+    queryFn: () => useNuxtApp().$apiClient.participants.hackathons
+      .byHackathonIdOrShortCodeId(hackathonId.value ?? '')
+      .registration.submissions.get(),
+    enabled: !!hackathonId.value && statusData.value?.isParticipant === true,
+  })),
+)
+
+const isRegistrationComplete = computed(() => submissionsData.value?.requiredQuestionsRemaining === 0)
+
 const joinMutation = useJoinHackathonMutation()
 
 // Organizer check
@@ -88,9 +101,13 @@ async function handleReview() {
   }
 }
 
-const statusDisplay = computed(() =>
-  formatParticipantStatus(statusData.value?.status ?? null, statusData.value?.isParticipant),
-)
+const statusDisplay = computed(() => {
+  // If participant but registration incomplete, show that instead
+  if (statusData.value?.isParticipant && !isRegistrationComplete.value) {
+    return { label: 'Incomplete registration', color: 'warning' as const }
+  }
+  return formatParticipantStatus(statusData.value?.status ?? null, statusData.value?.isParticipant)
+})
 
 const isParticipant = computed(() => statusData.value?.isParticipant === true)
 
@@ -123,7 +140,7 @@ const joinHackathon = async () => {
             <UButton
               to="/dash"
               icon="i-lucide-arrow-left"
-              color="gray"
+              color="neutral"
               variant="ghost"
               size="sm"
             >
@@ -209,7 +226,7 @@ const joinHackathon = async () => {
               >
                 <UButton
                   size="sm"
-                  color="black"
+                  color="neutral"
                   variant="solid"
                   :loading="joinMutation.isPending.value"
                   @click="joinHackathon"
@@ -228,18 +245,35 @@ const joinHackathon = async () => {
                   Application status
                 </h3>
               </template>
-              <p class="text-sm text-muted">
-                {{ statusDisplay.label }}
-                <span v-if="statusData?.reviewedAt">
-                  • Reviewed {{ new Date(statusData.reviewedAt).toLocaleDateString() }}
-                </span>
-              </p>
-              <p
-                v-if="statusData?.reviewReason"
-                class="text-xs text-red-600 mt-2"
-              >
-                Review notes: {{ statusData.reviewReason }}
-              </p>
+              <template v-if="!isRegistrationComplete">
+                <p class="text-sm text-muted">
+                  {{ statusDisplay.label }}
+                </p>
+                <div class="mt-3">
+                  <UButton
+                    :to="`/${hackathonId}/registration`"
+                    size="sm"
+                    color="neutral"
+                    variant="solid"
+                  >
+                    Continue registration
+                  </UButton>
+                </div>
+              </template>
+              <template v-else>
+                <p class="text-sm text-muted">
+                  {{ statusDisplay.label }}
+                  <span v-if="statusData?.reviewedAt">
+                    • Reviewed {{ new Date(statusData.reviewedAt).toLocaleDateString() }}
+                  </span>
+                </p>
+                <p
+                  v-if="statusData?.reviewReason"
+                  class="text-xs text-red-600 mt-2"
+                >
+                  Review notes: {{ statusData.reviewReason }}
+                </p>
+              </template>
             </UCard>
 
             <UCard

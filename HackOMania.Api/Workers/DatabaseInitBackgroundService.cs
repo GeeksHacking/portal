@@ -104,6 +104,36 @@ public class DatabaseInitBackgroundService(
             };
 
             await sql.Insertable(resources).ExecuteCommandAsync(stoppingToken);
+
+            // testing with myself (anggun) as organizer 
+            var testUserId = Guid.NewGuid();
+            var testUser = new User
+            {
+                Id = testUserId,
+                Name = "gunnicorn",
+                Email = "anggunq@hotmail.com",
+            };
+            await sql.Insertable(testUser).ExecuteCommandAsync(stoppingToken);
+
+            var testGitHub = new GitHubOnlineAccount
+            {
+                Id = Guid.NewGuid(),
+                UserId = testUserId,
+                GitHubId = 47025159,
+                GitHubLogin = "gunnicorn",
+            };
+            await sql.Insertable(testGitHub).ExecuteCommandAsync(stoppingToken);
+
+            var testOrganizer = new Organizer
+            {
+                Id = Guid.NewGuid(),
+                HackathonId = hackathonId,
+                UserId = testUserId,
+                Type = OrganizerType.Admin,
+            };
+            
+            // IF THIS DOES NOT WORK - unfortunately you have to call this api manually in scalar for your local testing lol
+            await sql.Insertable(testOrganizer).ExecuteCommandAsync(stoppingToken);
         }
     }
 }

@@ -29,6 +29,18 @@ export const teamQueries = {
     }),
 }
 
+export const teamOrganizerQueries = {
+  list: (hackathonId: string) =>
+    queryOptions({
+      queryKey: ['hackathons', hackathonId, 'teams', 'organizer'],
+      async queryFn() {
+        return await useNuxtApp()
+          .$apiClient.organizers.hackathons.byHackathonId(hackathonId)
+          .teams.get()
+      },
+    }),
+}
+
 export function useCreateTeam(hackathonId: MaybeRef<string | null>) {
   const queryClient = useQueryClient()
 

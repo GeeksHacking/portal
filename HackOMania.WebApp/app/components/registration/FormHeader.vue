@@ -11,10 +11,7 @@ const currentIndex = computed(() => {
   return index ? Number(index) : 0
 })
 
-const exitTo = computed(() => {
-  if (props.hackathonId) return `/dash/${props.hackathonId}`
-  return '/dash'
-})
+const exitTo = '/dash'
 
 const steps = [
   { label: 'Personal Details', index: 0 },

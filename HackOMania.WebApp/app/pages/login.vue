@@ -47,10 +47,10 @@ const isAuthenticated = computed(() => !!user.value && !isError.value)
       <div class="space-y-6">
         <div class="space-y-2">
           <h1 class="text-4xl font-bold tracking-tight text-gray-900">
-            HackOMania
+            GeeksHacking
           </h1>
           <p class="text-gray-600">
-            Event platform for hackathons
+            Giving | Geeks | Grow
           </p>
         </div>
 

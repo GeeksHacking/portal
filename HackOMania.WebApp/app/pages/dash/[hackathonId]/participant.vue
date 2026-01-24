@@ -100,7 +100,7 @@ const joinHackathon = async () => {
     await joinMutation.mutateAsync(hackathonId.value)
     await queryClient.invalidateQueries({ queryKey: participantHackathonQueries.status(hackathonId.value).queryKey })
     await queryClient.invalidateQueries({ queryKey: participantHackathonQueries.list.queryKey })
-    await navigateTo(`/dash/${hackathonId.value}/registration`)
+    await navigateTo(`/${hackathonId.value}/registration`)
   }
   catch (error) {
     console.error('[DASH] Failed to join hackathon', error)
@@ -112,10 +112,6 @@ const joinHackathon = async () => {
   }
 }
 
-const goToRegistration = () => {
-  if (!hackathonId.value) return
-  navigateTo(`/dash/${hackathonId.value}/registration`)
-}
 </script>
 
 <template>
@@ -207,18 +203,11 @@ const goToRegistration = () => {
                 Reason: {{ statusData?.reviewReason }}
               </div>
 
-              <div class="mt-4 flex flex-wrap gap-2">
+              <div
+                v-if="!isParticipant"
+                class="mt-4 flex flex-wrap gap-2"
+              >
                 <UButton
-                  v-if="isParticipant"
-                  size="sm"
-                  color="black"
-                  variant="solid"
-                  @click="goToRegistration"
-                >
-                  Continue registration
-                </UButton>
-                <UButton
-                  v-else
                   size="sm"
                   color="black"
                   variant="solid"

@@ -31,9 +31,9 @@ watchEffect(() => {
 </script>
 
 <template>
-  <!-- Show loading while checking auth -->
+  <!-- Show loading while checking auth or if authenticated (redirecting) -->
   <div
-    v-if="isLoading"
+    v-if="isLoading || user"
     class="bg-white min-h-screen flex flex-col items-center justify-center gap-4 px-4"
   >
     <p class="text-sm font-medium text-gray-600 animate-pulse">
@@ -42,7 +42,7 @@ watchEffect(() => {
     <UIcon name="i-lucide-loader-circle" class="w-8 h-8 animate-spin text-primary" />
   </div>
 
-  <!-- Show login UI if not authenticated (error or no user after loading) -->
+  <!-- Show login UI only if not authenticated -->
   <div
     v-else
     class="bg-white min-h-screen font-raleway flex items-center justify-center px-4"

@@ -184,20 +184,22 @@ function getStatusLabel(status: number | null | undefined): string {
             >
               {{ getStatusLabel(participant.concludedStatus) }}
             </UBadge>
-            <UButton
-              size="xs"
-              variant="ghost"
-              color="success"
-              icon="i-lucide-check"
-              @click="openReviewModal(participant.id ?? '', participant.name ?? participant.id ?? '', 'accept')"
-            />
-            <UButton
-              size="xs"
-              variant="ghost"
-              color="error"
-              icon="i-lucide-x"
-              @click="openReviewModal(participant.id ?? '', participant.name ?? participant.id ?? '', 'reject')"
-            />
+            <template v-if="participant.concludedStatus === 0 || participant.concludedStatus === null || participant.concludedStatus === undefined">
+              <UButton
+                size="xs"
+                variant="ghost"
+                color="success"
+                icon="i-lucide-check"
+                @click="openReviewModal(participant.id ?? '', participant.name ?? participant.id ?? '', 'accept')"
+              />
+              <UButton
+                size="xs"
+                variant="ghost"
+                color="error"
+                icon="i-lucide-x"
+                @click="openReviewModal(participant.id ?? '', participant.name ?? participant.id ?? '', 'reject')"
+              />
+            </template>
           </div>
         </div>
       </div>

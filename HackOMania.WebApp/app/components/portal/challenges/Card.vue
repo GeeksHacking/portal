@@ -1,13 +1,56 @@
 <script setup lang="ts">
-defineProps<{
+import { ref, onMounted, watch, computed } from 'vue'
+
+const props = defineProps<{
   title: string
   teamCount: number
   selected: boolean
+  titleHeight?: number
+  colours?: string[] | null
 }>()
 
 const emit = defineEmits<{
   select: []
+  titleMounted: [height: number]
 }>()
+
+const titleRef = ref<HTMLElement | null>(null)
+
+// Compute the header style with gradient and brightness
+const headerStyle = computed(() => {
+  const style: Record<string, string> = {}
+
+  if (props.titleHeight) {
+    style.height = `${props.titleHeight}px`
+  }
+
+  if (props.colours) {
+    style.background = `linear-gradient(to right, ${props.colours[0]} 0%, ${props.colours[1]} 94%, ${props.colours[2]} 100%)`
+    style.opacity = props.selected ? '1' : '0.4'
+  }
+
+  return style
+})
+
+// Fallback class when no custom colours
+const headerClass = computed(() => {
+  if (props.colours) return ''
+  return props.selected ? 'bg-[#FF5B84]' : 'bg-[#FF5B84]/40'
+})
+
+onMounted(() => {
+  if (titleRef.value) {
+    emit('titleMounted', titleRef.value.offsetHeight)
+  }
+})
+
+watch(() => props.title, () => {
+  setTimeout(() => {
+    if (titleRef.value) {
+      emit('titleMounted', titleRef.value.offsetHeight)
+    }
+  }, 0)
+})
 </script>
 
 <template>
@@ -16,10 +59,12 @@ const emit = defineEmits<{
     @click="emit('select')"
   >
     <div
-      class="px-3 lg:px-4 rounded-lg text-center h-12 lg:h-18 flex items-center justify-center"
-      :class="selected ? 'bg-[#FF5B84]' : 'bg-[#FF5B84]/40'"
+      ref="titleRef"
+      class="px-3 lg:px-4 py-3 lg:py-4 rounded-lg text-center min-h-12 lg:min-h-18 flex items-center justify-center"
+      :class="headerClass"
+      :style="headerStyle"
     >
-      <span class="font-['Zalando_Sans_Expanded'] text-black uppercase text-base lg:text-2xl">
+      <span class="font-['Zalando_Sans_Expanded'] text-black uppercase text-base lg:text-2xl break-words">
         {{ title }}
       </span>
     </div>

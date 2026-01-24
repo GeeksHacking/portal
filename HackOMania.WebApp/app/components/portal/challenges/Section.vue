@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useQuery, useQueries } from '@tanstack/vue-query'
 import { computed, ref } from 'vue'
+import sponsorsData from '~/data/sponsors.json'
 
 const hackathonId = useRouteHackathonId()
 
@@ -28,6 +29,44 @@ const selectedIndex = ref<number | null>(null)
 const selectedDescription = computed(() =>
   selectedIndex.value !== null ? detailsQueries.value[selectedIndex.value]?.data?.description : null,
 )
+
+type SponsorData = {
+  'sponsor': string
+  'sponsor-logo': string
+  'colours': string[]
+}
+
+const typedSponsorsData = sponsorsData as Record<string, SponsorData>
+
+// Get sponsor colours for a challenge
+const getSponsorColours = (challengeId: string | undefined) => {
+  if (!challengeId) return null
+  return typedSponsorsData[challengeId]?.colours ?? null
+}
+
+// Get sponsor data for selected challenge
+const selectedSponsor = computed(() => {
+  if (selectedIndex.value === null) return null
+  const challengeId = challenges.value[selectedIndex.value]?.id
+  if (!challengeId) return null
+  return typedSponsorsData[challengeId] ?? null
+})
+
+const selectedSponsorName = computed(() => selectedSponsor.value?.sponsor ?? null)
+const selectedSponsorLogo = computed(() => selectedSponsor.value?.['sponsor-logo'] ?? null)
+
+// Track card title heights for consistent sizing
+const titleHeights = ref<Map<number, number>>(new Map())
+const maxTitleHeight = computed(() => {
+  const heights = Array.from(titleHeights.value.values())
+  return heights.length > 0 ? Math.max(...heights) : 0
+})
+
+const onTitleMounted = (index: number, height: number) => {
+  titleHeights.value.set(index, height)
+  // Trigger reactivity
+  titleHeights.value = new Map(titleHeights.value)
+}
 </script>
 
 <template>
@@ -55,26 +94,42 @@ const selectedDescription = computed(() =>
           :title="challenge.title ?? ''"
           :team-count="0"
           :selected="selectedIndex === index"
+          :title-height="maxTitleHeight > 0 ? maxTitleHeight : undefined"
+          :colours="getSponsorColours(challenge.id)"
           @select="selectedIndex = index"
+          @title-mounted="(height) => onTitleMounted(index, height)"
         />
       </div>
 
       <!-- Challenge details -->
-      <div class="mt-8 lg:mt-16 w-full text-left">
-        <h3 class="font-['Zalando_Sans_Expanded'] text-xl lg:text-[32px] font-bold mb-2">
-          {{ selectedIndex !== null ? 'Challenge Statement' : 'Explore' }}
-        </h3>
-        <p
-          v-if="selectedIndex !== null"
-          class="font-['Raleway'] text-base lg:text-xl mb-4"
-        >
-          Sponsor Name
-        </p>
-        <p class="font-['Raleway'] text-base lg:text-xl whitespace-pre-line">
-          {{ selectedDescription ?? `Each sponsor has designed a unique challenge for this hackathon, reflecting their goals and areas of focus. Browse through the challenges to find the one that excites you the most or best matches your skills!
+      <div class="mt-8 lg:mt-16 w-full text-left flex flex-col lg:flex-row gap-8">
+        <div class="flex-1">
+          <h3 class="font-['Zalando_Sans_Expanded'] text-xl lg:text-[32px] font-bold mb-2">
+            {{ selectedIndex !== null ? 'Challenge Statement' : 'Explore' }}
+          </h3>
+          <p
+            v-if="selectedIndex !== null && selectedSponsorName"
+            class="font-['Raleway'] text-base lg:text-xl mb-4"
+          >
+            {{ selectedSponsorName }}
+          </p>
+          <p class="font-['Raleway'] text-base lg:text-xl whitespace-pre-line">
+            {{ selectedDescription ?? `Each sponsor has designed a unique challenge for this hackathon, reflecting their goals and areas of focus. Browse through the challenges to find the one that excites you the most or best matches your skills!
 
 The dashboard updates live. Feel free to use this dashboard to help you choose your challenge statement!` }}
-        </p>
+          </p>
+        </div>
+        <!-- Sponsor Logo -->
+        <div
+          v-if="selectedIndex !== null && selectedSponsorLogo"
+          class="w-full lg:w-[386px] h-[209px] shrink-0 rounded-lg overflow-hidden"
+        >
+          <img
+            :src="selectedSponsorLogo"
+            :alt="selectedSponsorName ?? 'Sponsor logo'"
+            class="w-full h-full object-cover"
+          >
+        </div>
       </div>
     </div>
   </section>

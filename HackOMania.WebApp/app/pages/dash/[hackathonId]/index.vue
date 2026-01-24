@@ -1,70 +1,64 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import { formatParticipantStatus, hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
-import { useJoinHackathonMutation } from '~/composables/hackathon'
+import { computed, watch } from 'vue'
+import { useQuery } from '@tanstack/vue-query'
+import { hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
+import { organizerQueries } from '~/composables/organizers'
+import { authQueries } from '~/composables/auth'
+import Participants from './participants.vue'
+import Challenges from './challenges.vue'
+import Teams from './teams.vue'
+import Submissions from './submissions.vue'
+import Judges from './judges.vue'
 
 const route = useRoute()
-const toast = useToast()
-const queryClient = useQueryClient()
 
 const hackathonId = computed(() => (route.params.hackathonId as string | undefined) ?? null)
 
-const { data: hackathon, isLoading: isLoadingHackathon, error: hackathonError } = useQuery(
+// Fetch current user
+const { data: user, isLoading: isLoadingUser } = useQuery(authQueries.whoAmI)
+
+// Fetch organizers list
+const { data: organizersData, isLoading: isLoadingOrganizers } = useQuery(
+  computed(() => ({
+    ...organizerQueries.list(hackathonId.value ?? ''),
+    enabled: !!hackathonId.value,
+  })),
+)
+
+// Check if current user is an organizer
+const isOrganizer = computed(() => {
+  if (!user.value?.id || !organizersData.value?.organizers) {
+    return false
+  }
+  return organizersData.value.organizers.some(org => org.userId === user.value?.id)
+})
+
+const isLoadingOrganizerCheck = computed(() => isLoadingUser.value || isLoadingOrganizers.value)
+
+// Redirect to participant view if not an organizer
+watch([isOrganizer, isLoadingOrganizerCheck], ([org, loading]) => {
+  if (!loading && !org) {
+    navigateTo(`/dash/${hackathonId.value}/participant`)
+  }
+})
+
+const { data: hackathon, isLoading: isLoadingHackathon } = useQuery(
   computed(() => ({
     ...participantHackathonQueries.detail(hackathonId.value ?? ''),
     enabled: !!hackathonId.value,
   })),
 )
-
-const { data: statusData, isLoading: isLoadingStatus, error: statusError } = useQuery(
-  computed(() => ({
-    ...participantHackathonQueries.status(hackathonId.value ?? ''),
-    enabled: !!hackathonId.value,
-  })),
-)
-
-const joinMutation = useJoinHackathonMutation()
-
-const statusDisplay = computed(() =>
-  formatParticipantStatus(statusData.value?.status ?? null, statusData.value?.isParticipant),
-)
-
-const isParticipant = computed(() => statusData.value?.isParticipant === true)
-
-const joinHackathon = async () => {
-  if (!hackathonId.value) return
-  try {
-    await joinMutation.mutateAsync(hackathonId.value)
-    await queryClient.invalidateQueries({ queryKey: participantHackathonQueries.status(hackathonId.value).queryKey })
-    await queryClient.invalidateQueries({ queryKey: participantHackathonQueries.list.queryKey })
-    await navigateTo(`/dash/${hackathonId.value}/registration`)
-  }
-  catch (error) {
-    console.error('[DASH] Failed to join hackathon', error)
-    toast.add({
-      title: 'Could not join',
-      description: 'Please try again in a moment.',
-      color: 'error',
-    })
-  }
-}
-
-const goToRegistration = () => {
-  if (!hackathonId.value) return
-  navigateTo(`/dash/${hackathonId.value}/registration`)
-}
 </script>
 
 <template>
-  <UDashboardPanel id="hackathon-detail">
+  <UDashboardPanel id="hackathon-organizer">
     <template #header>
       <UDashboardNavbar :title="hackathon?.name ?? 'Hackathon'">
         <template #leading>
           <UButton
             to="/dash"
             icon="i-lucide-arrow-left"
-            color="gray"
+            color="neutral"
             variant="ghost"
             size="sm"
           >
@@ -76,97 +70,48 @@ const goToRegistration = () => {
 
     <template #body>
       <div class="p-4 space-y-4">
-        <div v-if="isLoadingHackathon || isLoadingStatus" class="text-muted">
-          Loading hackathon details...
+        <div
+          v-if="isLoadingOrganizerCheck || isLoadingHackathon"
+          class="text-(--ui-text-muted)"
+        >
+          Loading...
         </div>
 
-        <div v-else-if="hackathonError || statusError" class="text-red-600">
-          Unable to load hackathon details. Please try again.
-        </div>
-
-        <div v-else-if="!hackathon" class="text-muted">
-          Hackathon not found.
-        </div>
-
-        <div v-else class="space-y-4">
-          <UCard>
-            <template #header>
-              <div class="flex items-start justify-between gap-2">
-                <div>
-                  <h2 class="text-lg font-semibold">
-                    {{ hackathon.name }}
-                  </h2>
-                  <p class="text-xs text-muted">
-                    {{ hackathon.venue ?? 'Venue TBC' }}
-                  </p>
-                </div>
-                <UBadge v-if="statusData" :color="statusDisplay.color" variant="subtle" size="sm">
-                  {{ statusDisplay.label }}
-                </UBadge>
-              </div>
-            </template>
-
-            <p class="text-sm text-muted">
-              {{ hackathon.description ?? 'Details coming soon.' }}
+        <template v-else-if="isOrganizer">
+          <div class="flex flex-col gap-1">
+            <h2 class="text-lg font-semibold">
+              Organizer Dashboard
+            </h2>
+            <p class="text-sm text-(--ui-text-muted)">
+              Manage participants, teams, and submissions for {{ hackathon?.name }}.
             </p>
+          </div>
 
-            <div class="mt-3 flex flex-wrap gap-2 text-xs text-muted">
-              <span>
-                Starts: {{ hackathon.eventStartDate ? new Date(hackathon.eventStartDate).toLocaleDateString() : 'TBC' }}
-              </span>
-              <span>•</span>
-              <span>
-                Ends: {{ hackathon.eventEndDate ? new Date(hackathon.eventEndDate).toLocaleDateString() : 'TBC' }}
-              </span>
-            </div>
+          <Participants
+            :hackathon-id="hackathonId ?? ''"
+            :is-organizer="isOrganizer"
+          />
 
-            <div
-              v-if="statusData?.status === 2 && statusData?.reviewReason"
-              class="mt-3 text-xs text-red-600"
-            >
-              Reason: {{ statusData?.reviewReason }}
-            </div>
+          <Teams
+            :hackathon-id="hackathonId ?? ''"
+            :is-organizer="isOrganizer"
+          />
 
-            <div class="mt-4 flex flex-wrap gap-2">
-              <UButton
-                v-if="isParticipant"
-                size="sm"
-                color="black"
-                variant="solid"
-                @click="goToRegistration"
-              >
-                Continue registration
-              </UButton>
-              <UButton
-                v-else
-                size="sm"
-                color="black"
-                variant="solid"
-                :loading="joinMutation.isPending.value"
-                @click="joinHackathon"
-              >
-                Join hackathon
-              </UButton>
-            </div>
-          </UCard>
+          <Challenges
+            :hackathon-id="hackathonId ?? ''"
+            :is-organizer="isOrganizer"
+          />
 
-          <UCard v-if="statusData?.isParticipant" class="bg-gray-50">
-            <template #header>
-              <h3 class="text-sm font-semibold">
-                Application status
-              </h3>
-            </template>
-            <p class="text-sm text-muted">
-              {{ statusDisplay.label }}
-              <span v-if="statusData?.reviewedAt">
-                • Reviewed {{ new Date(statusData.reviewedAt).toLocaleDateString() }}
-              </span>
-            </p>
-            <p v-if="statusData?.reviewReason" class="text-xs text-red-600 mt-2">
-              Review notes: {{ statusData.reviewReason }}
-            </p>
-          </UCard>
-        </div>
+          <Judges
+            :hackathon-id="hackathonId ?? ''"
+            :is-organizer="isOrganizer"
+          />
+
+          <Submissions
+            :hackathon-id="hackathonId ?? ''"
+            :is-organizer="isOrganizer"
+          />
+        </template>
       </div>
     </template>
   </UDashboardPanel>

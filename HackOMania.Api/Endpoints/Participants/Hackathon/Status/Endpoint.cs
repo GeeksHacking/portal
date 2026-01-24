@@ -56,12 +56,17 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         }
 
         string? teamName = null;
+        Guid? selectedChallengeId = null;
+        DateTimeOffset? challengeSelectedAt = null;
+
         if (participant.TeamId.HasValue)
         {
             var team = await sql.Queryable<Team>()
                 .Where(t => t.Id == participant.TeamId.Value)
                 .FirstAsync(ct);
             teamName = team?.Name;
+            selectedChallengeId = team?.SelectedChallengeId;
+            challengeSelectedAt = team?.ChallengeSelectedAt;
         }
 
         var latestReview = await sql.Queryable<ParticipantReview>()
@@ -88,6 +93,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 Status = status,
                 ReviewReason = latestReview?.Reason,
                 ReviewedAt = latestReview?.CreatedAt,
+                SelectedChallengeId = selectedChallengeId,
+                ChallengeSelectedAt = challengeSelectedAt,
+                ChallengeSelectionEndDate = hackathon.ChallengeSelectionEndDate,
             },
             ct
         );

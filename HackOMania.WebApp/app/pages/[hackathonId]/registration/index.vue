@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
-import { computed } from 'vue'
+
+definePageMeta({
+  // Explicitly mark as public route
+  auth: false,
+})
 
 const config = useRuntimeConfig()
 const route = useRoute()
@@ -27,17 +31,18 @@ watchEffect(() => {
 </script>
 
 <template>
-  <!-- Show loading while checking auth -->
+  <!-- Show loading while checking auth or if authenticated (redirecting) -->
   <div
-    v-if="isLoading"
-    class="bg-white min-h-screen font-raleway flex items-center justify-center px-4"
+    v-if="isLoading || user"
+    class="bg-white min-h-screen flex flex-col items-center justify-center gap-4 px-4"
   >
-    <p class="text-sm text-muted">
+    <p class="text-sm font-medium text-gray-600 animate-pulse">
       Checking your session...
     </p>
+    <UIcon name="i-lucide-loader-circle" class="w-8 h-8 animate-spin text-primary" />
   </div>
 
-  <!-- Show login UI if not authenticated (error or no user after loading) -->
+  <!-- Show login UI only if not authenticated -->
   <div
     v-else
     class="bg-white min-h-screen font-raleway flex items-center justify-center px-4"
@@ -53,27 +58,25 @@ watchEffect(() => {
           class="w-full max-w-xl h-auto"
         >
         <div class="flex justify-center mt-8 w-full">
-          <Button
+          <UButton
+            :to="`${config.public.api}/auth/login?redirect_uri=${encodeURIComponent(`/${hackathonId}/registration/form`)}`"
+            external
             variant="outline"
-            class="w-full sm:w-64 h-14 border-2 border-black bg-transparent text-black cursor-pointer flex items-center justify-center gap-2 rounded-lg"
-            @click="navigateTo(`${config.public.api}/auth/login?redirect_uri=${encodeURIComponent(`/${hackathonId}/registration/form`)}`, { external: true })"
+            color="neutral"
+            size="xl"
+            icon="i-lucide-github"
+            class="w-full sm:w-64"
           >
-            <UIcon
-              name="i-lucide-github"
-              class="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0"
-            />
-            <span class="text-lg sm:text-xl font-normal text-black">
-              Sign up with <span class="font-bold">GitHub</span>
-            </span>
-          </Button>
+            Sign up with GitHub
+          </UButton>
         </div>
         <div class="mt-30">
-          <a
-            href="/"
-            class="text-base font-normal text-black underline cursor-pointer"
+          <NuxtLink
+            to="/login"
+            class="text-base font-normal text-black underline"
           >
             Exit Registration
-          </a>
+          </NuxtLink>
         </div>
       </div>
     </div>

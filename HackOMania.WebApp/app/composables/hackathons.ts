@@ -29,7 +29,7 @@ export const hackathonQueries = {
 }
 
 export const formatParticipantStatus = (status: number | null | undefined, isParticipant?: boolean | null) => {
-  if (!isParticipant) return { label: 'Not joined', color: 'gray' as const }
+  if (!isParticipant) return { label: 'Not joined', color: 'neutral' as const }
   switch (status) {
     case 1:
       return { label: 'Accepted', color: 'success' as const }

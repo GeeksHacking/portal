@@ -31,7 +31,13 @@ public class Team
     public Guid HackathonId { get; set; }
     public Guid CreatedByUserId { get; set; }
 
+    public Guid? SelectedChallengeId { get; set; }
+    public DateTimeOffset? ChallengeSelectedAt { get; set; }
+
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+
+    [Navigate(NavigateType.ManyToOne, nameof(SelectedChallengeId))]
+    public Challenge? SelectedChallenge { get; set; } = null!;
 
     [Navigate(NavigateType.OneToMany, nameof(Participant.TeamId))]
     public List<Participant> Members { get; set; } = null!;

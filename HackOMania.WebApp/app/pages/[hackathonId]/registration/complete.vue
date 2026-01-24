@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
-import { computed, ref } from 'vue'
+
+definePageMeta({
+  // Explicitly mark as public route
+  auth: false,
+})
 
 useHead({
   titleTemplate: title => (title ? `${title} - HackOMania` : 'HackOMania'),
@@ -38,11 +42,12 @@ watchEffect(() => {
   <!-- Show loading while checking auth -->
   <div
     v-if="isLoading || !showPage"
-    class="bg-white min-h-screen font-raleway flex items-center justify-center px-4"
+    class="bg-white min-h-screen flex flex-col items-center justify-center gap-4 px-4"
   >
-    <p class="text-sm text-muted">
+    <p class="text-sm font-medium text-gray-600 animate-pulse">
       Checking your session...
     </p>
+    <UIcon name="i-lucide-loader-circle" class="w-8 h-8 animate-spin text-primary" />
   </div>
 
   <!-- Show content if authenticated -->
@@ -77,12 +82,14 @@ watchEffect(() => {
         </div>
 
         <div class="flex flex-col gap-3 mt-8 w-full max-w-sm">
-          <NuxtLink
-            to="https://hackomania.geekshacking.com/"
-            class="w-full h-14 bg-black text-white rounded-lg flex items-center justify-center font-raleway text-lg font-normal hover:bg-gray-800 transition-colors"
+          <UButton
+            to="/dash"
+            size="xl"
+            color="neutral"
+            class="w-full justify-center"
           >
-            Back to Home
-          </NuxtLink>
+            Go to Dashboard
+          </UButton>
         </div>
       </div>
     </div>

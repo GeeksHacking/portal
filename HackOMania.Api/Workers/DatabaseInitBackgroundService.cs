@@ -75,39 +75,6 @@ public class DatabaseInitBackgroundService(
                 await sql.Insertable(options).ExecuteCommandAsync(stoppingToken);
             }
 
-            var challenges = new List<Challenge>
-            {
-                new()
-                {
-                    Id = new Guid("1e21229d-a3c7-4f28-812e-4b2eb9e735cd"),
-                    HackathonId = hackathonId,
-                    Title = "Sustainable City Toolkit",
-                    Description =
-                        "Build a prototype that helps citizens reduce waste, energy use, or emissions in urban environments.",
-                    IsPublished = true,
-                },
-                new()
-                {
-                    Id = new Guid("462e5566-e0d7-45b8-91dc-e53611ff06c0"),
-                    HackathonId = hackathonId,
-                    Title = "Community Health Companion",
-                    Description =
-                        "Create a solution that improves access to preventive care, mental wellness, or healthy habits.",
-                    IsPublished = true,
-                },
-                new()
-                {
-                    Id = new Guid("50cacb91-12e8-46dd-9e35-0b2d7d7a0409"),
-                    HackathonId = hackathonId,
-                    Title = "Inclusive Learning Launchpad",
-                    Description =
-                        "Design a product that makes learning more accessible for underserved communities.",
-                    IsPublished = true,
-                },
-            };
-
-            await sql.Insertable(challenges).ExecuteCommandAsync(stoppingToken);
-
             var resources = new List<Resource>
             {
                 new()
@@ -137,6 +104,36 @@ public class DatabaseInitBackgroundService(
             };
 
             await sql.Insertable(resources).ExecuteCommandAsync(stoppingToken);
+
+            // testing with myself (anggun) as organizer 
+            var testUserId = Guid.NewGuid();
+            var testUser = new User
+            {
+                Id = testUserId,
+                Name = "gunnicorn",
+                Email = "anggunq@hotmail.com",
+            };
+            await sql.Insertable(testUser).ExecuteCommandAsync(stoppingToken);
+
+            var testGitHub = new GitHubOnlineAccount
+            {
+                Id = Guid.NewGuid(),
+                UserId = testUserId,
+                GitHubId = 47025159,
+                GitHubLogin = "gunnicorn",
+            };
+            await sql.Insertable(testGitHub).ExecuteCommandAsync(stoppingToken);
+
+            var testOrganizer = new Organizer
+            {
+                Id = Guid.NewGuid(),
+                HackathonId = hackathonId,
+                UserId = testUserId,
+                Type = OrganizerType.Admin,
+            };
+            
+            // IF THIS DOES NOT WORK - unfortunately you have to call this api manually in scalar for your local testing lol
+            await sql.Insertable(testOrganizer).ExecuteCommandAsync(stoppingToken);
         }
     }
 }

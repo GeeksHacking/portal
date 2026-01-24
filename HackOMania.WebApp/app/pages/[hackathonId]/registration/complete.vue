@@ -1,20 +1,55 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { useQuery } from '@tanstack/vue-query'
+import { computed, ref } from 'vue'
 
 useHead({
   titleTemplate: title => (title ? `${title} - HackOMania` : 'HackOMania'),
 })
 
 const route = useRoute()
-const hackathonId = computed(() => (route.query.hackathonId as string | undefined) ?? null)
+const config = useRuntimeConfig()
+const hackathonId = computed(() => route.params.hackathonId as string)
 
-if (hackathonId.value) {
-  await navigateTo(`/dash/${hackathonId.value}/registration/complete`, { replace: true })
-}
+// Track if we should show the page
+const showPage = ref(false)
+
+// Check if user is authenticated
+const { data: user, isLoading, isError } = useQuery({
+  ...authQueries.whoAmI,
+  retry: false,
+  staleTime: 0,
+  gcTime: 0,
+})
+
+// Handle auth state changes
+watchEffect(() => {
+  if (!isLoading.value) {
+    if (user.value && !isError.value) {
+      showPage.value = true
+    }
+    else if (hackathonId.value) {
+      navigateTo(`${config.public.api}/auth/login?redirect_uri=${encodeURIComponent(route.fullPath)}`, { external: true })
+    }
+  }
+})
 </script>
 
 <template>
-  <div class="bg-white min-h-screen font-raleway flex items-center justify-center px-4">
+  <!-- Show loading while checking auth -->
+  <div
+    v-if="isLoading || !showPage"
+    class="bg-white min-h-screen font-raleway flex items-center justify-center px-4"
+  >
+    <p class="text-sm text-muted">
+      Checking your session...
+    </p>
+  </div>
+
+  <!-- Show content if authenticated -->
+  <div
+    v-else
+    class="bg-white min-h-screen font-raleway flex items-center justify-center px-4"
+  >
     <div class="w-full flex justify-center">
       <div class="flex flex-col items-center gap-6 max-w-2xl">
         <img
@@ -43,15 +78,8 @@ if (hackathonId.value) {
 
         <div class="flex flex-col gap-3 mt-8 w-full max-w-sm">
           <NuxtLink
-            to="/dash"
+            to="https://hackomania.geekshacking.com/"
             class="w-full h-14 bg-black text-white rounded-lg flex items-center justify-center font-raleway text-lg font-normal hover:bg-gray-800 transition-colors"
-          >
-            Go to Dashboard
-          </NuxtLink>
-
-          <NuxtLink
-            to="/"
-            class="w-full h-14 border border-black bg-transparent text-black rounded-lg flex items-center justify-center font-raleway text-lg font-normal hover:bg-gray-50 transition-colors"
           >
             Back to Home
           </NuxtLink>

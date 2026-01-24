@@ -12,6 +12,7 @@ public class Response
 public class ParticipantItem
 {
     public required Guid Id { get; init; }
+    public required string Name { get; init; }
     public Guid? TeamId { get; init; }
     public string? TeamName { get; init; }
     public required ParticipantConcludedStatus ConcludedStatus { get; init; }

@@ -118,6 +118,16 @@ public class Endpoint(IOptions<AppOptions> options, ISqlSugarClient db) : Endpoi
             o.Claims.Add(new Claim(CustomClaimTypes.GitHubAccountId, githubAccountId.ToString()));
         });
 
-        await Send.RedirectAsync($"{options.Value.FrontendUrl}/dash", allowRemoteRedirects: true);
+        // Retrieve redirect_uri from authentication properties, default to /dash
+        var redirectPath = "/dash";
+        if (result.Properties?.Items.TryGetValue("redirect_uri", out var storedRedirectUri) == true &&
+            !string.IsNullOrEmpty(storedRedirectUri) &&
+            storedRedirectUri.StartsWith('/') &&
+            !storedRedirectUri.Contains("://"))
+        {
+            redirectPath = storedRedirectUri;
+        }
+
+        await Send.RedirectAsync($"{options.Value.FrontendUrl}{redirectPath}", allowRemoteRedirects: true);
     }
 }

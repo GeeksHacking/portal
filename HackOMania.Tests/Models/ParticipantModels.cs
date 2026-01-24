@@ -12,6 +12,7 @@ public class ParticipantsListResponse
 public class ParticipantItem
 {
     public Guid Id { get; set; }
+    public string Name { get; set; } = "";
     public Guid? TeamId { get; set; }
     public string? TeamName { get; set; }
     public string ConcludedStatus { get; set; } = "";

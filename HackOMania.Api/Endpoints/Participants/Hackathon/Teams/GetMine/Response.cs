@@ -4,10 +4,11 @@ public class Response
 {
     public Guid Id { get; set; }
     public Guid HackathonId { get; set; }
-    public string Name { get; set; } = null!;
-    public string? Description { get; set; }
-    public string JoinCode { get; set; } = null!;
-    public IEnumerable<MemberItem> Members { get; set; } = [];
+    public required string Name { get; init; }
+    public required string Description { get; init; }
+    public Guid? ChallengeId { get; init; }
+    public required string JoinCode { get; init; }
+    public required List<MemberItem> Members { get; init; }
 
     public class MemberItem
     {

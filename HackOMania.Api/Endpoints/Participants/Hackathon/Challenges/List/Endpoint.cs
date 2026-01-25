@@ -31,13 +31,16 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var challenges = await sql.Queryable<Challenge>()
             .Where(c => c.HackathonId == hackathon.Id && c.IsPublished)
+            .LeftJoin<Team>((c, t) => c.Id == t.ChallengeId)
+            .GroupBy(c => new { c.Id, c.Title, c.Description, c.SelectionCriteriaStmt, c.CreatedAt })
             .OrderBy(c => c.CreatedAt, OrderByType.Desc)
-            .Select(c => new Response.ChallengeItem
+            .Select((c, t) => new Response.ChallengeItem
             {
                 Id = c.Id,
                 Title = c.Title,
                 Description = c.Description,
                 SelectionCriteriaStmt = c.SelectionCriteriaStmt,
+                TeamCount = SqlFunc.AggregateCount(t.Id),
             })
             .ToListAsync(ct);
 

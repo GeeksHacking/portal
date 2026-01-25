@@ -76,6 +76,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
                 HackathonId = team.HackathonId,
                 Name = team.Name,
                 Description = team.Description,
+                ChallengeId = team.ChallengeId,
                 JoinCode = team.JoinCode,
                 Members = members,
             },

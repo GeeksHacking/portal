@@ -57,11 +57,11 @@ const isOrganizer = computed(() => {
   if (!user.value?.id) {
     return false
   }
+  if (user.value.isRoot)
+    return true
   if (organizersData.value?.organizers) {
     return organizersData.value.organizers.some(org => org.userId === user.value?.id)
   }
-  if (user.value.isRoot)
-    return true
   return false
 })
 

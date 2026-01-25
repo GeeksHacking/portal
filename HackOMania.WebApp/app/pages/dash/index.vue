@@ -12,6 +12,8 @@ const toast = useToast()
 const queryClient = useQueryClient()
 const joinMutation = useJoinHackathonMutation()
 
+const { data: user } = useQuery(authQueries.whoAmI)
+
 const { data: hackathonsData, isLoading: isLoadingHackathons } = useQuery(
   participantHackathonQueries.list,
 )
@@ -116,7 +118,15 @@ const joinHackathon = async (hackathonId: string) => {
                   </p>
                 </div>
                 <UBadge
-                  v-if="statusDataForIndex(index)?.isOrganizer"
+                  v-if="user?.isRoot"
+                  color="warning"
+                  variant="subtle"
+                  size="sm"
+                >
+                  Admin
+                </UBadge>
+                <UBadge
+                  v-else-if="statusDataForIndex(index)?.isOrganizer"
                   color="info"
                   variant="subtle"
                   size="sm"
@@ -157,8 +167,19 @@ const joinHackathon = async (hackathonId: string) => {
               </div>
 
               <div class="flex items-center gap-2">
+                <!-- Root user: View only -->
+                <template v-if="user?.isRoot">
+                  <UButton
+                    :to="`/dash/${hackathon.id}`"
+                    color="neutral"
+                    size="sm"
+                  >
+                    View
+                  </UButton>
+                </template>
+
                 <!-- Organizer: Manage + Portal -->
-                <template v-if="statusDataForIndex(index)?.isOrganizer">
+                <template v-else-if="statusDataForIndex(index)?.isOrganizer">
                   <UButton
                     :to="`/dash/${hackathon.id}`"
                     color="neutral"

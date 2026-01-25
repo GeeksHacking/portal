@@ -27,10 +27,15 @@ const { data: organizersData, isLoading: isLoadingOrganizers } = useQuery(
 
 // Check if current user is an organizer
 const isOrganizer = computed(() => {
-  if (!user.value?.id || !organizersData.value?.organizers) {
+  if (!user.value?.id) {
     return false
   }
-  return organizersData.value.organizers.some(org => org.userId === user.value?.id)
+  if (user.value.isRoot)
+    return true
+  if (organizersData.value?.organizers) {
+    return organizersData.value.organizers.some(org => org.userId === user.value?.id)
+  }
+  return false
 })
 
 const isLoadingOrganizerCheck = computed(() => isLoadingUser.value || isLoadingOrganizers.value)

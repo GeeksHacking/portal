@@ -54,10 +54,15 @@ const { data: organizersData } = useQuery(
 )
 
 const isOrganizer = computed(() => {
-  if (!user.value?.id || !organizersData.value?.organizers) {
+  if (!user.value?.id) {
     return false
   }
-  return organizersData.value.organizers.some(org => org.userId === user.value?.id)
+  if (user.value.isRoot)
+    return true
+  if (organizersData.value?.organizers) {
+    return organizersData.value.organizers.some(org => org.userId === user.value?.id)
+  }
+  return false
 })
 
 // Review functionality

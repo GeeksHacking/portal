@@ -34,8 +34,8 @@ function handleLeaveTeam() {
 }
 
 function copyInviteUrl() {
-  if (props.team.joinCode) {
-    const url = new URL(window.location.origin)
+  if (props.team.joinCode && props.hackathonId) {
+    const url = new URL(`/${props.hackathonId}/team/`, window.location.origin)
     url.searchParams.set('joinCode', props.team.joinCode)
     navigator.clipboard.writeText(url.toString())
     isCopied.value = true

@@ -18,7 +18,7 @@ watch(
     }
     if (statusIsLoading) return
     if (!statusData?.isParticipant) {
-      navigateTo(`/${hackathonId}/registration`, { replace: true })
+      navigateTo({ path: `/${hackathonId}/registration`, query: route.query }, { replace: true })
     }
   },
   { immediate: true },

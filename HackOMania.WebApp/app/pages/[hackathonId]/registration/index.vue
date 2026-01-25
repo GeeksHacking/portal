@@ -25,7 +25,7 @@ const { data: user, isLoading, isSuccess } = useQuery({
 // Only redirect to form if query succeeded and we have user data
 watchEffect(() => {
   if (isSuccess.value && user.value) {
-    navigateTo(`/${hackathonId.value}/registration/form`, { replace: true })
+    navigateTo({ path: `/${hackathonId.value}/registration/form`, query: route.query }, { replace: true })
   }
 })
 </script>
@@ -59,7 +59,7 @@ watchEffect(() => {
         >
         <div class="flex justify-center mt-8 w-full">
           <UButton
-            :to="`${config.public.api}/auth/login?redirect_uri=${encodeURIComponent(`/${hackathonId}/registration/form`)}`"
+            :to="`${config.public.api}/auth/login?redirect_uri=${encodeURIComponent(route.fullPath.replace('/registration', '/registration/form'))}`"
             external
             variant="outline"
             color="neutral"

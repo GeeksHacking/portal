@@ -118,6 +118,7 @@ const onSubmit = async () => {
     await mutateAsync({ submissions })
     router.push({
       path: `${registrationPath.value}/complete`,
+      query: route.query.joinCode ? { joinCode: route.query.joinCode } : undefined,
     })
   }
   catch (error) {

@@ -83,12 +83,12 @@ watchEffect(() => {
 
         <div class="flex flex-col gap-3 mt-8 w-full max-w-sm">
           <UButton
-            to="/dash"
+            :to="route.query.joinCode ? { path: `/${hackathonId}/team`, query: { joinCode: route.query.joinCode } } : '/dash'"
             size="xl"
             color="neutral"
             class="w-full justify-center"
           >
-            Go to Dashboard
+            {{ route.query.joinCode ? 'Go to Team' : 'Go to Dashboard' }}
           </UButton>
         </div>
       </div>

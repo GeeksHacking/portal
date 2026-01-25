@@ -11,10 +11,11 @@ watch(
   [() => status.value, statusLoading],
   ([statusData, statusIsLoading]) => {
     if (statusIsLoading) return
+    const query = route.query
     if (!statusData?.isParticipant) {
-      navigateTo(`/${hackathonId}/registration`, { replace: true })
+      navigateTo({ path: `/${hackathonId}/registration`, query }, { replace: true })
     } else {
-      navigateTo(`/${hackathonId}/team`, { replace: true })
+      navigateTo({ path: `/${hackathonId}/team`, query }, { replace: true })
     }
   },
   { immediate: true },

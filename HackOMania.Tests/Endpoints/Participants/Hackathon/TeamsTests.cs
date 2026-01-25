@@ -671,8 +671,10 @@ public class TeamsTests
             await Assert.That(challengesResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
             await Assert.That(challenges!.Challenges).IsNotNull();
 
-            var challenge1Item = challenges.Challenges!.First(c => c.Id == challenge1!.Id);
-            var challenge2Item = challenges.Challenges!.First(c => c.Id == challenge2!.Id);
+            var challenge1Item = challenges.Challenges!.FirstOrDefault(c => c.Id == challenge1!.Id);
+            var challenge2Item = challenges.Challenges!.FirstOrDefault(c => c.Id == challenge2!.Id);
+            await Assert.That(challenge1Item).IsNotNull();
+            await Assert.That(challenge2Item).IsNotNull();
             await Assert.That(challenge1Item.TeamCount).IsEqualTo(0);
             await Assert.That(challenge2Item.TeamCount).IsEqualTo(0);
 
@@ -688,8 +690,10 @@ public class TeamsTests
                 $"/participants/hackathons/{hackathon.Id}/challenges"
             );
             challenges = await challengesResponse.Content.ReadFromJsonAsync<ParticipantChallengesListResponse>();
-            challenge1Item = challenges!.Challenges!.First(c => c.Id == challenge1!.Id);
-            challenge2Item = challenges.Challenges!.First(c => c.Id == challenge2!.Id);
+            challenge1Item = challenges!.Challenges!.FirstOrDefault(c => c.Id == challenge1!.Id);
+            challenge2Item = challenges.Challenges!.FirstOrDefault(c => c.Id == challenge2!.Id);
+            await Assert.That(challenge1Item).IsNotNull();
+            await Assert.That(challenge2Item).IsNotNull();
             await Assert.That(challenge1Item.TeamCount).IsEqualTo(1);
             await Assert.That(challenge2Item.TeamCount).IsEqualTo(0);
 
@@ -712,8 +716,10 @@ public class TeamsTests
                 $"/participants/hackathons/{hackathon.Id}/challenges"
             );
             challenges = await challengesResponse.Content.ReadFromJsonAsync<ParticipantChallengesListResponse>();
-            challenge1Item = challenges!.Challenges!.First(c => c.Id == challenge1!.Id);
-            challenge2Item = challenges.Challenges!.First(c => c.Id == challenge2!.Id);
+            challenge1Item = challenges!.Challenges!.FirstOrDefault(c => c.Id == challenge1!.Id);
+            challenge2Item = challenges.Challenges!.FirstOrDefault(c => c.Id == challenge2!.Id);
+            await Assert.That(challenge1Item).IsNotNull();
+            await Assert.That(challenge2Item).IsNotNull();
             await Assert.That(challenge1Item.TeamCount).IsEqualTo(2);
             await Assert.That(challenge2Item.TeamCount).IsEqualTo(0);
 
@@ -736,8 +742,10 @@ public class TeamsTests
                 $"/participants/hackathons/{hackathon.Id}/challenges"
             );
             challenges = await challengesResponse.Content.ReadFromJsonAsync<ParticipantChallengesListResponse>();
-            challenge1Item = challenges!.Challenges!.First(c => c.Id == challenge1!.Id);
-            challenge2Item = challenges.Challenges!.First(c => c.Id == challenge2!.Id);
+            challenge1Item = challenges!.Challenges!.FirstOrDefault(c => c.Id == challenge1!.Id);
+            challenge2Item = challenges.Challenges!.FirstOrDefault(c => c.Id == challenge2!.Id);
+            await Assert.That(challenge1Item).IsNotNull();
+            await Assert.That(challenge2Item).IsNotNull();
             await Assert.That(challenge1Item.TeamCount).IsEqualTo(1);
             await Assert.That(challenge2Item.TeamCount).IsEqualTo(1);
 

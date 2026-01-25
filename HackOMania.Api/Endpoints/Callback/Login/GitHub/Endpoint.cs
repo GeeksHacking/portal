@@ -118,8 +118,10 @@ public class Endpoint(IOptions<AppOptions> options, ISqlSugarClient db) : Endpoi
             o.Claims.Add(new Claim(CustomClaimTypes.GitHubAccountId, githubAccountId.ToString()));
         });
 
-        // Retrieve redirect_uri from authentication properties, default to /dash
+        // Retrieve redirect_uri from authentication properties or cookie, default to /dash
         var redirectPath = "/dash";
+
+        // First try to get from authentication properties (state parameter)
         if (result.Properties?.Items.TryGetValue("redirect_uri", out var storedRedirectUri) == true &&
             !string.IsNullOrEmpty(storedRedirectUri) &&
             storedRedirectUri.StartsWith('/') &&
@@ -127,6 +129,17 @@ public class Endpoint(IOptions<AppOptions> options, ISqlSugarClient db) : Endpoi
         {
             redirectPath = storedRedirectUri;
         }
+        // Fallback to cookie if state didn't preserve the redirect_uri
+        else if (HttpContext.Request.Cookies.TryGetValue("auth_redirect_uri", out var cookieRedirectUri) &&
+            !string.IsNullOrEmpty(cookieRedirectUri) &&
+            cookieRedirectUri.StartsWith('/') &&
+            !cookieRedirectUri.Contains("://"))
+        {
+            redirectPath = cookieRedirectUri;
+        }
+
+        // Clear the redirect cookie
+        HttpContext.Response.Cookies.Delete("auth_redirect_uri");
 
         await Send.RedirectAsync($"{options.Value.FrontendUrl}{redirectPath}", allowRemoteRedirects: true);
     }

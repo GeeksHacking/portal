@@ -253,7 +253,7 @@ public class DefaultStack : Stack
                                 new ServiceTemplateContainerEnvArgs
                                 {
                                     Name = "App__FrontendUrl",
-                                    Value = "https://portal.geekshacking.com/dash",
+                                    Value = "https://portal.geekshacking.com",
                                 },
                                 new ServiceTemplateContainerEnvArgs
                                 {

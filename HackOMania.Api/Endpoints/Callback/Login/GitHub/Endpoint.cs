@@ -69,7 +69,7 @@ public class Endpoint(IOptions<AppOptions> options, ISqlSugarClient db) : Endpoi
         var existingAccount = await db.Queryable<GitHubOnlineAccount>()
             .Includes(a => a.User)
             .Where(a => a.GitHubId == parsedGitHubId)
-            .FirstAsync(ct);
+            .SingleAsync();
 
         User? accountUser;
         Guid githubAccountId;

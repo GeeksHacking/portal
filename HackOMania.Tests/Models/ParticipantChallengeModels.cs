@@ -11,6 +11,7 @@ public class ParticipantChallengeItem
     public string Title { get; set; } = "";
     public string Description { get; set; } = "";
     public string? SelectionCriteriaStmt { get; set; }
+    public int TeamCount { get; set; }
 }
 
 public class ParticipantChallengeResponse

@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Net;
 using System.Net.Http.Json;
 using HackOMania.Tests.Data;
 using HackOMania.Tests.Models;
@@ -78,6 +80,13 @@ public class ChallengesTests
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
         await Assert.That(result).IsNotNull();
         await Assert.That(result!.Challenges).IsNotNull();
+        await Assert.That(result.Challenges).IsNotEmpty();
+
+        var challenge = result.Challenges!.First();
+        await Assert.That(challenge.Title).IsEqualTo("Published Challenge");
+        await Assert.That(challenge.Description).IsEqualTo("A published challenge for tests");
+        await Assert.That(challenge.SelectionCriteriaStmt).IsEqualTo("Test criteria");
+        await Assert.That(challenge.TeamCount).IsEqualTo(0);
     }
 
     [Test]

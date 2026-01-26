@@ -17,6 +17,15 @@ public class ParticipantItem
     public string? TeamName { get; init; }
     public required ParticipantConcludedStatus ConcludedStatus { get; init; }
     public required List<ParticipantReviewItem> Reviews { get; init; }
+    public required List<RegistrationSubmissionItem> RegistrationSubmissions { get; init; }
+}
+
+public class RegistrationSubmissionItem
+{
+    public required Guid QuestionId { get; init; }
+    public required string QuestionText { get; init; }
+    public required string Value { get; init; }
+    public string? FollowUpValue { get; init; }
 }
 
 public class ParticipantReviewItem

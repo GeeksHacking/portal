@@ -35,6 +35,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .ToListAsync(ct);
 
         var userIds = participants.Select(p => p.UserId).Distinct().ToList();
+        var participantIds = participants.Select(p => p.Id).Distinct().ToList();
 
         var usersList = await sql.Queryable<User>()
             .Where(u => userIds.Contains(u.Id))
@@ -51,6 +52,24 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .Where(t => teamIds.Contains(t.Id))
             .ToListAsync(ct);
         var teams = teamsList.ToDictionary(x => x.Id, x => x.Name);
+
+        var submissionList = await sql.Queryable<ParticipantRegistrationSubmission>()
+            .Includes(s => s.Question)
+            .Where(s => participantIds.Contains(s.ParticipantId))
+            .ToListAsync(ct);
+        
+        var submissionsByParticipant = submissionList
+            .GroupBy(s => s.ParticipantId)
+            .ToDictionary(
+                g => g.Key, 
+                g => g.Select(s => new RegistrationSubmissionItem
+                {
+                    QuestionId = s.QuestionId,
+                    QuestionText = s.Question.QuestionText,
+                    Value = s.Value,
+                    FollowUpValue = s.FollowUpValue,
+                }).ToList()
+            );
 
         var participantResponses = participants
             .Select(p =>
@@ -88,6 +107,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                             CreatedAt = r.CreatedAt,
                         }),
                     ],
+                    RegistrationSubmissions = submissionsByParticipant.GetValueOrDefault(p.Id) ?? [],
                 };
             })
             .ToList();

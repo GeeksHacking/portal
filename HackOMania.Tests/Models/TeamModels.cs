@@ -15,6 +15,7 @@ public class MyTeamResponse
     public Guid HackathonId { get; set; }
     public string Name { get; set; } = "";
     public string Description { get; set; } = "";
+    public Guid? ChallengeId { get; set; }
     public string? JoinCode { get; set; }
     public IEnumerable<TeamMemberItem>? Members { get; set; }
 }
@@ -51,4 +52,15 @@ public class UpdateTeamResponse
     public Guid HackathonId { get; set; }
     public string Name { get; set; } = "";
     public string Description { get; set; } = "";
+}
+
+public class SelectChallengeRequest
+{
+    public Guid ChallengeId { get; set; }
+}
+
+public class SelectChallengeResponse
+{
+    public Guid TeamId { get; set; }
+    public Guid? ChallengeId { get; set; }
 }

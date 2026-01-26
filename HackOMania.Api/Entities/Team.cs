@@ -31,6 +31,9 @@ public class Team
     public Guid HackathonId { get; set; }
     public Guid CreatedByUserId { get; set; }
 
+    [SugarColumn(IsNullable = true)]
+    public Guid? ChallengeId { get; set; }
+
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
     [Navigate(NavigateType.OneToMany, nameof(Participant.TeamId))]

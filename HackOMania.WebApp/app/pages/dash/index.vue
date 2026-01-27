@@ -167,19 +167,8 @@ const joinHackathon = async (hackathonId: string) => {
               </div>
 
               <div class="flex items-center gap-2">
-                <!-- Root user: View only -->
-                <template v-if="user?.isRoot">
-                  <UButton
-                    :to="`/dash/${hackathon.id}`"
-                    color="neutral"
-                    size="sm"
-                  >
-                    View
-                  </UButton>
-                </template>
-
-                <!-- Organizer: Manage + Portal -->
-                <template v-else-if="statusDataForIndex(index)?.isOrganizer">
+                <!-- Admin or Organizer: Manage + Portal -->
+                <template v-if="user?.isRoot || statusDataForIndex(index)?.isOrganizer">
                   <UButton
                     :to="`/dash/${hackathon.id}`"
                     color="neutral"

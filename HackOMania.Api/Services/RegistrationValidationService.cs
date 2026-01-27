@@ -109,6 +109,7 @@ public class RegistrationValidationService
     {
         public bool IsValid { get; set; }
         public List<string> Errors { get; set; } = [];
+        public Dictionary<Guid, List<string>> ErrorsByQuestionId { get; set; } = [];
 
         public static ValidationResult Success() => new() { IsValid = true };
 
@@ -117,6 +118,20 @@ public class RegistrationValidationService
 
         public static ValidationResult Failure(IEnumerable<string> errors) =>
             new() { IsValid = false, Errors = [.. errors] };
+
+        public static ValidationResult Failure(Guid questionId, IEnumerable<string> errors)
+        {
+            var errorList = errors.ToList();
+            return new ValidationResult
+            {
+                IsValid = false,
+                Errors = errorList,
+                ErrorsByQuestionId = new Dictionary<Guid, List<string>>
+                {
+                    [questionId] = errorList,
+                },
+            };
+        }
     }
 
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -197,7 +212,9 @@ public class RegistrationValidationService
                 break;
         }
 
-        return errors.Count > 0 ? ValidationResult.Failure(errors) : ValidationResult.Success();
+        return errors.Count > 0
+            ? ValidationResult.Failure(question.Id, errors)
+            : ValidationResult.Success();
     }
 
     private static void ValidateNumber(

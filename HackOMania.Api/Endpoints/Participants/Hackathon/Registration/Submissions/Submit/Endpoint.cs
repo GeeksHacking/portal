@@ -1,4 +1,5 @@
 using FastEndpoints;
+using FluentValidation.Results;
 using HackOMania.Api.Authorization;
 using HackOMania.Api.Entities;
 using HackOMania.Api.Extensions;
@@ -71,9 +72,23 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             );
             if (!validationResult.IsValid)
             {
-                foreach (var error in validationResult.Errors)
+                if (validationResult.ErrorsByQuestionId.Count > 0)
                 {
-                    AddError(error);
+                    foreach (var (questionId, errors) in validationResult.ErrorsByQuestionId)
+                    {
+                        var fieldKey = questionId.ToString();
+                        foreach (var error in errors)
+                        {
+                            AddError(new ValidationFailure(fieldKey, error));
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var error in validationResult.Errors)
+                    {
+                        AddError(error);
+                    }
                 }
             }
         }

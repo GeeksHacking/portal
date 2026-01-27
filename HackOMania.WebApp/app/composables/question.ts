@@ -83,14 +83,35 @@ function parseErrorsToFields(
 ) {
   try {
     // Error is thrown directly from response.json(), so structure is { errors: { generalErrors: [...] } }
-    const err = error as { errors?: { generalErrors?: string[] } }
-    const errors = err?.errors?.generalErrors ?? []
-    if (errors.length === 0) return
+    const err = error as { errors?: Record<string, string[] | string> }
+    const errorBag = err?.errors ?? {}
+    const generalErrors = (errorBag.generalErrors as string[] | undefined) ?? []
+
+    const questionById = new Map(
+      questions
+        .filter(question => question.id)
+        .map(question => [question.id as string, question]),
+    )
+
+    let hasFieldErrors = false
+    for (const [fieldId, messages] of Object.entries(errorBag)) {
+      if (fieldId === 'generalErrors') continue
+      const question = questionById.get(fieldId)
+      if (!question?.questionKey) continue
+      const message = Array.isArray(messages) ? messages[0] : String(messages)
+      if (message) {
+        fieldErrors[question.questionKey] = message
+        hasFieldErrors = true
+      }
+    }
+
+    if (hasFieldErrors) return
+    if (generalErrors.length === 0) return
 
     // Build maps once - O(m)
     const { questionsByText, keywordToQuestion, keywords } = buildQuestionMaps(questions)
 
-    for (const errorMessage of errors) {
+    for (const errorMessage of generalErrors) {
       const errorLower = errorMessage.toLowerCase()
       let matched = false
 

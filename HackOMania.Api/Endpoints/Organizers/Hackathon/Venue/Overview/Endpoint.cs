@@ -50,7 +50,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 {
                     ParticipantId = p.Participant.Id,
                     UserId = p.Participant.UserId,
-                    UserName = p.User.Name,
+                    UserName = p.User.FirstName + " " + p.User.LastName,
                     IsCurrentlyCheckedIn = lastCheckIn?.IsCheckedIn ?? false,
                     LastCheckInTime = lastCheckIn?.CheckInTime,
                     LastCheckOutTime = lastCheckIn?.CheckOutTime,

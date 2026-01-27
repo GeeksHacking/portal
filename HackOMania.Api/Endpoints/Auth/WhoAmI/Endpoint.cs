@@ -43,7 +43,9 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
             new Response
             {
                 Id = gh.User.Id,
-                Name = gh.User.Name,
+                Name = gh.User.FirstName + " " + gh.User.LastName,
+                FirstName = gh.User.FirstName,
+                LastName = gh.User.LastName,
                 Email = gh.User.Email,
                 GitHubId = gh.GitHubId,
                 GitHubLogin = gh.GitHubLogin,

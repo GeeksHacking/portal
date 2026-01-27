@@ -8,6 +8,8 @@ public class AuthEndpointsTests
 {
     private const string TestGitHubLogin = "qin-guan";
     private const long TestGitHubId = 1;
+    private const string TestFirstName = "Qin";
+    private const string TestLastName = "Guan";
     private const string TestName = "Qin Guan";
     private const string TestEmail = "qin-guan@outlook.com";
 
@@ -27,6 +29,8 @@ public class AuthEndpointsTests
         await Assert.That(result!.GitHubLogin).IsEqualTo(TestGitHubLogin);
         await Assert.That(result.Email).IsEqualTo(TestEmail);
         await Assert.That(result.Name).IsEqualTo(TestName);
+        await Assert.That(result.FirstName).IsEqualTo(TestFirstName);
+        await Assert.That(result.LastName).IsEqualTo(TestLastName);
     }
 
     [Test]
@@ -49,7 +53,8 @@ public class AuthEndpointsTests
         {
             GitHubId = TestGitHubId,
             GitHubLogin = TestGitHubLogin,
-            Name = TestName,
+            FirstName = TestFirstName,
+            LastName = TestLastName,
             Email = TestEmail,
         };
 
@@ -69,7 +74,8 @@ public class AuthEndpointsTests
         {
             GitHubId = TestGitHubId,
             GitHubLogin = TestGitHubLogin,
-            Name = TestName,
+            FirstName = TestFirstName,
+            LastName = TestLastName,
             Email = TestEmail,
         };
 

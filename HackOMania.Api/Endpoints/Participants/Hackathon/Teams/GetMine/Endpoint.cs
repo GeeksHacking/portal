@@ -62,7 +62,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
                     new Response.MemberItem
                     {
                         UserId = u.Id,
-                        Name = u.Name,
+                        Name = u.FirstName + " " + u.LastName,
                         Email = u.Email,
                         IsCurrentUser = u.Id == userId,
                     }

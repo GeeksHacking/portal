@@ -233,27 +233,21 @@ const joinHackathon = async (hackathonId: string) => {
             No hackathons available.
           </div>
 
-          <div
-            v-else
-            class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
-          >
-            <UCard
-              v-for="(hackathon, index) in hackathons"
-              :key="hackathon.id!"
-            >
-              <template #header>
-                <div class="flex items-start justify-between gap-2">
-                  <div>
-                    <h3 class="font-semibold leading-tight">
-                      {{ hackathon.name }}
-                    </h3>
-                    <p class="text-xs text-(--ui-text-muted) leading-tight">
-                      {{ hackathon.venue }}
-                    </p>
-                  </div>
-                  <div
-                    v-if="user?.isRoot"
-                    class="flex items-center gap-2"
+              <div class="flex items-center gap-2">
+                <!-- Admin or Organizer: Manage + Portal -->
+                <template v-if="user?.isRoot || statusDataForIndex(index)?.isOrganizer">
+                  <UButton
+                    :to="`/dash/${hackathon.id}`"
+                    color="neutral"
+                    size="sm"
+                  >
+                    Manage
+                  </UButton>
+                  <UButton
+                    :to="`/${hackathon.id}/team`"
+                    color="neutral"
+                    variant="outline"
+                    size="sm"
                   >
                     <UButton
                       size="xs"

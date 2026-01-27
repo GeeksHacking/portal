@@ -315,7 +315,8 @@ public class TeamsTests
         {
             GitHubId = 999,
             GitHubLogin = "second-user",
-            Name = "Second User",
+            FirstName = "Second",
+            LastName = "User",
             Email = "second@example.com",
         };
         await secondUser.InitializeAsync();
@@ -373,7 +374,8 @@ public class TeamsTests
         {
             GitHubId = 998,
             GitHubLogin = "third-user",
-            Name = "Third User",
+            FirstName = "Third",
+            LastName = "User",
             Email = "third@example.com",
         };
         await secondUser.InitializeAsync();
@@ -637,7 +639,8 @@ public class TeamsTests
         {
             GitHubId = 9999,
             GitHubLogin = "integration-test-user-2",
-            Name = "Integration Test User 2",
+            FirstName = "Integration Test User",
+            LastName = "2",
             Email = "integration2@example.com",
         };
         await client2.InitializeAsync();

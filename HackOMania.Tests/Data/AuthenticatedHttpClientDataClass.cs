@@ -9,7 +9,9 @@ public class AuthenticatedHttpClientDataClass : IAsyncInitializer, IAsyncDisposa
 
     public string GitHubLogin { get; set; } = "qin-guan";
     public long GitHubId { get; set; } = 1;
-    public string Name { get; set; } = "Qin Guan";
+    public string Name => $"{FirstName} {LastName}";
+    public string FirstName { get; set; } = "Qin";
+    public string LastName { get; set; } = "Guan";
     public string Email { get; set; } = "qin-guan@outlook.com";
 
     public async Task InitializeAsync()
@@ -45,7 +47,8 @@ public class AuthenticatedHttpClientDataClass : IAsyncInitializer, IAsyncDisposa
             {
                 GitHubId,
                 GitHubLogin,
-                Name,
+                FirstName,
+                LastName,
                 Email,
             }
         );

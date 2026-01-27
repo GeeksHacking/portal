@@ -38,7 +38,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     new ParticipantDetails
                     {
                         Participant = p,
-                        UserName = u.Name,
+                        UserName = u.FirstName + " " + u.LastName,
                         TeamName = t.Name,
                     }
             )

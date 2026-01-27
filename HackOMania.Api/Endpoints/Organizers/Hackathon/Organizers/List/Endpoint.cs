@@ -31,7 +31,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     new Response.OrganizerItem
                     {
                         UserId = u.Id,
-                        Name = u.Name,
+                        Name = u.FirstName + " " + u.LastName,
                         Email = u.Email,
                         Type = o.Type.ToString(),
                     }

@@ -40,7 +40,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var usersList = await sql.Queryable<User>()
             .Where(u => userIds.Contains(u.Id))
             .ToListAsync(ct);
-        var users = usersList.ToDictionary(x => x.Id, x => x.Name);
+        var users = usersList.ToDictionary(x => x.Id, x => x.FirstName + " " + x.LastName);
 
         var teamIds = participants
             .Where(p => p.TeamId.HasValue)

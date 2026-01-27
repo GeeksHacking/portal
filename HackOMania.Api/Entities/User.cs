@@ -7,7 +7,12 @@ public class User
     [SugarColumn(IsPrimaryKey = true)]
     public Guid Id { get; set; }
 
-    public string Name { get; set; } = null!;
+    public string FirstName { get; set; } = null!;
+    public string LastName { get; set; } = null!;
+
+    [SugarColumn(IsIgnore = true)]
+    public string Name => $"{FirstName} {LastName}".Trim();
+
     public string Email { get; set; } = null!;
 
     [Navigate(NavigateType.OneToMany, nameof(HackathonUser.UserId))]

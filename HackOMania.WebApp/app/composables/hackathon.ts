@@ -1,5 +1,5 @@
 import { queryOptions, useMutation } from '@tanstack/vue-query'
-import type { HackOManiaApiEndpointsOrganizersHackathonCreateRequest } from '~/api-client/models'
+import type { HackOManiaApiEndpointsOrganizersHackathonCreateRequest, HackOManiaApiEndpointsOrganizersHackathonUpdateRequest } from '~/api-client/models'
 
 export const hackathonOrganizerQueries = {
   list: queryOptions({
@@ -8,11 +8,28 @@ export const hackathonOrganizerQueries = {
       return await useNuxtApp().$apiClient.organizers.hackathons.get()
     },
   }),
+  detail: (hackathonId: string) =>
+    queryOptions({
+      queryKey: ['hackathons', hackathonId, 'organizer', 'detail'],
+      async queryFn() {
+        return await useNuxtApp().$apiClient.organizers.hackathons.byHackathonId(hackathonId).get()
+      },
+    }),
 }
 
 export function useCreateHackathonMutation() {
   return useMutation({
-    mutationFn(e: HackOManiaApiEndpointsOrganizersHackathonCreateRequest) { return useNuxtApp().$apiClient.organizers.hackathons.post(e) },
+    mutationFn(data: HackOManiaApiEndpointsOrganizersHackathonCreateRequest) {
+      return useNuxtApp().$apiClient.organizers.hackathons.post(data)
+    },
+  })
+}
+
+export function useUpdateHackathonMutation() {
+  return useMutation({
+    mutationFn({ hackathonId, data }: { hackathonId: string, data: HackOManiaApiEndpointsOrganizersHackathonUpdateRequest }) {
+      return useNuxtApp().$apiClient.organizers.hackathons.byHackathonId(hackathonId).patch(data)
+    },
   })
 }
 

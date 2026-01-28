@@ -24,5 +24,5 @@ public class Participant : HackathonUser
 
     [SugarColumn(IsIgnore = true)]
     public ParticipantReview.ParticipantReviewStatus? ConcludedStatus =>
-        ParticipantReviews.OrderByDescending(x => x.CreatedAt).FirstOrDefault()?.Status;
+        ParticipantReviews?.OrderByDescending(x => x.CreatedAt).FirstOrDefault()?.Status;
 }

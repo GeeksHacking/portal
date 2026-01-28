@@ -16,7 +16,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         Summary(s =>
         {
             s.Summary = "Get participant details";
-            s.Description = "Retrieves full details for a participant, including registration responses.";
+            s.Description =
+                "Retrieves full details for a participant, including registration responses.";
         });
     }
 
@@ -29,7 +30,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             return;
         }
 
-       var participantData = await sql.Queryable<Participant>()
+        var participantData = await sql.Queryable<Participant>()
+            .Includes(p => p.ParticipantReviews)
             .LeftJoin<User>((p, u) => p.UserId == u.Id)
             .LeftJoin<Team>((p, u, t) => p.TeamId == t.Id)
             .Where((p, u, t) => p.HackathonId == hackathon.Id && p.UserId == req.UserId)
@@ -72,24 +74,24 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 TeamId = participant.TeamId,
                 TeamName = participantData.TeamName,
                 ConcludedStatus = concludedStatus,
-                Reviews = participant.ParticipantReviews.Select(r => new ParticipantReviewItem
-                {
-                    Id = r.Id,
-                    Status = r.Status switch
+                Reviews = participant
+                    .ParticipantReviews.Select(r => new ParticipantReviewItem
                     {
-                        ParticipantReview.ParticipantReviewStatus.Accepted =>
-                            ParticipantReviewItem.ParticipantReviewStatus.Accepted,
-                        ParticipantReview.ParticipantReviewStatus.Rejected =>
-                            ParticipantReviewItem.ParticipantReviewStatus.Rejected,
-                        _ => throw new ArgumentOutOfRangeException(),
-                    },
-                    Reason = r.Reason,
-                    CreatedAt = r.CreatedAt,
-                }).ToList(),
+                        Id = r.Id,
+                        Status = r.Status switch
+                        {
+                            ParticipantReview.ParticipantReviewStatus.Accepted =>
+                                ParticipantReviewItem.ParticipantReviewStatus.Accepted,
+                            ParticipantReview.ParticipantReviewStatus.Rejected =>
+                                ParticipantReviewItem.ParticipantReviewStatus.Rejected,
+                            _ => throw new ArgumentOutOfRangeException(),
+                        },
+                        Reason = r.Reason,
+                        CreatedAt = r.CreatedAt,
+                    })
+                    .ToList(),
                 RegistrationSubmissions = await sql.Queryable<ParticipantRegistrationSubmission>()
-                    .LeftJoin<RegistrationQuestion>(
-                        (s, q) => s.QuestionId == q.Id
-                    )
+                    .LeftJoin<RegistrationQuestion>((s, q) => s.QuestionId == q.Id)
                     .Where((s, q) => s.ParticipantId == participant.Id)
                     .Select(
                         (s, q) =>

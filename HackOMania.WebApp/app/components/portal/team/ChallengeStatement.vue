@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
-defineProps<{
+const props = defineProps<{
   teamName: string
+  teamId: string
+  hackathonId: string
+  selectedChallengeId: string | null
 }>()
 
-const hackathonId = useCurrentHackathonId()
+const toast = useToast()
+
+const hackathonIdRef = computed(() => props.hackathonId)
+const teamIdRef = computed(() => props.teamId)
 
 // Fetch challenges list for the hackathon
 const { data: challengesData } = useQuery(
   computed(() => ({
-    ...challengeQueries.list(hackathonId.value ?? ''),
-    enabled: !!hackathonId.value,
+    ...challengeQueries.list(props.hackathonId),
+    enabled: !!props.hackathonId,
   })),
 )
 
@@ -25,7 +31,33 @@ const challengeItems = computed(() =>
   })),
 )
 
-const selectedChallenge = ref<string | undefined>(undefined)
+// Initialize from prop
+const selectedChallenge = ref<string | undefined>(props.selectedChallengeId ?? undefined)
+
+// Watch for prop changes
+watch(() => props.selectedChallengeId, (newVal) => {
+  selectedChallenge.value = newVal ?? undefined
+})
+
+// Mutation to persist challenge selection
+const selectChallengeMutation = useSelectChallenge(hackathonIdRef, teamIdRef)
+
+// Watch for selection changes and persist to API
+watch(selectedChallenge, (newVal, oldVal) => {
+  if (newVal && newVal !== oldVal && newVal !== props.selectedChallengeId) {
+    selectChallengeMutation.mutate(newVal, {
+      onError() {
+        toast.add({
+          title: 'Failed to update challenge',
+          description: 'Please try again.',
+          color: 'error',
+        })
+        // Revert on error
+        selectedChallenge.value = props.selectedChallengeId ?? undefined
+      },
+    })
+  }
+})
 </script>
 
 <template>
@@ -38,7 +70,7 @@ const selectedChallenge = ref<string | undefined>(undefined)
       Select a challenge statement your team will be working on.
     </p>
 
-    <p class="font-['Raleway'] text-base lg:text-xl text-black/80 mt-[34px]">
+    <p class="font-['Raleway'] text-base lg:text-xl text-black/80 mt-8.5">
       Selected Challenge Statement for:
     </p>
     <p class="font-['Zalando_Sans_Expanded'] text-2xl font-bold uppercase">

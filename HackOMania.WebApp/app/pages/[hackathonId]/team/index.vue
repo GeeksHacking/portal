@@ -37,6 +37,9 @@ watch(
     <div id="team" class="scroll-mt-12 lg:scroll-mt-18">
       <PortalTeamSection />
     </div>
+    <div id="submission" class="scroll-mt-12 lg:scroll-mt-18">
+      <PortalSubmissionSection />
+    </div>
     <AppFooter />
   </div>
 </template>

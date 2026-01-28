@@ -50,7 +50,7 @@ watch(
 </script>
 
 <template>
-  <section ref="sectionRef">
+  <section ref="sectionRef" class="relative z-10">
     <!-- Section header -->
     <header class="h-18 flex items-center justify-center bg-linear-to-r from-[#4BBC7D] via-[#7DFFA9] to-[#AAFFEE]">
       <h2 class="font-['Zalando_Sans_Expanded'] text-black text-center m-0 text-2xl">
@@ -97,6 +97,9 @@ watch(
       <PortalTeamChallengeStatement
         v-if="hasTeam"
         :team-name="teamData!.name!"
+        :team-id="teamData!.id!"
+        :hackathon-id="hackathonId!"
+        :selected-challenge-id="teamData!.challengeId ?? null"
         class="mt-12"
       />
     </div>

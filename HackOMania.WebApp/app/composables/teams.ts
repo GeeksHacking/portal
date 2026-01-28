@@ -95,3 +95,21 @@ export function useJoinTeamByCode() {
     onSuccess: data => invalidateTeamQueries(queryClient, data?.hackathonId ?? null),
   })
 }
+
+export function useSelectChallenge(
+  hackathonId: MaybeRef<string | null>,
+  teamId: MaybeRef<string | null>
+) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    async mutationFn(challengeId: string) {
+      if (!toValue(hackathonId) || !toValue(teamId)) throw new Error('Missing hackathon or team ID')
+      return await useNuxtApp()
+        .$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(toValue(hackathonId)!)
+        .teams.byTeamId(toValue(teamId)!)
+        .challenge.put({ challengeId })
+    },
+    onSuccess: () => invalidateTeamQueries(queryClient, toValue(hackathonId)),
+  })
+}

@@ -3,6 +3,7 @@ import type { HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsLi
 import { registrationPageConfig } from '~/config/registration-pages'
 import { useQuery } from '@tanstack/vue-query'
 import { useSubmitRegistrationMutation } from '~/composables/question'
+import { useUpdateUserMutation } from '~/composables/user'
 
 const props = defineProps<{
   hackathonId: string
@@ -177,6 +178,9 @@ const { mutateAsync, isPending: isSubmitting, fieldErrors, submissionError } = u
   allQuestions,
 )
 
+// User profile update mutation
+const updateUserMutation = useUpdateUserMutation()
+
 const onSubmit = async () => {
   const submissions = Object.entries(state)
     .filter(([questionKey, value]) => {
@@ -220,6 +224,16 @@ const onSubmit = async () => {
     .filter((s): s is NonNullable<typeof s> => s !== null)
 
   try {
+    // Update user profile with first name and last name
+    const firstName = state.first_name as string
+    const lastName = state.last_name as string
+    if (firstName || lastName) {
+      await updateUserMutation.mutateAsync({
+        firstName: firstName || null,
+        lastName: lastName || null,
+      })
+    }
+
     await mutateAsync({ submissions })
     router.push({
       path: `${registrationPath.value}/complete`,

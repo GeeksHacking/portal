@@ -4,9 +4,11 @@ import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { registrationQuestionOrganizerQueries, useUpdateQuestionMutation, useInitQuestionMutation } from '~/composables/question'
 import type {
   HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto,
+  HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateUpdateOptionDto,
 } from '~/api-client/models'
 
 type Question = HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto
+type OptionForm = Required<Pick<HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateUpdateOptionDto, 'optionText' | 'optionValue' | 'displayOrder' | 'hasFollowUpText'>> & { id?: string | null, followUpPlaceholder?: string | null }
 
 const props = defineProps<{
   hackathonId: string
@@ -34,7 +36,11 @@ const editForm = ref({
   category: '',
   conditionalLogic: '',
   validationRules: '',
+  options: [] as OptionForm[],
 })
+
+const typesWithOptions = [3, 4, 10] // SingleChoice, MultipleChoice, Dropdown
+const showOptions = computed(() => typesWithOptions.includes(editForm.value.type))
 
 const questionTypes = [
   { value: 0, label: 'Text' },
@@ -76,7 +82,30 @@ function startEditing(question: Question) {
     category: question.category ?? '',
     conditionalLogic: question.conditionalLogic ?? '',
     validationRules: question.validationRules ?? '',
+    options: (question.options ?? []).map((o, i) => ({
+      id: o.id,
+      optionText: o.optionText ?? '',
+      optionValue: o.optionValue ?? '',
+      displayOrder: o.displayOrder ?? i,
+      hasFollowUpText: o.hasFollowUpText ?? false,
+      followUpPlaceholder: o.followUpPlaceholder ?? null,
+    })),
   }
+}
+
+function addOption() {
+  editForm.value.options.push({
+    optionText: '',
+    optionValue: '',
+    displayOrder: editForm.value.options.length,
+    hasFollowUpText: false,
+    followUpPlaceholder: null,
+  })
+}
+
+function removeOption(index: number) {
+  editForm.value.options.splice(index, 1)
+  editForm.value.options.forEach((o, i) => o.displayOrder = i)
 }
 
 function cancelEditing() {
@@ -85,6 +114,7 @@ function cancelEditing() {
 
 async function saveQuestion() {
   if (!editingId.value) return
+  const hasOptions = typesWithOptions.includes(editForm.value.type)
   await updateMutation.mutateAsync({
     questionId: editingId.value,
     data: {
@@ -96,6 +126,16 @@ async function saveQuestion() {
       category: editForm.value.category || null,
       conditionalLogic: editForm.value.conditionalLogic || null,
       validationRules: editForm.value.validationRules || null,
+      options: hasOptions
+        ? editForm.value.options.map(o => ({
+            id: o.id,
+            optionText: o.optionText,
+            optionValue: o.optionValue,
+            displayOrder: o.displayOrder,
+            hasFollowUpText: o.hasFollowUpText,
+            followUpPlaceholder: o.followUpPlaceholder,
+          }))
+        : null,
     },
   })
   editingId.value = null
@@ -207,6 +247,20 @@ function getTypeName(type: number | null | undefined): string {
                 Order: {{ question.displayOrder ?? 0 }}
               </UBadge>
             </div>
+            <div
+              v-if="question.options?.length"
+              class="flex flex-wrap gap-1 mt-1"
+            >
+              <UBadge
+                v-for="opt in question.options"
+                :key="opt.id ?? ''"
+                variant="subtle"
+                color="neutral"
+                size="xs"
+              >
+                {{ opt.optionText }}
+              </UBadge>
+            </div>
           </div>
           <UButton
             size="xs"
@@ -238,6 +292,76 @@ function getTypeName(type: number | null | undefined): string {
               @update:model-value="editForm.type = Number($event)"
             />
           </UFormField>
+
+          <!-- Options editor for choice-based types -->
+          <div
+            v-if="showOptions"
+            class="space-y-2"
+          >
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-medium">Options</span>
+              <UButton
+                size="xs"
+                variant="soft"
+                icon="i-lucide-plus"
+                @click="addOption"
+              >
+                Add Option
+              </UButton>
+            </div>
+            <div
+              v-for="(option, idx) in editForm.options"
+              :key="idx"
+              class="flex items-start gap-2 p-2 rounded border border-(--ui-border)"
+            >
+              <div class="flex-1 space-y-2">
+                <div class="flex gap-2">
+                  <UInput
+                    v-model="option.optionText"
+                    size="sm"
+                    placeholder="Display text"
+                    class="flex-1"
+                  />
+                  <UInput
+                    v-model="option.optionValue"
+                    size="sm"
+                    placeholder="Value"
+                    class="flex-1"
+                  />
+                </div>
+                <div class="flex items-center gap-3">
+                  <label class="flex items-center gap-1 text-xs">
+                    <UCheckbox
+                      :model-value="option.hasFollowUpText ?? false"
+                      size="xs"
+                      @update:model-value="option.hasFollowUpText = Boolean($event)"
+                    />
+                    Follow-up text
+                  </label>
+                  <UInput
+                    v-if="option.hasFollowUpText"
+                    v-model="option.followUpPlaceholder"
+                    size="sm"
+                    placeholder="Follow-up placeholder"
+                    class="flex-1"
+                  />
+                </div>
+              </div>
+              <UButton
+                size="xs"
+                variant="ghost"
+                color="error"
+                icon="i-lucide-trash-2"
+                @click="removeOption(idx)"
+              />
+            </div>
+            <p
+              v-if="!editForm.options.length"
+              class="text-xs text-(--ui-text-muted)"
+            >
+              No options yet. Add at least one option.
+            </p>
+          </div>
 
           <UFormField label="Help Text">
             <UInput

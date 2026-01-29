@@ -242,6 +242,11 @@ public class DefaultStack : Stack
                             {
                                 new ServiceTemplateContainerEnvArgs
                                 {
+                                    Name = "TZ",
+                                    Value = "Asia/Singapore",
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
                                     Name = "ASPNETCORE_ENVIRONMENT",
                                     Value = "Production",
                                 },

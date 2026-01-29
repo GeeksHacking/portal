@@ -41,7 +41,8 @@ public class Endpoint(ILogger<Endpoint> logger, IOptions<AppOptions> options, IS
         var name = result.Principal.GetClaim(ClaimTypes.Name);
 
         logger.LogCritical(
-            "User info {Info}",
+            "User info {Email} {Info}",
+            email,
             JsonSerializer.Serialize(
                 result.Principal.Claims,
                 new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve }

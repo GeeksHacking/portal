@@ -204,7 +204,7 @@ public class RegistrationQuestionTemplateService
                 DisplayOrder = 0,
                 HasFollowUpText = true,
                 FollowUpPlaceholder = "Please specify:",
-            }
+            },
         };
         questions.Add((nationalityQuestion, nationalityOptions));
 
@@ -293,7 +293,8 @@ public class RegistrationQuestionTemplateService
             {
                 Id = Guid.NewGuid(),
                 QuestionId = needTeamHelpQuestion.Id,
-                OptionText = "Yes, please find a team for me if I am not in any team. My email will be shared to the other members.",
+                OptionText =
+                    "Yes, please find a team for me if I am not in any team. My email will be shared to the other members.",
                 OptionValue = "yes",
                 DisplayOrder = 0,
             },
@@ -312,7 +313,7 @@ public class RegistrationQuestionTemplateService
                 OptionText = "No, if I cannot find a team I will not participate in the hackathon",
                 OptionValue = "nogoodbye",
                 DisplayOrder = 2,
-            }
+            },
         };
         questions.Add((needTeamHelpQuestion, needHelpOptions));
 
@@ -353,8 +354,8 @@ public class RegistrationQuestionTemplateService
                 OptionText = "Business",
                 OptionValue = "business",
                 DisplayOrder = 2,
-            }
-        }
+            },
+        };
         questions.Add((hackathonRoleQuestion, hackathonRoleOptions));
 
         // T-Shirt Size
@@ -652,7 +653,7 @@ public class RegistrationQuestionTemplateService
         {
             Id = Guid.NewGuid(),
             HackathonId = hackathonId,
-            QuestionText = "What is your area of expertise, focus or interest?"
+            QuestionText = "What is your area of expertise, focus or interest?",
             QuestionKey = "area_of_interest",
             Type = QuestionType.LongText,
             DisplayOrder = order++,
@@ -718,8 +719,8 @@ public class RegistrationQuestionTemplateService
                 DisplayOrder = 6,
                 HasFollowUpText = true,
                 FollowUpPlaceholder = "Please specify:",
-            }
-        }
+            },
+        };
 
         // Looking for a job
         var lookingForJobQuestion = new RegistrationQuestion
@@ -845,8 +846,6 @@ public class RegistrationQuestionTemplateService
         };
         questions.Add((hearAboutQuestion, hearAboutOptions));
 
-        
-
         // Mailing List Consent
         var mailingListQuestion = new RegistrationQuestion
         {
@@ -868,7 +867,7 @@ public class RegistrationQuestionTemplateService
                 QuestionId = mailingListQuestion.Id,
                 OptionText = "Yes",
                 OptionValue = "yes",
-                DisplayOrder = 0
+                DisplayOrder = 0,
             },
             new()
             {
@@ -877,7 +876,7 @@ public class RegistrationQuestionTemplateService
                 OptionText = "No",
                 OptionValue = "no",
                 DisplayOrder = 1,
-            }
+            },
         };
         questions.Add((mailingListQuestion, mailingListOptions));
 
@@ -902,10 +901,11 @@ public class RegistrationQuestionTemplateService
                 QuestionId = mailingListQuestion.Id,
                 OptionText = "Yes, I have read and understood the disclaimer",
                 OptionValue = "yes",
-                DisplayOrder = 0
-            }
+                DisplayOrder = 0,
+            },
         };
         questions.Add((disclaimer, disclaimerOptions));
 
+        return questions;
     }
 }

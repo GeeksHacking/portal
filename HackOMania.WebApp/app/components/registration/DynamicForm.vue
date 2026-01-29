@@ -505,6 +505,22 @@ const isFormValid = computed(() => {
           </template>
         </div>
 
+        <!-- Social media links -->
+        <div class="mt-8 font-raleway">
+          <p class="text-md mb-3">Please take some time to follow us!</p>
+          <div class="flex gap-6">
+            <a href="https://www.instagram.com/geekshacking" target="_blank" rel="noopener noreferrer" class="text-gray-700 dark:text-gray-300 hover:text-pink-500 dark:hover:text-pink-400 transition-colors">
+              <Icon name="fa6-brands:instagram" class="size-8" />
+            </a>
+            <a href="https://www.linkedin.com/company/geekshacking/" target="_blank" rel="noopener noreferrer" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              <Icon name="fa6-brands:linkedin" class="size-8" />
+            </a>
+            <a href="https://www.facebook.com/GeeksHacking" target="_blank" rel="noopener noreferrer" class="text-gray-700 dark:text-gray-300 hover:text-blue-700 dark:hover:text-blue-500 transition-colors">
+              <Icon name="fa6-brands:facebook" class="size-8" />
+            </a>
+          </div>
+        </div>
+
         <!-- Submit button at the bottom -->
         <div class="mt-12">
           <div class="flex justify-end">

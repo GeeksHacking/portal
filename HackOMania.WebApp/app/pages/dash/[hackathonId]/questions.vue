@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { fetchOrganizerQuestions, useUpdateQuestionMutation } from '~/composables/question'
+import { computed } from 'vue'
+import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import { registrationQuestionOrganizerQueries, useUpdateQuestionMutation, useInitQuestionMutation } from '~/composables/question'
 import type {
   HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto,
 } from '~/api-client/models'
@@ -12,8 +13,16 @@ const props = defineProps<{
   isOrganizer: boolean
 }>()
 
-const questions = ref<Question[]>([])
-const isLoading = ref(false)
+const queryClient = useQueryClient()
+
+const { data: questionsData, isLoading } = useQuery(
+  computed(() => ({
+    ...registrationQuestionOrganizerQueries.list(props.hackathonId),
+    enabled: !!props.hackathonId && props.isOrganizer,
+  })),
+)
+
+const questions = computed(() => questionsData.value?.questions ?? [])
 
 const editingId = ref<string | null>(null)
 const editForm = ref({
@@ -41,24 +50,20 @@ const questionTypes = [
   { value: 10, label: 'Dropdown' },
 ]
 
-async function loadQuestions() {
-  if (!props.hackathonId) return
-  isLoading.value = true
-  try {
-    const result = await fetchOrganizerQuestions(props.hackathonId)
-    questions.value = result?.questions ?? []
-  }
-  catch (e) {
-    console.error('Failed to fetch questions', e)
-  }
-  finally {
-    isLoading.value = false
-  }
+const updateMutation = useUpdateQuestionMutation(props.hackathonId)
+const initMutation = useInitQuestionMutation()
+
+async function invalidateQuestions() {
+  await queryClient.invalidateQueries({
+    queryKey: ['hackathons', props.hackathonId, 'registration', 'questions', 'organizer'],
+  })
 }
 
-loadQuestions()
-
-const updateMutation = useUpdateQuestionMutation(props.hackathonId)
+async function initializeQuestions() {
+  if (!props.hackathonId) return
+  await initMutation.mutateAsync(props.hackathonId)
+  await invalidateQuestions()
+}
 
 function startEditing(question: Question) {
   editingId.value = question.id ?? null
@@ -94,7 +99,7 @@ async function saveQuestion() {
     },
   })
   editingId.value = null
-  await loadQuestions()
+  await invalidateQuestions()
 }
 
 function getTypeName(type: number | null | undefined): string {
@@ -128,9 +133,17 @@ function getTypeName(type: number | null | undefined): string {
 
     <div
       v-else-if="!questions.length"
-      class="text-(--ui-text-muted) text-sm"
+      class="text-(--ui-text-muted) text-sm flex items-center justify-between"
     >
-      No registration questions yet.
+      <span>No registration questions yet.</span>
+      <UButton
+        size="xs"
+        :loading="initMutation.isPending.value"
+        :disabled="!hackathonId"
+        @click="initializeQuestions"
+      >
+        Get standard questions
+      </UButton>
     </div>
 
     <div

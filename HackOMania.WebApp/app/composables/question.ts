@@ -37,6 +37,14 @@ export const registrationQuestionQueries = {
     }),
 }
 
+export const registrationQuestionOrganizerQueries = {
+  list: (hackathonId: string) =>
+    queryOptions({
+      queryKey: ['hackathons', hackathonId, 'registration', 'questions', 'organizer'],
+      queryFn: () => fetchOrganizerQuestions(hackathonId),
+    }),
+}
+
 export function useInitQuestionMutation() {
   return useMutation({
     mutationFn(hackathonId: string) {

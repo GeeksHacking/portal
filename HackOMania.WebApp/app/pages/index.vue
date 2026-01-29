@@ -25,7 +25,7 @@ watch([user, isError, isLoading], ([userData, hasError, loading]) => {
     // User is authenticated, redirect to dashboard
     hasNavigated.value = true
     navigateTo('/dash')
-  } else if (hasError) {
+  } else {
     // User is not authenticated, redirect to login
     hasNavigated.value = true
     navigateTo('/login')

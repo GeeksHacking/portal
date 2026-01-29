@@ -21,18 +21,41 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
-        if (hackathon is null)
+        var hackathonExists = await sql.Queryable<Entities.Hackathon>()
+            .AnyAsync(h => h.Id == req.HackathonId);
+        if (!hackathonExists)
         {
             await Send.NotFoundAsync(ct);
             return;
         }
 
         var participants = await sql.Queryable<Participant>()
-            .Includes(p => p.ParticipantReviews)
-            .Where(p => p.HackathonId == hackathon.Id)
+            .Where(p => p.HackathonId == req.HackathonId)
             .OrderByDescending(p => p.JoinedAt)
+            .Select(p => new Participant
+            {
+                Id = p.Id,
+                UserId = p.UserId,
+                TeamId = p.TeamId,
+                JoinedAt = p.JoinedAt,
+            })
             .ToListAsync(ct);
+
+        if (participants.Count == 0)
+        {
+            await Send.OkAsync(
+                new Response
+                {
+                    Participants = [],
+                    TotalCount = 0,
+                    PendingCount = 0,
+                    AcceptedCount = 0,
+                    RejectedCount = 0,
+                },
+                ct
+            );
+            return;
+        }
 
         var userIds = participants.Select(p => p.UserId).Distinct().ToList();
         var participantIds = participants.Select(p => p.Id).Distinct().ToList();
@@ -48,35 +71,49 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .Distinct()
             .ToList();
 
-        var teamsList = await sql.Queryable<Team>()
-            .Where(t => teamIds.Contains(t.Id))
-            .ToListAsync(ct);
+        var teamsList =
+            teamIds.Count == 0
+                ? []
+                : await sql.Queryable<Team>().Where(t => teamIds.Contains(t.Id)).ToListAsync(ct);
         var teams = teamsList.ToDictionary(x => x.Id, x => x.Name);
 
+        var reviewsList = await sql.Queryable<ParticipantReview>()
+            .Where(r => participantIds.Contains(r.ParticipantId))
+            .OrderByDescending(r => r.CreatedAt)
+            .ToListAsync(ct);
+
+        var reviewsByParticipant = reviewsList
+            .GroupBy(r => r.ParticipantId)
+            .ToDictionary(g => g.Key, g => g.OrderByDescending(r => r.CreatedAt).ToList());
+
         var submissionList = await sql.Queryable<ParticipantRegistrationSubmission>()
-            .Includes(s => s.Question)
-            .Where(s => participantIds.Contains(s.ParticipantId))
+            .LeftJoin<RegistrationQuestion>((s, q) => s.QuestionId == q.Id)
+            .Where((s, q) => participantIds.Contains(s.ParticipantId))
+            .Select(
+                (s, q) =>
+                    new
+                    {
+                        s.ParticipantId,
+                        Item = new RegistrationSubmissionItem
+                        {
+                            QuestionId = s.QuestionId,
+                            QuestionText = q.QuestionText,
+                            Value = s.Value,
+                            FollowUpValue = s.FollowUpValue,
+                        },
+                    }
+            )
             .ToListAsync(ct);
 
         var submissionsByParticipant = submissionList
             .GroupBy(s => s.ParticipantId)
-            .ToDictionary(
-                g => g.Key,
-                g =>
-                    g.Select(s => new RegistrationSubmissionItem
-                        {
-                            QuestionId = s.QuestionId,
-                            QuestionText = s.Question.QuestionText,
-                            Value = s.Value,
-                            FollowUpValue = s.FollowUpValue,
-                        })
-                        .ToList()
-            );
+            .ToDictionary(g => g.Key, g => g.Select(x => x.Item).ToList());
 
         var participantResponses = participants
             .Select(p =>
             {
-                var concludedStatus = p.ConcludedStatus switch
+                var reviews = reviewsByParticipant.GetValueOrDefault(p.Id) ?? [];
+                var concludedStatus = reviews.FirstOrDefault()?.Status switch
                 {
                     ParticipantReview.ParticipantReviewStatus.Accepted =>
                         ParticipantConcludedStatus.Accepted,
@@ -94,7 +131,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     ConcludedStatus = concludedStatus,
                     Reviews =
                     [
-                        .. p.ParticipantReviews.Select(r => new ParticipantReviewItem
+                        .. reviews.Select(r => new ParticipantReviewItem
                         {
                             Id = r.Id,
                             Status = r.Status switch

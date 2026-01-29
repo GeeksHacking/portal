@@ -30,7 +30,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var participant = await sql.Queryable<Participant>()
             .Where(p => p.HackathonId == hackathon.Id && p.UserId == req.ParticipantUserId)
-            .FirstAsync(ct);
+            .SingleAsync();
 
         if (participant is null)
         {

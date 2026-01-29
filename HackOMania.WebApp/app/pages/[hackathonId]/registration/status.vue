@@ -143,12 +143,6 @@ watchEffect(() => {
   if (isLoadingStatus.value) return
   if (statusData.value?.isParticipant && isLoadingSubmissions.value) return
 
-  // Redirect incomplete registrations to form page
-  if (submissionsData.value && submissionsData.value.requiredQuestionsRemaining > 0) {
-    navigateTo({ path: `/${hackathon.value.shortCode}/registration/form`, query: route.query }, { replace: true })
-    return
-  }
-
   // Show the page once auth is confirmed and redirects are handled
   showPage.value = true
 })

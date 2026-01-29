@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListResponse } from '~/api-client/models'
 import { registrationPageConfig } from '~/config/registration-pages'
-import { useQuery } from '@tanstack/vue-query'
+import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { useSubmitRegistrationMutation } from '~/composables/question'
 import { useUpdateUserMutation } from '~/composables/user'
 
@@ -13,6 +13,7 @@ const props = defineProps<{
 const router = useRouter()
 const route = useRoute()
 const hackathon = useRouteHackathon()
+const queryClient = useQueryClient()
 
 const registrationPath = computed(() => hackathon.value ? `/${hackathon.value.shortCode}/registration` : `/${props.hackathonId}/registration`)
 
@@ -236,6 +237,12 @@ const onSubmit = async () => {
     }
 
     await mutateAsync({ submissions })
+
+    // Remove cached submissions so status page fetches fresh data
+    queryClient.removeQueries({
+      queryKey: ['hackathons', props.hackathonId, 'registration', 'submissions'],
+    })
+
     router.push({
       path: `${registrationPath.value}/complete`,
       query: route.query.joinCode ? { joinCode: route.query.joinCode } : undefined,

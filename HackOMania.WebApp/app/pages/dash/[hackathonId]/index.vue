@@ -96,27 +96,27 @@ watch([isOrganizer, isLoadingOrganizerCheck], ([org, loading]) => {
           </div>
 
           <Participants
-            :hackathon-id="hackathonId ?? ''"
+            :hackathon-id="resolvedHackathonId ?? ''"
             :is-organizer="isOrganizer"
           />
 
           <Teams
-            :hackathon-id="hackathonId ?? ''"
+            :hackathon-id="resolvedHackathonId ?? ''"
             :is-organizer="isOrganizer"
           />
 
           <Challenges
-            :hackathon-id="hackathonId ?? ''"
+            :hackathon-id="resolvedHackathonId ?? ''"
             :is-organizer="isOrganizer"
           />
 
           <Judges
-            :hackathon-id="hackathonId ?? ''"
+            :hackathon-id="resolvedHackathonId ?? ''"
             :is-organizer="isOrganizer"
           />
 
           <Submissions
-            :hackathon-id="hackathonId ?? ''"
+            :hackathon-id="resolvedHackathonId ?? ''"
             :is-organizer="isOrganizer"
           />
         </template>

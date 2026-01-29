@@ -3,6 +3,7 @@ import { unref, type MaybeRef, type Ref } from 'vue'
 import type {
   HackOManiaApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitRequest,
   HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto,
+  HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest,
 } from '~/api-client/models'
 
 
@@ -11,6 +12,23 @@ export async function fetchQuestions(hackathonId: string) {
   return await useNuxtApp().$apiClient.participants.hackathons
     .byHackathonIdOrShortCodeId(hackathonId)
     .registration.questions.get()
+}
+
+export async function fetchOrganizerQuestions(hackathonId: string) {
+  return await useNuxtApp().$apiClient.organizers.hackathons
+    .byHackathonId(hackathonId)
+    .registration.questions.get()
+}
+
+export function useUpdateQuestionMutation(hackathonId: string) {
+  return useMutation({
+    mutationFn({ questionId, data }: { questionId: string, data: HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest }) {
+      return useNuxtApp().$apiClient.organizers.hackathons
+        .byHackathonId(hackathonId)
+        .registration.questions.byQuestionId(questionId)
+        .patch(data)
+    },
+  })
 }
 
 export function useInitQuestionMutation() {

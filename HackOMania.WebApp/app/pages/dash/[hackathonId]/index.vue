@@ -9,6 +9,7 @@ import Challenges from './challenges.vue'
 import Teams from './teams.vue'
 import Submissions from './submissions.vue'
 import Judges from './judges.vue'
+import Questions from './questions.vue'
 
 const route = useRoute()
 
@@ -116,6 +117,11 @@ watch([isOrganizer, isLoadingOrganizerCheck], ([org, loading]) => {
           />
 
           <Submissions
+            :hackathon-id="resolvedHackathonId ?? ''"
+            :is-organizer="isOrganizer"
+          />
+
+          <Questions
             :hackathon-id="resolvedHackathonId ?? ''"
             :is-organizer="isOrganizer"
           />

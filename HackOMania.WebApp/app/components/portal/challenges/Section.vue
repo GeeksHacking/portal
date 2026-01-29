@@ -4,6 +4,14 @@ import { computed, ref } from 'vue'
 import sponsorsData from '~/data/sponsors.json'
 
 const hackathonId = useResolvedHackathonId()
+const hackathon = useRouteHackathon()
+
+// Check if hackathon has started
+const eventStartDate = computed(() => hackathon.value?.eventStartDate ?? null)
+const hasHackathonStarted = computed(() => {
+  if (!eventStartDate.value) return true // If no start date, show content
+  return new Date() >= eventStartDate.value
+})
 
 // Fetch challenges list for the hackathon
 const { data: challengesData, isLoading } = useQuery(
@@ -80,6 +88,16 @@ const onTitleMounted = (index: number, height: number) => {
 
     <div v-if="isLoading">
       Loading challenges...
+    </div>
+
+    <!-- Hackathon hasn't started yet -->
+    <div
+      v-else-if="!hasHackathonStarted"
+      class="flex flex-col items-center p-8 lg:py-16 lg:px-28 mx-auto lg:max-w-300"
+    >
+      <p class="font-['Raleway'] text-base lg:text-xl text-center">
+        Challenges will be revealed when the hackathon begins.
+      </p>
     </div>
 
     <div

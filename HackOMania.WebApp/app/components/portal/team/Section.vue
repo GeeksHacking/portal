@@ -35,6 +35,13 @@ const isLoading = computed(() => isLoadingStatus.value || isLoadingTeam.value)
 const isParticipant = computed(() => !!statusData.value?.isParticipant)
 const hasTeam = computed(() => !!teamData.value?.id)
 
+// Check if hackathon has started
+const eventStartDate = computed(() => hackathon.value?.eventStartDate ?? null)
+const hasHackathonStarted = computed(() => {
+  if (!eventStartDate.value) return true // If no start date, show content
+  return new Date() >= eventStartDate.value
+})
+
 // Auto-scroll to team section when user has joinCode param and no team
 watch(
   [isLoading, isParticipant, hasTeam, joinCodeParam],
@@ -95,7 +102,7 @@ watch(
 
       <!-- Challenge Statement Section -->
       <PortalTeamChallengeStatement
-        v-if="hasTeam"
+        v-if="hasTeam && hasHackathonStarted"
         :team-name="teamData!.name!"
         :team-id="teamData!.id!"
         :hackathon-id="hackathonId!"

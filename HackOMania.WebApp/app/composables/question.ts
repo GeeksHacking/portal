@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/vue-query'
+import { queryOptions, useMutation } from '@tanstack/vue-query'
 import { unref, type MaybeRef, type Ref } from 'vue'
 import type {
   HackOManiaApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitRequest,
@@ -27,6 +27,12 @@ export function useUpdateQuestionMutation(hackathonId: string) {
         .patch(data)
     },
   })
+export const registrationQuestionQueries = {
+  list: (hackathonId: string) =>
+    queryOptions({
+      queryKey: ['hackathons', hackathonId, 'registration', 'questions'],
+      queryFn: () => fetchQuestions(hackathonId),
+    }),
 }
 
 export function useInitQuestionMutation() {

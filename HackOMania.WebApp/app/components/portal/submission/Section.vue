@@ -27,8 +27,15 @@ const hasTeam = computed(() => !!teamData.value?.id)
 
 const teamId = computed(() => teamData.value?.id ?? null)
 const challengeId = computed(() => teamData.value?.challengeId ?? null)
+const eventStartDate = computed(() => hackathon.value?.eventStartDate ?? null)
 const submissionsStartDate = computed(() => hackathon.value?.submissionsStartDate ?? null)
 const submissionsEndDate = computed(() => hackathon.value?.submissionsEndDate ?? null)
+
+// Check if hackathon has started
+const hasHackathonStarted = computed(() => {
+  if (!eventStartDate.value) return true // If no start date, show content
+  return new Date() >= eventStartDate.value
+})
 
 // Computed submission status based on dates
 const submissionStatus = computed(() => {
@@ -194,6 +201,16 @@ function confirmSubmit() {
       class="p-8 lg:py-16 lg:px-28"
     >
       Loading...
+    </div>
+
+    <!-- Hackathon hasn't started yet -->
+    <div
+      v-else-if="!hasHackathonStarted"
+      class="flex flex-col items-center p-8 lg:py-16 lg:px-28 mx-auto lg:max-w-300"
+    >
+      <p class="font-['Raleway'] text-base lg:text-xl text-center">
+        Submission will be available when the hackathon begins.
+      </p>
     </div>
 
     <!-- Not a participant or no team -->

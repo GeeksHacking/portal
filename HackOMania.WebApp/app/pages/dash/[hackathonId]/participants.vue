@@ -2,6 +2,8 @@
 import { computed, ref } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { participantOrganizerQueries, useReviewParticipantMutation } from '~/composables/participants'
+import { registrationQuestionQueries } from '~/composables/question'
+import { registrationPageConfig } from '~/config/registration-pages'
 
 const props = defineProps<{
   hackathonId: string
@@ -43,6 +45,71 @@ const filterCounts = computed(() => ({
   approved: participants.value.filter(p => p.concludedStatus === 1).length,
   rejected: participants.value.filter(p => p.concludedStatus === 2).length,
 }))
+
+// Expanded participant detail
+const expandedParticipantId = ref<string | null>(null)
+
+const { data: participantDetail, isLoading: isLoadingDetail } = useQuery(
+  computed(() => ({
+    ...participantOrganizerQueries.detail(props.hackathonId, expandedParticipantId.value ?? ''),
+    enabled: !!expandedParticipantId.value,
+  })),
+)
+
+// Fetch registration questions for ordering
+const { data: questionsData } = useQuery(
+  computed(() => ({
+    ...registrationQuestionQueries.list(props.hackathonId),
+    enabled: !!props.hackathonId && props.isOrganizer,
+  })),
+)
+
+// Build question ID -> order index map following registrationPageConfig category order
+const questionOrderMap = computed(() => {
+  const map = new Map<string, number>()
+  if (!questionsData.value?.categories) return map
+
+  const categoryOrder = registrationPageConfig.flatMap(page => [...page.categories])
+  let index = 0
+  for (const categoryName of categoryOrder) {
+    const category = questionsData.value.categories.find(c => c.name === categoryName)
+    if (!category?.questions) continue
+    for (const question of category.questions) {
+      if (question.id) {
+        map.set(question.id, index++)
+      }
+    }
+  }
+  // Append any questions in categories not covered by the config
+  for (const category of questionsData.value.categories) {
+    for (const question of category.questions ?? []) {
+      if (question.id && !map.has(question.id)) {
+        map.set(question.id, index++)
+      }
+    }
+  }
+  return map
+})
+
+const sortedSubmissions = computed(() => {
+  const submissions = participantDetail.value?.registrationSubmissions
+  if (!submissions) return []
+  const order = questionOrderMap.value
+  return [...submissions].sort((a, b) => {
+    const orderA = order.get(a.questionId ?? '') ?? Number.MAX_SAFE_INTEGER
+    const orderB = order.get(b.questionId ?? '') ?? Number.MAX_SAFE_INTEGER
+    return orderA - orderB
+  })
+})
+
+function toggleParticipant(participantId: string) {
+  if (expandedParticipantId.value === participantId) {
+    expandedParticipantId.value = null
+  }
+  else {
+    expandedParticipantId.value = participantId
+  }
+}
 
 // Review mutation
 const reviewMutation = useReviewParticipantMutation(props.hackathonId)
@@ -166,38 +233,94 @@ function getStatusLabel(status: number | null | undefined): string {
         <div
           v-for="participant in filteredParticipants"
           :key="participant.id ?? ''"
-          class="py-2 flex items-center justify-between"
+          class="py-2"
         >
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium">
-              {{ participant.name ?? participant.id }}
-            </p>
-            <p class="text-xs text-(--ui-text-muted)">
-              Team: {{ participant.teamName ?? 'No team' }}
-            </p>
+          <div class="flex items-center justify-between">
+            <div class="flex-1 min-w-0">
+              <button
+                class="text-sm font-medium text-left hover:underline cursor-pointer text-(--ui-text-highlighted)"
+                @click="toggleParticipant(participant.id ?? '')"
+              >
+                {{ participant.name ?? participant.id }}
+                <UIcon
+                  :name="expandedParticipantId === participant.id ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+                  class="inline-block w-4 h-4 ml-1 align-middle"
+                />
+              </button>
+              <p class="text-xs text-(--ui-text-muted)">
+                Team: {{ participant.teamName ?? 'No team' }}
+              </p>
+            </div>
+            <div class="flex items-center gap-2 ml-2">
+              <UBadge
+                :color="getStatusColor(participant.concludedStatus)"
+                variant="subtle"
+                size="xs"
+              >
+                {{ getStatusLabel(participant.concludedStatus) }}
+              </UBadge>
+              <UButton
+                size="xs"
+                variant="ghost"
+                color="success"
+                icon="i-lucide-check"
+                @click="openReviewModal(participant.id ?? '', participant.name ?? participant.id ?? '', 'accept')"
+              />
+              <UButton
+                size="xs"
+                variant="ghost"
+                color="error"
+                icon="i-lucide-x"
+                @click="openReviewModal(participant.id ?? '', participant.name ?? participant.id ?? '', 'reject')"
+              />
+            </div>
           </div>
-          <div class="flex items-center gap-2 ml-2">
-            <UBadge
-              :color="getStatusColor(participant.concludedStatus)"
-              variant="subtle"
-              size="xs"
+
+          <!-- Expanded: Registration Submissions -->
+          <div
+            v-if="expandedParticipantId === participant.id"
+            class="mt-3 ml-2 p-4 rounded-lg bg-(--ui-bg-elevated) border border-(--ui-border) max-h-96 overflow-y-auto"
+          >
+            <div
+              v-if="isLoadingDetail"
+              class="text-sm text-(--ui-text-muted)"
             >
-              {{ getStatusLabel(participant.concludedStatus) }}
-            </UBadge>
-            <UButton
-              size="xs"
-              variant="ghost"
-              color="success"
-              icon="i-lucide-check"
-              @click="openReviewModal(participant.id ?? '', participant.name ?? participant.id ?? '', 'accept')"
-            />
-            <UButton
-              size="xs"
-              variant="ghost"
-              color="error"
-              icon="i-lucide-x"
-              @click="openReviewModal(participant.id ?? '', participant.name ?? participant.id ?? '', 'reject')"
-            />
+              Loading form responses...
+            </div>
+            <div v-else-if="sortedSubmissions.length">
+              <h4 class="text-sm font-semibold mb-3">
+                Form Responses
+              </h4>
+              <div class="space-y-3">
+                <UFormField
+                  v-for="submission in sortedSubmissions"
+                  :key="submission.questionId ?? ''"
+                  :label="submission.questionText ?? 'Question'"
+                >
+                  <UInput
+                    :model-value="submission.value || '—'"
+                    disabled
+                    class="w-full"
+                  />
+                  <template v-if="submission.followUpValue">
+                    <p class="text-xs text-(--ui-text-muted) mt-1">
+                      Follow-up:
+                    </p>
+                    <UInput
+                      :model-value="submission.followUpValue"
+                      disabled
+                      class="w-full"
+                    />
+                  </template>
+                </UFormField>
+              </div>
+            </div>
+            <div
+              v-else
+              class="text-sm text-(--ui-text-muted)"
+            >
+              No form responses found.
+            </div>
           </div>
         </div>
       </div>

@@ -222,7 +222,7 @@ public class DefaultStack : Stack
                     Scaling = new ServiceTemplateScalingArgs
                     {
                         MinInstanceCount = 0,
-                        MaxInstanceCount = 3,
+                        MaxInstanceCount = 2,
                     },
                     Containers = new[]
                     {

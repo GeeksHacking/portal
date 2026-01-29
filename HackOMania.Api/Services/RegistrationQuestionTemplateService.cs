@@ -1,3 +1,4 @@
+using Dm.util;
 using HackOMania.Api.Entities;
 using static HackOMania.Api.Services.RegistrationValidationService;
 
@@ -193,7 +194,7 @@ public class RegistrationQuestionTemplateService
                 QuestionId = nationalityQuestion.Id,
                 OptionText = "Singapore Permanent Resident",
                 OptionValue = "singapore_pr",
-                DisplayOrder = 0,
+                DisplayOrder = 1,
             },
             new()
             {
@@ -201,7 +202,7 @@ public class RegistrationQuestionTemplateService
                 QuestionId = nationalityQuestion.Id,
                 OptionText = "Others",
                 OptionValue = "others",
-                DisplayOrder = 0,
+                DisplayOrder = 2,
                 HasFollowUpText = true,
                 FollowUpPlaceholder = "Please specify:",
             },
@@ -274,6 +275,8 @@ public class RegistrationQuestionTemplateService
             },
         };
 
+        questions.Add((dietaryRestrictionsQuestion, dietaryOptions));
+
         // Need Team Help (conditional - if no team)
         var needTeamHelpQuestion = new RegistrationQuestion
         {
@@ -285,7 +288,6 @@ public class RegistrationQuestionTemplateService
             DisplayOrder = order++,
             IsRequired = false,
             Category = "Team Information",
-            ConditionalLogic = "{\"has_team\": \"no\"}",
         };
         var needHelpOptions = new List<RegistrationQuestionOption>
         {
@@ -321,8 +323,9 @@ public class RegistrationQuestionTemplateService
         {
             Id = Guid.NewGuid(),
             HackathonId = hackathonId,
-            QuestionText = "Do you need help with finding a team?",
-            QuestionKey = "need_team_help",
+            QuestionText =
+                "What would you say you would be doing during the hackathon as a team member?",
+            QuestionKey = "hackathon_role",
             Type = QuestionType.SingleChoice,
             DisplayOrder = order++,
             IsRequired = false,
@@ -334,15 +337,15 @@ public class RegistrationQuestionTemplateService
             new()
             {
                 Id = Guid.NewGuid(),
-                QuestionId = needTeamHelpQuestion.Id,
+                QuestionId = hackathonRoleQuestion.Id,
                 OptionText = "Developing Software",
-                OptionValue = "developingsoftware",
+                OptionValue = "developing_software",
                 DisplayOrder = 0,
             },
             new()
             {
                 Id = Guid.NewGuid(),
-                QuestionId = needTeamHelpQuestion.Id,
+                QuestionId = hackathonRoleQuestion.Id,
                 OptionText = "Designing",
                 OptionValue = "designing",
                 DisplayOrder = 1,
@@ -350,7 +353,7 @@ public class RegistrationQuestionTemplateService
             new()
             {
                 Id = Guid.NewGuid(),
-                QuestionId = needTeamHelpQuestion.Id,
+                QuestionId = hackathonRoleQuestion.Id,
                 OptionText = "Business",
                 OptionValue = "business",
                 DisplayOrder = 2,
@@ -480,25 +483,6 @@ public class RegistrationQuestionTemplateService
         };
         questions.Add((employmentStatusQuestion, employmentOptions));
 
-        // Job Title (conditional - if working)
-        questions.Add(
-            (
-                new RegistrationQuestion
-                {
-                    Id = Guid.NewGuid(),
-                    HackathonId = hackathonId,
-                    QuestionText = "What do/did you work as?",
-                    QuestionKey = "job_title",
-                    Type = QuestionType.Text,
-                    DisplayOrder = order++,
-                    IsRequired = false,
-                    Category = "Professional Background",
-                    ConditionalLogic = "{\"employment_status\": \"working\"}",
-                },
-                []
-            )
-        );
-
         // Company Name (conditional - if working, not required for homemaker/job seeker)
         questions.Add(
             (
@@ -568,7 +552,6 @@ public class RegistrationQuestionTemplateService
             IsRequired = false,
             Category = "Professional Background",
             ConditionalLogic = "{\"employment_status\": \"working\"}",
-            ValidationRules = ValidationRules.NumericRange(min: 0, max: 70).ToJson(),
         };
         var wydOptions = new List<RegistrationQuestionOption>
         {
@@ -610,7 +593,7 @@ public class RegistrationQuestionTemplateService
             )
         );
 
-        // School Name (conditional - if student)
+        // School Name (conditional - if studying)
         questions.Add(
             (
                 new RegistrationQuestion
@@ -623,13 +606,13 @@ public class RegistrationQuestionTemplateService
                     DisplayOrder = order++,
                     IsRequired = false,
                     Category = "Educational Background",
-                    ConditionalLogic = "{\"employment_status\": \"student\"}",
+                    ConditionalLogic = "{\"employment_status\": \"studying\"}",
                 },
                 []
             )
         );
 
-        // Major/Course Name (conditional - if student)
+        // Major/Course Name (conditional - if studying)
         questions.Add(
             (
                 new RegistrationQuestion
@@ -642,7 +625,7 @@ public class RegistrationQuestionTemplateService
                     DisplayOrder = order++,
                     IsRequired = false,
                     Category = "Educational Background",
-                    ConditionalLogic = "{\"employment_status\": \"student\"}",
+                    ConditionalLogic = "{\"employment_status\": \"studying\"}",
                 },
                 []
             )
@@ -721,6 +704,7 @@ public class RegistrationQuestionTemplateService
                 FollowUpPlaceholder = "Please specify:",
             },
         };
+        questions.Add((expertiseQuestion, expertiseOptions));
 
         // Looking for a job
         var lookingForJobQuestion = new RegistrationQuestion
@@ -887,7 +871,7 @@ public class RegistrationQuestionTemplateService
             HackathonId = hackathonId,
             QuestionText =
                 "Submitting this form does not guarantee you a spot at Hackomania 2026. Registrants will receive an email regarding confirmation or rejection of their registration. Please check your spam folder for this email.",
-            QuestionKey = "mailing_list_consent",
+            QuestionKey = "disclaimer",
             Type = QuestionType.SingleChoice,
             DisplayOrder = order++,
             IsRequired = true,

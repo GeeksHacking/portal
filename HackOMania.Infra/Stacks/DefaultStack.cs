@@ -222,7 +222,7 @@ public class DefaultStack : Stack
                     Scaling = new ServiceTemplateScalingArgs
                     {
                         MinInstanceCount = 0,
-                        MaxInstanceCount = 1,
+                        MaxInstanceCount = 3,
                     },
                     Containers = new[]
                     {
@@ -238,8 +238,37 @@ public class DefaultStack : Stack
                             {
                                 Limits = { { "cpu", "1" }, { "memory", "512Mi" } },
                             },
+                            StartupProbe = new ServiceTemplateContainerStartupProbeArgs
+                            {
+                                HttpGet = new ServiceTemplateContainerStartupProbeHttpGetArgs
+                                {
+                                    Path = "/health",
+                                    Port = 8080,
+                                },
+                                InitialDelaySeconds = 0,
+                                TimeoutSeconds = 1,
+                                PeriodSeconds = 3,
+                                FailureThreshold = 10,
+                            },
+                            LivenessProbe = new ServiceTemplateContainerLivenessProbeArgs
+                            {
+                                HttpGet = new ServiceTemplateContainerLivenessProbeHttpGetArgs
+                                {
+                                    Path = "/alive",
+                                    Port = 8080,
+                                },
+                                InitialDelaySeconds = 0,
+                                TimeoutSeconds = 1,
+                                PeriodSeconds = 10,
+                                FailureThreshold = 3,
+                            },
                             Envs = new[]
                             {
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "TZ",
+                                    Value = "Asia/Singapore",
+                                },
                                 new ServiceTemplateContainerEnvArgs
                                 {
                                     Name = "ASPNETCORE_ENVIRONMENT",

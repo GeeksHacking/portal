@@ -91,3 +91,4 @@ jobs:
           service: hackomania-api
           region: asia-southeast1
           image: asia-southeast1-docker.pkg.dev/hackomania-event-portal/hackomania-api/hackomania-api:latest
+          tag: latest

@@ -8,6 +8,7 @@ import type {
 } from '~/api-client/models'
 
 type Question = HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto
+type OptionForm = Required<Pick<HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateUpdateOptionDto, 'optionText' | 'optionValue' | 'displayOrder' | 'hasFollowUpText'>> & { id?: string | null, followUpPlaceholder?: string | null }
 
 const props = defineProps<{
   hackathonId: string
@@ -92,6 +93,21 @@ function startEditing(question: Question) {
     validationRules: question.validationRules ?? '',
     optionsJson: options.length ? JSON.stringify(options, null, 2) : '[]',
   }
+}
+
+function addOption() {
+  editForm.value.options.push({
+    optionText: '',
+    optionValue: '',
+    displayOrder: editForm.value.options.length,
+    hasFollowUpText: false,
+    followUpPlaceholder: null,
+  })
+}
+
+function removeOption(index: number) {
+  editForm.value.options.splice(index, 1)
+  editForm.value.options.forEach((o, i) => o.displayOrder = i)
 }
 
 function cancelEditing() {

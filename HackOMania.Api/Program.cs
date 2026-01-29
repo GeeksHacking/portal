@@ -213,5 +213,6 @@ app.UseAuthorization();
 app.UseFastEndpoints();
 app.UseSwaggerGen(options => options.Path = "/openapi/{documentName}.json");
 app.MapScalarApiReference();
+app.MapDefaultEndpoints();
 
 app.Run();

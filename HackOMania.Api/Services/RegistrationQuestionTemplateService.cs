@@ -556,6 +556,40 @@ public class RegistrationQuestionTemplateService
             )
         );
 
+        var wydQuestion = new RegistrationQuestion
+        {
+            Id = Guid.NewGuid(),
+            HackathonId = hackathonId,
+            QuestionText = "What are you doing now?",
+            QuestionKey = "wyd",
+            Type = QuestionType.MultipleChoice,
+            DisplayOrder = order++,
+            IsRequired = false,
+            Category = "Professional Background",
+            ConditionalLogic = "{\"employment_status\": \"working\"}",
+            ValidationRules = ValidationRules.NumericRange(min: 0, max: 70).ToJson(),
+        };
+        var wydOptions = new List<RegistrationQuestionOption>
+        {
+            new()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = wydQuestion.Id,
+                OptionText = "Working",
+                OptionValue = "working",
+                DisplayOrder = 0,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                QuestionId = wydQuestion.Id,
+                OptionText = "Studying",
+                OptionValue = "studying",
+                DisplayOrder = 1,
+            },
+        };
+        questions.Add((wydQuestion, wydOptions));
+
         // Highest Education Level
         questions.Add(
             (

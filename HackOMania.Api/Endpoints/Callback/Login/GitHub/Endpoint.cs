@@ -35,7 +35,7 @@ public class Endpoint(IOptions<AppOptions> options, ISqlSugarClient db) : Endpoi
         var githubLogin = result.Principal.GetClaim("login");
         var githubId = result.Principal.GetClaim(ClaimTypes.NameIdentifier);
         var email = result.Principal.GetClaim("email");
-        var name = result.Principal.GetClaim(ClaimTypes.Name) ?? "Unknown";
+        var name = result.Principal.GetClaim(ClaimTypes.Name);
 
         if (githubLogin is null)
         {
@@ -53,14 +53,14 @@ public class Endpoint(IOptions<AppOptions> options, ISqlSugarClient db) : Endpoi
 
         if (email is null)
         {
-            AddError("User email not found in claims.");
+            AddError("Please add your email on GitHub, then register again.");
             await Send.ErrorsAsync(cancellation: ct);
             return;
         }
 
         if (name is null)
         {
-            AddError("User name not found in claims.");
+            AddError("Please add a name on GitHub, then register again.");
             await Send.ErrorsAsync(cancellation: ct);
             return;
         }

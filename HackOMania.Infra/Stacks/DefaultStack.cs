@@ -215,15 +215,11 @@ public class DefaultStack : Stack
                 Location = "asia-southeast1",
                 Description = "HackOMania API Service",
                 Ingress = "INGRESS_TRAFFIC_ALL",
+                Scaling = new ServiceScalingArgs { MinInstanceCount = 0, MaxInstanceCount = 5 },
                 Template = new ServiceTemplateArgs
                 {
                     ServiceAccount = cloudRunServiceAccount.Email,
-                    MaxInstanceRequestConcurrency = 128,
-                    Scaling = new ServiceTemplateScalingArgs
-                    {
-                        MinInstanceCount = 0,
-                        MaxInstanceCount = 2,
-                    },
+                    MaxInstanceRequestConcurrency = 32,
                     Containers = new[]
                     {
                         new ServiceTemplateContainerArgs

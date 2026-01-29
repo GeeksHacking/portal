@@ -6,8 +6,8 @@ public class ParticipantReview
 {
     public enum ParticipantReviewStatus
     {
-        Accepted,
         Rejected,
+        Accepted,
     }
 
     [SugarColumn(IsPrimaryKey = true)]

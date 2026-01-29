@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using FastEndpoints;
 using FastEndpoints.Security;
 using HackOMania.Api.Constants;
@@ -12,7 +14,8 @@ using static OpenIddict.Client.WebIntegration.OpenIddictClientWebIntegrationCons
 
 namespace HackOMania.Api.Endpoints.Callback.Login.GitHub;
 
-public class Endpoint(IOptions<AppOptions> options, ISqlSugarClient db) : EndpointWithoutRequest
+public class Endpoint(ILogger<Endpoint> logger, IOptions<AppOptions> options, ISqlSugarClient db)
+    : EndpointWithoutRequest
 {
     public override void Configure()
     {
@@ -36,6 +39,14 @@ public class Endpoint(IOptions<AppOptions> options, ISqlSugarClient db) : Endpoi
         var githubId = result.Principal.GetClaim(ClaimTypes.NameIdentifier);
         var email = result.Principal.GetClaim("email");
         var name = result.Principal.GetClaim(ClaimTypes.Name);
+
+        logger.LogCritical(
+            "User info {Info}",
+            JsonSerializer.Serialize(
+                result.Principal.Claims,
+                new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve }
+            )
+        );
 
         if (githubLogin is null)
         {

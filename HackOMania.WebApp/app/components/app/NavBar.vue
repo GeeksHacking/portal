@@ -5,6 +5,7 @@ const items = [
   { label: 'home', target: 'home' },
   { label: 'challenges', target: 'challenges' },
   { label: 'team', target: 'team' },
+  { label: 'submission', target: 'submission' },
   { label: 'contacts', target: 'contacts' },
 ]
 

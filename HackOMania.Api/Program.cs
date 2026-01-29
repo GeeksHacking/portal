@@ -77,6 +77,7 @@ builder.Services.AddHttpClient();
 
 builder
     .Services.AddOpenIddict()
+    .AddCore(options => { })
     .AddClient(options =>
     {
         options.AllowAuthorizationCodeFlow();

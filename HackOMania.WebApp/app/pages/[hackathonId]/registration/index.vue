@@ -65,14 +65,14 @@ watchEffect(() => {
             color="neutral"
             size="xl"
             icon="i-lucide-github"
-            class="w-full sm:w-64"
           >
             Sign up with GitHub
           </UButton>
         </div>
         <div class="mt-30">
           <NuxtLink
-            to="/login"
+            to="https://hackomania.geekshacking.com/"
+            external
             class="text-base font-normal text-black underline"
           >
             Exit Registration

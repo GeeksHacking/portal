@@ -96,10 +96,10 @@ const { data: questions, isLoading, error } = useQuery(computed(() => ({
 
     <div v-if="!hackathonId" class="text-center py-8 space-y-2">
       <p class="text-gray-900 dark:text-gray-100">
-        Select a hackathon from the dashboard to start your registration.
+        Unable to load registration. Please return to the website and try again.
       </p>
-      <NuxtLink to="/dash" class="text-blue-600 dark:text-blue-400 underline">
-        Go to dashboard
+      <NuxtLink to="https://hackomania.geekshacking.com/" external class="text-blue-600 dark:text-blue-400 underline">
+        Return to HackOMania
       </NuxtLink>
     </div>
 

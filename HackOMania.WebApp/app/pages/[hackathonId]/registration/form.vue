@@ -56,13 +56,9 @@ watchEffect(() => {
     return
   }
 
-  // Registration already complete - redirect to team page if joinCode present, otherwise dashboard
+  // Registration already complete - redirect to team page
   if (submissionsData.value?.requiredQuestionsRemaining === 0) {
-    if (route.query.joinCode) {
-      navigateTo({ path: `/${hackathon.value.shortCode}/team`, query: route.query }, { replace: true })
-    } else {
-      navigateTo('/dash', { replace: true })
-    }
+    navigateTo({ path: `/${hackathon.value.shortCode}/team`, query: route.query }, { replace: true })
     return
   }
 

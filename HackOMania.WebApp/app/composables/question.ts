@@ -1,16 +1,22 @@
-import { useMutation } from '@tanstack/vue-query'
+import { queryOptions, useMutation } from '@tanstack/vue-query'
 import { unref, type MaybeRef, type Ref } from 'vue'
 import type {
   HackOManiaApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitRequest,
   HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto,
 } from '~/api-client/models'
 
-
-
 export async function fetchQuestions(hackathonId: string) {
   return await useNuxtApp().$apiClient.participants.hackathons
     .byHackathonIdOrShortCodeId(hackathonId)
     .registration.questions.get()
+}
+
+export const registrationQuestionQueries = {
+  list: (hackathonId: string) =>
+    queryOptions({
+      queryKey: ['hackathons', hackathonId, 'registration', 'questions'],
+      queryFn: () => fetchQuestions(hackathonId),
+    }),
 }
 
 export function useInitQuestionMutation() {

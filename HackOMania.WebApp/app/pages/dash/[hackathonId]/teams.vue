@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 import { teamOrganizerQueries } from '~/composables/teams'
+import { participantOrganizerQueries } from '~/composables/participants'
 
 const props = defineProps<{
   hackathonId: string
@@ -15,7 +16,33 @@ const { data: teamsData, isLoading: isLoadingTeams } = useQuery(
   })),
 )
 
+const { data: participantsData } = useQuery(
+  computed(() => ({
+    ...participantOrganizerQueries.list(props.hackathonId),
+    enabled: !!props.hackathonId && props.isOrganizer,
+  })),
+)
+
 const teams = computed(() => teamsData.value?.teams ?? [])
+
+// Map teamId -> list of participant names
+const membersByTeamId = computed(() => {
+  const map = new Map<string, string[]>()
+  for (const p of participantsData.value?.participants ?? []) {
+    if (p.teamId) {
+      const list = map.get(p.teamId) ?? []
+      list.push(p.name ?? p.id ?? 'Unknown')
+      map.set(p.teamId, list)
+    }
+  }
+  return map
+})
+
+const expandedTeamId = ref<string | null>(null)
+
+function toggleTeam(teamId: string) {
+  expandedTeamId.value = expandedTeamId.value === teamId ? null : teamId
+}
 </script>
 
 <template>
@@ -55,22 +82,73 @@ const teams = computed(() => teamsData.value?.teams ?? [])
       <div
         v-for="team in teams"
         :key="team.id ?? ''"
-        class="py-2 flex items-center justify-between"
+        class="py-2"
       >
-        <div>
-          <p class="text-sm font-medium">
-            {{ team.name }}
-          </p>
-          <p class="text-xs text-(--ui-text-muted)">
-            {{ team.description ?? 'No description' }}
-          </p>
+        <div class="flex items-center justify-between">
+          <div class="flex-1 min-w-0">
+            <button
+              class="text-sm font-medium text-left hover:underline cursor-pointer text-(--ui-text-highlighted)"
+              @click="toggleTeam(team.id ?? '')"
+            >
+              {{ team.name }}
+              <UIcon
+                :name="expandedTeamId === team.id ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+                class="inline-block w-4 h-4 ml-1 align-middle"
+              />
+            </button>
+            <p class="text-xs text-(--ui-text-muted)">
+              {{ team.description ?? 'No description' }}
+            </p>
+          </div>
+          <UBadge
+            variant="subtle"
+            size="xs"
+          >
+            {{ team.memberCount }} {{ team.memberCount === 1 ? 'member' : 'members' }}
+          </UBadge>
         </div>
-        <UBadge
-          variant="subtle"
-          size="xs"
+
+        <!-- Expanded: Team Details -->
+        <div
+          v-if="expandedTeamId === team.id"
+          class="mt-3 ml-2 p-4 rounded-lg bg-(--ui-bg-elevated) border border-(--ui-border) max-h-96 overflow-y-auto space-y-3"
         >
-          {{ team.memberCount }} {{ team.memberCount === 1 ? 'member' : 'members' }}
-        </UBadge>
+          <UFormField label="Challenge">
+            <UInput
+              model-value="Not Selected Yet"
+              disabled
+              class="w-full"
+            />
+          </UFormField>
+
+          <div>
+            <h4 class="text-xs font-semibold mb-2">
+              Members
+            </h4>
+            <div
+              v-if="membersByTeamId.get(team.id ?? '')?.length"
+              class="space-y-1"
+            >
+              <div
+                v-for="(member, idx) in membersByTeamId.get(team.id ?? '')"
+                :key="idx"
+                class="text-sm flex items-center gap-2"
+              >
+                <UIcon
+                  name="i-lucide-user"
+                  class="w-4 h-4 text-(--ui-text-muted)"
+                />
+                {{ member }}
+              </div>
+            </div>
+            <p
+              v-else
+              class="text-xs text-(--ui-text-muted)"
+            >
+              No members found.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </UCard>

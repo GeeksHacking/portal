@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import { challengeOrganizerQueries, useCreateChallengeMutation, useDeleteChallengeMutation, useUpdateChallengeMutation } from '~/composables/challenges'
+import { challengeQueries, challengeOrganizerQueries, useCreateChallengeMutation, useDeleteChallengeMutation, useUpdateChallengeMutation } from '~/composables/challenges'
 
 const props = defineProps<{
   hackathonId: string
@@ -18,6 +18,24 @@ const { data: challengesData, isLoading: isLoadingChallenges } = useQuery(
 )
 
 const challenges = computed(() => challengesData.value?.challenges ?? [])
+
+// Fetch participant challenges list for team counts
+const { data: participantChallengesData } = useQuery(
+  computed(() => ({
+    ...challengeQueries.list(props.hackathonId),
+    enabled: !!props.hackathonId && props.isOrganizer,
+  })),
+)
+
+const teamCountByChallengeId = computed(() => {
+  const map = new Map<string, number>()
+  for (const c of participantChallengesData.value?.challenges ?? []) {
+    if (c.id != null) {
+      map.set(c.id, c.teamCount ?? 0)
+    }
+  }
+  return map
+})
 
 // Mutations
 const createMutation = useCreateChallengeMutation(props.hackathonId)
@@ -146,6 +164,13 @@ const isSubmitting = computed(() => createMutation.isPending.value || updateMuta
             </p>
           </div>
           <div class="flex items-center gap-2 ml-2">
+            <UBadge
+              variant="subtle"
+              size="xs"
+              color="neutral"
+            >
+              {{ teamCountByChallengeId.get(challenge.id ?? '') ?? 0 }} {{ teamCountByChallengeId.get(challenge.id ?? '') === 1 ? 'team' : 'teams' }}
+            </UBadge>
             <UBadge
               :color="challenge.isPublished ? 'success' : 'warning'"
               variant="subtle"

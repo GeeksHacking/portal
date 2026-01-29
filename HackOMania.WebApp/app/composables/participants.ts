@@ -11,6 +11,16 @@ export const participantOrganizerQueries = {
           .participants.get()
       },
     }),
+  detail: (hackathonId: string, participantUserId: string) =>
+    queryOptions({
+      queryKey: ['hackathons', hackathonId, 'participants', 'organizer', participantUserId],
+      async queryFn() {
+        return await useNuxtApp()
+          .$apiClient.organizers.hackathons.byHackathonId(hackathonId)
+          .participants.byParticipantUserId(participantUserId)
+          .get()
+      },
+    }),
 }
 
 export function useReviewParticipantMutation(hackathonId: string) {

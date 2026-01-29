@@ -4,7 +4,11 @@
 // @ts-ignore
 import { createFastEndpointsErrorResponseFromDiscriminatorValue, createHackOManiaApiEndpointsOrganizersHackathonParticipantsGetResponseFromDiscriminatorValue, type FastEndpointsErrorResponse, type HackOManiaApiEndpointsOrganizersHackathonParticipantsGetResponse } from '../../../../../models/index.js';
 // @ts-ignore
+import { ResourcesRequestBuilderNavigationMetadata, type ResourcesRequestBuilder } from './resources/index.js';
+// @ts-ignore
 import { ReviewRequestBuilderRequestsMetadata, type ReviewRequestBuilder } from './review/index.js';
+// @ts-ignore
+import { type VenueRequestBuilder, VenueRequestBuilderNavigationMetadata } from './venue/index.js';
 // @ts-ignore
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
@@ -13,9 +17,17 @@ import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type 
  */
 export interface ParticipantUserItemRequestBuilder extends BaseRequestBuilder<ParticipantUserItemRequestBuilder> {
     /**
+     * The resources property
+     */
+    get resources(): ResourcesRequestBuilder;
+    /**
      * The review property
      */
     get review(): ReviewRequestBuilder;
+    /**
+     * The venue property
+     */
+    get venue(): VenueRequestBuilder;
     /**
      * Retrieves full details for a participant, including registration responses.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
@@ -38,8 +50,14 @@ export const ParticipantUserItemRequestBuilderUriTemplate = "{+baseurl}/organize
  * Metadata for all the navigation properties in the request builder.
  */
 export const ParticipantUserItemRequestBuilderNavigationMetadata: Record<Exclude<keyof ParticipantUserItemRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
+    resources: {
+        navigationMetadata: ResourcesRequestBuilderNavigationMetadata,
+    },
     review: {
         requestsMetadata: ReviewRequestBuilderRequestsMetadata,
+    },
+    venue: {
+        navigationMetadata: VenueRequestBuilderNavigationMetadata,
     },
 };
 /**

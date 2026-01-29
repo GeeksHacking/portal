@@ -7,7 +7,7 @@ import { RedemptionsRequestBuilderRequestsMetadata, type RedemptionsRequestBuild
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /participants/hackathons/{hackathonIdOrShortCode-id}/resources/{resourceId}
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/participants/{participantUser-id}/resources/{resourceId}
  */
 export interface WithResourceItemRequestBuilder extends BaseRequestBuilder<WithResourceItemRequestBuilder> {
     /**
@@ -18,7 +18,7 @@ export interface WithResourceItemRequestBuilder extends BaseRequestBuilder<WithR
 /**
  * Uri template for the request builder.
  */
-export const WithResourceItemRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{hackathonIdOrShortCode%2Did}/resources/{resourceId}";
+export const WithResourceItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/participants/{participantUser%2Did}/resources/{resourceId}";
 /**
  * Metadata for all the navigation properties in the request builder.
  */

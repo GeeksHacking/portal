@@ -4,20 +4,12 @@
 // @ts-ignore
 import { createHackOManiaApiEndpointsParticipantsHackathonResourcesListResponseFromDiscriminatorValue, type HackOManiaApiEndpointsParticipantsHackathonResourcesListResponse } from '../../../../models/index.js';
 // @ts-ignore
-import { type WithResourceItemRequestBuilder, WithResourceItemRequestBuilderNavigationMetadata } from './item/index.js';
-// @ts-ignore
-import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
+import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /participants/hackathons/{hackathonIdOrShortCode-id}/resources
  */
 export interface ResourcesRequestBuilder extends BaseRequestBuilder<ResourcesRequestBuilder> {
-    /**
-     * Gets an item from the ApiSdk.participants.hackathons.item.resources.item collection
-     * @param resourceId Unique identifier of the item
-     * @returns {WithResourceItemRequestBuilder}
-     */
-     byResourceId(resourceId: string) : WithResourceItemRequestBuilder;
     /**
      * Retrieves all resources available for a hackathon.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
@@ -35,15 +27,6 @@ export interface ResourcesRequestBuilder extends BaseRequestBuilder<ResourcesReq
  * Uri template for the request builder.
  */
 export const ResourcesRequestBuilderUriTemplate = "{+baseurl}/participants/hackathons/{hackathonIdOrShortCode%2Did}/resources";
-/**
- * Metadata for all the navigation properties in the request builder.
- */
-export const ResourcesRequestBuilderNavigationMetadata: Record<Exclude<keyof ResourcesRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
-    byResourceId: {
-        navigationMetadata: WithResourceItemRequestBuilderNavigationMetadata,
-        pathParametersMappings: ["resourceId"],
-    },
-};
 /**
  * Metadata for all the requests in the request builder.
  */

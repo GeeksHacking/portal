@@ -10,7 +10,7 @@ import { JoinRequestBuilderRequestsMetadata, type JoinRequestBuilder } from './j
 // @ts-ignore
 import { RegistrationRequestBuilderNavigationMetadata, type RegistrationRequestBuilder } from './registration/index.js';
 // @ts-ignore
-import { ResourcesRequestBuilderNavigationMetadata, ResourcesRequestBuilderRequestsMetadata, type ResourcesRequestBuilder } from './resources/index.js';
+import { ResourcesRequestBuilderRequestsMetadata, type ResourcesRequestBuilder } from './resources/index.js';
 // @ts-ignore
 import { StatusRequestBuilderRequestsMetadata, type StatusRequestBuilder } from './status/index.js';
 // @ts-ignore
@@ -97,7 +97,6 @@ export const HackathonIdOrShortCodeItemRequestBuilderNavigationMetadata: Record<
     },
     resources: {
         requestsMetadata: ResourcesRequestBuilderRequestsMetadata,
-        navigationMetadata: ResourcesRequestBuilderNavigationMetadata,
     },
     status: {
         requestsMetadata: StatusRequestBuilderRequestsMetadata,

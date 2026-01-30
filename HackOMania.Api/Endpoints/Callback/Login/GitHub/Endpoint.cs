@@ -61,6 +61,10 @@ public class Endpoint(
         if (string.IsNullOrWhiteSpace(email))
         {
             var accessToken = result.Properties?.GetTokenValue("access_token");
+            if (string.IsNullOrWhiteSpace(accessToken))
+            {
+                result.Properties?.Items.TryGetValue("access_token", out accessToken);
+            }
             if (!string.IsNullOrWhiteSpace(accessToken))
             {
                 email = await GetPrivateEmailAsync(accessToken, ct);

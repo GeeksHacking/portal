@@ -1,4 +1,3 @@
-using System.Diagnostics.Tracing;
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
@@ -16,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using OpenIddict.Client;
 using Scalar.AspNetCore;
 using SqlSugar;
 
@@ -101,6 +101,34 @@ builder
 
         options.UseSystemNetHttp();
         options.SetRedirectionEndpointUris("/callback/login/github");
+
+        options.AddEventHandler<OpenIddictClientEvents.ProcessAuthenticationContext>(builder =>
+        {
+            builder.UseInlineHandler(context =>
+            {
+                var properties = context.Properties;
+                if (properties is null)
+                {
+                    return default;
+                }
+
+                var accessToken =
+                    context.BackchannelAccessToken
+                    ?? context.FrontchannelAccessToken
+                    ?? context.IssuedToken;
+                if (!string.IsNullOrWhiteSpace(accessToken))
+                {
+                    properties["access_token"] = accessToken;
+                }
+
+                if (!string.IsNullOrWhiteSpace(context.RefreshToken))
+                {
+                    properties["refresh_token"] = context.RefreshToken;
+                }
+
+                return default;
+            });
+        });
 
         options
             .UseWebProviders()

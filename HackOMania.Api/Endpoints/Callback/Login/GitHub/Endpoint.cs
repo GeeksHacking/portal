@@ -35,7 +35,20 @@ public class Endpoint(
         var result = await HttpContext.AuthenticateAsync(Providers.GitHub);
         if (!result.Succeeded || result.Principal is null)
         {
-            await Send.ForbiddenAsync(cancellation: ct);
+            if (result.Failure is not null)
+            {
+                logger.LogWarning(
+                    result.Failure,
+                    "GitHub OAuth authentication failed; redirecting to login."
+                );
+            }
+            else
+            {
+                logger.LogWarning("GitHub OAuth authentication failed; redirecting to login.");
+            }
+
+            HttpContext.Response.Cookies.Delete("auth_redirect_uri");
+            await Send.RedirectAsync("/auth/login");
             return;
         }
 

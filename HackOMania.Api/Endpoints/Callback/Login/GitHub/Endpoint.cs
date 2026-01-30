@@ -113,7 +113,9 @@ public class Endpoint(
 
         if (string.IsNullOrWhiteSpace(name))
         {
-            AddError("Please add a name on GitHub, then register again.");
+            AddError(
+                "Oh no! Your first/last name is empty on your GitHub profile. Please update it and try again."
+            );
             await Send.ErrorsAsync(cancellation: ct);
             return;
         }

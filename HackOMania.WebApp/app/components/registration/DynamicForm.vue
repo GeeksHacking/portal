@@ -298,9 +298,14 @@ const isFormValid = computed(() => {
   if (!lastName || lastName.trim() === '') return false
 
   // Only validate required questions that are currently visible
-  const allRequiredQuestions = allQuestions.value.filter(q =>
-    q.isRequired && isQuestionVisible(q.conditionalLogic),
-  )
+  // Conditional questions (those with conditionalLogic) are implicitly required when visible
+  const allRequiredQuestions = allQuestions.value.filter((q) => {
+    const isVisible = isQuestionVisible(q.conditionalLogic)
+    // Question should be validated if:
+    // 1. It's marked as required AND visible, OR
+    // 2. It has conditional logic AND is visible (conditional questions are implicitly required when shown)
+    return isVisible && (q.isRequired || q.conditionalLogic)
+  })
 
   return allRequiredQuestions.every((question) => {
     const key = question.questionKey
@@ -308,11 +313,35 @@ const isFormValid = computed(() => {
 
     const value = state[key]
 
+    // Check if main value is filled
+    let isMainValueFilled = false
     if (Array.isArray(value)) {
-      return value.length > 0
+      isMainValueFilled = value.length > 0
+    } else {
+      isMainValueFilled = value !== '' && value !== null && value !== undefined
     }
 
-    return value !== '' && value !== null && value !== undefined
+    if (!isMainValueFilled) return false
+
+    // Check if any selected options require follow-up text
+    const selectedValues = Array.isArray(value) ? value : [value]
+    const items = (question.options || []).map(opt => ({
+      label: String(opt.optionText ?? ''),
+      value: String(opt.optionValue ?? ''),
+      hasFollowUpText: opt.hasFollowUpText ?? false,
+      followUpPlaceholder: opt.followUpPlaceholder ?? '',
+    }))
+
+    const followUpOptions = items.filter(item =>
+      selectedValues.includes(item.value) && item.hasFollowUpText
+    )
+
+    // Validate that all required follow-up fields are filled
+    return followUpOptions.every((followUpOption) => {
+      const followUpKey = `${key}:${followUpOption.value}`
+      const followUpValue = followUpState[followUpKey]
+      return followUpValue && followUpValue.trim() !== ''
+    })
   })
 })
 </script>
@@ -539,7 +568,7 @@ const isFormValid = computed(() => {
                             class="rounded-lg max-w-full hover:opacity-90 transition-opacity"
                           >
                           <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-raleway">
-                            <span class="md:hidden">Tap to view larger</span>
+                            <span class="md:hidden">Pinch to zoom</span>
                             <span class="hidden md:inline">Click to view larger or download</span>
                           </p>
                         </div>

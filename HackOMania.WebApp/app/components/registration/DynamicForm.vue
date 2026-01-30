@@ -331,7 +331,7 @@ const isFormValid = computed(() => {
             v-for="section in formattedSections"
             :key="section.sectionIndex"
           >
-            <div class="space-y-8">
+            <div class="space-y-6">
               <!-- Section header (for sections 0 and 2, show main title) -->
               <div
                 v-if="section.sectionIndex !== 1"
@@ -391,28 +391,27 @@ const isFormValid = computed(() => {
                 </UFormField>
               </div>
 
-              <!-- Categories within each section -->
-              <template
-                v-for="(category, catIndex) in section.categories"
-                :key="category.name"
-              >
-                <!-- For section 1, show Skills/Logistics subheadings -->
-                <div
-                  v-if="getCategoryGroupName(section.sectionIndex, category.name ?? '') && (catIndex === 0 || getCategoryGroupName(section.sectionIndex, category.name ?? '') !== getCategoryGroupName(section.sectionIndex, section.categories[catIndex - 1]?.name ?? ''))"
-                  class="flex items-center"
+              <!-- Single continuous grid for all categories in section -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <template
+                  v-for="(category, catIndex) in section.categories"
+                  :key="category.name"
                 >
-                  <img
-                    :src="getSectionIcon(section.sectionIndex, getCategoryGroupName(section.sectionIndex, category.name ?? ''))"
-                    alt="icon"
-                    class="w-8 h-8 md:w-10 md:h-10"
+                  <!-- For section 1, show Skills/Logistics subheadings -->
+                  <div
+                    v-if="getCategoryGroupName(section.sectionIndex, category.name ?? '') && (catIndex === 0 || getCategoryGroupName(section.sectionIndex, category.name ?? '') !== getCategoryGroupName(section.sectionIndex, section.categories[catIndex - 1]?.name ?? ''))"
+                    class="md:col-span-2 flex items-center mb-2 mt-4"
                   >
-                  <h2 class="ml-3 font-raleway text-lg md:text-xl font-normal text-gray-900 dark:text-gray-100">
-                    {{ getCategoryGroupName(section.sectionIndex, category.name ?? '') }}
-                  </h2>
-                </div>
+                    <img
+                      :src="getSectionIcon(section.sectionIndex, getCategoryGroupName(section.sectionIndex, category.name ?? ''))"
+                      alt="icon"
+                      class="w-8 h-8 md:w-10 md:h-10"
+                    >
+                    <h2 class="ml-3 font-raleway text-lg md:text-xl font-normal text-gray-900 dark:text-gray-100">
+                      {{ getCategoryGroupName(section.sectionIndex, category.name ?? '') }}
+                    </h2>
+                  </div>
 
-                <!-- Questions grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <template
                     v-for="question in category.questions"
                     :key="question.id ?? ''"
@@ -564,8 +563,8 @@ const isFormValid = computed(() => {
                       </div>
                     </UFormField>
                   </template>
-                </div>
-              </template>
+                </template>
+              </div>
             </div>
           </template>
         </div>

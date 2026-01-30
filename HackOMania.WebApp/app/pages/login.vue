@@ -63,6 +63,10 @@ const isAuthenticated = computed(() => !!user.value && !isError.value)
         >
           Login with GitHub
         </UButton>
+
+        <p class="text-sm text-gray-600">
+          Please ensure you are logged into GitHub first!
+        </p>
       </div>
     </div>
   </div>

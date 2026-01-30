@@ -29,6 +29,7 @@ const editingId = ref<string | null>(null)
 const isCreating = ref(false)
 const editForm = ref({
   questionText: '',
+  questionKey: '',
   helpText: '',
   isRequired: false,
   type: 0 as number,
@@ -86,6 +87,7 @@ function startEditing(question: Question) {
   }))
   editForm.value = {
     questionText: question.questionText ?? '',
+    questionKey: question.questionKey ?? '',
     helpText: question.helpText ?? '',
     isRequired: question.isRequired ?? false,
     type: question.type ?? 0,
@@ -106,6 +108,7 @@ function startCreating() {
     : 0
   editForm.value = {
     questionText: '',
+    questionKey: '',
     helpText: '',
     isRequired: false,
     type: 0,
@@ -144,26 +147,37 @@ async function saveQuestion() {
     return
   }
 
-  const questionData = {
-    questionText: editForm.value.questionText,
-    helpText: editForm.value.helpText || null,
-    isRequired: editForm.value.isRequired,
-    type: editForm.value.type,
-    displayOrder: editForm.value.displayOrder,
-    category: editForm.value.category || null,
-    conditionalLogic: editForm.value.conditionalLogic || null,
-    validationRules: editForm.value.validationRules || null,
-    options: options as typeof options & HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateUpdateOptionDto[],
-  }
-
   if (isCreating.value) {
-    await createMutation.mutateAsync(questionData)
+    const createData = {
+      questionText: editForm.value.questionText,
+      questionKey: editForm.value.questionKey || null,
+      helpText: editForm.value.helpText || null,
+      isRequired: editForm.value.isRequired,
+      type: editForm.value.type,
+      displayOrder: editForm.value.displayOrder,
+      category: editForm.value.category || null,
+      conditionalLogic: editForm.value.conditionalLogic || null,
+      validationRules: editForm.value.validationRules || null,
+      options: options as typeof options & HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateUpdateOptionDto[],
+    }
+    await createMutation.mutateAsync(createData)
     isCreating.value = false
   }
   else if (editingId.value) {
+    const updateData = {
+      questionText: editForm.value.questionText,
+      helpText: editForm.value.helpText || null,
+      isRequired: editForm.value.isRequired,
+      type: editForm.value.type,
+      displayOrder: editForm.value.displayOrder,
+      category: editForm.value.category || null,
+      conditionalLogic: editForm.value.conditionalLogic || null,
+      validationRules: editForm.value.validationRules || null,
+      options: options as typeof options & HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateUpdateOptionDto[],
+    }
     await updateMutation.mutateAsync({
       questionId: editingId.value,
-      data: questionData,
+      data: updateData,
     })
     editingId.value = null
   }
@@ -277,6 +291,14 @@ function getTypeName(type: number | null | undefined): string {
               size="sm"
               autoresize
               class="w-full"
+            />
+          </UFormField>
+
+          <UFormField label="Question Key">
+            <UInput
+              v-model="editForm.questionKey"
+              size="sm"
+              placeholder="e.g. email, full_name, university"
             />
           </UFormField>
 
@@ -471,6 +493,15 @@ function getTypeName(type: number | null | undefined): string {
               size="sm"
               autoresize
               class="w-full"
+            />
+          </UFormField>
+
+          <UFormField label="Question Key">
+            <UInput
+              v-model="editForm.questionKey"
+              size="sm"
+              disabled
+              placeholder="Cannot be changed after creation"
             />
           </UFormField>
 

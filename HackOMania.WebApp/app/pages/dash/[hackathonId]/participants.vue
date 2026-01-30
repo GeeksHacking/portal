@@ -22,29 +22,41 @@ const { data: participantsData, isLoading: isLoadingParticipants } = useQuery(
 const participants = computed(() => participantsData.value?.participants ?? [])
 
 // Filter state
-type FilterStatus = 'all' | 'pending' | 'approved' | 'rejected'
+type FilterStatus = 'all' | 'incomplete' | 'pending' | 'approved' | 'rejected'
 const activeFilter = ref<FilterStatus>('all')
+
+function isIncomplete(p: { registrationSubmissions?: unknown[] | null }) {
+  return !p.registrationSubmissions?.length
+}
 
 const filteredParticipants = computed(() => {
   const all = participants.value
+  const complete = all.filter(p => !isIncomplete(p))
   switch (activeFilter.value) {
+    case 'incomplete':
+      return all.filter(p => isIncomplete(p))
     case 'pending':
-      return all.filter(p => p.concludedStatus === 0 || p.concludedStatus === null || p.concludedStatus === undefined)
+      return complete.filter(p => p.concludedStatus === 0 || p.concludedStatus === null || p.concludedStatus === undefined)
     case 'approved':
-      return all.filter(p => p.concludedStatus === 1)
+      return complete.filter(p => p.concludedStatus === 1)
     case 'rejected':
-      return all.filter(p => p.concludedStatus === 2)
+      return complete.filter(p => p.concludedStatus === 2)
     default:
-      return all
+      return complete
   }
 })
 
-const filterCounts = computed(() => ({
-  all: participants.value.length,
-  pending: participants.value.filter(p => p.concludedStatus === 0 || p.concludedStatus === null || p.concludedStatus === undefined).length,
-  approved: participants.value.filter(p => p.concludedStatus === 1).length,
-  rejected: participants.value.filter(p => p.concludedStatus === 2).length,
-}))
+const filterCounts = computed(() => {
+  const all = participants.value
+  const complete = all.filter(p => !isIncomplete(p))
+  return {
+    all: complete.length,
+    incomplete: all.filter(p => isIncomplete(p)).length,
+    pending: complete.filter(p => p.concludedStatus === 0 || p.concludedStatus === null || p.concludedStatus === undefined).length,
+    approved: complete.filter(p => p.concludedStatus === 1).length,
+    rejected: complete.filter(p => p.concludedStatus === 2).length,
+  }
+})
 
 // Expanded participant detail
 const expandedParticipantId = ref<string | null>(null)
@@ -178,6 +190,14 @@ function getStatusLabel(status: number | null | undefined): string {
               </UButton>
               <UButton
                 size="xs"
+                :variant="activeFilter === 'incomplete' ? 'solid' : 'ghost'"
+                :color="activeFilter === 'incomplete' ? 'neutral' : 'neutral'"
+                @click="activeFilter = 'incomplete'"
+              >
+                Incomplete ({{ filterCounts.incomplete }})
+              </UButton>
+              <UButton
+                size="xs"
                 :variant="activeFilter === 'pending' ? 'solid' : 'ghost'"
                 :color="activeFilter === 'pending' ? 'warning' : 'neutral'"
                 @click="activeFilter = 'pending'"
@@ -252,27 +272,37 @@ function getStatusLabel(status: number | null | undefined): string {
               </p>
             </div>
             <div class="flex items-center gap-2 ml-2">
+              <template v-if="!isIncomplete(participant)">
+                <UBadge
+                  :color="getStatusColor(participant.concludedStatus)"
+                  variant="subtle"
+                  size="xs"
+                >
+                  {{ getStatusLabel(participant.concludedStatus) }}
+                </UBadge>
+                <UButton
+                  size="xs"
+                  variant="ghost"
+                  color="success"
+                  icon="i-lucide-check"
+                  @click="openReviewModal(participant.id ?? '', participant.name ?? participant.id ?? '', 'accept')"
+                />
+                <UButton
+                  size="xs"
+                  variant="ghost"
+                  color="error"
+                  icon="i-lucide-x"
+                  @click="openReviewModal(participant.id ?? '', participant.name ?? participant.id ?? '', 'reject')"
+                />
+              </template>
               <UBadge
-                :color="getStatusColor(participant.concludedStatus)"
+                v-else
+                color="neutral"
                 variant="subtle"
                 size="xs"
               >
-                {{ getStatusLabel(participant.concludedStatus) }}
+                Incomplete
               </UBadge>
-              <UButton
-                size="xs"
-                variant="ghost"
-                color="success"
-                icon="i-lucide-check"
-                @click="openReviewModal(participant.id ?? '', participant.name ?? participant.id ?? '', 'accept')"
-              />
-              <UButton
-                size="xs"
-                variant="ghost"
-                color="error"
-                icon="i-lucide-x"
-                @click="openReviewModal(participant.id ?? '', participant.name ?? participant.id ?? '', 'reject')"
-              />
             </div>
           </div>
 

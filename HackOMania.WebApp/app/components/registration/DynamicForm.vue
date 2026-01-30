@@ -255,19 +255,17 @@ const onSubmit = async () => {
 }
 
 const getCategoryGroupName = (sectionIndex: number, categoryName: string) => {
-  if (sectionIndex !== 1) return null
-
-  const skillsCategories = ['Skills & Interests', 'Online Profiles']
   const logisticsCategories = ['Hackathon Preferences', 'Dietary & Preferences']
 
-  if (skillsCategories.includes(categoryName)) return 'Skills'
-  if (logisticsCategories.includes(categoryName)) return 'Logistics'
+  if (sectionIndex === 1 && logisticsCategories.includes(categoryName)) return 'Logistics'
   return null
 }
 
 const getSectionIcon = (sectionIndex: number, sectionName: string | null) => {
   if (sectionName === 'Skills') return '/logos/skills.svg'
   if (sectionName === 'Logistics') return '/logos/logistics.svg'
+  if (sectionIndex === 0) return '/logos/personaldetails.svg'
+  if (sectionIndex === 1) return '/logos/logistics.svg'
   if (sectionIndex === 2) return '/logos/outreach.svg'
   return '/logos/personaldetails.svg'
 }

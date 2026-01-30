@@ -10,14 +10,14 @@ export const registrationPageConfig = [
       'Personal Information',
       'Professional Background',
       'Educational Background',
+      'Skills & Interests',
+      'Online Profiles',
     ],
   },
   {
-    pageName: 'Skills and Logistics',
+    pageName: 'Logistics',
     pageIndex: 1,
     categories: [
-      'Skills & Interests',
-      'Online Profiles',
       'Hackathon Preferences',
       'Dietary & Preferences',
     ],

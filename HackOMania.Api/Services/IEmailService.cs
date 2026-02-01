@@ -9,6 +9,7 @@ public interface IEmailService
         string toEmail,
         string toName,
         string hackathonName,
+        string? templateId,
         string? reason = null,
         CancellationToken ct = default
     );
@@ -20,6 +21,7 @@ public interface IEmailService
         string toEmail,
         string toName,
         string hackathonName,
+        string? templateId,
         string? reason = null,
         CancellationToken ct = default
     );
@@ -30,6 +32,8 @@ public interface IEmailService
     Task SendBatchEmailsAsync(
         IEnumerable<(string Email, string Name, string Status, string? Reason)> participants,
         string hackathonName,
+        string? acceptedTemplateId,
+        string? rejectedTemplateId,
         CancellationToken ct = default
     );
 }

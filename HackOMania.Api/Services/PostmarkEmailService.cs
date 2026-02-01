@@ -24,6 +24,7 @@ public class PostmarkEmailService : IEmailService
         string toEmail,
         string toName,
         string hackathonName,
+        string? templateId,
         string? reason = null,
         CancellationToken ct = default
     )
@@ -37,17 +38,26 @@ public class PostmarkEmailService : IEmailService
             return;
         }
 
+        if (string.IsNullOrWhiteSpace(templateId))
+        {
+            _logger.LogWarning(
+                "No acceptance email template configured for hackathon. Skipping email to {Email}",
+                toEmail
+            );
+            return;
+        }
+
         try
         {
             var message = new TemplatedPostmarkMessage
             {
                 From = $"{_options.FromName} <{_options.FromEmail}>",
                 To = toEmail,
-                TemplateId = long.TryParse(_options.AcceptedTemplateId, out var templateId) 
-                    ? templateId 
+                TemplateId = long.TryParse(templateId, out var templateIdNum) 
+                    ? templateIdNum 
                     : 0,
-                TemplateAlias = !long.TryParse(_options.AcceptedTemplateId, out _) 
-                    ? _options.AcceptedTemplateId 
+                TemplateAlias = !long.TryParse(templateId, out _) 
+                    ? templateId 
                     : null,
                 TemplateModel = new
                 {
@@ -92,6 +102,7 @@ public class PostmarkEmailService : IEmailService
         string toEmail,
         string toName,
         string hackathonName,
+        string? templateId,
         string? reason = null,
         CancellationToken ct = default
     )
@@ -105,17 +116,26 @@ public class PostmarkEmailService : IEmailService
             return;
         }
 
+        if (string.IsNullOrWhiteSpace(templateId))
+        {
+            _logger.LogWarning(
+                "No rejection email template configured for hackathon. Skipping email to {Email}",
+                toEmail
+            );
+            return;
+        }
+
         try
         {
             var message = new TemplatedPostmarkMessage
             {
                 From = $"{_options.FromName} <{_options.FromEmail}>",
                 To = toEmail,
-                TemplateId = long.TryParse(_options.RejectedTemplateId, out var templateId) 
-                    ? templateId 
+                TemplateId = long.TryParse(templateId, out var templateIdNum) 
+                    ? templateIdNum 
                     : 0,
-                TemplateAlias = !long.TryParse(_options.RejectedTemplateId, out _) 
-                    ? _options.RejectedTemplateId 
+                TemplateAlias = !long.TryParse(templateId, out _) 
+                    ? templateId 
                     : null,
                 TemplateModel = new
                 {
@@ -159,6 +179,8 @@ public class PostmarkEmailService : IEmailService
     public async Task SendBatchEmailsAsync(
         IEnumerable<(string Email, string Name, string Status, string? Reason)> participants,
         string hackathonName,
+        string? acceptedTemplateId,
+        string? rejectedTemplateId,
         CancellationToken ct = default
     )
     {
@@ -178,6 +200,7 @@ public class PostmarkEmailService : IEmailService
                         p.Email,
                         p.Name,
                         hackathonName,
+                        acceptedTemplateId,
                         p.Reason,
                         ct
                     );
@@ -188,6 +211,7 @@ public class PostmarkEmailService : IEmailService
                         p.Email,
                         p.Name,
                         hackathonName,
+                        rejectedTemplateId,
                         p.Reason,
                         ct
                     );

@@ -163,7 +163,13 @@ public class Endpoint(ISqlSugarClient sql, IEmailService emailService)
         // Send batch emails
         if (participantsToEmail.Count > 0)
         {
-            await emailService.SendBatchEmailsAsync(participantsToEmail, hackathon.Name, ct);
+            await emailService.SendBatchEmailsAsync(
+                participantsToEmail,
+                hackathon.Name,
+                hackathon.AcceptedEmailTemplateId,
+                hackathon.RejectedEmailTemplateId,
+                ct
+            );
         }
 
         await Send.OkAsync(

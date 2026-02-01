@@ -37,6 +37,18 @@ public class Hackathon
 
     public DateTimeOffset JudgingEndDate { get; set; }
 
+    /// <summary>
+    /// Postmark template ID or alias for participant acceptance emails
+    /// </summary>
+    [SugarColumn(IsNullable = true)]
+    public string? AcceptedEmailTemplateId { get; set; }
+
+    /// <summary>
+    /// Postmark template ID or alias for participant rejection emails
+    /// </summary>
+    [SugarColumn(IsNullable = true)]
+    public string? RejectedEmailTemplateId { get; set; }
+
     [Navigate(NavigateType.OneToMany, nameof(Participant.HackathonId))]
     public List<Participant> Participants { get; set; } = null!;
 

@@ -1,9 +1,11 @@
 # Hook/Event System with Postmark Email Integration
 
 ## Overview
-This feature allows organizers to automatically send emails to participants when they are accepted or rejected during the review process. It also provides a batch email endpoint for manual email sending. Emails are sent using Postmark templates for easy customization.
+This feature allows organizers to automatically send emails to participants when they are accepted or rejected during the review process. It also provides a batch email endpoint for manual email sending. Emails are sent using Postmark templates for easy customization. **Template IDs are configured per hackathon in the database**, allowing different hackathons to use different email templates.
 
 ## Configuration
+
+### Global Postmark Configuration
 
 Add the following configuration to your `appsettings.json` or environment variables:
 
@@ -13,21 +15,35 @@ Add the following configuration to your `appsettings.json` or environment variab
     "ServerToken": "your-postmark-server-token",
     "FromEmail": "noreply@yourdomain.com",
     "FromName": "HackOMania",
-    "Enabled": true,
-    "AcceptedTemplateId": "participant-accepted",
-    "RejectedTemplateId": "participant-rejected"
+    "Enabled": true
   }
 }
 ```
 
-### Configuration Options
+### Global Configuration Options
 
 - **ServerToken**: Your Postmark API server token (required)
 - **FromEmail**: The sender email address (required)
 - **FromName**: The sender name that appears in emails (required)
-- **Enabled**: Set to `false` to disable email sending (useful for testing)
-- **AcceptedTemplateId**: Template ID (numeric) or template alias (string) for acceptance emails
-- **RejectedTemplateId**: Template ID (numeric) or template alias (string) for rejection emails
+- **Enabled**: Set to `false` to disable email sending globally (useful for testing)
+
+### Per-Hackathon Email Template Configuration
+
+Each hackathon in the database has two optional fields for configuring email templates:
+
+- **AcceptedEmailTemplateId**: Template ID (numeric) or template alias (string) for acceptance emails
+- **RejectedEmailTemplateId**: Template ID (numeric) or template alias (string) for rejection emails
+
+These fields can be set when creating or updating a hackathon. If these fields are not set or are null/empty, no emails will be sent for that hackathon.
+
+**Example:**
+```json
+{
+  "name": "HackOMania 2026",
+  "acceptedEmailTemplateId": "participant-accepted",
+  "rejectedEmailTemplateId": "participant-rejected"
+}
+```
 
 ## Postmark Template Setup
 
@@ -75,7 +91,7 @@ You need to create two templates in your Postmark account:
 
 ### 1. Automatic Email Hooks
 
-When an organizer reviews a participant (accept or reject), an email is automatically sent to the participant using the configured Postmark template:
+When an organizer reviews a participant (accept or reject), an email is automatically sent to the participant using the configured Postmark template for that hackathon:
 
 **API Endpoint**: `POST /organizers/hackathons/{hackathonId}/participants/{participantUserId}/review`
 
@@ -88,9 +104,10 @@ When an organizer reviews a participant (accept or reject), an email is automati
 ```
 
 The hook will:
-- Send an acceptance email using the configured template if decision is "accept"
-- Send a rejection email using the configured template if decision is "reject"
+- Send an acceptance email using the hackathon's configured acceptance template if decision is "accept"
+- Send a rejection email using the hackathon's configured rejection template if decision is "reject"
 - Include the optional reason message in the template variables
+- Log warnings and skip sending if no template is configured for that hackathon
 - Log errors but not fail the review process if email sending fails
 
 ### 2. Batch Email Sending
@@ -141,10 +158,11 @@ Use `{{#has_reason}}...{{/has_reason}}` to conditionally show content when a rea
 - Template variables are automatically escaped by Postmark to prevent XSS
 - Email sending is fault-tolerant - failures are logged but don't break the review process
 - Batch operations continue even if individual emails fail
+- Hackathons without configured templates will skip email sending with a warning log
 
 ## Testing
 
-For local development or testing, you can disable email sending:
+For local development or testing, you can disable email sending globally:
 
 ```json
 {
@@ -152,26 +170,38 @@ For local development or testing, you can disable email sending:
     "ServerToken": "test-token",
     "FromEmail": "test@example.com",
     "FromName": "Test",
-    "Enabled": false,
-    "AcceptedTemplateId": "test-accepted",
-    "RejectedTemplateId": "test-rejected"
+    "Enabled": false
   }
 }
 ```
 
 When `Enabled` is `false`, the system will log email attempts but not send actual emails.
 
+Alternatively, you can leave specific hackathons without template IDs configured, and they will skip email sending.
+
 ## Error Handling
 
 - Email sending errors are logged but don't prevent participant reviews
 - Batch operations are fault-tolerant - one failure won't stop others
 - All errors are logged with participant email addresses for debugging
-- Missing or invalid template IDs will result in Postmark API errors that are logged
+- Missing or invalid template IDs will result in warnings or Postmark API errors that are logged
+- Hackathons without configured templates will log a warning and skip email sending
 
 ## Requirements
 
 - Postmark account with valid server token
 - Verified sender email address in Postmark
-- Two email templates created in Postmark (acceptance and rejection)
+- Email templates created in Postmark for each hackathon that needs email notifications
 - .NET 10.0 or higher
 - Postmark NuGet package v5.3.0 or higher
+
+## Database Schema
+
+The `Hackathon` table includes these fields for email template configuration:
+
+```sql
+AcceptedEmailTemplateId NVARCHAR(MAX) NULL
+RejectedEmailTemplateId NVARCHAR(MAX) NULL
+```
+
+These can be set via the hackathon creation/update API endpoints.

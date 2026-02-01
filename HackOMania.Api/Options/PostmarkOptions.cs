@@ -21,14 +21,4 @@ public class PostmarkOptions
     /// Enable or disable email sending (useful for testing)
     /// </summary>
     public bool Enabled { get; set; } = true;
-
-    /// <summary>
-    /// Postmark template ID or alias for participant acceptance emails
-    /// </summary>
-    public string AcceptedTemplateId { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Postmark template ID or alias for participant rejection emails
-    /// </summary>
-    public string RejectedTemplateId { get; set; } = string.Empty;
 }

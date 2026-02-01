@@ -37,6 +37,7 @@ public class HookService : IHookService
                     user.Email,
                     user.Name,
                     hackathon.Name,
+                    hackathon.AcceptedEmailTemplateId,
                     reason,
                     ct
                 );
@@ -47,6 +48,7 @@ public class HookService : IHookService
                     user.Email,
                     user.Name,
                     hackathon.Name,
+                    hackathon.RejectedEmailTemplateId,
                     reason,
                     ct
                 );

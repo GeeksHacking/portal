@@ -337,6 +337,16 @@ public class DefaultStack : Stack
                                 },
                                 new ServiceTemplateContainerEnvArgs
                                 {
+                                    Name = "App__AdminGitHubLogins__11",
+                                    Value = "tiramisuxh",
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "App__AdminGitHubLogins__12",
+                                    Value = "misterdoobdoob",
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
                                     Name = "GitHub__ClientId",
                                     ValueSource = new ServiceTemplateContainerEnvValueSourceArgs
                                     {

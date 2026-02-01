@@ -39,17 +39,23 @@ public class PostmarkEmailService : IEmailService
 
         try
         {
-            var subject = $"Congratulations! Your {hackathonName} Application Has Been Accepted";
-            var htmlBody = BuildAcceptedEmailHtml(toName, hackathonName, reason);
-            var textBody = BuildAcceptedEmailText(toName, hackathonName, reason);
-
-            var message = new PostmarkMessage
+            var message = new TemplatedPostmarkMessage
             {
                 From = $"{_options.FromName} <{_options.FromEmail}>",
-                To = $"{toName} <{toEmail}>",
-                Subject = subject,
-                HtmlBody = htmlBody,
-                TextBody = textBody,
+                To = toEmail,
+                TemplateId = long.TryParse(_options.AcceptedTemplateId, out var templateId) 
+                    ? templateId 
+                    : 0,
+                TemplateAlias = !long.TryParse(_options.AcceptedTemplateId, out _) 
+                    ? _options.AcceptedTemplateId 
+                    : null,
+                TemplateModel = new
+                {
+                    participant_name = toName,
+                    hackathon_name = hackathonName,
+                    reason = reason ?? string.Empty,
+                    has_reason = !string.IsNullOrWhiteSpace(reason)
+                }
             };
 
             var response = await _client.SendMessageAsync(message);
@@ -101,17 +107,23 @@ public class PostmarkEmailService : IEmailService
 
         try
         {
-            var subject = $"Update on Your {hackathonName} Application";
-            var htmlBody = BuildRejectedEmailHtml(toName, hackathonName, reason);
-            var textBody = BuildRejectedEmailText(toName, hackathonName, reason);
-
-            var message = new PostmarkMessage
+            var message = new TemplatedPostmarkMessage
             {
                 From = $"{_options.FromName} <{_options.FromEmail}>",
-                To = $"{toName} <{toEmail}>",
-                Subject = subject,
-                HtmlBody = htmlBody,
-                TextBody = textBody,
+                To = toEmail,
+                TemplateId = long.TryParse(_options.RejectedTemplateId, out var templateId) 
+                    ? templateId 
+                    : 0,
+                TemplateAlias = !long.TryParse(_options.RejectedTemplateId, out _) 
+                    ? _options.RejectedTemplateId 
+                    : null,
+                TemplateModel = new
+                {
+                    participant_name = toName,
+                    hackathon_name = hackathonName,
+                    reason = reason ?? string.Empty,
+                    has_reason = !string.IsNullOrWhiteSpace(reason)
+                }
             };
 
             var response = await _client.SendMessageAsync(message);
@@ -193,139 +205,5 @@ public class PostmarkEmailService : IEmailService
         });
 
         await Task.WhenAll(tasks);
-    }
-
-    private static string BuildAcceptedEmailHtml(
-        string toName,
-        string hackathonName,
-        string? reason
-    )
-    {
-        var reasonSection = !string.IsNullOrWhiteSpace(reason)
-            ? $"<p><strong>Message from organizers:</strong><br/>{System.Net.WebUtility.HtmlEncode(reason)}</p>"
-            : string.Empty;
-
-        return $@"
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
-        .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-        .header {{ background-color: #4CAF50; color: white; padding: 20px; text-align: center; }}
-        .content {{ padding: 20px; background-color: #f9f9f9; }}
-        .footer {{ padding: 20px; text-align: center; font-size: 12px; color: #666; }}
-    </style>
-</head>
-<body>
-    <div class=""container"">
-        <div class=""header"">
-            <h1>Application Accepted!</h1>
-        </div>
-        <div class=""content"">
-            <p>Dear {System.Net.WebUtility.HtmlEncode(toName)},</p>
-            <p>We are thrilled to inform you that your application for <strong>{System.Net.WebUtility.HtmlEncode(hackathonName)}</strong> has been <strong>accepted</strong>!</p>
-            {reasonSection}
-            <p>We look forward to seeing you at the event. Get ready for an amazing experience!</p>
-            <p>Best regards,<br/>The {System.Net.WebUtility.HtmlEncode(hackathonName)} Team</p>
-        </div>
-        <div class=""footer"">
-            <p>This is an automated message. Please do not reply to this email.</p>
-        </div>
-    </div>
-</body>
-</html>";
-    }
-
-    private static string BuildAcceptedEmailText(
-        string toName,
-        string hackathonName,
-        string? reason
-    )
-    {
-        var reasonSection = !string.IsNullOrWhiteSpace(reason)
-            ? $"\n\nMessage from organizers:\n{reason}\n"
-            : string.Empty;
-
-        return $@"Application Accepted!
-
-Dear {toName},
-
-We are thrilled to inform you that your application for {hackathonName} has been accepted!
-{reasonSection}
-We look forward to seeing you at the event. Get ready for an amazing experience!
-
-Best regards,
-The {hackathonName} Team
-
----
-This is an automated message. Please do not reply to this email.";
-    }
-
-    private static string BuildRejectedEmailHtml(
-        string toName,
-        string hackathonName,
-        string? reason
-    )
-    {
-        var reasonSection = !string.IsNullOrWhiteSpace(reason)
-            ? $"<p><strong>Reason:</strong><br/>{System.Net.WebUtility.HtmlEncode(reason)}</p>"
-            : string.Empty;
-
-        return $@"
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
-        .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-        .header {{ background-color: #f44336; color: white; padding: 20px; text-align: center; }}
-        .content {{ padding: 20px; background-color: #f9f9f9; }}
-        .footer {{ padding: 20px; text-align: center; font-size: 12px; color: #666; }}
-    </style>
-</head>
-<body>
-    <div class=""container"">
-        <div class=""header"">
-            <h1>Application Update</h1>
-        </div>
-        <div class=""content"">
-            <p>Dear {System.Net.WebUtility.HtmlEncode(toName)},</p>
-            <p>Thank you for your interest in <strong>{System.Net.WebUtility.HtmlEncode(hackathonName)}</strong>. After careful consideration, we regret to inform you that we are unable to accept your application at this time.</p>
-            {reasonSection}
-            <p>We appreciate your interest and encourage you to apply for future events.</p>
-            <p>Best regards,<br/>The {System.Net.WebUtility.HtmlEncode(hackathonName)} Team</p>
-        </div>
-        <div class=""footer"">
-            <p>This is an automated message. Please do not reply to this email.</p>
-        </div>
-    </div>
-</body>
-</html>";
-    }
-
-    private static string BuildRejectedEmailText(
-        string toName,
-        string hackathonName,
-        string? reason
-    )
-    {
-        var reasonSection = !string.IsNullOrWhiteSpace(reason)
-            ? $"\n\nReason:\n{reason}\n"
-            : string.Empty;
-
-        return $@"Application Update
-
-Dear {toName},
-
-Thank you for your interest in {hackathonName}. After careful consideration, we regret to inform you that we are unable to accept your application at this time.
-{reasonSection}
-We appreciate your interest and encourage you to apply for future events.
-
-Best regards,
-The {hackathonName} Team
-
----
-This is an automated message. Please do not reply to this email.";
     }
 }

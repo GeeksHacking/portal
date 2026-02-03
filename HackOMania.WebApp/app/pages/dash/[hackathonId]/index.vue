@@ -10,6 +10,7 @@ import Teams from './teams.vue'
 import Submissions from './submissions.vue'
 import Judges from './judges.vue'
 import Questions from './questions.vue'
+import CheckIn from './checkin.vue'
 
 const route = useRoute()
 
@@ -95,6 +96,11 @@ watch([isOrganizer, isLoadingOrganizerCheck], ([org, loading]) => {
               Manage participants, teams, and submissions for {{ hackathon?.name }}.
             </p>
           </div>
+
+          <CheckIn
+            :hackathon-id="resolvedHackathonId ?? ''"
+            :is-organizer="isOrganizer"
+          />
 
           <Participants
             :hackathon-id="resolvedHackathonId ?? ''"

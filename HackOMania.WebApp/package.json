@@ -27,6 +27,7 @@
     "@types/node": "^25.0.3",
     "@unhead/vue": "^2.0.19",
     "eslint": "^9.39.2",
+    "html5-qrcode": "^2.3.8",
     "nuxt": "^4.2.2",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",

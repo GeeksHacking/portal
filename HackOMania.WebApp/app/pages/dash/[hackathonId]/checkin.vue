@@ -33,7 +33,6 @@ const startScanner = async () => {
   error.value = ''
   scannedUserId.value = ''
   scanResult.value = null
-  isScanning.value = true
 
   try {
     html5QrCode = new Html5Qrcode('qr-reader')
@@ -80,6 +79,8 @@ const startScanner = async () => {
         // Handle scan errors (too frequent, can be ignored)
       },
     )
+    // Set isScanning to true only after camera has started
+    isScanning.value = true
   }
   catch (err) {
     error.value = 'Failed to start camera. Please allow camera access.'
@@ -237,7 +238,7 @@ onUnmounted(() => {
                 >
                   <div class="flex items-center gap-2">
                     <div class="w-2 h-2 bg-white rounded-full animate-pulse" />
-                    <span class="text-sm font-medium">Scanning... Hold QR code steady</span>
+                    <span class="text-sm font-medium">Scanning</span>
                   </div>
                 </div>
               </div>

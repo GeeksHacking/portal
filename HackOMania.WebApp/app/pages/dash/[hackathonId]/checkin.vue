@@ -16,6 +16,7 @@ const error = ref<string>('')
 const isScanning = ref(false)
 const rawQrData = ref<string>('')
 const scanResult = ref<{ success: boolean, message: string, userId?: string, name?: string } | null>(null)
+let autoScanTimer: ReturnType<typeof setTimeout> | null = null
 
 const checkInMutation = useCheckInMutation(props.hackathonId)
 
@@ -99,10 +100,17 @@ const stopScanner = async () => {
     catch (err) {
       console.error('Error stopping scanner:', err)
     }
+    finally {
+      html5QrCode = null
+    }
   }
 }
 
 const closeScanner = async () => {
+  if (autoScanTimer) {
+    clearTimeout(autoScanTimer)
+    autoScanTimer = null
+  }
   await stopScanner()
   scannedUserId.value = ''
   error.value = ''
@@ -145,11 +153,17 @@ const openScanner = () => {
 }
 
 const resetAndScanAgain = async () => {
+  if (autoScanTimer) {
+    clearTimeout(autoScanTimer)
+    autoScanTimer = null
+  }
   scanResult.value = null
   scannedUserId.value = ''
   error.value = ''
   rawQrData.value = ''
   await nextTick()
+  // Add a small delay to ensure camera is fully released
+  await new Promise(resolve => setTimeout(resolve, 300))
   await startScanner()
 }
 
@@ -164,7 +178,24 @@ watch(isScannerOpen, (newValue) => {
   }
 })
 
+// Auto-scan after showing result for 2 seconds
+watch(scanResult, (newValue) => {
+  if (newValue) {
+    // Clear any existing timer
+    if (autoScanTimer) {
+      clearTimeout(autoScanTimer)
+    }
+    // Set new timer to auto-scan after 2 seconds
+    autoScanTimer = setTimeout(() => {
+      resetAndScanAgain()
+    }, 2000)
+  }
+})
+
 onUnmounted(() => {
+  if (autoScanTimer) {
+    clearTimeout(autoScanTimer)
+  }
   stopScanner()
 })
 </script>
@@ -230,17 +261,6 @@ onUnmounted(() => {
                   id="qr-reader"
                   class="w-full rounded-lg overflow-hidden"
                 />
-
-                <!-- Scanning Indicator -->
-                <div
-                  v-if="isScanning && !error"
-                  class="absolute top-2 left-2 right-2 bg-blue-500/90 text-white px-3 py-2 rounded-lg flex items-center gap-2"
-                >
-                  <div class="flex items-center gap-2">
-                    <div class="w-2 h-2 bg-white rounded-full animate-pulse" />
-                    <span class="text-sm font-medium">Scanning</span>
-                  </div>
-                </div>
               </div>
 
               <div
@@ -343,21 +363,6 @@ onUnmounted(() => {
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div class="flex justify-end gap-2">
-                <UButton
-                  variant="ghost"
-                  @click="closeScanner"
-                >
-                  Close
-                </UButton>
-                <UButton
-                  color="primary"
-                  @click="resetAndScanAgain"
-                >
-                  Scan Another
-                </UButton>
               </div>
             </div>
           </div>

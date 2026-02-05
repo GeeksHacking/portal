@@ -100,20 +100,20 @@ function closeQrModal() {
     <!-- QR Code Modal -->
     <div
       v-if="showQrModal"
-      class="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center"
+      class="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4"
       @click="closeQrModal"
     >
       <div
-        class="bg-white p-8 rounded-lg shadow-xl"
+        class="bg-white p-4 sm:p-6 md:p-8 rounded-lg shadow-xl max-w-sm w-full"
         @click.stop
       >
-        <div class="flex flex-col items-center gap-4">
-          <h3 class="text-lg font-semibold">Your QR Code</h3>
+        <div class="flex flex-col items-center gap-3 sm:gap-4">
+          <h3 class="text-base sm:text-lg font-semibold">Your QR Code</h3>
           <img
             v-if="qrCodeDataUrl"
             :src="qrCodeDataUrl"
             alt="User QR Code"
-            class="w-[300px] h-[300px]"
+            class="w-full max-w-[280px] sm:max-w-[300px] h-auto"
           />
           <p class="text-sm text-gray-600">{{ user?.gitHubLogin }}</p>
         </div>

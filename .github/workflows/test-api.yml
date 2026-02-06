@@ -1,0 +1,38 @@
+name: Test (API)
+
+on:
+  pull_request:
+    paths:
+      - 'HackOMania.Api/**'
+      - 'HackOMania.Tests/**'
+      - 'HackOMania.ServiceDefaults/**'
+      - '.github/workflows/test-api.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_NOLOGO: true
+      NUGET_XMLDOC_MODE: skip
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.x
+          cache: true
+          cache-dependency-path: |
+            global.json
+            **/*.csproj
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run tests
+        run: dotnet test --no-build --configuration Release

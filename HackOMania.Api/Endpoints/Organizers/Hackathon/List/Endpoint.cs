@@ -42,6 +42,23 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
         }
 
         var hackathons = await query.ToListAsync(ct);
+        var hackathonIds = hackathons.Select(h => h.Id).ToList();
+
+        var templates = await sql.Queryable<HackathonNotificationTemplate>()
+            .Where(t => hackathonIds.Contains(t.HackathonId))
+            .ToListAsync(ct);
+        var templatesByHackathon = templates
+            .GroupBy(t => t.HackathonId)
+            .ToDictionary(
+                g => g.Key,
+                g =>
+                    g.GroupBy(x => x.EventKey, StringComparer.OrdinalIgnoreCase)
+                        .ToDictionary(
+                            x => x.Key,
+                            x => x.Last().TemplateId,
+                            StringComparer.OrdinalIgnoreCase
+                        )
+            );
 
         await Send.OkAsync(
             new Response
@@ -61,6 +78,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
                     SubmissionsEndDate = h.SubmissionsEndDate,
                     JudgingStartDate = h.JudgingStartDate,
                     JudgingEndDate = h.JudgingEndDate,
+                    EmailTemplates = templatesByHackathon.GetValueOrDefault(h.Id) ?? [],
                 }),
             },
             ct

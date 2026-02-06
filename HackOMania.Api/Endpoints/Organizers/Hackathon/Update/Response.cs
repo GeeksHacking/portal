@@ -15,4 +15,5 @@ public class Response
     public required DateTimeOffset SubmissionsEndDate { get; init; }
     public required DateTimeOffset JudgingStartDate { get; init; }
     public required DateTimeOffset JudgingEndDate { get; init; }
+    public Dictionary<string, string> EmailTemplates { get; init; } = [];
 }

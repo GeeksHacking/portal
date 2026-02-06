@@ -32,6 +32,7 @@ public class DatabaseInitBackgroundService(
         sql.CodeFirst.InitTables<VenueCheckIn>();
         sql.CodeFirst.InitTables<Workshop>();
         sql.CodeFirst.InitTables<WorkshopParticipant>();
+        sql.CodeFirst.InitTables<HackathonNotificationTemplate>();
 
         if (env.IsDevelopment() && !await sql.Queryable<Hackathon>().AnyAsync(stoppingToken))
         {

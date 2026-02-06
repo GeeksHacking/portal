@@ -14,4 +14,5 @@ public class UpdateHackathonRequest
     public DateTimeOffset? JudgingStartDate { get; set; }
     public DateTimeOffset? JudgingEndDate { get; set; }
     public bool? IsPublished { get; set; }
+    public Dictionary<string, string>? EmailTemplates { get; set; }
 }

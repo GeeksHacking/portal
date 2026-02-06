@@ -6,7 +6,7 @@ namespace HackOMania.Api.Services;
 
 public class PostmarkEmailService : IEmailService
 {
-    private readonly PostmarkClient _client;
+    private readonly PostmarkClient? _client;
     private readonly PostmarkOptions _options;
     private readonly ILogger<PostmarkEmailService> _logger;
 
@@ -17,13 +17,13 @@ public class PostmarkEmailService : IEmailService
     {
         _options = options.Value;
         _logger = logger;
-        _client = new PostmarkClient(_options.ServerToken);
+        _client = string.IsNullOrWhiteSpace(_options.ServerToken)
+            ? null
+            : new PostmarkClient(_options.ServerToken);
     }
 
-    public async Task SendParticipantAcceptedEmailAsync(
-        string toEmail,
-        string? templateId,
-        Dictionary<string, object> templateVariables,
+    public async Task SendTemplatedEmailAsync(
+        TemplatedEmailRequest request,
         CancellationToken ct = default
     )
     {
@@ -31,33 +31,43 @@ public class PostmarkEmailService : IEmailService
         {
             _logger.LogInformation(
                 "Email sending is disabled. Skipping email to {Email}",
-                toEmail
+                request.ToEmail
             );
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(templateId))
+        if (_client is null)
         {
             _logger.LogWarning(
-                "No acceptance email template configured for hackathon. Skipping email to {Email}",
-                toEmail
+                "Postmark server token is missing. Skipping email to {Email}",
+                request.ToEmail
+            );
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(request.TemplateId))
+        {
+            _logger.LogWarning(
+                "No email template configured. Skipping email to {Email}",
+                request.ToEmail
             );
             return;
         }
 
         try
         {
+            var templateId = request.TemplateId.Trim();
+            var hasNumericTemplateId = long.TryParse(templateId, out var templateIdNum);
+            var parsedTemplateId = hasNumericTemplateId ? templateIdNum : 0;
+            var templateAlias = hasNumericTemplateId ? null : templateId;
+
             var message = new TemplatedPostmarkMessage
             {
                 From = $"{_options.FromName} <{_options.FromEmail}>",
-                To = toEmail,
-                TemplateId = long.TryParse(templateId, out var templateIdNum) 
-                    ? templateIdNum 
-                    : 0,
-                TemplateAlias = !long.TryParse(templateId, out _) 
-                    ? templateId 
-                    : null,
-                TemplateModel = templateVariables
+                To = request.ToEmail,
+                TemplateId = parsedTemplateId,
+                TemplateAlias = templateAlias,
+                TemplateModel = request.TemplateVariables,
             };
 
             var response = await _client.SendMessageAsync(message);
@@ -65,105 +75,30 @@ public class PostmarkEmailService : IEmailService
             if (response.Status != PostmarkStatus.Success)
             {
                 _logger.LogError(
-                    "Failed to send acceptance email to {Email}. Status: {Status}, Message: {Message}",
-                    toEmail,
+                    "Failed to send email to {Email}. Status: {Status}, Message: {Message}",
+                    request.ToEmail,
                     response.Status,
                     response.Message
                 );
             }
             else
             {
-                _logger.LogInformation(
-                    "Successfully sent acceptance email to {Email}",
-                    toEmail
-                );
+                _logger.LogInformation("Successfully sent email to {Email}", request.ToEmail);
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(
                 ex,
-                "Exception occurred while sending acceptance email to {Email}",
-                toEmail
+                "Exception occurred while sending email to {Email}",
+                request.ToEmail
             );
             // Don't throw - we don't want email failures to break the calling process
         }
     }
 
-    public async Task SendParticipantRejectedEmailAsync(
-        string toEmail,
-        string? templateId,
-        Dictionary<string, object> templateVariables,
-        CancellationToken ct = default
-    )
-    {
-        if (!_options.Enabled)
-        {
-            _logger.LogInformation(
-                "Email sending is disabled. Skipping email to {Email}",
-                toEmail
-            );
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(templateId))
-        {
-            _logger.LogWarning(
-                "No rejection email template configured for hackathon. Skipping email to {Email}",
-                toEmail
-            );
-            return;
-        }
-
-        try
-        {
-            var message = new TemplatedPostmarkMessage
-            {
-                From = $"{_options.FromName} <{_options.FromEmail}>",
-                To = toEmail,
-                TemplateId = long.TryParse(templateId, out var templateIdNum) 
-                    ? templateIdNum 
-                    : 0,
-                TemplateAlias = !long.TryParse(templateId, out _) 
-                    ? templateId 
-                    : null,
-                TemplateModel = templateVariables
-            };
-
-            var response = await _client.SendMessageAsync(message);
-
-            if (response.Status != PostmarkStatus.Success)
-            {
-                _logger.LogError(
-                    "Failed to send rejection email to {Email}. Status: {Status}, Message: {Message}",
-                    toEmail,
-                    response.Status,
-                    response.Message
-                );
-            }
-            else
-            {
-                _logger.LogInformation(
-                    "Successfully sent rejection email to {Email}",
-                    toEmail
-                );
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(
-                ex,
-                "Exception occurred while sending rejection email to {Email}",
-                toEmail
-            );
-            // Don't throw - we don't want email failures to break the calling process
-        }
-    }
-
-    public async Task SendBatchEmailsAsync(
-        IEnumerable<(string Email, string Status, Dictionary<string, object> TemplateVariables)> participants,
-        string? acceptedTemplateId,
-        string? rejectedTemplateId,
+    public async Task SendBatchTemplatedEmailsAsync(
+        IEnumerable<TemplatedEmailRequest> emails,
         CancellationToken ct = default
     )
     {
@@ -173,40 +108,31 @@ public class PostmarkEmailService : IEmailService
             return;
         }
 
-        var tasks = participants.Select(async p =>
+        if (_client is null)
         {
-            try
-            {
-                if (p.Status.Equals("Accepted", StringComparison.OrdinalIgnoreCase))
-                {
-                    await SendParticipantAcceptedEmailAsync(
-                        p.Email,
-                        acceptedTemplateId,
-                        p.TemplateVariables,
-                        ct
-                    );
-                }
-                else if (p.Status.Equals("Rejected", StringComparison.OrdinalIgnoreCase))
-                {
-                    await SendParticipantRejectedEmailAsync(
-                        p.Email,
-                        rejectedTemplateId,
-                        p.TemplateVariables,
-                        ct
-                    );
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(
-                    ex,
-                    "Failed to send email to {Email} during batch operation",
-                    p.Email
-                );
-                // Continue with other emails even if one fails
-            }
-        });
+            _logger.LogWarning("Postmark server token is missing. Skipping batch emails.");
+            return;
+        }
 
-        await Task.WhenAll(tasks);
+        await Parallel.ForEachAsync(
+            emails,
+            new ParallelOptions { CancellationToken = ct, MaxDegreeOfParallelism = 8 },
+            async (email, token) =>
+            {
+                try
+                {
+                    await SendTemplatedEmailAsync(email, token);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(
+                        ex,
+                        "Failed to send email to {Email} during batch operation",
+                        email.ToEmail
+                    );
+                    // Continue with other emails even if one fails
+                }
+            }
+        );
     }
 }

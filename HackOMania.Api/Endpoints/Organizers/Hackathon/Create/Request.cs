@@ -14,4 +14,5 @@ public class Request
     public required DateTimeOffset JudgingStartDate { get; set; }
     public required DateTimeOffset JudgingEndDate { get; set; }
     public bool IsPublished { get; set; } = false;
+    public Dictionary<string, string>? EmailTemplates { get; set; }
 }

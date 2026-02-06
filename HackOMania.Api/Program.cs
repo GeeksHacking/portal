@@ -239,7 +239,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<MembershipService>();
 builder.Services.AddScoped<IJintEvaluationService, JintEvaluationService>();
 builder.Services.AddScoped<IEmailService, PostmarkEmailService>();
-builder.Services.AddScoped<IHookService, HookService>();
+builder.Services.AddScoped<INotificationTemplateResolver, NotificationTemplateResolver>();
 builder.Services.AddScoped<IAuthorizationHandler, RootHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, CreateHackathonHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, OrganizerForHackathonHandler>();

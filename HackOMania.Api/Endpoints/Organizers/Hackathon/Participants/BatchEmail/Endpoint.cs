@@ -1,13 +1,17 @@
 using FastEndpoints;
 using HackOMania.Api.Authorization;
+using HackOMania.Api.Constants;
 using HackOMania.Api.Entities;
 using HackOMania.Api.Services;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Participants.BatchEmail;
 
-public class Endpoint(ISqlSugarClient sql, IEmailService emailService)
-    : Endpoint<Request, Response>
+public class Endpoint(
+    ISqlSugarClient sql,
+    IEmailService emailService,
+    INotificationTemplateResolver notificationTemplateResolver
+) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -24,6 +28,14 @@ public class Endpoint(ISqlSugarClient sql, IEmailService emailService)
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        var statusFilter = req.Status.ToLowerInvariant();
+        if (statusFilter is not ("all" or "accepted" or "rejected"))
+        {
+            AddError("Status must be 'All', 'Accepted', or 'Rejected'");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
+
         var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
@@ -31,9 +43,13 @@ public class Endpoint(ISqlSugarClient sql, IEmailService emailService)
             return;
         }
 
+        var emailTemplates = await notificationTemplateResolver.GetHackathonTemplatesAsync(
+            hackathon.Id,
+            ct
+        );
+
         // Get all participants for the hackathon
-        var participantsQuery = sql
-            .Queryable<Participant>()
+        var participantsQuery = sql.Queryable<Participant>()
             .Where(p => p.HackathonId == hackathon.Id);
 
         // Filter by specific participant IDs if provided
@@ -64,52 +80,23 @@ public class Endpoint(ISqlSugarClient sql, IEmailService emailService)
         var userIds = participants.Select(p => p.UserId).ToList();
 
         // Get users
-        var users = await sql
-            .Queryable<User>()
-            .Where(u => userIds.Contains(u.Id))
-            .ToListAsync(ct);
+        var users = await sql.Queryable<User>().Where(u => userIds.Contains(u.Id)).ToListAsync(ct);
         var userDict = users.ToDictionary(u => u.Id);
 
-        // Get latest reviews for each participant using a more efficient approach
-        // Group by ParticipantId and get the max CreatedAt, then fetch those specific reviews
-        var latestReviewDates = await sql
-            .Queryable<ParticipantReview>()
+        var reviews = await sql.Queryable<ParticipantReview>()
             .Where(r => participantIds.Contains(r.ParticipantId))
-            .GroupBy(r => r.ParticipantId)
-            .Select(g => new { ParticipantId = g.ParticipantId, MaxDate = SqlFunc.AggregateMax(g.CreatedAt) })
+            .OrderBy(r => r.CreatedAt, OrderByType.Desc)
+            .OrderBy(r => r.Id, OrderByType.Desc)
             .ToListAsync(ct);
 
-        var latestReviewsByParticipant = new Dictionary<Guid, ParticipantReview>();
-
-        if (latestReviewDates.Count > 0)
-        {
-            // Fetch only the latest reviews
-            var reviews = await sql
-                .Queryable<ParticipantReview>()
-                .Where(r => participantIds.Contains(r.ParticipantId))
-                .ToListAsync(ct);
-
-            // Build dictionary with latest review per participant
-            foreach (var reviewDate in latestReviewDates)
-            {
-                var latestReview = reviews
-                    .Where(r => r.ParticipantId == reviewDate.ParticipantId && r.CreatedAt == reviewDate.MaxDate)
-                    .FirstOrDefault();
-                if (latestReview != null)
-                {
-                    latestReviewsByParticipant[reviewDate.ParticipantId] = latestReview;
-                }
-            }
-        }
+        var latestReviewsByParticipant = reviews
+            .GroupBy(r => r.ParticipantId)
+            .ToDictionary(g => g.Key, g => g.First());
 
         // Build list of participants to email based on status filter
-        var participantsToEmail = new List<(
-            string Email,
-            string Status,
-            Dictionary<string, object> TemplateVariables
-        )>();
+        var emailsToSend = new List<TemplatedEmailRequest>();
+        var errors = new List<string>();
 
-        var statusFilter = req.Status.ToLowerInvariant();
         var acceptedCount = 0;
         var rejectedCount = 0;
 
@@ -117,20 +104,26 @@ public class Endpoint(ISqlSugarClient sql, IEmailService emailService)
         {
             if (!userDict.TryGetValue(participant.UserId, out var user))
             {
+                errors.Add($"Participant {participant.Id} has no associated user record.");
                 continue;
             }
 
             if (!latestReviewsByParticipant.TryGetValue(participant.Id, out var review))
             {
-                // Skip participants without reviews
                 continue;
             }
 
-            var reviewStatus = review.Status switch
+            var (reviewStatus, eventKey) = review.Status switch
             {
-                ParticipantReview.ParticipantReviewStatus.Accepted => "Accepted",
-                ParticipantReview.ParticipantReviewStatus.Rejected => "Rejected",
-                _ => null,
+                ParticipantReview.ParticipantReviewStatus.Accepted => (
+                    "Accepted",
+                    NotificationEventKeys.ParticipantReviewAccepted
+                ),
+                ParticipantReview.ParticipantReviewStatus.Rejected => (
+                    "Rejected",
+                    NotificationEventKeys.ParticipantReviewRejected
+                ),
+                _ => (null, null),
             };
 
             if (reviewStatus is null)
@@ -147,48 +140,26 @@ public class Endpoint(ISqlSugarClient sql, IEmailService emailService)
                 continue;
             }
 
-            // Build comprehensive template variables with all available context
-            var templateVariables = new Dictionary<string, object>
+            if (
+                string.IsNullOrWhiteSpace(eventKey)
+                || !emailTemplates.TryGetValue(eventKey, out var templateId)
+                || string.IsNullOrWhiteSpace(templateId)
+            )
             {
-                // User/Participant information
-                ["participant_name"] = user.Name,
-                ["participant_first_name"] = user.FirstName,
-                ["participant_last_name"] = user.LastName,
-                ["participant_email"] = user.Email,
-                ["participant_id"] = participant.Id.ToString(),
-                ["user_id"] = user.Id.ToString(),
-                
-                // Hackathon information
-                ["hackathon_name"] = hackathon.Name,
-                ["hackathon_id"] = hackathon.Id.ToString(),
-                ["hackathon_short_code"] = hackathon.ShortCode,
-                ["hackathon_venue"] = hackathon.Venue,
-                ["hackathon_description"] = hackathon.Description,
-                ["hackathon_homepage_url"] = hackathon.HomepageUri.ToString(),
-                
-                // Event dates
-                ["event_start_date"] = hackathon.EventStartDate.ToString("yyyy-MM-dd"),
-                ["event_end_date"] = hackathon.EventEndDate.ToString("yyyy-MM-dd"),
-                ["event_start_date_formatted"] = hackathon.EventStartDate.ToString("MMMM dd, yyyy"),
-                ["event_end_date_formatted"] = hackathon.EventEndDate.ToString("MMMM dd, yyyy"),
-                
-                // Submissions dates
-                ["submissions_start_date"] = hackathon.SubmissionsStartDate.ToString("yyyy-MM-dd"),
-                ["submissions_end_date"] = hackathon.SubmissionsEndDate.ToString("yyyy-MM-dd"),
-                ["submissions_start_date_formatted"] = hackathon.SubmissionsStartDate.ToString("MMMM dd, yyyy"),
-                ["submissions_end_date_formatted"] = hackathon.SubmissionsEndDate.ToString("MMMM dd, yyyy"),
-                
-                // Review information
-                ["reason"] = review.Reason ?? string.Empty,
-                ["has_reason"] = !string.IsNullOrWhiteSpace(review.Reason),
-                ["review_status"] = reviewStatus,
-                
-                // Participant metadata
-                ["joined_at"] = participant.JoinedAt.ToString("yyyy-MM-dd"),
-                ["joined_at_formatted"] = participant.JoinedAt.ToString("MMMM dd, yyyy"),
-            };
+                errors.Add(
+                    $"No email template configured for event '{eventKey ?? "unknown"}' in hackathon {hackathon.Id}."
+                );
+                continue;
+            }
 
-            participantsToEmail.Add((user.Email, reviewStatus, templateVariables));
+            var templateVariables = ParticipantReviewEmailTemplateModelFactory.Create(
+                participant,
+                user,
+                hackathon,
+                reviewStatus,
+                review.Reason
+            );
+            emailsToSend.Add(new TemplatedEmailRequest(user.Email, templateId, templateVariables));
 
             if (reviewStatus == "Accepted")
             {
@@ -201,22 +172,18 @@ public class Endpoint(ISqlSugarClient sql, IEmailService emailService)
         }
 
         // Send batch emails
-        if (participantsToEmail.Count > 0)
+        if (emailsToSend.Count > 0)
         {
-            await emailService.SendBatchEmailsAsync(
-                participantsToEmail,
-                hackathon.AcceptedEmailTemplateId,
-                hackathon.RejectedEmailTemplateId,
-                ct
-            );
+            await emailService.SendBatchTemplatedEmailsAsync(emailsToSend, ct);
         }
 
         await Send.OkAsync(
             new Response
             {
-                TotalEmailsSent = participantsToEmail.Count,
+                TotalEmailsSent = emailsToSend.Count,
                 AcceptedEmailsSent = acceptedCount,
                 RejectedEmailsSent = rejectedCount,
+                Errors = errors,
             },
             ct
         );

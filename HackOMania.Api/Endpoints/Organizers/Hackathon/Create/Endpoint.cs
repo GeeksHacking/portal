@@ -29,6 +29,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             throw new ArgumentNullException(nameof(userId));
         }
 
+        var emailTemplates = NormalizeEmailTemplates(req.EmailTemplates);
+
         var hackathon = new Entities.Hackathon
         {
             Id = Guid.NewGuid(),
@@ -51,6 +53,21 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .Include(h => h.Organizers)
             .ExecuteReturnEntityAsync();
 
+        if (emailTemplates.Count > 0)
+        {
+            var notificationTemplates = emailTemplates.Select(
+                kvp => new HackathonNotificationTemplate
+                {
+                    Id = Guid.NewGuid(),
+                    HackathonId = ent.Id,
+                    EventKey = kvp.Key,
+                    TemplateId = kvp.Value,
+                }
+            );
+
+            await sql.Insertable(notificationTemplates.ToList()).ExecuteCommandAsync(ct);
+        }
+
         await Send.CreatedAtAsync<Get.Endpoint>(
             new { HackathonId = ent.Id },
             new Response
@@ -68,8 +85,26 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 SubmissionsEndDate = ent.SubmissionsEndDate,
                 JudgingStartDate = ent.JudgingStartDate,
                 JudgingEndDate = ent.JudgingEndDate,
+                EmailTemplates = emailTemplates,
             },
             cancellation: ct
         );
+    }
+
+    private static Dictionary<string, string> NormalizeEmailTemplates(
+        Dictionary<string, string>? templates
+    )
+    {
+        if (templates is null)
+        {
+            return [];
+        }
+
+        return templates
+            .Where(kvp =>
+                !string.IsNullOrWhiteSpace(kvp.Key) && !string.IsNullOrWhiteSpace(kvp.Value)
+            )
+            .GroupBy(kvp => kvp.Key.Trim().ToLowerInvariant(), StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.Last().Value.Trim(), StringComparer.OrdinalIgnoreCase);
     }
 }

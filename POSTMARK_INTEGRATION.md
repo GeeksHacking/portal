@@ -1,4 +1,4 @@
-# Hook/Event System with Postmark Email Integration
+# Participant Review Email System with Postmark Integration
 
 ## Overview
 This feature allows organizers to automatically send emails to participants when they are accepted or rejected during the review process. It also provides a batch email endpoint for manual email sending. Emails are sent using Postmark templates for easy customization. **Template IDs are configured per hackathon in the database**, allowing different hackathons to use different email templates.
@@ -31,19 +31,20 @@ Add the following configuration to your `appsettings.json` or environment variab
 
 ### Per-Hackathon Email Template Configuration
 
-Each hackathon in the database has two optional fields for configuring email templates:
+Each hackathon can configure a flexible map of event keys to template IDs:
 
-- **AcceptedEmailTemplateId**: Template ID (numeric) or template alias (string) for acceptance emails
-- **RejectedEmailTemplateId**: Template ID (numeric) or template alias (string) for rejection emails
+- **emailTemplates**: dictionary where key is an event key and value is a template ID/alias
 
-These fields can be set when creating or updating a hackathon. If these fields are not set or are null/empty, no emails will be sent for that hackathon.
+This can be set when creating or updating a hackathon. If an event key is not configured, emails for that event are skipped.
 
 **Example:**
 ```json
 {
   "name": "HackOMania 2026",
-  "acceptedEmailTemplateId": "participant-accepted",
-  "rejectedEmailTemplateId": "participant-rejected"
+  "emailTemplates": {
+    "participant.review.accepted": "participant-accepted",
+    "participant.review.rejected": "participant-rejected"
+  }
 }
 ```
 
@@ -142,9 +143,9 @@ All email templates have access to the following variables:
 
 ## Features
 
-### 1. Automatic Email Hooks
+### 1. Automatic Review Emails
 
-When an organizer reviews a participant (accept or reject), an email is automatically sent to the participant using the configured Postmark template for that hackathon:
+When an organizer reviews a participant (accept or reject), an email is sent directly from the API using the configured Postmark template for that hackathon:
 
 **API Endpoint**: `POST /organizers/hackathons/{hackathonId}/participants/{participantUserId}/review`
 
@@ -156,13 +157,15 @@ When an organizer reviews a participant (accept or reject), an email is automati
 }
 ```
 
-The hook will:
+The API flow will:
 - Send an acceptance email using the hackathon's configured acceptance template if decision is "accept"
 - Send a rejection email using the hackathon's configured rejection template if decision is "reject"
 - Pass all available context variables to the email template (participant info, hackathon details, event dates, etc.)
 - Include the optional reason message in the template variables
 - Log warnings and skip sending if no template is configured for that hackathon
 - Log errors but not fail the review process if email sending fails
+
+No Pub/Sub infrastructure is required for this flow.
 
 **All available template variables are automatically included in the email**, allowing you to create rich, personalized email templates.
 
@@ -242,11 +245,13 @@ Alternatively, you can leave specific hackathons without template IDs configured
 
 ## Database Schema
 
-The `Hackathon` table includes these fields for email template configuration:
+The `HackathonNotificationTemplate` table stores email template mappings:
 
 ```sql
-AcceptedEmailTemplateId NVARCHAR(MAX) NULL
-RejectedEmailTemplateId NVARCHAR(MAX) NULL
+Id UNIQUEIDENTIFIER PRIMARY KEY
+HackathonId UNIQUEIDENTIFIER NOT NULL
+EventKey NVARCHAR(128) NOT NULL
+TemplateId NVARCHAR(256) NOT NULL
 ```
 
-These can be set via the hackathon creation/update API endpoints.
+These can be managed via the hackathon creation/update API endpoints (`emailTemplates`).

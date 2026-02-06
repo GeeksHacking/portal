@@ -3,6 +3,8 @@
 ## Overview
 This feature allows organizers to automatically send emails to participants when they are accepted or rejected during the review process. It also provides a batch email endpoint for manual email sending. Emails are sent using Postmark templates for easy customization. **Template IDs are configured per hackathon in the database**, allowing different hackathons to use different email templates.
 
+The email system is **fully extensible** - templates can reference a comprehensive set of context-specific variables including participant information, hackathon details, event dates, and more.
+
 ## Configuration
 
 ### Global Postmark Configuration
@@ -47,44 +49,95 @@ These fields can be set when creating or updating a hackathon. If these fields a
 
 ## Postmark Template Setup
 
-You need to create two templates in your Postmark account:
+You need to create two templates in your Postmark account. The email system provides a comprehensive set of context-specific variables that can be referenced in your templates.
 
-### Acceptance Email Template
+### Available Template Variables
 
-**Template Variables:**
-- `participant_name` - The name of the participant
-- `hackathon_name` - The name of the hackathon
-- `reason` - Optional message from organizers (can be empty)
+All email templates have access to the following variables:
+
+#### Participant Information
+- `participant_name` - Full name of the participant
+- `participant_first_name` - First name only
+- `participant_last_name` - Last name only
+- `participant_email` - Participant's email address
+- `participant_id` - Unique participant ID (GUID)
+- `user_id` - User ID (GUID)
+
+#### Hackathon Information
+- `hackathon_name` - Name of the hackathon
+- `hackathon_id` - Unique hackathon ID (GUID)
+- `hackathon_short_code` - Short code for the hackathon
+- `hackathon_venue` - Event venue
+- `hackathon_description` - Full description
+- `hackathon_homepage_url` - Homepage URL
+
+#### Event Dates
+- `event_start_date` - Start date (yyyy-MM-dd format)
+- `event_end_date` - End date (yyyy-MM-dd format)
+- `event_start_date_formatted` - Start date (MMMM dd, yyyy format)
+- `event_end_date_formatted` - End date (MMMM dd, yyyy format)
+
+#### Submission Dates
+- `submissions_start_date` - Submissions start (yyyy-MM-dd format)
+- `submissions_end_date` - Submissions end (yyyy-MM-dd format)
+- `submissions_start_date_formatted` - Submissions start (MMMM dd, yyyy format)
+- `submissions_end_date_formatted` - Submissions end (MMMM dd, yyyy format)
+
+#### Review Information
+- `reason` - Optional message/reason from organizers (empty string if not provided)
 - `has_reason` - Boolean indicating if a reason was provided
+- `review_status` - Status of the review (Accepted/Rejected)
 
-**Example Template:**
+#### Participant Metadata
+- `joined_at` - Date participant joined (yyyy-MM-dd format)
+- `joined_at_formatted` - Date participant joined (MMMM dd, yyyy format)
+
+### Acceptance Email Template Example
+
 ```html
-<h1>Application Accepted!</h1>
+<h1>Congratulations, {{participant_first_name}}!</h1>
 <p>Dear {{participant_name}},</p>
-<p>We are thrilled to inform you that your application for <strong>{{hackathon_name}}</strong> has been accepted!</p>
+<p>We are thrilled to inform you that your application for <strong>{{hackathon_name}}</strong> has been <strong>accepted</strong>!</p>
+
 {{#has_reason}}
-<p><strong>Message from organizers:</strong><br/>{{reason}}</p>
+<div class="organizer-message">
+  <p><strong>Message from organizers:</strong></p>
+  <p>{{reason}}</p>
+</div>
 {{/has_reason}}
+
+<div class="event-details">
+  <h2>Event Details</h2>
+  <ul>
+    <li><strong>Event:</strong> {{hackathon_name}}</li>
+    <li><strong>Venue:</strong> {{hackathon_venue}}</li>
+    <li><strong>Dates:</strong> {{event_start_date_formatted}} - {{event_end_date_formatted}}</li>
+    <li><strong>Submissions:</strong> {{submissions_start_date_formatted}} - {{submissions_end_date_formatted}}</li>
+  </ul>
+  <p><a href="{{hackathon_homepage_url}}">View Event Homepage</a></p>
+</div>
+
 <p>We look forward to seeing you at the event!</p>
+<p>Best regards,<br/>The {{hackathon_name}} Team</p>
 ```
 
-### Rejection Email Template
+### Rejection Email Template Example
 
-**Template Variables:**
-- `participant_name` - The name of the participant
-- `hackathon_name` - The name of the hackathon
-- `reason` - Optional reason for rejection (can be empty)
-- `has_reason` - Boolean indicating if a reason was provided
-
-**Example Template:**
 ```html
 <h1>Application Update</h1>
 <p>Dear {{participant_name}},</p>
 <p>Thank you for your interest in <strong>{{hackathon_name}}</strong>. After careful consideration, we regret to inform you that we are unable to accept your application at this time.</p>
+
 {{#has_reason}}
-<p><strong>Reason:</strong><br/>{{reason}}</p>
+<div class="reason-box">
+  <p><strong>Feedback:</strong></p>
+  <p>{{reason}}</p>
+</div>
 {{/has_reason}}
-<p>We appreciate your interest and encourage you to apply for future events.</p>
+
+<p>We appreciate your interest and encourage you to apply for future events. Stay connected with us at <a href="{{hackathon_homepage_url}}">{{hackathon_homepage_url}}</a>.</p>
+
+<p>Best regards,<br/>The {{hackathon_name}} Team</p>
 ```
 
 ## Features
@@ -106,9 +159,12 @@ When an organizer reviews a participant (accept or reject), an email is automati
 The hook will:
 - Send an acceptance email using the hackathon's configured acceptance template if decision is "accept"
 - Send a rejection email using the hackathon's configured rejection template if decision is "reject"
+- Pass all available context variables to the email template (participant info, hackathon details, event dates, etc.)
 - Include the optional reason message in the template variables
 - Log warnings and skip sending if no template is configured for that hackathon
 - Log errors but not fail the review process if email sending fails
+
+**All available template variables are automatically included in the email**, allowing you to create rich, personalized email templates.
 
 ### 2. Batch Email Sending
 
@@ -140,18 +196,7 @@ Organizers can manually send emails to multiple participants at once:
 - Resend emails to specific participants: `{ "participantUserIds": ["guid1", "guid2"] }`
 - Send emails to all reviewed participants: `{ "status": "All" }`
 
-## Template Variables
-
-Both templates receive the following variables that can be used with Postmark's Mustachio template syntax:
-
-| Variable | Type | Description |
-|----------|------|-------------|
-| `participant_name` | string | Name of the participant |
-| `hackathon_name` | string | Name of the hackathon |
-| `reason` | string | Optional message/reason (empty string if not provided) |
-| `has_reason` | boolean | True if a reason was provided, false otherwise |
-
-Use `{{#has_reason}}...{{/has_reason}}` to conditionally show content when a reason is provided.
+**Note:** The batch email endpoint also passes all available context variables to each email template, ensuring rich personalization for every recipient.
 
 ## Security
 

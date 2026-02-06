@@ -22,10 +22,8 @@ public class PostmarkEmailService : IEmailService
 
     public async Task SendParticipantAcceptedEmailAsync(
         string toEmail,
-        string toName,
-        string hackathonName,
         string? templateId,
-        string? reason = null,
+        Dictionary<string, object> templateVariables,
         CancellationToken ct = default
     )
     {
@@ -59,13 +57,7 @@ public class PostmarkEmailService : IEmailService
                 TemplateAlias = !long.TryParse(templateId, out _) 
                     ? templateId 
                     : null,
-                TemplateModel = new
-                {
-                    participant_name = toName,
-                    hackathon_name = hackathonName,
-                    reason = reason ?? string.Empty,
-                    has_reason = !string.IsNullOrWhiteSpace(reason)
-                }
+                TemplateModel = templateVariables
             };
 
             var response = await _client.SendMessageAsync(message);
@@ -100,10 +92,8 @@ public class PostmarkEmailService : IEmailService
 
     public async Task SendParticipantRejectedEmailAsync(
         string toEmail,
-        string toName,
-        string hackathonName,
         string? templateId,
-        string? reason = null,
+        Dictionary<string, object> templateVariables,
         CancellationToken ct = default
     )
     {
@@ -137,13 +127,7 @@ public class PostmarkEmailService : IEmailService
                 TemplateAlias = !long.TryParse(templateId, out _) 
                     ? templateId 
                     : null,
-                TemplateModel = new
-                {
-                    participant_name = toName,
-                    hackathon_name = hackathonName,
-                    reason = reason ?? string.Empty,
-                    has_reason = !string.IsNullOrWhiteSpace(reason)
-                }
+                TemplateModel = templateVariables
             };
 
             var response = await _client.SendMessageAsync(message);
@@ -177,8 +161,7 @@ public class PostmarkEmailService : IEmailService
     }
 
     public async Task SendBatchEmailsAsync(
-        IEnumerable<(string Email, string Name, string Status, string? Reason)> participants,
-        string hackathonName,
+        IEnumerable<(string Email, string Status, Dictionary<string, object> TemplateVariables)> participants,
         string? acceptedTemplateId,
         string? rejectedTemplateId,
         CancellationToken ct = default
@@ -198,10 +181,8 @@ public class PostmarkEmailService : IEmailService
                 {
                     await SendParticipantAcceptedEmailAsync(
                         p.Email,
-                        p.Name,
-                        hackathonName,
                         acceptedTemplateId,
-                        p.Reason,
+                        p.TemplateVariables,
                         ct
                     );
                 }
@@ -209,10 +190,8 @@ public class PostmarkEmailService : IEmailService
                 {
                     await SendParticipantRejectedEmailAsync(
                         p.Email,
-                        p.Name,
-                        hackathonName,
                         rejectedTemplateId,
-                        p.Reason,
+                        p.TemplateVariables,
                         ct
                     );
                 }

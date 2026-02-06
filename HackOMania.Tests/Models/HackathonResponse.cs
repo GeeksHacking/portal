@@ -15,4 +15,5 @@ public class HackathonResponse
     public DateTimeOffset SubmissionsEndDate { get; set; }
     public DateTimeOffset JudgingStartDate { get; set; }
     public DateTimeOffset JudgingEndDate { get; set; }
+    public Dictionary<string, string> EmailTemplates { get; set; } = [];
 }

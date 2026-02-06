@@ -1,5 +1,6 @@
 using FastEndpoints;
 using HackOMania.Api.Authorization;
+using HackOMania.Api.Entities;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Update;
@@ -87,7 +88,40 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             hackathon.IsPublished = req.IsPublished.Value;
         }
 
+        var emailTemplates = req.EmailTemplates is null
+            ? null
+            : NormalizeEmailTemplates(req.EmailTemplates);
+
+        if (emailTemplates is not null)
+        {
+            await sql.Deleteable<HackathonNotificationTemplate>()
+                .Where(t => t.HackathonId == hackathon.Id)
+                .ExecuteCommandAsync(ct);
+
+            if (emailTemplates.Count > 0)
+            {
+                var notificationTemplates = emailTemplates.Select(
+                    kvp => new HackathonNotificationTemplate
+                    {
+                        Id = Guid.NewGuid(),
+                        HackathonId = hackathon.Id,
+                        EventKey = kvp.Key,
+                        TemplateId = kvp.Value,
+                    }
+                );
+
+                await sql.Insertable(notificationTemplates.ToList()).ExecuteCommandAsync(ct);
+            }
+        }
+
         await sql.Updateable(hackathon).ExecuteCommandAsync(ct);
+
+        var persistedTemplates = await sql.Queryable<HackathonNotificationTemplate>()
+            .Where(t => t.HackathonId == hackathon.Id)
+            .ToListAsync(ct);
+        var emailTemplateMap = persistedTemplates
+            .GroupBy(t => t.EventKey, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.Last().TemplateId, StringComparer.OrdinalIgnoreCase);
 
         await Send.OkAsync(
             new Response
@@ -105,8 +139,26 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 SubmissionsEndDate = hackathon.SubmissionsEndDate,
                 JudgingStartDate = hackathon.JudgingStartDate,
                 JudgingEndDate = hackathon.JudgingEndDate,
+                EmailTemplates = emailTemplateMap,
             },
             ct
         );
+    }
+
+    private static Dictionary<string, string> NormalizeEmailTemplates(
+        Dictionary<string, string>? templates
+    )
+    {
+        if (templates is null)
+        {
+            return [];
+        }
+
+        return templates
+            .Where(kvp =>
+                !string.IsNullOrWhiteSpace(kvp.Key) && !string.IsNullOrWhiteSpace(kvp.Value)
+            )
+            .GroupBy(kvp => kvp.Key.Trim().ToLowerInvariant(), StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.Last().Value.Trim(), StringComparer.OrdinalIgnoreCase);
     }
 }

@@ -87,4 +87,68 @@ public class ParticipantsManagementTests
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
     }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task BatchEmail_WithInvalidHackathonId_ReturnsNotFound(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Arrange
+        var request = new BatchEmailRequest { Status = "All" };
+
+        // Act
+        var response = await client.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{Guid.NewGuid()}/participants/batch-email",
+            request
+        );
+
+        // Assert
+        await Assert
+            .That(response.StatusCode)
+            .IsEqualTo(HttpStatusCode.NotFound)
+            .Or.IsEqualTo(HttpStatusCode.Forbidden);
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task BatchEmail_WithValidHackathonNoParticipants_ReturnsOk(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Arrange
+        var hackathonId = await CreateHackathonAsync(client);
+        var request = new BatchEmailRequest { Status = "All" };
+
+        // Act
+        var response = await client.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{hackathonId}/participants/batch-email",
+            request
+        );
+        var result = await response.Content.ReadFromJsonAsync<BatchEmailResponse>();
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result!.TotalEmailsSent).IsEqualTo(0);
+    }
+
+    [Test]
+    [ClassDataSource<HttpClientDataClass>]
+    public async Task BatchEmail_WithoutAuthentication_ReturnsUnauthorized(
+        HttpClientDataClass client
+    )
+    {
+        // Arrange
+        var request = new BatchEmailRequest { Status = "All" };
+
+        // Act
+        var response = await client.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{Guid.NewGuid()}/participants/batch-email",
+            request
+        );
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
+    }
 }

@@ -61,6 +61,9 @@ public class Hackathon
     [Navigate(NavigateType.OneToMany, nameof(RegistrationQuestion.HackathonId))]
     public List<RegistrationQuestion> RegistrationQuestions { get; set; } = null!;
 
+    [Navigate(NavigateType.OneToMany, nameof(HackathonNotificationTemplate.HackathonId))]
+    public List<HackathonNotificationTemplate> NotificationTemplates { get; set; } = null!;
+  
     [Navigate(NavigateType.OneToMany, nameof(EventTimelineItem.HackathonId))]
     public List<EventTimelineItem> TimelineItems { get; set; } = null!;
 }

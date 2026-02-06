@@ -26,3 +26,30 @@ public class ParticipantReviewItem
     public string? Reason { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
 }
+
+public class ParticipantReviewRequest
+{
+    public string Decision { get; set; } = "";
+    public string? Reason { get; set; }
+}
+
+public class ParticipantReviewResponse
+{
+    public Guid ParticipantId { get; set; }
+    public string Status { get; set; } = "";
+    public DateTimeOffset ReviewedAt { get; set; }
+}
+
+public class BatchEmailRequest
+{
+    public string Status { get; set; } = "All";
+    public List<Guid>? ParticipantUserIds { get; set; }
+}
+
+public class BatchEmailResponse
+{
+    public int TotalEmailsSent { get; set; }
+    public int AcceptedEmailsSent { get; set; }
+    public int RejectedEmailsSent { get; set; }
+    public List<string> Errors { get; set; } = [];
+}

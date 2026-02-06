@@ -1,11 +1,17 @@
 using FastEndpoints;
 using HackOMania.Api.Authorization;
+using HackOMania.Api.Constants;
 using HackOMania.Api.Entities;
+using HackOMania.Api.Services;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Participants.Review;
 
-public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
+public class Endpoint(
+    ISqlSugarClient sql,
+    IEmailService emailService,
+    INotificationTemplateResolver notificationTemplateResolver
+) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -61,6 +67,46 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         };
 
         await sql.Insertable(review).ExecuteCommandAsync(ct);
+
+        // Send participant review email notification without blocking the review flow.
+        var user = await sql.Queryable<User>().InSingleAsync(participant.UserId);
+        if (user is not null)
+        {
+            var eventKey = status switch
+            {
+                ParticipantReview.ParticipantReviewStatus.Accepted =>
+                    NotificationEventKeys.ParticipantReviewAccepted,
+                ParticipantReview.ParticipantReviewStatus.Rejected =>
+                    NotificationEventKeys.ParticipantReviewRejected,
+                _ => null,
+            };
+
+            if (!string.IsNullOrWhiteSpace(eventKey))
+            {
+                var templateId = await notificationTemplateResolver.ResolveTemplateIdAsync(
+                    hackathon.Id,
+                    eventKey,
+                    ct
+                );
+
+                if (!string.IsNullOrWhiteSpace(templateId))
+                {
+                    var reviewStatus = status.ToString();
+                    var templateVariables = ParticipantReviewEmailTemplateModelFactory.Create(
+                        participant,
+                        user,
+                        hackathon,
+                        reviewStatus,
+                        req.Reason
+                    );
+
+                    await emailService.SendTemplatedEmailAsync(
+                        new TemplatedEmailRequest(user.Email, templateId, templateVariables),
+                        ct
+                    );
+                }
+            }
+        }
 
         await Send.OkAsync(
             new Response

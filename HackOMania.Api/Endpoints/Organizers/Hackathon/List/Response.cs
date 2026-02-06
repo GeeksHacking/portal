@@ -29,6 +29,7 @@ public class Response
         public required DateTimeOffset JudgingStartDate { get; set; }
 
         public required DateTimeOffset JudgingEndDate { get; set; }
+        public Dictionary<string, string> EmailTemplates { get; set; } = [];
     }
 
     public required IEnumerable<HackathonItem> Hackathons { get; set; } = [];

@@ -55,6 +55,7 @@ if (!string.IsNullOrWhiteSpace(dataProtectionBucketName))
 
 builder.Services.AddOptions<AppOptions>().Bind(builder.Configuration.GetSection("App"));
 builder.Services.AddOptions<GitHubOptions>().Bind(builder.Configuration.GetSection("GitHub"));
+builder.Services.AddOptions<PostmarkOptions>().Bind(builder.Configuration.GetSection("Postmark"));
 
 builder.Services.AddSingleton<ISqlSugarClient>(s =>
 {
@@ -237,6 +238,8 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<MembershipService>();
 builder.Services.AddScoped<IJintEvaluationService, JintEvaluationService>();
+builder.Services.AddScoped<IEmailService, PostmarkEmailService>();
+builder.Services.AddScoped<INotificationTemplateResolver, NotificationTemplateResolver>();
 builder.Services.AddScoped<IAuthorizationHandler, RootHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, CreateHackathonHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, OrganizerForHackathonHandler>();

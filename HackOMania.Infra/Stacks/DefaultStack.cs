@@ -104,6 +104,18 @@ public class DefaultStack : Stack
             }
         );
 
+        var postmarkServerToken = new SecretManager.Secret(
+            "postmark-server-token",
+            new SecretManager.SecretArgs
+            {
+                SecretId = "postmark-server-token",
+                Replication = new SecretManager.Inputs.SecretReplicationArgs
+                {
+                    Auto = new SecretManager.Inputs.SecretReplicationAutoArgs(),
+                },
+            }
+        );
+
         var githubClientIdAccessor = new SecretManager.SecretIamMember(
             "github-client-id-accessor",
             new SecretManager.SecretIamMemberArgs
@@ -129,6 +141,16 @@ public class DefaultStack : Stack
             new SecretManager.SecretIamMemberArgs
             {
                 SecretId = tidbConnectionString.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
+        var postmarkServerTokenAccessor = new SecretManager.SecretIamMember(
+            "postmark-server-token-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = postmarkServerToken.SecretId,
                 Role = "roles/secretmanager.secretAccessor",
                 Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
             }
@@ -393,6 +415,21 @@ public class DefaultStack : Stack
                                 {
                                     Name = "DataProtection__KeyPrefix",
                                     Value = "data-protection",
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "Postmark__FromEmail",
+                                    Value = "hackomania-noreply@geekshacking.com",
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "Postmark__FromName",
+                                    Value = "HackOMania 2026",
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "Postmark__Enabled",
+                                    Value = "false",
                                 },
                             },
                         },

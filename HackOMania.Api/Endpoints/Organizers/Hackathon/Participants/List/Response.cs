@@ -18,6 +18,9 @@ public class ParticipantItem
     public required ParticipantConcludedStatus ConcludedStatus { get; init; }
     public required List<ParticipantReviewItem> Reviews { get; init; }
     public required List<RegistrationSubmissionItem> RegistrationSubmissions { get; init; }
+    public required int EmailSentCount { get; init; }
+    public DateTimeOffset? LastEmailSentAt { get; init; }
+    public string? LastEmailStatus { get; init; }
 }
 
 public class RegistrationSubmissionItem

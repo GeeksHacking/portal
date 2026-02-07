@@ -8,9 +8,9 @@ public class DatabaseInitBackgroundService(
     ILogger<DatabaseInitBackgroundService> logger,
     IWebHostEnvironment env,
     ISqlSugarClient sql
-) : BackgroundService
+)
 {
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    public async Task InitializeAsync(CancellationToken stoppingToken = default)
     {
         logger.LogInformation("Initializing database...");
 
@@ -20,6 +20,7 @@ public class DatabaseInitBackgroundService(
         sql.CodeFirst.InitTables<Organizer>();
         sql.CodeFirst.InitTables<Participant>();
         sql.CodeFirst.InitTables<ParticipantReview>();
+        sql.CodeFirst.InitTables<ParticipantEmailDelivery>();
         sql.CodeFirst.InitTables<Challenge>();
         sql.CodeFirst.InitTables<ChallengeSubmission>();
         sql.CodeFirst.InitTables<Resource>();
@@ -33,6 +34,7 @@ public class DatabaseInitBackgroundService(
         sql.CodeFirst.InitTables<Workshop>();
         sql.CodeFirst.InitTables<WorkshopParticipant>();
         sql.CodeFirst.InitTables<HackathonNotificationTemplate>();
+        sql.CodeFirst.InitTables<EventTimelineItem>();
 
         if (env.IsDevelopment() && !await sql.Queryable<Hackathon>().AnyAsync(stoppingToken))
         {

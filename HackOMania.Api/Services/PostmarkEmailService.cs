@@ -22,7 +22,7 @@ public class PostmarkEmailService : IEmailService
             : new PostmarkClient(_options.ServerToken);
     }
 
-    public async Task SendTemplatedEmailAsync(
+    public async Task<TemplatedEmailSendResult> SendTemplatedEmailAsync(
         TemplatedEmailRequest request,
         CancellationToken ct = default
     )
@@ -33,7 +33,15 @@ public class PostmarkEmailService : IEmailService
                 "Email sending is disabled. Skipping email to {Email}",
                 request.ToEmail
             );
-            return;
+            return new TemplatedEmailSendResult(
+                request.ToEmail,
+                request.TemplateId,
+                "postmark",
+                TemplatedEmailSendResult.SendStatus.Skipped,
+                DateTimeOffset.UtcNow,
+                ErrorMessage: "Email sending is disabled",
+                CorrelationId: request.CorrelationId
+            );
         }
 
         if (_client is null)
@@ -42,7 +50,15 @@ public class PostmarkEmailService : IEmailService
                 "Postmark server token is missing. Skipping email to {Email}",
                 request.ToEmail
             );
-            return;
+            return new TemplatedEmailSendResult(
+                request.ToEmail,
+                request.TemplateId,
+                "postmark",
+                TemplatedEmailSendResult.SendStatus.Skipped,
+                DateTimeOffset.UtcNow,
+                ErrorMessage: "Postmark server token is missing",
+                CorrelationId: request.CorrelationId
+            );
         }
 
         if (string.IsNullOrWhiteSpace(request.TemplateId))
@@ -51,7 +67,15 @@ public class PostmarkEmailService : IEmailService
                 "No email template configured. Skipping email to {Email}",
                 request.ToEmail
             );
-            return;
+            return new TemplatedEmailSendResult(
+                request.ToEmail,
+                request.TemplateId,
+                "postmark",
+                TemplatedEmailSendResult.SendStatus.Skipped,
+                DateTimeOffset.UtcNow,
+                ErrorMessage: "No template configured",
+                CorrelationId: request.CorrelationId
+            );
         }
 
         try
@@ -80,11 +104,27 @@ public class PostmarkEmailService : IEmailService
                     response.Status,
                     response.Message
                 );
+                return new TemplatedEmailSendResult(
+                    request.ToEmail,
+                    request.TemplateId,
+                    "postmark",
+                    TemplatedEmailSendResult.SendStatus.Failed,
+                    DateTimeOffset.UtcNow,
+                    ErrorMessage: response.Message,
+                    CorrelationId: request.CorrelationId
+                );
             }
-            else
-            {
-                _logger.LogInformation("Successfully sent email to {Email}", request.ToEmail);
-            }
+
+            _logger.LogInformation("Successfully sent email to {Email}", request.ToEmail);
+            return new TemplatedEmailSendResult(
+                request.ToEmail,
+                request.TemplateId,
+                "postmark",
+                TemplatedEmailSendResult.SendStatus.Sent,
+                DateTimeOffset.UtcNow,
+                ProviderMessageId: response.MessageID.ToString(),
+                CorrelationId: request.CorrelationId
+            );
         }
         catch (Exception ex)
         {
@@ -94,34 +134,76 @@ public class PostmarkEmailService : IEmailService
                 request.ToEmail
             );
             // Don't throw - we don't want email failures to break the calling process
+            return new TemplatedEmailSendResult(
+                request.ToEmail,
+                request.TemplateId,
+                "postmark",
+                TemplatedEmailSendResult.SendStatus.Failed,
+                DateTimeOffset.UtcNow,
+                ErrorMessage: ex.Message,
+                CorrelationId: request.CorrelationId
+            );
         }
     }
 
-    public async Task SendBatchTemplatedEmailsAsync(
+    public async Task<IReadOnlyList<TemplatedEmailSendResult>> SendBatchTemplatedEmailsAsync(
         IEnumerable<TemplatedEmailRequest> emails,
         CancellationToken ct = default
     )
     {
+        var emailList = emails as IList<TemplatedEmailRequest> ?? emails.ToList();
+
         if (!_options.Enabled)
         {
             _logger.LogInformation("Email sending is disabled. Skipping batch emails.");
-            return;
+            return emailList
+                .Select(e =>
+                    new TemplatedEmailSendResult(
+                        e.ToEmail,
+                        e.TemplateId,
+                        "postmark",
+                        TemplatedEmailSendResult.SendStatus.Skipped,
+                        DateTimeOffset.UtcNow,
+                        ErrorMessage: "Email sending is disabled",
+                        CorrelationId: e.CorrelationId
+                    )
+                )
+                .ToList();
         }
 
         if (_client is null)
         {
             _logger.LogWarning("Postmark server token is missing. Skipping batch emails.");
-            return;
+            return emailList
+                .Select(e =>
+                    new TemplatedEmailSendResult(
+                        e.ToEmail,
+                        e.TemplateId,
+                        "postmark",
+                        TemplatedEmailSendResult.SendStatus.Skipped,
+                        DateTimeOffset.UtcNow,
+                        ErrorMessage: "Postmark server token is missing",
+                        CorrelationId: e.CorrelationId
+                    )
+                )
+                .ToList();
         }
 
+        var results = new List<TemplatedEmailSendResult>();
+        var gate = new object();
+
         await Parallel.ForEachAsync(
-            emails,
+            emailList,
             new ParallelOptions { CancellationToken = ct, MaxDegreeOfParallelism = 8 },
             async (email, token) =>
             {
                 try
                 {
-                    await SendTemplatedEmailAsync(email, token);
+                    var result = await SendTemplatedEmailAsync(email, token);
+                    lock (gate)
+                    {
+                        results.Add(result);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -131,8 +213,24 @@ public class PostmarkEmailService : IEmailService
                         email.ToEmail
                     );
                     // Continue with other emails even if one fails
+                    lock (gate)
+                    {
+                        results.Add(
+                            new TemplatedEmailSendResult(
+                                email.ToEmail,
+                                email.TemplateId,
+                                "postmark",
+                                TemplatedEmailSendResult.SendStatus.Failed,
+                                DateTimeOffset.UtcNow,
+                                ErrorMessage: ex.Message,
+                                CorrelationId: email.CorrelationId
+                            )
+                        );
+                    }
                 }
             }
         );
+
+        return results;
     }
 }

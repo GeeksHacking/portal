@@ -45,7 +45,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 {
                     Id = t.Id,
                     Title = t.Title,
-                    Description = t.Description,
+                    Description = string.IsNullOrWhiteSpace(t.Description) ? null : t.Description,
                     StartTime = t.StartTime,
                     EndTime = t.EndTime
                 }).ToList()

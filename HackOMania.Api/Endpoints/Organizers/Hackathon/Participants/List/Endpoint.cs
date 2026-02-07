@@ -109,10 +109,20 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .GroupBy(s => s.ParticipantId)
             .ToDictionary(g => g.Key, g => g.Select(x => x.Item).ToList());
 
+        var emailDeliveries = await sql.Queryable<ParticipantEmailDelivery>()
+            .Where(e => participantIds.Contains(e.ParticipantId))
+            .OrderByDescending(e => e.SentAt)
+            .ToListAsync(ct);
+        var emailDeliveriesByParticipant = emailDeliveries
+            .GroupBy(e => e.ParticipantId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
         var participantResponses = participants
             .Select(p =>
             {
                 var reviews = reviewsByParticipant.GetValueOrDefault(p.Id) ?? [];
+                var deliveryLogs = emailDeliveriesByParticipant.GetValueOrDefault(p.Id) ?? [];
+                var latestDelivery = deliveryLogs.FirstOrDefault();
                 var concludedStatus = reviews.FirstOrDefault()?.Status switch
                 {
                     ParticipantReview.ParticipantReviewStatus.Accepted =>
@@ -148,6 +158,11 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     ],
                     RegistrationSubmissions =
                         submissionsByParticipant.GetValueOrDefault(p.Id) ?? [],
+                    EmailSentCount = deliveryLogs.Count(x =>
+                        x.Status == ParticipantEmailDelivery.EmailDeliveryStatus.Sent
+                    ),
+                    LastEmailSentAt = latestDelivery?.SentAt,
+                    LastEmailStatus = latestDelivery?.Status.ToString(),
                 };
             })
             .ToList();

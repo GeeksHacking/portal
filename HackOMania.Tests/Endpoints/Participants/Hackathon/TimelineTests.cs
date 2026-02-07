@@ -216,7 +216,7 @@ public class TimelineTests
         var now = DateTimeOffset.UtcNow;
 
         // Create timeline items in non-chronological order
-        await client.HttpClient.PostAsJsonAsync(
+        var createThirdResponse = await client.HttpClient.PostAsJsonAsync(
             $"/organizers/hackathons/{hackathon.Id}/timeline",
             new
             {
@@ -225,8 +225,9 @@ public class TimelineTests
                 EndTime = now.AddDays(9).AddHours(1),
             }
         );
+        createThirdResponse.EnsureSuccessStatusCode();
 
-        await client.HttpClient.PostAsJsonAsync(
+        var createFirstResponse = await client.HttpClient.PostAsJsonAsync(
             $"/organizers/hackathons/{hackathon.Id}/timeline",
             new
             {
@@ -235,8 +236,9 @@ public class TimelineTests
                 EndTime = now.AddDays(7).AddHours(1),
             }
         );
+        createFirstResponse.EnsureSuccessStatusCode();
 
-        await client.HttpClient.PostAsJsonAsync(
+        var createSecondResponse = await client.HttpClient.PostAsJsonAsync(
             $"/organizers/hackathons/{hackathon.Id}/timeline",
             new
             {
@@ -245,11 +247,13 @@ public class TimelineTests
                 EndTime = now.AddDays(8).AddHours(1),
             }
         );
+        createSecondResponse.EnsureSuccessStatusCode();
 
         // Act
         var response = await client.HttpClient.GetAsync(
             $"/participants/hackathons/{hackathon.Id}/timeline"
         );
+        response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<TimelineListResponse>();
 
         // Assert

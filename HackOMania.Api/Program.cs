@@ -246,9 +246,10 @@ builder.Services.AddScoped<IAuthorizationHandler, OrganizerForHackathonHandler>(
 builder.Services.AddScoped<IAuthorizationHandler, ParticipantForHackathonHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, TeamMemberForHackathonTeamHandler>();
 
-builder.Services.AddHostedService<DatabaseInitBackgroundService>();
+builder.Services.AddSingleton<DatabaseInitBackgroundService>();
 
 var app = builder.Build();
+await app.Services.GetRequiredService<DatabaseInitBackgroundService>().InitializeAsync();
 
 app.UseForwardedHeaders();
 app.UseCors();

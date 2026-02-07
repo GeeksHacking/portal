@@ -15,6 +15,9 @@ public class Participant : HackathonUser
     [Navigate(NavigateType.OneToMany, nameof(ParticipantReview.ParticipantId))]
     public List<ParticipantReview> ParticipantReviews { get; set; } = [];
 
+    [Navigate(NavigateType.OneToMany, nameof(ParticipantEmailDelivery.ParticipantId))]
+    public List<ParticipantEmailDelivery> EmailDeliveries { get; set; } = [];
+
     /// <summary>
     /// Registration submissions for dynamic questions
     /// </summary>

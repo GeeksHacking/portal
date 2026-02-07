@@ -7,12 +7,15 @@ public interface IEmailService
     /// </summary>
     /// <param name="request">Templated email request</param>
     /// <param name="ct">Cancellation token</param>
-    Task SendTemplatedEmailAsync(TemplatedEmailRequest request, CancellationToken ct = default);
+    Task<TemplatedEmailSendResult> SendTemplatedEmailAsync(
+        TemplatedEmailRequest request,
+        CancellationToken ct = default
+    );
 
     /// <summary>
     /// Send multiple templated emails.
     /// </summary>
-    Task SendBatchTemplatedEmailsAsync(
+    Task<IReadOnlyList<TemplatedEmailSendResult>> SendBatchTemplatedEmailsAsync(
         IEnumerable<TemplatedEmailRequest> emails,
         CancellationToken ct = default
     );

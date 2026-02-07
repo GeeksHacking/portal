@@ -94,7 +94,14 @@ public class Endpoint(
             .ToDictionary(g => g.Key, g => g.First());
 
         // Build list of participants to email based on status filter
-        var emailsToSend = new List<TemplatedEmailRequest>();
+        var emailDispatches = new List<(
+            Participant Participant,
+            User User,
+            string EventKey,
+            string TemplateId,
+            TemplatedEmailRequest EmailRequest
+        )>();
+        var emailDeliveryLogs = new List<ParticipantEmailDelivery>();
         var errors = new List<string>();
 
         var acceptedCount = 0;
@@ -149,6 +156,25 @@ public class Endpoint(
                 errors.Add(
                     $"No email template configured for event '{eventKey ?? "unknown"}' in hackathon {hackathon.Id}."
                 );
+                if (!string.IsNullOrWhiteSpace(eventKey))
+                {
+                    emailDeliveryLogs.Add(
+                        new ParticipantEmailDelivery
+                        {
+                            Id = Guid.NewGuid(),
+                            HackathonId = hackathon.Id,
+                            ParticipantId = participant.Id,
+                            UserId = user.Id,
+                            ToEmail = user.Email,
+                            EventKey = eventKey,
+                            TemplateId = string.Empty,
+                            Provider = "postmark",
+                            Status = ParticipantEmailDelivery.EmailDeliveryStatus.Skipped,
+                            ErrorMessage = $"No template configured for event '{eventKey}'",
+                            SentAt = DateTimeOffset.UtcNow,
+                        }
+                    );
+                }
                 continue;
             }
 
@@ -159,7 +185,20 @@ public class Endpoint(
                 reviewStatus,
                 review.Reason
             );
-            emailsToSend.Add(new TemplatedEmailRequest(user.Email, templateId, templateVariables));
+            emailDispatches.Add(
+                (
+                    participant,
+                    user,
+                    eventKey,
+                    templateId,
+                    new TemplatedEmailRequest(
+                        user.Email,
+                        templateId,
+                        templateVariables,
+                        Guid.NewGuid().ToString("N")
+                    )
+                )
+            );
 
             if (reviewStatus == "Accepted")
             {
@@ -172,15 +211,78 @@ public class Endpoint(
         }
 
         // Send batch emails
-        if (emailsToSend.Count > 0)
+        if (emailDispatches.Count > 0)
         {
-            await emailService.SendBatchTemplatedEmailsAsync(emailsToSend, ct);
+            var results = await emailService.SendBatchTemplatedEmailsAsync(
+                emailDispatches.Select(x => x.EmailRequest),
+                ct
+            );
+            var resultByCorrelationId = results
+                .Where(r => !string.IsNullOrWhiteSpace(r.CorrelationId))
+                .ToDictionary(r => r.CorrelationId!, r => r);
+
+            foreach (var dispatch in emailDispatches)
+            {
+                TemplatedEmailSendResult sendResult;
+                if (
+                    !string.IsNullOrWhiteSpace(dispatch.EmailRequest.CorrelationId)
+                    && resultByCorrelationId.TryGetValue(
+                        dispatch.EmailRequest.CorrelationId!,
+                        out var matchedResult
+                    )
+                )
+                {
+                    sendResult = matchedResult;
+                }
+                else
+                {
+                    sendResult = new TemplatedEmailSendResult(
+                        dispatch.User.Email,
+                        dispatch.TemplateId,
+                        "postmark",
+                        TemplatedEmailSendResult.SendStatus.Failed,
+                        DateTimeOffset.UtcNow,
+                        ErrorMessage: "No send result returned from email service",
+                        CorrelationId: dispatch.EmailRequest.CorrelationId
+                    );
+                }
+
+                emailDeliveryLogs.Add(
+                    new ParticipantEmailDelivery
+                    {
+                        Id = Guid.NewGuid(),
+                        HackathonId = hackathon.Id,
+                        ParticipantId = dispatch.Participant.Id,
+                        UserId = dispatch.User.Id,
+                        ToEmail = dispatch.User.Email,
+                        EventKey = dispatch.EventKey,
+                        TemplateId = dispatch.TemplateId,
+                        Provider = sendResult.Provider,
+                        ProviderMessageId = sendResult.ProviderMessageId,
+                        Status = sendResult.Status switch
+                        {
+                            TemplatedEmailSendResult.SendStatus.Sent =>
+                                ParticipantEmailDelivery.EmailDeliveryStatus.Sent,
+                            TemplatedEmailSendResult.SendStatus.Failed =>
+                                ParticipantEmailDelivery.EmailDeliveryStatus.Failed,
+                            _ => ParticipantEmailDelivery.EmailDeliveryStatus.Skipped,
+                        },
+                        ErrorMessage = sendResult.ErrorMessage,
+                        SentAt = sendResult.SentAt,
+                    }
+                );
+            }
+        }
+
+        if (emailDeliveryLogs.Count > 0)
+        {
+            await sql.Insertable(emailDeliveryLogs).ExecuteCommandAsync(ct);
         }
 
         await Send.OkAsync(
             new Response
             {
-                TotalEmailsSent = emailsToSend.Count,
+                TotalEmailsSent = emailDispatches.Count,
                 AcceptedEmailsSent = acceptedCount,
                 RejectedEmailsSent = rejectedCount,
                 Errors = errors,

@@ -47,7 +47,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         // When Description is provided (not null in request), update it even if it's empty
         if (req.Description is not null)
         {
-            timelineItem.Description = string.IsNullOrWhiteSpace(req.Description) ? null : req.Description;
+            timelineItem.Description = string.IsNullOrWhiteSpace(req.Description)
+                ? string.Empty
+                : req.Description;
         }
 
         // Track if we're updating times to validate them
@@ -82,7 +84,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 Id = timelineItem.Id,
                 HackathonId = timelineItem.HackathonId,
                 Title = timelineItem.Title,
-                Description = timelineItem.Description,
+                Description = string.IsNullOrWhiteSpace(timelineItem.Description)
+                    ? null
+                    : timelineItem.Description,
                 StartTime = timelineItem.StartTime,
                 EndTime = timelineItem.EndTime,
                 UpdatedAt = timelineItem.UpdatedAt

@@ -44,6 +44,10 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var user = await sql.Queryable<User>().InSingleAsync(participant.UserId);
         var participantReviews = participant.ParticipantReviews ?? [];
+        var emailDeliveries = await sql.Queryable<ParticipantEmailDelivery>()
+            .Where(e => e.ParticipantId == participant.Id)
+            .OrderByDescending(e => e.SentAt)
+            .ToListAsync(ct);
         var userName = user is null ? "Unknown" : $"{user.FirstName} {user.LastName}";
 
         var concludedStatus = participant.ConcludedStatus switch
@@ -94,6 +98,25 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                             }
                     )
                     .ToListAsync(ct),
+                EmailSentCount = emailDeliveries.Count(e =>
+                    e.Status == ParticipantEmailDelivery.EmailDeliveryStatus.Sent
+                ),
+                LastEmailSentAt = emailDeliveries.FirstOrDefault()?.SentAt,
+                LastEmailStatus = emailDeliveries.FirstOrDefault()?.Status.ToString(),
+                EmailDeliveries =
+                [
+                    .. emailDeliveries.Select(e => new ParticipantEmailDeliveryItem
+                    {
+                        Id = e.Id,
+                        EventKey = e.EventKey,
+                        TemplateId = e.TemplateId,
+                        Provider = e.Provider,
+                        Status = e.Status.ToString(),
+                        ErrorMessage = e.ErrorMessage,
+                        ProviderMessageId = e.ProviderMessageId,
+                        SentAt = e.SentAt,
+                    }),
+                ],
             },
             ct
         );

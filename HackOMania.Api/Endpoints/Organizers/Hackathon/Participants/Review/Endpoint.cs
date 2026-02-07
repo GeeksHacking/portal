@@ -89,7 +89,27 @@ public class Endpoint(
                     ct
                 );
 
-                if (!string.IsNullOrWhiteSpace(templateId))
+                if (string.IsNullOrWhiteSpace(templateId))
+                {
+                    await sql.Insertable(
+                            new ParticipantEmailDelivery
+                            {
+                                Id = Guid.NewGuid(),
+                                HackathonId = hackathon.Id,
+                                ParticipantId = participant.Id,
+                                UserId = user.Id,
+                                ToEmail = user.Email,
+                                EventKey = eventKey,
+                                TemplateId = string.Empty,
+                                Provider = "postmark",
+                                Status = ParticipantEmailDelivery.EmailDeliveryStatus.Skipped,
+                                ErrorMessage = $"No template configured for event '{eventKey}'",
+                                SentAt = DateTimeOffset.UtcNow,
+                            }
+                        )
+                        .ExecuteCommandAsync(ct);
+                }
+                else
                 {
                     var reviewStatus = status.ToString();
                     var templateVariables = ParticipantReviewEmailTemplateModelFactory.Create(
@@ -100,10 +120,41 @@ public class Endpoint(
                         req.Reason
                     );
 
-                    await emailService.SendTemplatedEmailAsync(
-                        new TemplatedEmailRequest(user.Email, templateId, templateVariables),
+                    var sendResult = await emailService.SendTemplatedEmailAsync(
+                        new TemplatedEmailRequest(
+                            user.Email,
+                            templateId,
+                            templateVariables,
+                            Guid.NewGuid().ToString("N")
+                        ),
                         ct
                     );
+
+                    await sql.Insertable(
+                            new ParticipantEmailDelivery
+                            {
+                                Id = Guid.NewGuid(),
+                                HackathonId = hackathon.Id,
+                                ParticipantId = participant.Id,
+                                UserId = user.Id,
+                                ToEmail = user.Email,
+                                EventKey = eventKey,
+                                TemplateId = templateId,
+                                Provider = sendResult.Provider,
+                                ProviderMessageId = sendResult.ProviderMessageId,
+                                Status = sendResult.Status switch
+                                {
+                                    TemplatedEmailSendResult.SendStatus.Sent =>
+                                        ParticipantEmailDelivery.EmailDeliveryStatus.Sent,
+                                    TemplatedEmailSendResult.SendStatus.Failed =>
+                                        ParticipantEmailDelivery.EmailDeliveryStatus.Failed,
+                                    _ => ParticipantEmailDelivery.EmailDeliveryStatus.Skipped,
+                                },
+                                ErrorMessage = sendResult.ErrorMessage,
+                                SentAt = sendResult.SentAt,
+                            }
+                        )
+                        .ExecuteCommandAsync(ct);
                 }
             }
         }

@@ -41,7 +41,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             Id = Guid.NewGuid(),
             HackathonId = hackathon.Id,
             Title = req.Title,
-            Description = req.Description,
+            Description = string.IsNullOrWhiteSpace(req.Description) ? string.Empty : req.Description,
             StartTime = req.StartTime,
             EndTime = req.EndTime,
             CreatedAt = DateTimeOffset.UtcNow,
@@ -56,7 +56,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 Id = timelineItem.Id,
                 HackathonId = timelineItem.HackathonId,
                 Title = timelineItem.Title,
-                Description = timelineItem.Description,
+                Description = string.IsNullOrWhiteSpace(timelineItem.Description)
+                    ? null
+                    : timelineItem.Description,
                 StartTime = timelineItem.StartTime,
                 EndTime = timelineItem.EndTime,
                 CreatedAt = timelineItem.CreatedAt,

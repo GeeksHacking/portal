@@ -27,23 +27,6 @@ public class Endpoint(
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
-        if (hackathon is null)
-        {
-            await Send.NotFoundAsync(ct);
-            return;
-        }
-
-        var participant = await sql.Queryable<Participant>()
-            .Where(p => p.HackathonId == hackathon.Id && p.UserId == req.ParticipantUserId)
-            .SingleAsync();
-
-        if (participant is null)
-        {
-            await Send.NotFoundAsync(ct);
-            return;
-        }
-
         var decision = req.Decision.ToLowerInvariant();
         if (decision is not ("accept" or "reject"))
         {
@@ -52,21 +35,81 @@ public class Endpoint(
             return;
         }
 
+        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
+        if (hackathon is null)
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
         var status =
             decision == "accept"
                 ? ParticipantReview.ParticipantReviewStatus.Accepted
                 : ParticipantReview.ParticipantReviewStatus.Rejected;
 
-        var review = new ParticipantReview
-        {
-            Id = Guid.NewGuid(),
-            ParticipantId = participant.Id,
-            Status = status,
-            Reason = req.Reason ?? string.Empty,
-            CreatedAt = DateTimeOffset.UtcNow,
-        };
+        Participant? participant = null;
+        ParticipantReview? latestReview = null;
+        ParticipantReview? review = null;
 
-        await sql.Insertable(review).ExecuteCommandAsync(ct);
+        var transactionResult = await sql.Ado.UseTranAsync(async () =>
+        {
+            participant = await sql.Queryable<Participant>()
+                .Where(p => p.HackathonId == hackathon.Id && p.UserId == req.ParticipantUserId)
+                .TranLock(DbLockType.Wait)
+                .SingleAsync();
+
+            if (participant is null)
+            {
+                return;
+            }
+
+            latestReview = await sql.Queryable<ParticipantReview>()
+                .Where(r => r.ParticipantId == participant.Id)
+                .OrderByDescending(r => r.CreatedAt)
+                .FirstAsync();
+
+            if (latestReview is not null)
+            {
+                return;
+            }
+
+            review = new ParticipantReview
+            {
+                Id = Guid.NewGuid(),
+                ParticipantId = participant.Id,
+                Status = status,
+                Reason = req.Reason ?? string.Empty,
+                CreatedAt = DateTimeOffset.UtcNow,
+            };
+
+            await sql.Insertable(review).ExecuteCommandAsync(ct);
+        });
+
+        if (!transactionResult.IsSuccess)
+        {
+            throw transactionResult.ErrorException!;
+        }
+
+        if (participant is null)
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
+        if (latestReview is not null)
+        {
+            AddError(
+                $"Participant has already been reviewed as '{latestReview.Status}' at {latestReview.CreatedAt:O}."
+            );
+            await Send.ErrorsAsync(409, ct);
+            return;
+        }
+
+        if (review is null)
+        {
+            ThrowError("Unable to create review.");
+            return;
+        }
 
         // Send participant review email notification without blocking the review flow.
         var user = await sql.Queryable<User>().InSingleAsync(participant.UserId);

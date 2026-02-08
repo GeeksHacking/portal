@@ -34,6 +34,28 @@ public class ParticipantsManagementTests
         return result!.Id;
     }
 
+    private static async Task<AuthenticatedHttpClientDataClass> CreateParticipantClientAsync()
+    {
+        var suffix = Guid.NewGuid().ToString("N")[..8];
+        var gitHubId = Math.Abs(BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0));
+        if (gitHubId == 0)
+        {
+            gitHubId = 1;
+        }
+
+        var client = new AuthenticatedHttpClientDataClass
+        {
+            GitHubId = gitHubId,
+            GitHubLogin = $"participant-{suffix}",
+            FirstName = "Participant",
+            LastName = suffix,
+            Email = $"participant-{suffix}@example.com",
+        };
+
+        await client.InitializeAsync();
+        return client;
+    }
+
     [Test]
     [ClassDataSource<AuthenticatedHttpClientDataClass>]
     public async Task ListParticipants_WithValidHackathon_ReturnsOk(
@@ -86,6 +108,60 @@ public class ParticipantsManagementTests
 
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task ReviewParticipant_WithConcurrentRequests_OnlyOneReviewIsSaved(
+        AuthenticatedHttpClientDataClass organizerClient
+    )
+    {
+        // Arrange
+        var hackathonId = await CreateHackathonAsync(organizerClient);
+
+        await using var participantClient = await CreateParticipantClientAsync();
+        var participantWhoAmI = await participantClient.HttpClient.GetFromJsonAsync<WhoAmIResponse>(
+            "/auth/whoami"
+        );
+        await Assert.That(participantWhoAmI).IsNotNull();
+
+        var joinResponse = await participantClient.HttpClient.PostAsync(
+            $"/participants/hackathons/{hackathonId}/join",
+            null
+        );
+        await Assert.That(joinResponse.IsSuccessStatusCode).IsTrue();
+
+        var reviewRequest = new ParticipantReviewRequest
+        {
+            Decision = "accept",
+            Reason = "Concurrent review safety test",
+        };
+        var reviewUrl =
+            $"/organizers/hackathons/{hackathonId}/participants/{participantWhoAmI!.Id}/review";
+
+        // Act
+        var reviewTask1 = organizerClient.HttpClient.PostAsJsonAsync(reviewUrl, reviewRequest);
+        var reviewTask2 = organizerClient.HttpClient.PostAsJsonAsync(reviewUrl, reviewRequest);
+        await Task.WhenAll(reviewTask1, reviewTask2);
+
+        var statuses = new[] { reviewTask1.Result.StatusCode, reviewTask2.Result.StatusCode };
+
+        // Assert
+        await Assert.That(statuses.Count(s => s == HttpStatusCode.OK)).IsEqualTo(1);
+        await Assert.That(statuses.Count(s => s == HttpStatusCode.Conflict)).IsEqualTo(1);
+
+        var listResponse = await organizerClient.HttpClient.GetAsync(
+            $"/organizers/hackathons/{hackathonId}/participants"
+        );
+        var participants = await listResponse.Content.ReadFromJsonAsync<ParticipantsListResponse>();
+        await Assert.That(participants).IsNotNull();
+
+        var reviewedParticipant = participants!.Participants?.FirstOrDefault(p =>
+            p.Id == participantWhoAmI.Id
+        );
+        await Assert.That(reviewedParticipant).IsNotNull();
+        await Assert.That(reviewedParticipant!.Reviews).IsNotNull();
+        await Assert.That(reviewedParticipant.Reviews!.Count()).IsEqualTo(1);
     }
 
     [Test]

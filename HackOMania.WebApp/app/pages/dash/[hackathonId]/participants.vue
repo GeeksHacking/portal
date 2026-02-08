@@ -15,6 +15,7 @@ const props = defineProps<{
   isOrganizer: boolean
 }>()
 
+const toast = useToast()
 const queryClient = useQueryClient()
 
 const { data: participantsData, isLoading: isLoadingParticipants } = useQuery(
@@ -41,7 +42,7 @@ const viewOptions = [
 const searchQuery = ref('')
 
 type SortKey = 'name' | 'team' | 'status' | 'applicationTime'
-const sortKey = ref<SortKey>('name')
+const sortKey = ref<SortKey>('applicationTime')
 const sortDirection = ref<'asc' | 'desc'>('asc')
 
 const sortOptions = [
@@ -397,15 +398,55 @@ function closeReviewModal() {
 
 async function handleReview(decision: 'accept' | 'reject') {
   if (!reviewingParticipantId.value) return
-  await reviewMutation.mutateAsync({
-    participantUserId: reviewingParticipantId.value,
-    review: {
-      decision,
-      reason: reviewReason.value || null,
-    },
-  })
-  await queryClient.invalidateQueries({ queryKey: ['hackathons', props.hackathonId, 'participants', 'organizer'] })
-  closeReviewModal()
+  try {
+    await reviewMutation.mutateAsync({
+      participantUserId: reviewingParticipantId.value,
+      review: {
+        decision,
+        reason: reviewReason.value || null,
+      },
+    })
+    await queryClient.invalidateQueries({ queryKey: ['hackathons', props.hackathonId, 'participants', 'organizer'] })
+    closeReviewModal()
+    toast.add({
+      title: 'Review submitted',
+      description: `Participant has been ${decision === 'accept' ? 'approved' : 'rejected'}.`,
+      color: 'success',
+    })
+  }
+  catch (error) {
+    const statusCode = getErrorStatusCode(error)
+    if (statusCode === 409) {
+      await queryClient.invalidateQueries({ queryKey: ['hackathons', props.hackathonId, 'participants', 'organizer'] })
+      closeReviewModal()
+      toast.add({
+        title: 'Already reviewed',
+        description: 'Another organizer already reviewed this participant. The list has been refreshed.',
+        color: 'warning',
+      })
+      return
+    }
+
+    toast.add({
+      title: 'Review failed',
+      description: 'Please try again.',
+      color: 'error',
+    })
+  }
+}
+
+function getErrorStatusCode(error: unknown): number | null {
+  if (!error || typeof error !== 'object') return null
+  const unknownError = error as {
+    responseStatusCode?: unknown
+    statusCode?: unknown
+    response?: { status?: unknown }
+  }
+
+  if (typeof unknownError.responseStatusCode === 'number') return unknownError.responseStatusCode
+  if (typeof unknownError.statusCode === 'number') return unknownError.statusCode
+  if (typeof unknownError.response?.status === 'number') return unknownError.response.status
+  return null
 }
 
 function getStatusColor(status: number | null | undefined): 'success' | 'error' | 'warning' {

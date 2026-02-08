@@ -99,6 +99,18 @@ async function handleReview() {
     })
   }
   catch (error) {
+    const statusCode = getErrorStatusCode(error)
+    if (statusCode === 409) {
+      await queryClient.invalidateQueries({ queryKey: ['hackathons', resolvedHackathonId.value, 'participants'] })
+      isReviewModalOpen.value = false
+      toast.add({
+        title: 'Already reviewed',
+        description: 'Another organizer already reviewed this participant.',
+        color: 'warning',
+      })
+      return
+    }
+
     console.error('[DASH] Failed to review participant', error)
     toast.add({
       title: 'Review failed',
@@ -106,6 +118,20 @@ async function handleReview() {
       color: 'error',
     })
   }
+}
+
+function getErrorStatusCode(error: unknown): number | null {
+  if (!error || typeof error !== 'object') return null
+  const unknownError = error as {
+    responseStatusCode?: unknown
+    statusCode?: unknown
+    response?: { status?: unknown }
+  }
+
+  if (typeof unknownError.responseStatusCode === 'number') return unknownError.responseStatusCode
+  if (typeof unknownError.statusCode === 'number') return unknownError.statusCode
+  if (typeof unknownError.response?.status === 'number') return unknownError.response.status
+  return null
 }
 
 const statusDisplay = computed(() => {

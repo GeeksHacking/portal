@@ -67,7 +67,7 @@ public class Endpoint(
             latestReview = await sql.Queryable<ParticipantReview>()
                 .Where(r => r.ParticipantId == participant.Id)
                 .OrderByDescending(r => r.CreatedAt)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             review = new ParticipantReview
             {

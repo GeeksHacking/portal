@@ -456,7 +456,7 @@ async function handleReview(decision: 'accept' | 'reject') {
   if (!reviewingParticipantId.value) return
   
   // Use default rejection message if rejecting and no reason provided
-  const defaultRejectionMessage = 'Application does not meet the requirements.'
+  const defaultRejectionMessage = 'Thank you for your application. Unfortunately, we are unable to accept your participation at this time.'
   const trimmedReason = reviewReason.value?.trim() || null
   const finalReason = decision === 'reject' && !trimmedReason
     ? defaultRejectionMessage 

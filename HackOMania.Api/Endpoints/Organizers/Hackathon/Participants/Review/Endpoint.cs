@@ -49,6 +49,7 @@ public class Endpoint(
 
         Participant? participant = null;
         ParticipantReview? review = null;
+        ParticipantReview? recentReview = null;
 
         var transactionResult = await sql.Ado.UseTranAsync(async () =>
         {
@@ -59,6 +60,20 @@ public class Endpoint(
 
             if (participant is null)
             {
+                return;
+            }
+
+            // Check for concurrent review attempts (within last 5 seconds)
+            // This prevents race conditions while still allowing re-reviews
+            recentReview = await sql.Queryable<ParticipantReview>()
+                .Where(r => r.ParticipantId == participant.Id)
+                .Where(r => r.CreatedAt > DateTimeOffset.UtcNow.AddSeconds(-5))
+                .OrderByDescending(r => r.CreatedAt)
+                .FirstOrDefaultAsync();
+
+            if (recentReview is not null)
+            {
+                // Found a review created within the last 5 seconds - this is likely a concurrent request
                 return;
             }
 
@@ -82,6 +97,15 @@ public class Endpoint(
         if (participant is null)
         {
             await Send.NotFoundAsync(ct);
+            return;
+        }
+
+        if (recentReview is not null)
+        {
+            AddError(
+                $"A review was just submitted for this participant at {recentReview.CreatedAt:O}. Please wait a moment before submitting another review."
+            );
+            await Send.ErrorsAsync(409, ct);
             return;
         }
 

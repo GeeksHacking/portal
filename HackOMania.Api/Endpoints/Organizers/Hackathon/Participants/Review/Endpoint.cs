@@ -13,6 +13,9 @@ public class Endpoint(
     INotificationTemplateResolver notificationTemplateResolver
 ) : Endpoint<Request, Response>
 {
+    // Time window to prevent concurrent review submissions (in seconds)
+    private const int ConcurrentReviewWindowSeconds = 5;
+
     public override void Configure()
     {
         Post("organizers/hackathons/{HackathonId:guid}/participants/{ParticipantUserId}/review");
@@ -48,11 +51,11 @@ public class Endpoint(
                 : ParticipantReview.ParticipantReviewStatus.Rejected;
 
         var currentTime = DateTimeOffset.UtcNow;
-        var concurrentWindowStart = currentTime.AddSeconds(-5);
+        var concurrentWindowStart = currentTime.AddSeconds(-ConcurrentReviewWindowSeconds);
 
         Participant? participant = null;
         ParticipantReview? review = null;
-        ParticipantReview? recentReview = null;
+        bool hasConcurrentReview = false;
 
         var transactionResult = await sql.Ado.UseTranAsync(async () =>
         {
@@ -66,18 +69,16 @@ public class Endpoint(
                 return;
             }
 
-            // Check for concurrent review attempts (within last 5 seconds)
+            // Check for concurrent review attempts (within configured time window)
             // This prevents race conditions while still allowing re-reviews
-            recentReview = await sql.Queryable<ParticipantReview>()
+            hasConcurrentReview = await sql.Queryable<ParticipantReview>()
                 .Where(r => r.ParticipantId == participant.Id)
                 .Where(r => r.CreatedAt > concurrentWindowStart)
-                .OrderByDescending(r => r.CreatedAt)
-                .Take(1)
-                .FirstOrDefaultAsync();
+                .AnyAsync();
 
-            if (recentReview is not null)
+            if (hasConcurrentReview)
             {
-                // Found a review created within the last 5 seconds - this is likely a concurrent request
+                // Found a review created within the time window - this is likely a concurrent request
                 return;
             }
 
@@ -104,7 +105,7 @@ public class Endpoint(
             return;
         }
 
-        if (recentReview is not null)
+        if (hasConcurrentReview)
         {
             AddError(
                 "A review was just submitted for this participant. Please wait a moment before submitting another review."

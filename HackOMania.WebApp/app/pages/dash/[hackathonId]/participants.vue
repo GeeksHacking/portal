@@ -454,12 +454,19 @@ function closeReviewModal() {
 
 async function handleReview(decision: 'accept' | 'reject') {
   if (!reviewingParticipantId.value) return
+  
+  // Use default rejection message if rejecting and no reason provided
+  const defaultRejectionMessage = 'Application does not meet the requirements.'
+  const finalReason = decision === 'reject' && !reviewReason.value.trim() 
+    ? defaultRejectionMessage 
+    : reviewReason.value || null
+  
   try {
     await reviewMutation.mutateAsync({
       participantUserId: reviewingParticipantId.value,
       review: {
         decision,
-        reason: reviewReason.value || null,
+        reason: finalReason,
       },
     })
     await queryClient.invalidateQueries({ queryKey: ['hackathons', props.hackathonId, 'participants', 'organizer'] })

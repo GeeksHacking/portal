@@ -5,6 +5,7 @@ export const participantOrganizerQueries = {
   list: (hackathonId: string) =>
     queryOptions({
       queryKey: ['hackathons', hackathonId, 'participants', 'organizer'],
+      staleTime: 30_000,
       async queryFn() {
         return await useNuxtApp()
           .$apiClient.organizers.hackathons.byHackathonId(hackathonId)
@@ -14,6 +15,7 @@ export const participantOrganizerQueries = {
   detail: (hackathonId: string, participantUserId: string) =>
     queryOptions({
       queryKey: ['hackathons', hackathonId, 'participants', 'organizer', participantUserId],
+      staleTime: 30_000,
       async queryFn() {
         return await useNuxtApp()
           .$apiClient.organizers.hackathons.byHackathonId(hackathonId)

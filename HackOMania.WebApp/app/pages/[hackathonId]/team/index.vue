@@ -25,7 +25,8 @@ watch(
     if (statusIsLoading || !hackathonData) return
     if (!statusData?.isParticipant) {
       navigateTo({ path: `/${hackathonData.shortCode}/registration`, query: route.query }, { replace: true })
-    } else if (statusData.status !== 1) {
+    }
+    else if (statusData.status !== 'Accepted') {
       navigateTo({ path: `/${hackathonData.shortCode}/registration/status`, query: route.query }, { replace: true })
     }
   },
@@ -36,16 +37,28 @@ watch(
 <template>
   <div>
     <AppNavBar />
-    <div id="home" class="scroll-mt-12 lg:scroll-mt-18">
+    <div
+      id="home"
+      class="scroll-mt-12 lg:scroll-mt-18"
+    >
       <AppHeroSection />
     </div>
-    <div id="challenges" class="scroll-mt-12 lg:scroll-mt-18">
+    <div
+      id="challenges"
+      class="scroll-mt-12 lg:scroll-mt-18"
+    >
       <PortalChallengesSection />
     </div>
-    <div id="team" class="scroll-mt-12 lg:scroll-mt-18">
+    <div
+      id="team"
+      class="scroll-mt-12 lg:scroll-mt-18"
+    >
       <PortalTeamSection />
     </div>
-    <div id="submission" class="scroll-mt-12 lg:scroll-mt-18">
+    <div
+      id="submission"
+      class="scroll-mt-12 lg:scroll-mt-18"
+    >
       <PortalSubmissionSection />
     </div>
     <AppFooter />

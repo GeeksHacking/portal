@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
 import { hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
+import { HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject } from '~/api-client/models'
 
 definePageMeta({
   // Explicitly mark as public route
@@ -52,13 +53,13 @@ const registrationState = computed<RegistrationState>(() => {
     return 'not_registered'
   }
 
-  // Check if approved first (status === 1)
-  if (statusData.value.status === 1) {
+  // Check if approved first.
+  if (statusData.value.status === HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject.Accepted) {
     return 'approved'
   }
 
-  // Check if rejected (status === 2)
-  if (statusData.value.status === 2) {
+  // Check if rejected.
+  if (statusData.value.status === HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject.Rejected) {
     return 'rejected'
   }
 

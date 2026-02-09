@@ -228,12 +228,12 @@ const onSubmit = async () => {
 
   try {
     // Update user profile with first name and last name
-    const firstName = state.first_name as string
-    const lastName = state.last_name as string
-    if (firstName || lastName) {
+    const firstName = String(state.first_name ?? '').trim()
+    const lastName = String(state.last_name ?? '').trim()
+    if (firstName && lastName) {
       await updateUserMutation.mutateAsync({
-        firstName: firstName || null,
-        lastName: lastName || null,
+        firstName,
+        lastName,
       })
     }
 

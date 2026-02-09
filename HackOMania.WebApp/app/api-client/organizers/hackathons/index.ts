@@ -4,7 +4,7 @@
 // @ts-ignore
 import { createFastEndpointsErrorResponseFromDiscriminatorValue, createHackOManiaApiEndpointsOrganizersHackathonCreateResponseFromDiscriminatorValue, createHackOManiaApiEndpointsOrganizersHackathonListResponseFromDiscriminatorValue, serializeHackOManiaApiEndpointsOrganizersHackathonCreateRequest, serializeHackOManiaApiEndpointsOrganizersHackathonCreateResponse, type FastEndpointsErrorResponse, type HackOManiaApiEndpointsOrganizersHackathonCreateRequest, type HackOManiaApiEndpointsOrganizersHackathonCreateResponse, type HackOManiaApiEndpointsOrganizersHackathonListResponse } from '../../models/index.js';
 // @ts-ignore
-import { HackathonItemRequestBuilderNavigationMetadata, HackathonItemRequestBuilderRequestsMetadata, type HackathonItemRequestBuilder } from './item/index.js';
+import { type WithHackathonItemRequestBuilder, WithHackathonItemRequestBuilderNavigationMetadata, WithHackathonItemRequestBuilderRequestsMetadata } from './item/index.js';
 // @ts-ignore
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
@@ -15,9 +15,9 @@ export interface HackathonsRequestBuilder extends BaseRequestBuilder<HackathonsR
     /**
      * Gets an item from the ApiSdk.organizers.hackathons.item collection
      * @param hackathonId Unique identifier of the item
-     * @returns {HackathonItemRequestBuilder}
+     * @returns {WithHackathonItemRequestBuilder}
      */
-     byHackathonId(hackathonId: string) : HackathonItemRequestBuilder;
+     byHackathonId(hackathonId: string) : WithHackathonItemRequestBuilder;
     /**
      * Retrieves all hackathons the current user has organizer access to.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
@@ -55,9 +55,9 @@ export const HackathonsRequestBuilderUriTemplate = "{+baseurl}/organizers/hackat
  */
 export const HackathonsRequestBuilderNavigationMetadata: Record<Exclude<keyof HackathonsRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     byHackathonId: {
-        requestsMetadata: HackathonItemRequestBuilderRequestsMetadata,
-        navigationMetadata: HackathonItemRequestBuilderNavigationMetadata,
-        pathParametersMappings: ["hackathon%2Did"],
+        requestsMetadata: WithHackathonItemRequestBuilderRequestsMetadata,
+        navigationMetadata: WithHackathonItemRequestBuilderNavigationMetadata,
+        pathParametersMappings: ["hackathonId"],
     },
 };
 /**

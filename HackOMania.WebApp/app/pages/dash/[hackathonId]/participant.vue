@@ -6,6 +6,7 @@ import { useJoinHackathonMutation } from '~/composables/hackathon'
 import { organizerQueries } from '~/composables/organizers'
 import { authQueries } from '~/composables/auth'
 import { useReviewParticipantMutation } from '~/composables/participants'
+import { HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject } from '~/api-client/models'
 
 const route = useRoute()
 const toast = useToast()
@@ -246,7 +247,7 @@ const joinHackathon = async () => {
               </div>
 
               <div
-                v-if="statusData?.status === 2 && statusData?.reviewReason"
+                v-if="statusData?.status === HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject.Rejected && statusData?.reviewReason"
                 class="mt-3 text-xs text-red-600"
               >
                 Reason: {{ statusData?.reviewReason }}

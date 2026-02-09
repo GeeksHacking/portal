@@ -9,7 +9,7 @@ import { type WithJudgeItemRequestBuilder, WithJudgeItemRequestBuilderRequestsMe
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}/judges
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/judges
  */
 export interface JudgesRequestBuilder extends BaseRequestBuilder<JudgesRequestBuilder> {
     /**
@@ -48,7 +48,7 @@ export interface JudgesRequestBuilder extends BaseRequestBuilder<JudgesRequestBu
 /**
  * Uri template for the request builder.
  */
-export const JudgesRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}/judges";
+export const JudgesRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/judges";
 /**
  * Metadata for all the navigation properties in the request builder.
  */

@@ -5,7 +5,7 @@ using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Timeline.Delete;
 
-public class Endpoint(ISqlSugarClient sql) : EndpointWithoutRequest
+public class Endpoint(ISqlSugarClient sql) : Endpoint<Request>
 {
     public override void Configure()
     {
@@ -19,12 +19,9 @@ public class Endpoint(ISqlSugarClient sql) : EndpointWithoutRequest
         });
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathonId = Route<Guid>("HackathonId");
-        var timelineItemId = Route<Guid>("TimelineItemId");
-
-        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(hackathonId);
+        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
             await Send.NotFoundAsync(ct);
@@ -32,7 +29,7 @@ public class Endpoint(ISqlSugarClient sql) : EndpointWithoutRequest
         }
 
         var timelineItem = await sql.Queryable<EventTimelineItem>()
-            .Where(t => t.Id == timelineItemId && t.HackathonId == hackathon.Id)
+            .Where(t => t.Id == req.TimelineItemId && t.HackathonId == hackathon.Id)
             .FirstAsync(ct);
 
         if (timelineItem is null)

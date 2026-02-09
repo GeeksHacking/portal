@@ -7,7 +7,7 @@ import { createHackOManiaApiEndpointsOrganizersHackathonVenueCheckInResponseFrom
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}/participants/{participantUser-id}/venue/check-in
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/participants/{participantUser-id}/venue/check-in
  */
 export interface CheckInRequestBuilder extends BaseRequestBuilder<CheckInRequestBuilder> {
     /**
@@ -26,7 +26,7 @@ export interface CheckInRequestBuilder extends BaseRequestBuilder<CheckInRequest
 /**
  * Uri template for the request builder.
  */
-export const CheckInRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}/participants/{participantUser%2Did}/venue/check-in";
+export const CheckInRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/participants/{participantUser%2Did}/venue/check-in";
 /**
  * Metadata for all the requests in the request builder.
  */

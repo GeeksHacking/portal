@@ -111,15 +111,6 @@ public class Endpoint(
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            AddError(
-                "Oh no! Your first/last name is empty on your GitHub profile. Please update it and try again."
-            );
-            await Send.ErrorsAsync(cancellation: ct);
-            return;
-        }
-
         var parsedGitHubId = long.Parse(githubId);
         var existingAccount = await db.Queryable<GitHubOnlineAccount>()
             .Includes(a => a.User)
@@ -137,9 +128,14 @@ public class Endpoint(
 
             if (existingUser is null)
             {
-                var nameParts = name.Split(' ', 2);
-                var firstName = (nameParts.Length > 0 ? nameParts[0] : name).Trim();
-                var lastName = (nameParts.Length > 1 ? nameParts[1] : "").Trim();
+                var firstName = string.Empty;
+                var lastName = string.Empty;
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    var nameParts = name.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+                    firstName = (nameParts.Length > 0 ? nameParts[0] : string.Empty).Trim();
+                    lastName = (nameParts.Length > 1 ? nameParts[1] : string.Empty).Trim();
+                }
 
                 accountUser = new User
                 {

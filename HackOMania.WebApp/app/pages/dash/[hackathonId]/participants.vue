@@ -5,10 +5,16 @@ import { participantOrganizerQueries, useReviewParticipantMutation } from '~/com
 import { registrationQuestionQueries } from '~/composables/question'
 import { registrationPageConfig } from '~/config/registration-pages'
 import type {
+  HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus,
   HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem,
   HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem,
+  HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatus,
   HackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem,
   HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto,
+} from '~/api-client/models'
+import {
+  HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject,
+  HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject,
 } from '~/api-client/models'
 
 const props = defineProps<{
@@ -28,6 +34,8 @@ const { data: participantsData, isLoading: isLoadingParticipants } = useQuery(
 
 type ParticipantItem = HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem
 type ParticipantReviewItem = HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem
+type ParticipantConcludedStatus = HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus
+type ParticipantReviewStatus = HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatus
 type RegistrationQuestion = HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto
 type RegistrationSubmission = HackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem
 
@@ -64,8 +72,12 @@ function isIncomplete(p: ParticipantItem) {
   return !p.registrationSubmissions?.length
 }
 
-function isPendingStatus(status: number | null | undefined) {
-  return status === 0 || status === null || status === undefined
+function isPendingStatus(status: ParticipantConcludedStatus | null | undefined) {
+  return (
+    status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Pending
+    || status === null
+    || status === undefined
+  )
 }
 
 function isPendingParticipant(participant: ParticipantItem) {
@@ -98,9 +110,17 @@ const statusFilteredParticipants = computed(() => {
     case 'pending':
       return complete.filter(p => isPendingStatus(p.concludedStatus))
     case 'approved':
-      return complete.filter(p => p.concludedStatus === 1)
+      return complete.filter(
+        p =>
+          p.concludedStatus
+          === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Accepted,
+      )
     case 'rejected':
-      return complete.filter(p => p.concludedStatus === 2)
+      return complete.filter(
+        p =>
+          p.concludedStatus
+          === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Rejected,
+      )
     default:
       return complete
   }
@@ -153,8 +173,16 @@ const filterCounts = computed(() => {
     all: complete.length,
     incomplete: all.filter(p => isIncomplete(p)).length,
     pending: complete.filter(p => isPendingStatus(p.concludedStatus)).length,
-    approved: complete.filter(p => p.concludedStatus === 1).length,
-    rejected: complete.filter(p => p.concludedStatus === 2).length,
+    approved: complete.filter(
+      p =>
+        p.concludedStatus
+        === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Accepted,
+    ).length,
+    rejected: complete.filter(
+      p =>
+        p.concludedStatus
+        === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Rejected,
+    ).length,
   }
 })
 
@@ -172,9 +200,9 @@ function compareStrings(a?: string | null, b?: string | null) {
   return (a ?? '').localeCompare(b ?? '', undefined, { sensitivity: 'base' })
 }
 
-function getStatusSortValue(status: number | null | undefined) {
-  if (status === 1) return 2
-  if (status === 2) return 3
+function getStatusSortValue(status: ParticipantConcludedStatus | null | undefined) {
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Accepted) return 2
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Rejected) return 3
   return 1
 }
 
@@ -513,27 +541,27 @@ function getErrorStatusCode(error: unknown): number | null {
   return null
 }
 
-function getStatusColor(status: number | null | undefined): 'success' | 'error' | 'warning' {
-  if (status === 1) return 'success'
-  if (status === 2) return 'error'
+function getStatusColor(status: ParticipantConcludedStatus | null | undefined): 'success' | 'error' | 'warning' {
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Accepted) return 'success'
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Rejected) return 'error'
   return 'warning'
 }
 
-function getStatusLabel(status: number | null | undefined): string {
-  if (status === 1) return 'Approved'
-  if (status === 2) return 'Rejected'
+function getStatusLabel(status: ParticipantConcludedStatus | null | undefined): string {
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Accepted) return 'Approved'
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Rejected) return 'Rejected'
   return 'Pending'
 }
 
-function getReviewStatusLabel(status: number | null | undefined): string {
-  if (status === 1) return 'Accepted'
-  if (status === 0) return 'Rejected'
+function getReviewStatusLabel(status: ParticipantReviewStatus | null | undefined): string {
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject.Accepted) return 'Accepted'
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject.Rejected) return 'Rejected'
   return 'Unknown'
 }
 
-function getReviewStatusColor(status: number | null | undefined): 'success' | 'error' | 'neutral' {
-  if (status === 1) return 'success'
-  if (status === 0) return 'error'
+function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined): 'success' | 'error' | 'neutral' {
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject.Accepted) return 'success'
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject.Rejected) return 'error'
   return 'neutral'
 }
 </script>

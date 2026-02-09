@@ -7,9 +7,9 @@ import { createHackOManiaApiEndpointsOrganizersHackathonTimelineUpdateResponseFr
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}/timeline/{timelineItem-id}
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/timeline/{timelineItemId}
  */
-export interface TimelineItemItemRequestBuilder extends BaseRequestBuilder<TimelineItemItemRequestBuilder> {
+export interface WithTimelineItemItemRequestBuilder extends BaseRequestBuilder<WithTimelineItemItemRequestBuilder> {
     /**
      * Deletes a timeline item from a hackathon.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
@@ -39,17 +39,17 @@ export interface TimelineItemItemRequestBuilder extends BaseRequestBuilder<Timel
 /**
  * Uri template for the request builder.
  */
-export const TimelineItemItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}/timeline/{timelineItem%2Did}";
+export const WithTimelineItemItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/timeline/{timelineItemId}";
 /**
  * Metadata for all the requests in the request builder.
  */
-export const TimelineItemItemRequestBuilderRequestsMetadata: RequestsMetadata = {
+export const WithTimelineItemItemRequestBuilderRequestsMetadata: RequestsMetadata = {
     delete: {
-        uriTemplate: TimelineItemItemRequestBuilderUriTemplate,
+        uriTemplate: WithTimelineItemItemRequestBuilderUriTemplate,
         adapterMethodName: "sendNoResponseContent",
     },
     patch: {
-        uriTemplate: TimelineItemItemRequestBuilderUriTemplate,
+        uriTemplate: WithTimelineItemItemRequestBuilderUriTemplate,
         responseBodyContentType: "application/json",
         adapterMethodName: "send",
         responseBodyFactory:  createHackOManiaApiEndpointsOrganizersHackathonTimelineUpdateResponseFromDiscriminatorValue,

@@ -7,7 +7,7 @@ import { createHackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsIni
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}/registration/questions/initialize
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/registration/questions/initialize
  */
 export interface InitializeRequestBuilder extends BaseRequestBuilder<InitializeRequestBuilder> {
     /**
@@ -26,7 +26,7 @@ export interface InitializeRequestBuilder extends BaseRequestBuilder<InitializeR
 /**
  * Uri template for the request builder.
  */
-export const InitializeRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}/registration/questions/initialize";
+export const InitializeRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/registration/questions/initialize";
 /**
  * Metadata for all the requests in the request builder.
  */

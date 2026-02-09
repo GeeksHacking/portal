@@ -7,7 +7,7 @@ import { OverviewRequestBuilderRequestsMetadata, type OverviewRequestBuilder } f
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}/venue
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/venue
  */
 export interface VenueRequestBuilder extends BaseRequestBuilder<VenueRequestBuilder> {
     /**
@@ -18,7 +18,7 @@ export interface VenueRequestBuilder extends BaseRequestBuilder<VenueRequestBuil
 /**
  * Uri template for the request builder.
  */
-export const VenueRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}/venue";
+export const VenueRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/venue";
 /**
  * Metadata for all the navigation properties in the request builder.
  */

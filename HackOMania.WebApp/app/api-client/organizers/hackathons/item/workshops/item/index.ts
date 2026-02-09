@@ -7,7 +7,7 @@ import { createHackOManiaApiEndpointsOrganizersHackathonWorkshopsUpdateResponseF
 import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}/workshops/{workshopId}
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/workshops/{workshopId}
  */
 export interface WithWorkshopItemRequestBuilder extends BaseRequestBuilder<WithWorkshopItemRequestBuilder> {
     /**
@@ -39,7 +39,7 @@ export interface WithWorkshopItemRequestBuilder extends BaseRequestBuilder<WithW
 /**
  * Uri template for the request builder.
  */
-export const WithWorkshopItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}/workshops/{workshopId}";
+export const WithWorkshopItemRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/workshops/{workshopId}";
 /**
  * Metadata for all the requests in the request builder.
  */

@@ -43,7 +43,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
             new Response
             {
                 Id = gh.User.Id,
-                Name = gh.User.FirstName + " " + gh.User.LastName,
+                Name = gh.User.Name,
                 FirstName = gh.User.FirstName,
                 LastName = gh.User.LastName,
                 Email = gh.User.Email,

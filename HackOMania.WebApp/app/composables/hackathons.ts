@@ -1,5 +1,7 @@
 import { queryOptions, useQuery } from '@tanstack/vue-query'
 import { computed } from 'vue'
+import type { HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatus } from '~/api-client/models'
+import { HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject } from '~/api-client/models'
 
 export const hackathonQueries = {
   list: queryOptions({
@@ -34,12 +36,15 @@ export const hackathonQueries = {
     }),
 }
 
-export const formatParticipantStatus = (status: number | null | undefined, isParticipant?: boolean | null) => {
+export const formatParticipantStatus = (
+  status: HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatus | null | undefined,
+  isParticipant?: boolean | null,
+) => {
   if (!isParticipant) return { label: 'Not joined', color: 'neutral' as const }
   switch (status) {
-    case 1:
+    case HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject.Accepted:
       return { label: 'Accepted', color: 'success' as const }
-    case 2:
+    case HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject.Rejected:
       return { label: 'Rejected', color: 'error' as const }
     default:
       return { label: 'Pending review', color: 'warning' as const }

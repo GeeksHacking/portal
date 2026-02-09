@@ -4,20 +4,20 @@
 // @ts-ignore
 import { createHackOManiaApiEndpointsOrganizersHackathonTimelineCreateResponseFromDiscriminatorValue, serializeHackOManiaApiEndpointsOrganizersHackathonTimelineCreateRequest, serializeHackOManiaApiEndpointsOrganizersHackathonTimelineCreateResponse, type HackOManiaApiEndpointsOrganizersHackathonTimelineCreateRequest, type HackOManiaApiEndpointsOrganizersHackathonTimelineCreateResponse } from '../../../../models/index.js';
 // @ts-ignore
-import { TimelineItemItemRequestBuilderRequestsMetadata, type TimelineItemItemRequestBuilder } from './item/index.js';
+import { type WithTimelineItemItemRequestBuilder, WithTimelineItemItemRequestBuilderRequestsMetadata } from './item/index.js';
 // @ts-ignore
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}/timeline
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/timeline
  */
 export interface TimelineRequestBuilder extends BaseRequestBuilder<TimelineRequestBuilder> {
     /**
      * Gets an item from the ApiSdk.organizers.hackathons.item.timeline.item collection
      * @param timelineItemId Unique identifier of the item
-     * @returns {TimelineItemItemRequestBuilder}
+     * @returns {WithTimelineItemItemRequestBuilder}
      */
-     byTimelineItemId(timelineItemId: string) : TimelineItemItemRequestBuilder;
+     byTimelineItemId(timelineItemId: string) : WithTimelineItemItemRequestBuilder;
     /**
      * Creates a new timeline item for a hackathon.
      * @param body The request body
@@ -36,14 +36,14 @@ export interface TimelineRequestBuilder extends BaseRequestBuilder<TimelineReque
 /**
  * Uri template for the request builder.
  */
-export const TimelineRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}/timeline";
+export const TimelineRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/timeline";
 /**
  * Metadata for all the navigation properties in the request builder.
  */
 export const TimelineRequestBuilderNavigationMetadata: Record<Exclude<keyof TimelineRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     byTimelineItemId: {
-        requestsMetadata: TimelineItemItemRequestBuilderRequestsMetadata,
-        pathParametersMappings: ["timelineItem%2Did"],
+        requestsMetadata: WithTimelineItemItemRequestBuilderRequestsMetadata,
+        pathParametersMappings: ["timelineItemId"],
     },
 };
 /**

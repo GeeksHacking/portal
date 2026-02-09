@@ -9,7 +9,7 @@ import { type WithWorkshopItemRequestBuilder, WithWorkshopItemRequestBuilderRequ
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
- * Builds and executes requests for operations under /organizers/hackathons/{hackathon-id}/workshops
+ * Builds and executes requests for operations under /organizers/hackathons/{hackathonId}/workshops
  */
 export interface WorkshopsRequestBuilder extends BaseRequestBuilder<WorkshopsRequestBuilder> {
     /**
@@ -48,7 +48,7 @@ export interface WorkshopsRequestBuilder extends BaseRequestBuilder<WorkshopsReq
 /**
  * Uri template for the request builder.
  */
-export const WorkshopsRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathon%2Did}/workshops";
+export const WorkshopsRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/{hackathonId}/workshops";
 /**
  * Metadata for all the navigation properties in the request builder.
  */

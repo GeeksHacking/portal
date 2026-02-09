@@ -1576,7 +1576,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonListResp
 // @ts-ignore
 export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonOrganizersAddRequest(hackOManiaApiEndpointsOrganizersHackathonOrganizersAddRequest: Partial<HackOManiaApiEndpointsOrganizersHackathonOrganizersAddRequest> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "type": n => { hackOManiaApiEndpointsOrganizersHackathonOrganizersAddRequest.type = n.getNumberValue(); },
+        "type": n => { hackOManiaApiEndpointsOrganizersHackathonOrganizersAddRequest.type = n.getEnumValue<HackOManiaApiEntitiesOrganizerType>(HackOManiaApiEntitiesOrganizerTypeObject); },
         "userId": n => { hackOManiaApiEndpointsOrganizersHackathonOrganizersAddRequest.userId = n.getStringValue(); },
     }
 }
@@ -1588,7 +1588,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonOrganize
 // @ts-ignore
 export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonOrganizersAddResponse(hackOManiaApiEndpointsOrganizersHackathonOrganizersAddResponse: Partial<HackOManiaApiEndpointsOrganizersHackathonOrganizersAddResponse> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "type": n => { hackOManiaApiEndpointsOrganizersHackathonOrganizersAddResponse.type = n.getNumberValue(); },
+        "type": n => { hackOManiaApiEndpointsOrganizersHackathonOrganizersAddResponse.type = n.getEnumValue<HackOManiaApiEntitiesOrganizerType>(HackOManiaApiEntitiesOrganizerTypeObject); },
         "userId": n => { hackOManiaApiEndpointsOrganizersHackathonOrganizersAddResponse.userId = n.getStringValue(); },
     }
 }
@@ -1681,7 +1681,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticip
 // @ts-ignore
 export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem(hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem: Partial<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "concludedStatus": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.concludedStatus = n.getNumberValue(); },
+        "concludedStatus": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.concludedStatus = n.getEnumValue<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus>(HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject); },
         "createdAt": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.createdAt = n.getDateValue(); },
         "emailSentCount": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.emailSentCount = n.getNumberValue(); },
         "id": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.id = n.getStringValue(); },
@@ -1705,7 +1705,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticip
         "createdAt": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.createdAt = n.getDateValue(); },
         "id": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.id = n.getStringValue(); },
         "reason": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.reason = n.getStringValue(); },
-        "status": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.status = n.getNumberValue(); },
+        "status": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.status = n.getEnumValue<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatus>(HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject); },
     }
 }
 /**
@@ -1809,7 +1809,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonRegistra
         "options": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateRequest.options = n.getCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateCreateOptionDto>(createHackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateCreateOptionDtoFromDiscriminatorValue); },
         "questionKey": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateRequest.questionKey = n.getStringValue(); },
         "questionText": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateRequest.questionText = n.getStringValue(); },
-        "type": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateRequest.type = n.getNumberValue(); },
+        "type": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateRequest.type = n.getEnumValue<HackOManiaApiEntitiesQuestionType>(HackOManiaApiEntitiesQuestionTypeObject); },
         "validationRules": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateRequest.validationRules = n.getStringValue(); },
     }
 }
@@ -1830,7 +1830,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonRegistra
         "options": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateResponse.options = n.getCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateOptionResponse>(createHackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateOptionResponseFromDiscriminatorValue); },
         "questionKey": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateResponse.questionKey = n.getStringValue(); },
         "questionText": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateResponse.questionText = n.getStringValue(); },
-        "type": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateResponse.type = n.getNumberValue(); },
+        "type": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateResponse.type = n.getEnumValue<HackOManiaApiEntitiesQuestionType>(HackOManiaApiEntitiesQuestionTypeObject); },
         "validationRules": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateResponse.validationRules = n.getStringValue(); },
     }
 }
@@ -1879,7 +1879,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonRegistra
         "options": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto.options = n.getCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListOptionDto>(createHackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListOptionDtoFromDiscriminatorValue); },
         "questionKey": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto.questionKey = n.getStringValue(); },
         "questionText": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto.questionText = n.getStringValue(); },
-        "type": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto.type = n.getNumberValue(); },
+        "type": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto.type = n.getEnumValue<HackOManiaApiEntitiesQuestionType>(HackOManiaApiEntitiesQuestionTypeObject); },
         "validationRules": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto.validationRules = n.getStringValue(); },
     }
 }
@@ -1925,7 +1925,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonRegistra
         "isRequired": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest.isRequired = n.getBooleanValue(); },
         "options": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest.options = n.getCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateUpdateOptionDto>(createHackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateUpdateOptionDtoFromDiscriminatorValue); },
         "questionText": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest.questionText = n.getStringValue(); },
-        "type": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest.type = n.getNumberValue(); },
+        "type": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest.type = n.getEnumValue<HackOManiaApiEntitiesQuestionType>(HackOManiaApiEntitiesQuestionTypeObject); },
         "validationRules": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest.validationRules = n.getStringValue(); },
     }
 }
@@ -1946,7 +1946,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonRegistra
         "options": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateResponse.options = n.getCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateOptionResponse>(createHackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateOptionResponseFromDiscriminatorValue); },
         "questionKey": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateResponse.questionKey = n.getStringValue(); },
         "questionText": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateResponse.questionText = n.getStringValue(); },
-        "type": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateResponse.type = n.getNumberValue(); },
+        "type": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateResponse.type = n.getEnumValue<HackOManiaApiEntitiesQuestionType>(HackOManiaApiEntitiesQuestionTypeObject); },
         "validationRules": n => { hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateResponse.validationRules = n.getStringValue(); },
     }
 }
@@ -2589,7 +2589,7 @@ export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonRegist
         "options": n => { hackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto.options = n.getCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto>(createHackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDtoFromDiscriminatorValue); },
         "questionKey": n => { hackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto.questionKey = n.getStringValue(); },
         "questionText": n => { hackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto.questionText = n.getStringValue(); },
-        "type": n => { hackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto.type = n.getNumberValue(); },
+        "type": n => { hackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto.type = n.getEnumValue<HackOManiaApiEntitiesQuestionType>(HackOManiaApiEntitiesQuestionTypeObject); },
         "validationRules": n => { hackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto.validationRules = n.getStringValue(); },
     }
 }
@@ -2719,7 +2719,7 @@ export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonStatus
         "isParticipant": n => { hackOManiaApiEndpointsParticipantsHackathonStatusResponse.isParticipant = n.getBooleanValue(); },
         "reviewedAt": n => { hackOManiaApiEndpointsParticipantsHackathonStatusResponse.reviewedAt = n.getDateValue(); },
         "reviewReason": n => { hackOManiaApiEndpointsParticipantsHackathonStatusResponse.reviewReason = n.getStringValue(); },
-        "status": n => { hackOManiaApiEndpointsParticipantsHackathonStatusResponse.status = n.getNumberValue(); },
+        "status": n => { hackOManiaApiEndpointsParticipantsHackathonStatusResponse.status = n.getEnumValue<HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatus>(HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject); },
         "teamId": n => { hackOManiaApiEndpointsParticipantsHackathonStatusResponse.teamId = n.getStringValue(); },
         "teamName": n => { hackOManiaApiEndpointsParticipantsHackathonStatusResponse.teamName = n.getStringValue(); },
     }
@@ -3117,20 +3117,26 @@ export function deserializeIntoHackOManiaApiEndpointsUsersProfileUpdateResponse(
         "name": n => { hackOManiaApiEndpointsUsersProfileUpdateResponse.name = n.getStringValue(); },
     }
 }
+/**
+ * the dto used to send an error response to the client
+ */
 export interface FastEndpointsErrorResponse extends ApiError, Parsable {
     /**
-     * The errors property
+     * the collection of errors for the current context
      */
     errors?: FastEndpointsErrorResponse_errors | null;
     /**
-     * The message property
+     * the message for the error response
      */
     messageEscaped?: string | null;
     /**
-     * The statusCode property
+     * the http status code sent to the client. default is 400.
      */
     statusCode?: number | null;
 }
+/**
+ * the collection of errors for the current context
+ */
 export interface FastEndpointsErrorResponse_errors extends AdditionalDataHolder, Parsable {
 }
 export interface HackOManiaApiEndpointsAuthWhoAmIResponse extends Parsable {
@@ -3673,7 +3679,7 @@ export interface HackOManiaApiEndpointsOrganizersHackathonOrganizersAddRequest e
     /**
      * The type property
      */
-    type?: number | null;
+    type?: HackOManiaApiEntitiesOrganizerType | null;
     /**
      * The userId property
      */
@@ -3683,7 +3689,7 @@ export interface HackOManiaApiEndpointsOrganizersHackathonOrganizersAddResponse 
     /**
      * The type property
      */
-    type?: number | null;
+    type?: HackOManiaApiEntitiesOrganizerType | null;
     /**
      * The userId property
      */
@@ -3781,11 +3787,12 @@ export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsGetRespons
      */
     emailDeliveries?: HackOManiaApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItem[] | null;
 }
+export type HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus = (typeof HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject)[keyof typeof HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject];
 export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem extends Parsable {
     /**
      * The concludedStatus property
      */
-    concludedStatus?: number | null;
+    concludedStatus?: HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus | null;
     /**
      * The createdAt property
      */
@@ -3843,8 +3850,9 @@ export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsListPartic
     /**
      * The status property
      */
-    status?: number | null;
+    status?: HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatus | null;
 }
+export type HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatus = (typeof HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject)[keyof typeof HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject];
 export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem extends Parsable {
     /**
      * The followUpValue property
@@ -3993,7 +4001,7 @@ export interface HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsC
     /**
      * The type property
      */
-    type?: number | null;
+    type?: HackOManiaApiEntitiesQuestionType | null;
     /**
      * The validationRules property
      */
@@ -4039,7 +4047,7 @@ export interface HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsC
     /**
      * The type property
      */
-    type?: number | null;
+    type?: HackOManiaApiEntitiesQuestionType | null;
     /**
      * The validationRules property
      */
@@ -4121,7 +4129,7 @@ export interface HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsL
     /**
      * The type property
      */
-    type?: number | null;
+    type?: HackOManiaApiEntitiesQuestionType | null;
     /**
      * The validationRules property
      */
@@ -4191,7 +4199,7 @@ export interface HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsU
     /**
      * The type property
      */
-    type?: number | null;
+    type?: HackOManiaApiEntitiesQuestionType | null;
     /**
      * The validationRules property
      */
@@ -4237,7 +4245,7 @@ export interface HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsU
     /**
      * The type property
      */
-    type?: number | null;
+    type?: HackOManiaApiEntitiesQuestionType | null;
     /**
      * The validationRules property
      */
@@ -5213,7 +5221,7 @@ export interface HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestion
     /**
      * The type property
      */
-    type?: number | null;
+    type?: HackOManiaApiEntitiesQuestionType | null;
     /**
      * The validationRules property
      */
@@ -5333,6 +5341,7 @@ export interface HackOManiaApiEndpointsParticipantsHackathonResourcesListRespons
      */
     name?: string | null;
 }
+export type HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatus = (typeof HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject)[keyof typeof HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject];
 export interface HackOManiaApiEndpointsParticipantsHackathonStatusResponse extends Parsable {
     /**
      * The isOrganizer property
@@ -5353,7 +5362,7 @@ export interface HackOManiaApiEndpointsParticipantsHackathonStatusResponse exten
     /**
      * The status property
      */
-    status?: number | null;
+    status?: HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatus | null;
     /**
      * The teamId property
      */
@@ -5871,6 +5880,8 @@ export interface HackOManiaApiEndpointsUsersProfileUpdateResponse extends Parsab
      */
     name?: string | null;
 }
+export type HackOManiaApiEntitiesOrganizerType = (typeof HackOManiaApiEntitiesOrganizerTypeObject)[keyof typeof HackOManiaApiEntitiesOrganizerTypeObject];
+export type HackOManiaApiEntitiesQuestionType = (typeof HackOManiaApiEntitiesQuestionTypeObject)[keyof typeof HackOManiaApiEntitiesQuestionTypeObject];
 /**
  * Serializes information the current object
  * @param FastEndpointsErrorResponse The instance to serialize from.
@@ -6270,7 +6281,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonListResponse_H
 // @ts-ignore
 export function serializeHackOManiaApiEndpointsOrganizersHackathonOrganizersAddRequest(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonOrganizersAddRequest: Partial<HackOManiaApiEndpointsOrganizersHackathonOrganizersAddRequest> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
     if (!hackOManiaApiEndpointsOrganizersHackathonOrganizersAddRequest || isSerializingDerivedType) { return; }
-    writer.writeNumberValue("type", hackOManiaApiEndpointsOrganizersHackathonOrganizersAddRequest.type);
+    writer.writeEnumValue<HackOManiaApiEntitiesOrganizerType>("type", hackOManiaApiEndpointsOrganizersHackathonOrganizersAddRequest.type);
     writer.writeStringValue("userId", hackOManiaApiEndpointsOrganizersHackathonOrganizersAddRequest.userId);
 }
 /**
@@ -6282,7 +6293,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonOrganizersAddR
 // @ts-ignore
 export function serializeHackOManiaApiEndpointsOrganizersHackathonOrganizersAddResponse(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonOrganizersAddResponse: Partial<HackOManiaApiEndpointsOrganizersHackathonOrganizersAddResponse> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
     if (!hackOManiaApiEndpointsOrganizersHackathonOrganizersAddResponse || isSerializingDerivedType) { return; }
-    writer.writeNumberValue("type", hackOManiaApiEndpointsOrganizersHackathonOrganizersAddResponse.type);
+    writer.writeEnumValue<HackOManiaApiEntitiesOrganizerType>("type", hackOManiaApiEndpointsOrganizersHackathonOrganizersAddResponse.type);
     writer.writeStringValue("userId", hackOManiaApiEndpointsOrganizersHackathonOrganizersAddResponse.userId);
 }
 /**
@@ -6376,7 +6387,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonParticipantsGe
 // @ts-ignore
 export function serializeHackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem: Partial<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
     if (!hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem || isSerializingDerivedType) { return; }
-    writer.writeNumberValue("concludedStatus", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.concludedStatus);
+    writer.writeEnumValue<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus>("concludedStatus", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.concludedStatus);
     writer.writeDateValue("createdAt", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.createdAt);
     writer.writeNumberValue("emailSentCount", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.emailSentCount);
     writer.writeStringValue("id", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.id);
@@ -6400,7 +6411,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonParticipantsLi
     writer.writeDateValue("createdAt", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.createdAt);
     writer.writeStringValue("id", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.id);
     writer.writeStringValue("reason", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.reason);
-    writer.writeNumberValue("status", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.status);
+    writer.writeEnumValue<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatus>("status", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.status);
 }
 /**
  * Serializes information the current object
@@ -6504,7 +6515,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonRegistrationQu
     writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateCreateOptionDto>("options", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateRequest.options, serializeHackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateCreateOptionDto);
     writer.writeStringValue("questionKey", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateRequest.questionKey);
     writer.writeStringValue("questionText", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateRequest.questionText);
-    writer.writeNumberValue("type", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateRequest.type);
+    writer.writeEnumValue<HackOManiaApiEntitiesQuestionType>("type", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateRequest.type);
     writer.writeStringValue("validationRules", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateRequest.validationRules);
 }
 /**
@@ -6525,7 +6536,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonRegistrationQu
     writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateOptionResponse>("options", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateResponse.options, serializeHackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateOptionResponse);
     writer.writeStringValue("questionKey", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateResponse.questionKey);
     writer.writeStringValue("questionText", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateResponse.questionText);
-    writer.writeNumberValue("type", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateResponse.type);
+    writer.writeEnumValue<HackOManiaApiEntitiesQuestionType>("type", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateResponse.type);
     writer.writeStringValue("validationRules", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateResponse.validationRules);
 }
 /**
@@ -6574,7 +6585,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonRegistrationQu
     writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListOptionDto>("options", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto.options, serializeHackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListOptionDto);
     writer.writeStringValue("questionKey", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto.questionKey);
     writer.writeStringValue("questionText", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto.questionText);
-    writer.writeNumberValue("type", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto.type);
+    writer.writeEnumValue<HackOManiaApiEntitiesQuestionType>("type", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto.type);
     writer.writeStringValue("validationRules", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto.validationRules);
 }
 /**
@@ -6620,7 +6631,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonRegistrationQu
     writer.writeBooleanValue("isRequired", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest.isRequired);
     writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateUpdateOptionDto>("options", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest.options, serializeHackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateUpdateOptionDto);
     writer.writeStringValue("questionText", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest.questionText);
-    writer.writeNumberValue("type", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest.type);
+    writer.writeEnumValue<HackOManiaApiEntitiesQuestionType>("type", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest.type);
     writer.writeStringValue("validationRules", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest.validationRules);
 }
 /**
@@ -6641,7 +6652,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonRegistrationQu
     writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateOptionResponse>("options", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateResponse.options, serializeHackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateOptionResponse);
     writer.writeStringValue("questionKey", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateResponse.questionKey);
     writer.writeStringValue("questionText", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateResponse.questionText);
-    writer.writeNumberValue("type", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateResponse.type);
+    writer.writeEnumValue<HackOManiaApiEntitiesQuestionType>("type", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateResponse.type);
     writer.writeStringValue("validationRules", hackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateResponse.validationRules);
 }
 /**
@@ -7286,7 +7297,7 @@ export function serializeHackOManiaApiEndpointsParticipantsHackathonRegistration
     writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto>("options", hackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto.options, serializeHackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto);
     writer.writeStringValue("questionKey", hackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto.questionKey);
     writer.writeStringValue("questionText", hackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto.questionText);
-    writer.writeNumberValue("type", hackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto.type);
+    writer.writeEnumValue<HackOManiaApiEntitiesQuestionType>("type", hackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto.type);
     writer.writeStringValue("validationRules", hackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto.validationRules);
 }
 /**
@@ -7416,7 +7427,7 @@ export function serializeHackOManiaApiEndpointsParticipantsHackathonStatusRespon
     writer.writeBooleanValue("isParticipant", hackOManiaApiEndpointsParticipantsHackathonStatusResponse.isParticipant);
     writer.writeDateValue("reviewedAt", hackOManiaApiEndpointsParticipantsHackathonStatusResponse.reviewedAt);
     writer.writeStringValue("reviewReason", hackOManiaApiEndpointsParticipantsHackathonStatusResponse.reviewReason);
-    writer.writeNumberValue("status", hackOManiaApiEndpointsParticipantsHackathonStatusResponse.status);
+    writer.writeEnumValue<HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatus>("status", hackOManiaApiEndpointsParticipantsHackathonStatusResponse.status);
     writer.writeStringValue("teamId", hackOManiaApiEndpointsParticipantsHackathonStatusResponse.teamId);
     writer.writeStringValue("teamName", hackOManiaApiEndpointsParticipantsHackathonStatusResponse.teamName);
 }
@@ -7813,5 +7824,36 @@ export function serializeHackOManiaApiEndpointsUsersProfileUpdateResponse(writer
     writer.writeStringValue("lastName", hackOManiaApiEndpointsUsersProfileUpdateResponse.lastName);
     writer.writeStringValue("name", hackOManiaApiEndpointsUsersProfileUpdateResponse.name);
 }
+export const HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject = {
+    Pending: "Pending",
+    Accepted: "Accepted",
+    Rejected: "Rejected",
+} as const;
+export const HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject = {
+    Rejected: "Rejected",
+    Accepted: "Accepted",
+} as const;
+export const HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject = {
+    Pending: "Pending",
+    Accepted: "Accepted",
+    Rejected: "Rejected",
+} as const;
+export const HackOManiaApiEntitiesOrganizerTypeObject = {
+    Admin: "Admin",
+    Volunteer: "Volunteer",
+} as const;
+export const HackOManiaApiEntitiesQuestionTypeObject = {
+    Text: "Text",
+    LongText: "LongText",
+    Number: "Number",
+    SingleChoice: "SingleChoice",
+    MultipleChoice: "MultipleChoice",
+    Boolean: "Boolean",
+    Email: "Email",
+    Url: "Url",
+    Phone: "Phone",
+    Date: "Date",
+    Dropdown: "Dropdown",
+} as const;
 /* tslint:enable */
 /* eslint-enable */

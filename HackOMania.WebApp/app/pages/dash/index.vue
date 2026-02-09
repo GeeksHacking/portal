@@ -7,6 +7,7 @@ import type {
   HackOManiaApiEndpointsParticipantsHackathonStatusResponse,
   HackOManiaApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse,
 } from '~/api-client/models'
+import { HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject } from '~/api-client/models'
 
 const toast = useToast()
 const queryClient = useQueryClient()
@@ -330,7 +331,7 @@ const joinHackathon = async (hackathon: { id: string, shortCode: string }) => {
                 </div>
 
                 <div
-                  v-if="statusDataForIndex(index)?.status === 2 && statusDataForIndex(index)?.reviewReason"
+                  v-if="statusDataForIndex(index)?.status === HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject.Rejected && statusDataForIndex(index)?.reviewReason"
                   class="text-xs text-red-500 dark:text-red-400"
                 >
                   Reason: {{ statusDataForIndex(index)?.reviewReason }}

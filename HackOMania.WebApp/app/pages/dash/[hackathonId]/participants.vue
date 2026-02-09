@@ -419,14 +419,18 @@ const isReReview = computed(() => {
   return reviewingParticipantReviews.value.length > 0
 })
 
+const hasNoExpandedData = computed(() => {
+  return !participantDetail.value?.reviews?.length && !sortedSubmissions.value.length
+})
+
 const reviewModalTitle = computed(() => {
   return isReReview.value ? 'Re-review Participant' : 'Review Participant'
 })
 
 const reviewModalDescription = computed(() => {
   return isReReview.value
-    ? 'Add a new review for this participant. The latest review will be the final decision.'
-    : 'Review this participant\'s application and approve or reject it.'
+    ? "Add a new review for this participant. The latest review will be the final decision."
+    : "Review this participant's application and approve or reject it."
 })
 
 function openReviewModal(participantId: string) {
@@ -519,9 +523,10 @@ function getReviewStatusLabel(status: number | null | undefined): string {
   return 'Unknown'
 }
 
-function getReviewStatusColor(status: number | null | undefined): 'success' | 'error' {
+function getReviewStatusColor(status: number | null | undefined): 'success' | 'error' | 'neutral' {
   if (status === 1) return 'success'
-  return 'error'
+  if (status === 0) return 'error'
+  return 'neutral'
 }
 </script>
 
@@ -795,7 +800,7 @@ function getReviewStatusColor(status: number | null | undefined): 'success' | 'e
               </div>
 
               <div
-                v-if="!participantDetail?.reviews?.length && !sortedSubmissions.length"
+                v-if="hasNoExpandedData"
                 class="text-sm text-(--ui-text-muted)"
               >
                 No data found.

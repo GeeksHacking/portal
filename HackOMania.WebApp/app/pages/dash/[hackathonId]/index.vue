@@ -11,6 +11,7 @@ import Submissions from './submissions.vue'
 import Judges from './judges.vue'
 import Questions from './questions.vue'
 import CheckIn from './checkin.vue'
+import InfoPack from './infopack.vue'
 
 const route = useRoute()
 
@@ -128,6 +129,11 @@ watch([isOrganizer, isLoadingOrganizerCheck], ([org, loading]) => {
           />
 
           <Questions
+            :hackathon-id="resolvedHackathonId ?? ''"
+            :is-organizer="isOrganizer"
+          />
+
+          <InfoPack
             :hackathon-id="resolvedHackathonId ?? ''"
             :is-organizer="isOrganizer"
           />

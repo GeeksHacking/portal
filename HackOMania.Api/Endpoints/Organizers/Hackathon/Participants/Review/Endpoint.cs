@@ -47,6 +47,9 @@ public class Endpoint(
                 ? ParticipantReview.ParticipantReviewStatus.Accepted
                 : ParticipantReview.ParticipantReviewStatus.Rejected;
 
+        var currentTime = DateTimeOffset.UtcNow;
+        var concurrentWindowStart = currentTime.AddSeconds(-5);
+
         Participant? participant = null;
         ParticipantReview? review = null;
         ParticipantReview? recentReview = null;
@@ -67,8 +70,9 @@ public class Endpoint(
             // This prevents race conditions while still allowing re-reviews
             recentReview = await sql.Queryable<ParticipantReview>()
                 .Where(r => r.ParticipantId == participant.Id)
-                .Where(r => r.CreatedAt > DateTimeOffset.UtcNow.AddSeconds(-5))
+                .Where(r => r.CreatedAt > concurrentWindowStart)
                 .OrderByDescending(r => r.CreatedAt)
+                .Take(1)
                 .FirstOrDefaultAsync();
 
             if (recentReview is not null)
@@ -83,7 +87,7 @@ public class Endpoint(
                 ParticipantId = participant.Id,
                 Status = status,
                 Reason = req.Reason ?? string.Empty,
-                CreatedAt = DateTimeOffset.UtcNow,
+                CreatedAt = currentTime,
             };
 
             await sql.Insertable(review).ExecuteCommandAsync(ct);
@@ -103,7 +107,7 @@ public class Endpoint(
         if (recentReview is not null)
         {
             AddError(
-                $"A review was just submitted for this participant at {recentReview.CreatedAt:O}. Please wait a moment before submitting another review."
+                "A review was just submitted for this participant. Please wait a moment before submitting another review."
             );
             await Send.ErrorsAsync(409, ct);
             return;

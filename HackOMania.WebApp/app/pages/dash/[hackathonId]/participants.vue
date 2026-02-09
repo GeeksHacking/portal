@@ -910,144 +910,146 @@ function getReviewStatusColor(status: number | null | undefined): 'success' | 'e
       :description="reviewModalDescription"
     >
       <template #content>
-        <UCard>
-          <template #header>
-            <div class="flex items-center justify-between">
-              <h3 class="text-base font-semibold">
-                {{ reviewingParticipantName || 'Participant Review' }}
-              </h3>
-              <UButton
-                variant="ghost"
-                icon="i-lucide-x"
-                size="xs"
-                @click="closeReviewModal"
-              />
-            </div>
-          </template>
-
-          <div class="space-y-4">
-            <template v-if="reviewingParticipant">
-              <div class="rounded-lg border border-default p-3 text-sm">
-                <p>
-                  <strong>Team:</strong> {{ reviewingParticipant.teamName ?? 'No team' }}
-                </p>
-                <p>
-                  <strong>Applied:</strong> {{ formatDateTime(reviewingParticipant.createdAt) }}
-                </p>
-                <p>
-                  <strong>Current Status:</strong>
-                  <UBadge
-                    :color="getStatusColor(reviewingParticipant.concludedStatus)"
-                    variant="subtle"
-                    size="xs"
-                    class="ml-1"
-                  >
-                    {{ getStatusLabel(reviewingParticipant.concludedStatus) }}
-                  </UBadge>
-                </p>
-              </div>
-
-              <div v-if="reviewingParticipantReviews.length > 0">
-                <h4 class="text-sm font-semibold mb-2">
-                  Review History ({{ reviewingParticipantReviews.length }})
-                </h4>
-                <div class="max-h-48 overflow-y-auto rounded-lg border border-default p-3 space-y-3">
-                  <div
-                    v-for="(review, index) in reviewingParticipantReviews"
-                    :key="review.id ?? index"
-                    class="border-b border-default last:border-b-0 pb-3 last:pb-0"
-                  >
-                    <div class="flex items-start justify-between mb-1">
-                      <UBadge
-                        :color="getReviewStatusColor(review.status)"
-                        variant="subtle"
-                        size="xs"
-                      >
-                        {{ getReviewStatusLabel(review.status) }}
-                      </UBadge>
-                      <span class="text-xs text-(--ui-text-muted)">
-                        {{ formatDateTime(review.createdAt) }}
-                      </span>
-                    </div>
-                    <p
-                      v-if="review.reason"
-                      class="text-xs text-(--ui-text-muted) mt-1"
-                    >
-                      {{ review.reason }}
-                    </p>
-                    <p
-                      v-else
-                      class="text-xs text-(--ui-text-muted) italic mt-1"
-                    >
-                      No reason provided
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <h4 class="text-sm font-semibold mb-2">
-                  Application Responses
-                </h4>
-                <div
-                  v-if="reviewingParticipantSubmissions.length"
-                  class="max-h-72 overflow-y-auto rounded-lg border border-default p-3 space-y-3"
-                >
-                  <UFormField
-                    v-for="submission in reviewingParticipantSubmissions"
-                    :key="submission.questionId ?? ''"
-                    :label="submission.questionText ?? 'Question'"
-                  >
-                    <UTextarea
-                      :model-value="formatSubmissionAnswer(submission)"
-                      disabled
-                      autoresize
-                      :rows="2"
-                    />
-                  </UFormField>
-                </div>
-                <p
-                  v-else
-                  class="text-sm text-(--ui-text-muted)"
-                >
-                  No form responses found.
-                </p>
+        <div class="overflow-auto max-h-[80vh]">
+          <UCard>
+            <template #header>
+              <div class="flex items-center justify-between">
+                <h3 class="text-base font-semibold">
+                  {{ reviewingParticipantName || 'Participant Review' }}
+                </h3>
+                <UButton
+                  variant="ghost"
+                  icon="i-lucide-x"
+                  size="xs"
+                  @click="closeReviewModal"
+                />
               </div>
             </template>
 
-            <UFormField label="Review note (optional)">
-              <UTextarea
-                v-model="reviewReason"
-                :rows="3"
-                placeholder="Add notes for this review decision..."
-              />
-            </UFormField>
+            <div class="space-y-4">
+              <template v-if="reviewingParticipant">
+                <div class="rounded-lg border border-default p-3 text-sm">
+                  <p>
+                    <strong>Team:</strong> {{ reviewingParticipant.teamName ?? 'No team' }}
+                  </p>
+                  <p>
+                    <strong>Applied:</strong> {{ formatDateTime(reviewingParticipant.createdAt) }}
+                  </p>
+                  <p>
+                    <strong>Current Status:</strong>
+                    <UBadge
+                      :color="getStatusColor(reviewingParticipant.concludedStatus)"
+                      variant="subtle"
+                      size="xs"
+                      class="ml-1"
+                    >
+                      {{ getStatusLabel(reviewingParticipant.concludedStatus) }}
+                    </UBadge>
+                  </p>
+                </div>
 
-            <div class="flex justify-end gap-2">
-              <UButton
-                variant="ghost"
-                :disabled="reviewMutation.isPending.value"
-                @click="closeReviewModal"
-              >
-                Cancel
-              </UButton>
-              <UButton
-                color="error"
-                :loading="reviewMutation.isPending.value"
-                @click="handleReview('reject')"
-              >
-                Reject
-              </UButton>
-              <UButton
-                color="success"
-                :loading="reviewMutation.isPending.value"
-                @click="handleReview('accept')"
-              >
-                Approve
-              </UButton>
+                <div v-if="reviewingParticipantReviews.length > 0">
+                  <h4 class="text-sm font-semibold mb-2">
+                    Review History ({{ reviewingParticipantReviews.length }})
+                  </h4>
+                  <div class="max-h-48 overflow-y-auto rounded-lg border border-default p-3 space-y-3">
+                    <div
+                      v-for="(review, index) in reviewingParticipantReviews"
+                      :key="review.id ?? index"
+                      class="border-b border-default last:border-b-0 pb-3 last:pb-0"
+                    >
+                      <div class="flex items-start justify-between mb-1">
+                        <UBadge
+                          :color="getReviewStatusColor(review.status)"
+                          variant="subtle"
+                          size="xs"
+                        >
+                          {{ getReviewStatusLabel(review.status) }}
+                        </UBadge>
+                        <span class="text-xs text-(--ui-text-muted)">
+                          {{ formatDateTime(review.createdAt) }}
+                        </span>
+                      </div>
+                      <p
+                        v-if="review.reason"
+                        class="text-xs text-(--ui-text-muted) mt-1"
+                      >
+                        {{ review.reason }}
+                      </p>
+                      <p
+                        v-else
+                        class="text-xs text-(--ui-text-muted) italic mt-1"
+                      >
+                        No reason provided
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 class="text-sm font-semibold mb-2">
+                    Application Responses
+                  </h4>
+                  <div
+                    v-if="reviewingParticipantSubmissions.length"
+                    class="max-h-72 overflow-y-auto rounded-lg border border-default p-3 space-y-3"
+                  >
+                    <UFormField
+                      v-for="submission in reviewingParticipantSubmissions"
+                      :key="submission.questionId ?? ''"
+                      :label="submission.questionText ?? 'Question'"
+                    >
+                      <UTextarea
+                        :model-value="formatSubmissionAnswer(submission)"
+                        disabled
+                        autoresize
+                        :rows="2"
+                      />
+                    </UFormField>
+                  </div>
+                  <p
+                    v-else
+                    class="text-sm text-(--ui-text-muted)"
+                  >
+                    No form responses found.
+                  </p>
+                </div>
+              </template>
+
+              <UFormField label="Review note (optional)">
+                <UTextarea
+                  v-model="reviewReason"
+                  :rows="3"
+                  placeholder="Add notes for this review decision..."
+                />
+              </UFormField>
+
+              <div class="flex justify-end gap-2">
+                <UButton
+                  variant="ghost"
+                  :disabled="reviewMutation.isPending.value"
+                  @click="closeReviewModal"
+                >
+                  Cancel
+                </UButton>
+                <UButton
+                  color="error"
+                  :loading="reviewMutation.isPending.value"
+                  @click="handleReview('reject')"
+                >
+                  Reject
+                </UButton>
+                <UButton
+                  color="success"
+                  :loading="reviewMutation.isPending.value"
+                  @click="handleReview('accept')"
+                >
+                  Approve
+                </UButton>
+              </div>
             </div>
-          </div>
-        </UCard>
+          </UCard>
+        </div>
       </template>
     </UModal>
   </div>

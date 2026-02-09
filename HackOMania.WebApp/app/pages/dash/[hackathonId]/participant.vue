@@ -352,50 +352,52 @@ const joinHackathon = async () => {
       description="Review this participant's application"
     >
       <template #content>
-        <UCard>
-          <template #header>
-            <div class="flex items-center justify-between">
-              <h3 class="text-base font-semibold">
-                {{ reviewForm.decision === 'accept' ? 'Approve Participant' : 'Reject Participant' }}
-              </h3>
-              <UButton
-                variant="ghost"
-                icon="i-lucide-x"
-                size="xs"
-                @click="isReviewModalOpen = false"
-              />
-            </div>
-          </template>
+        <div class="overflow-auto max-h-[80vh]">
+          <UCard>
+            <template #header>
+              <div class="flex items-center justify-between">
+                <h3 class="text-base font-semibold">
+                  {{ reviewForm.decision === 'accept' ? 'Approve Participant' : 'Reject Participant' }}
+                </h3>
+                <UButton
+                  variant="ghost"
+                  icon="i-lucide-x"
+                  size="xs"
+                  @click="isReviewModalOpen = false"
+                />
+              </div>
+            </template>
 
-          <form
-            class="space-y-4"
-            @submit.prevent="handleReview"
-          >
-            <UFormField label="Reason (optional)">
-              <UTextarea
-                v-model="reviewForm.reason"
-                :placeholder="reviewForm.decision === 'accept' ? 'Add a note for approval...' : 'Provide a reason for rejection...'"
-                :rows="3"
-              />
-            </UFormField>
+            <form
+              class="space-y-4"
+              @submit.prevent="handleReview"
+            >
+              <UFormField label="Reason (optional)">
+                <UTextarea
+                  v-model="reviewForm.reason"
+                  :placeholder="reviewForm.decision === 'accept' ? 'Add a note for approval...' : 'Provide a reason for rejection...'"
+                  :rows="3"
+                />
+              </UFormField>
 
-            <div class="flex justify-end gap-2">
-              <UButton
-                variant="ghost"
-                @click="isReviewModalOpen = false"
-              >
-                Cancel
-              </UButton>
-              <UButton
-                type="submit"
-                :color="reviewForm.decision === 'accept' ? 'success' : 'error'"
-                :loading="reviewMutation.isPending.value"
-              >
-                {{ reviewForm.decision === 'accept' ? 'Approve' : 'Reject' }}
-              </UButton>
-            </div>
-          </form>
-        </UCard>
+              <div class="flex justify-end gap-2">
+                <UButton
+                  variant="ghost"
+                  @click="isReviewModalOpen = false"
+                >
+                  Cancel
+                </UButton>
+                <UButton
+                  type="submit"
+                  :color="reviewForm.decision === 'accept' ? 'success' : 'error'"
+                  :loading="reviewMutation.isPending.value"
+                >
+                  {{ reviewForm.decision === 'accept' ? 'Approve' : 'Reject' }}
+                </UButton>
+              </div>
+            </form>
+          </UCard>
+        </div>
       </template>
     </UModal>
   </div>

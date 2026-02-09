@@ -48,7 +48,6 @@ public class Endpoint(
                 : ParticipantReview.ParticipantReviewStatus.Rejected;
 
         Participant? participant = null;
-        ParticipantReview? latestReview = null;
         ParticipantReview? review = null;
 
         var transactionResult = await sql.Ado.UseTranAsync(async () =>
@@ -62,12 +61,6 @@ public class Endpoint(
             {
                 return;
             }
-
-            // Get latest review for informational purposes, but don't block re-reviews
-            latestReview = await sql.Queryable<ParticipantReview>()
-                .Where(r => r.ParticipantId == participant.Id)
-                .OrderByDescending(r => r.CreatedAt)
-                .FirstOrDefaultAsync();
 
             review = new ParticipantReview
             {

@@ -15,14 +15,14 @@ public class ParticipantItem
     public string Name { get; set; } = "";
     public Guid? TeamId { get; set; }
     public string? TeamName { get; set; }
-    public int ConcludedStatus { get; set; }
+    public string ConcludedStatus { get; set; } = "";
     public IEnumerable<ParticipantReviewItem>? Reviews { get; set; }
 }
 
 public class ParticipantReviewItem
 {
     public Guid Id { get; set; }
-    public int Status { get; set; }
+    public string Status { get; set; } = "";
     public string? Reason { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
 }

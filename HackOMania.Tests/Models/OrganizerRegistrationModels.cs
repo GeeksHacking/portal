@@ -10,7 +10,7 @@ public class OrganizerQuestionDto
     public Guid Id { get; set; }
     public string QuestionText { get; set; } = "";
     public string QuestionKey { get; set; } = "";
-    public int Type { get; set; }
+    public string Type { get; set; } = "";
     public int DisplayOrder { get; set; }
     public bool IsRequired { get; set; }
     public string? HelpText { get; set; }
@@ -35,7 +35,7 @@ public class CreateRegistrationQuestionResponse
     public Guid Id { get; set; }
     public string QuestionText { get; set; } = "";
     public string QuestionKey { get; set; } = "";
-    public int Type { get; set; }
+    public string Type { get; set; } = "";
     public int DisplayOrder { get; set; }
     public bool IsRequired { get; set; }
     public string? HelpText { get; set; }

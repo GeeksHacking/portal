@@ -70,7 +70,7 @@ public class RegistrationQuestionsManagementTests
         {
             QuestionText = "What is your experience level?",
             QuestionKey = $"experience_level_{suffix}",
-            Type = 0,
+            Type = "Text",
             DisplayOrder = 1,
             IsRequired = true,
             HelpText = "Select your experience level",
@@ -108,7 +108,7 @@ public class RegistrationQuestionsManagementTests
         {
             QuestionText = "First question",
             QuestionKey = questionKey,
-            Type = "text",
+            Type = "Text",
             DisplayOrder = 1,
             IsRequired = false,
         };
@@ -123,7 +123,7 @@ public class RegistrationQuestionsManagementTests
         {
             QuestionText = "Second question with same key",
             QuestionKey = questionKey,
-            Type = "text",
+            Type = "Text",
             DisplayOrder = 2,
             IsRequired = false,
         };
@@ -182,7 +182,7 @@ public class RegistrationQuestionsManagementTests
         {
             QuestionText = "Unauthorized question",
             QuestionKey = "unauthorized_key",
-            Type = "text",
+            Type = "Text",
             DisplayOrder = 1,
             IsRequired = false,
         };

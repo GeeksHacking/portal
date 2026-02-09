@@ -13,11 +13,13 @@ using HackOMania.Api.Workers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Client;
 using Scalar.AspNetCore;
 using SqlSugar;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,6 +78,10 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 });
 
 builder.Services.AddHttpClient();
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 builder.Services.AddDbContext<DbContext>(options =>
 {
@@ -212,6 +218,10 @@ builder.Services.SwaggerDocument(options =>
 {
     options.EnableJWTBearerAuth = false;
     options.AutoTagPathSegmentIndex = 0; // Disable auto-tagging, we'll use explicit tags
+    options.SerializerSettings = settings =>
+    {
+        settings.Converters.Add(new JsonStringEnumConverter());
+    };
     options.DocumentSettings = settings =>
     {
         settings.Title = "HackOMania Event Platform API";
@@ -256,7 +266,7 @@ app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseFastEndpoints();
+app.UseFastEndpoints(c => c.Serializer.Options.Converters.Add(new JsonStringEnumConverter()));
 app.UseSwaggerGen(options => options.Path = "/openapi/{documentName}.json");
 app.MapScalarApiReference();
 app.MapDefaultEndpoints();

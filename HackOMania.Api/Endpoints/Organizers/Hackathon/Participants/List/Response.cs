@@ -36,8 +36,8 @@ public class ParticipantReviewItem
 {
     public enum ParticipantReviewStatus
     {
-        Accepted,
         Rejected,
+        Accepted,
     }
 
     public required Guid Id { get; init; }

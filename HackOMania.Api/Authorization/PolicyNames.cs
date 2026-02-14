@@ -43,6 +43,12 @@ public static class PolicyNames
     public const string TeamMemberForHackathonTeam = nameof(TeamMemberForHackathonTeam);
 
     /// <summary>
+    /// Requires the user to be the creator of the team specified by {TeamId:guid} in the route.
+    /// Also requires {HackathonId} for the hackathon. Used for privileged team operations like removing members.
+    /// </summary>
+    public const string TeamCreatorForHackathonTeam = nameof(TeamCreatorForHackathonTeam);
+
+    /// <summary>
     /// Requires the user to be a root/admin user.
     /// </summary>
     public const string Root = nameof(Root);

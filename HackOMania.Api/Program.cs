@@ -190,6 +190,10 @@ builder
         policy => policy.Requirements.Add(new TeamMemberForHackathonTeamRequirement())
     )
     .AddPolicy(
+        PolicyNames.TeamCreatorForHackathonTeam,
+        policy => policy.Requirements.Add(new TeamCreatorForHackathonTeamRequirement())
+    )
+    .AddPolicy(
         PolicyNames.CreateHackathon,
         policy => policy.Requirements.Add(new CreateHackathonRequirement())
     );
@@ -255,6 +259,7 @@ builder.Services.AddScoped<IAuthorizationHandler, CreateHackathonHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, OrganizerForHackathonHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, ParticipantForHackathonHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, TeamMemberForHackathonTeamHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, TeamCreatorForHackathonTeamHandler>();
 
 builder.Services.AddSingleton<DatabaseInitBackgroundService>();
 

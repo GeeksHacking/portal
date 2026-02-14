@@ -793,4 +793,181 @@ public class TeamsTests
             await client2.DisposeAsync();
         }
     }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task RemoveMember_AsTeamCreator_ReturnsOk(AuthenticatedHttpClientDataClass client1)
+    {
+        // Arrange - Create hackathon and team with two members
+        var hackathonId = await CreatePublishedHackathonAndJoinAsync(client1);
+
+        // Create team (client1 becomes the creator)
+        var teamRequest = new { Name = "Test Team", Description = "Team for removal test" };
+        var teamResponse = await client1.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathonId}/teams",
+            teamRequest
+        );
+        var team = await teamResponse.Content.ReadFromJsonAsync<CreateTeamResponse>();
+
+        // Create second user and join the team
+        var client2 = new AuthenticatedHttpClientDataClass
+        {
+            GitHubId = 9998,
+            GitHubLogin = "integration-test-user-remove",
+            FirstName = "To Be Removed",
+            LastName = "User",
+            Email = "removed@example.com",
+        };
+        await client2.InitializeAsync();
+
+        try
+        {
+            // Second user joins hackathon and team
+            await client2.HttpClient.PostAsync($"/participants/hackathons/{hackathonId}/join", null);
+            await client2.HttpClient.PostAsJsonAsync(
+                "/participants/teams/join",
+                new { team!.JoinCode }
+            );
+
+            // Get team to find second user's ID
+            var myTeamResponse = await client1.HttpClient.GetAsync(
+                $"/participants/hackathons/{hackathonId}/teams/me"
+            );
+            var myTeam = await myTeamResponse.Content.ReadFromJsonAsync<MyTeamResponse>();
+            var secondMember = myTeam!.Members!.FirstOrDefault(m => !m.IsCurrentUser);
+
+            // Act - Remove second member as team creator
+            var response = await client1.HttpClient.DeleteAsync(
+                $"/participants/hackathons/{hackathonId}/teams/{team.Id}/members/{secondMember!.UserId}"
+            );
+            var result = await response.Content.ReadFromJsonAsync<RemoveMemberResponse>();
+
+            // Assert
+            await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+            await Assert.That(result).IsNotNull();
+            await Assert.That(result!.Message).IsNotNull();
+
+            // Verify second member is no longer in team
+            myTeamResponse = await client1.HttpClient.GetAsync(
+                $"/participants/hackathons/{hackathonId}/teams/me"
+            );
+            myTeam = await myTeamResponse.Content.ReadFromJsonAsync<MyTeamResponse>();
+            await Assert.That(myTeam!.Members!.Count).IsEqualTo(1);
+        }
+        finally
+        {
+            await client2.DisposeAsync();
+        }
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task RemoveMember_AsNonCreator_ReturnsForbidden(
+        AuthenticatedHttpClientDataClass client1
+    )
+    {
+        // Arrange - Create hackathon and team
+        var hackathonId = await CreatePublishedHackathonAndJoinAsync(client1);
+
+        var teamRequest = new { Name = "Test Team", Description = "Team for removal test" };
+        var teamResponse = await client1.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathonId}/teams",
+            teamRequest
+        );
+        var team = await teamResponse.Content.ReadFromJsonAsync<CreateTeamResponse>();
+
+        // Create second user and join the team
+        var client2 = new AuthenticatedHttpClientDataClass
+        {
+            GitHubId = 9997,
+            GitHubLogin = "integration-test-user-noncreator",
+            FirstName = "Non Creator",
+            LastName = "User",
+            Email = "noncreator@example.com",
+        };
+        await client2.InitializeAsync();
+
+        try
+        {
+            await client2.HttpClient.PostAsync($"/participants/hackathons/{hackathonId}/join", null);
+            await client2.HttpClient.PostAsJsonAsync(
+                "/participants/teams/join",
+                new { team!.JoinCode }
+            );
+
+            // Get team to find creator's ID
+            var myTeamResponse = await client2.HttpClient.GetAsync(
+                $"/participants/hackathons/{hackathonId}/teams/me"
+            );
+            var myTeam = await myTeamResponse.Content.ReadFromJsonAsync<MyTeamResponse>();
+            var creator = myTeam!.Members!.FirstOrDefault(m => !m.IsCurrentUser);
+
+            // Act - Try to remove creator as non-creator member
+            var response = await client2.HttpClient.DeleteAsync(
+                $"/participants/hackathons/{hackathonId}/teams/{team.Id}/members/{creator!.UserId}"
+            );
+
+            // Assert - Should be forbidden
+            await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Forbidden);
+        }
+        finally
+        {
+            await client2.DisposeAsync();
+        }
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task RemoveMember_RemovingSelf_ReturnsError(AuthenticatedHttpClientDataClass client)
+    {
+        // Arrange
+        var hackathonId = await CreatePublishedHackathonAndJoinAsync(client);
+
+        var teamRequest = new { Name = "Test Team", Description = "Team for self-removal test" };
+        var teamResponse = await client.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathonId}/teams",
+            teamRequest
+        );
+        var team = await teamResponse.Content.ReadFromJsonAsync<CreateTeamResponse>();
+
+        // Get my team to find my user ID
+        var myTeamResponse = await client.HttpClient.GetAsync(
+            $"/participants/hackathons/{hackathonId}/teams/me"
+        );
+        var myTeam = await myTeamResponse.Content.ReadFromJsonAsync<MyTeamResponse>();
+        var currentUser = myTeam!.Members!.First(m => m.IsCurrentUser);
+
+        // Act - Try to remove self
+        var response = await client.HttpClient.DeleteAsync(
+            $"/participants/hackathons/{hackathonId}/teams/{team!.Id}/members/{currentUser.UserId}"
+        );
+
+        // Assert - Should return error
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task RemoveMember_NonExistentMember_ReturnsError(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Arrange
+        var hackathonId = await CreatePublishedHackathonAndJoinAsync(client);
+
+        var teamRequest = new { Name = "Test Team", Description = "Team for non-existent member test" };
+        var teamResponse = await client.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathonId}/teams",
+            teamRequest
+        );
+        var team = await teamResponse.Content.ReadFromJsonAsync<CreateTeamResponse>();
+
+        // Act - Try to remove non-existent user
+        var response = await client.HttpClient.DeleteAsync(
+            $"/participants/hackathons/{hackathonId}/teams/{team!.Id}/members/{Guid.NewGuid()}"
+        );
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+    }
 }

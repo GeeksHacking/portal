@@ -113,3 +113,22 @@ export function useSelectChallenge(
     onSuccess: () => invalidateTeamQueries(queryClient, toValue(hackathonId)),
   })
 }
+
+export function useRemoveTeamMember(
+  hackathonId: MaybeRef<string | null>,
+  teamId: MaybeRef<string | null>
+) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    async mutationFn(userId: string) {
+      if (!toValue(hackathonId) || !toValue(teamId)) throw new Error('Missing hackathon or team ID')
+      return await useNuxtApp()
+        .$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(toValue(hackathonId)!)
+        .teams.byTeamId(toValue(teamId)!)
+        .members.byUserId(userId)
+        .delete()
+    },
+    onSuccess: () => invalidateTeamQueries(queryClient, toValue(hackathonId)),
+  })
+}

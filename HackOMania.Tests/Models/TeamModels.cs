@@ -64,3 +64,8 @@ public class SelectChallengeResponse
     public Guid TeamId { get; set; }
     public Guid? ChallengeId { get; set; }
 }
+
+public class RemoveMemberResponse
+{
+    public string Message { get; set; } = "";
+}

@@ -8,6 +8,8 @@ import { ChallengeRequestBuilderRequestsMetadata, type ChallengeRequestBuilder }
 // @ts-ignore
 import { JoinRequestBuilderRequestsMetadata, type JoinRequestBuilder } from './join/index.js';
 // @ts-ignore
+import { MembersRequestBuilderNavigationMetadata, type MembersRequestBuilder } from './members/index.js';
+// @ts-ignore
 import { SubmissionsRequestBuilderRequestsMetadata, type SubmissionsRequestBuilder } from './submissions/index.js';
 // @ts-ignore
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
@@ -24,6 +26,10 @@ export interface WithTeamItemRequestBuilder extends BaseRequestBuilder<WithTeamI
      * The join property
      */
     get join(): JoinRequestBuilder;
+    /**
+     * The members property
+     */
+    get members(): MembersRequestBuilder;
     /**
      * The submissions property
      */
@@ -56,6 +62,9 @@ export const WithTeamItemRequestBuilderNavigationMetadata: Record<Exclude<keyof 
     },
     join: {
         requestsMetadata: JoinRequestBuilderRequestsMetadata,
+    },
+    members: {
+        navigationMetadata: MembersRequestBuilderNavigationMetadata,
     },
     submissions: {
         requestsMetadata: SubmissionsRequestBuilderRequestsMetadata,

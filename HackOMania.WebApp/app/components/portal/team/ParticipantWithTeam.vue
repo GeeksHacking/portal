@@ -10,19 +10,55 @@ const props = defineProps<{
 }>()
 
 const hackathonIdRef = computed(() => props.hackathonId)
+const teamIdRef = computed(() => props.team.id ?? null)
 const hackathon = useRouteHackathon()
 
 // State
 const isCopied = ref(false)
 const showLeaveConfirm = ref(false)
+const removeConfirmUserId = ref<string | null>(null)
+const showEditTeam = ref(false)
+const editTeamName = ref('')
+const editTeamDescription = ref('')
 
 // Computed
 const memberCount = computed(() => props.team.members?.length ?? 0)
 
 // Mutations
 const leaveTeamMutation = useLeaveTeam(hackathonIdRef)
+const removeTeamMemberMutation = useRemoveTeamMember(hackathonIdRef, teamIdRef)
+const updateTeamMutation = useUpdateTeam(hackathonIdRef, teamIdRef)
 
 // Handlers
+function openEditTeam() {
+  editTeamName.value = props.team.name ?? ''
+  editTeamDescription.value = props.team.description ?? ''
+  showEditTeam.value = true
+}
+
+function handleUpdateTeam() {
+  updateTeamMutation.mutate({ name: editTeamName.value, description: editTeamDescription.value }, {
+    onSuccess() {
+      showEditTeam.value = false
+    },
+    onError(error) {
+      console.error('Failed to update team:', error)
+    },
+  })
+}
+
+function handleRemoveMember() {
+  if (!removeConfirmUserId.value) return
+  removeTeamMemberMutation.mutate(removeConfirmUserId.value, {
+    onSuccess() {
+      removeConfirmUserId.value = null
+    },
+    onError(error) {
+      console.error('Failed to remove member:', error)
+    },
+  })
+}
+
 function handleLeaveTeam() {
   leaveTeamMutation.mutate(undefined, {
     onSuccess() {
@@ -54,10 +90,18 @@ function copyInviteUrl() {
       {{ team.name }}
     </h3>
 
-    <!-- Team Description -->
-    <p class="font-['Raleway'] text-base lg:text-xl text-black/80 mb-6 lg:mb-8">
-      {{ team.description || 'No description yet' }}
-    </p>
+    <!-- Team Description + Edit -->
+    <div class="flex items-start justify-between mb-6 lg:mb-8">
+      <p class="font-['Raleway'] text-base lg:text-xl text-black/80">
+        {{ team.description || 'No description yet' }}
+      </p>
+      <button
+        class="font-['Raleway'] text-sm lg:text-base text-black hover:text-black/70 underline shrink-0 ml-4"
+        @click="openEditTeam"
+      >
+        Edit Team Details
+      </button>
+    </div>
 
     <!-- Team Members Container -->
     <div class="rounded-xl shadow-md overflow-hidden border border-black">
@@ -78,13 +122,22 @@ function copyInviteUrl() {
           class="py-2 lg:py-3"
         >
           <template v-if="team.members?.[index]">
-            <p class="font-['Raleway'] text-base lg:text-2xl truncate">
-              {{ team.members[index].name }}
-              <span
-                v-if="team.members[index].isCurrentUser"
-                class="text-black/60"
-              >(you)</span>
-            </p>
+            <div class="flex items-center justify-between">
+              <p class="font-['Raleway'] text-base lg:text-2xl truncate">
+                {{ team.members[index].name }}
+                <span
+                  v-if="team.members[index].isCurrentUser"
+                  class="text-black/60"
+                >(you)</span>
+              </p>
+              <button
+                v-if="!team.members[index].isCurrentUser"
+                class="font-['Raleway'] text-sm lg:text-base text-red-600 hover:text-red-700 underline shrink-0 ml-4"
+                @click="removeConfirmUserId = team.members[index].userId!"
+              >
+                Remove
+              </button>
+            </div>
           </template>
           <template v-else>
             <p class="font-['Raleway'] text-base lg:text-2xl text-black/30">
@@ -102,7 +155,10 @@ function copyInviteUrl() {
         class="flex items-center gap-1.5 font-['Raleway'] text-sm lg:text-base text-black hover:text-black/70 underline"
         @click="copyInviteUrl"
       >
-        <UIcon :name="isCopied ? 'i-heroicons-check' : 'i-heroicons-clipboard'" class="size-4" />
+        <UIcon
+          :name="isCopied ? 'i-heroicons-check' : 'i-heroicons-clipboard'"
+          class="size-4"
+        />
         {{ isCopied ? 'Link copied!' : 'Invite members' }}
       </button>
 
@@ -114,6 +170,82 @@ function copyInviteUrl() {
         Leave Team
       </button>
     </div>
+
+    <!-- Edit Team Modal -->
+    <UModal v-model:open="showEditTeam">
+      <template #content>
+        <div class="p-6">
+          <h3 class="font-['Zalando_Sans_Expanded'] text-lg font-bold mb-4">
+            Edit Team Details
+          </h3>
+          <div class="flex flex-col gap-4 mb-6">
+            <div>
+              <label class="font-['Raleway'] text-sm font-semibold mb-1 block">Team Name</label>
+              <UInput
+                v-model="editTeamName"
+                class="w-full"
+              />
+            </div>
+            <div>
+              <label class="font-['Raleway'] text-sm font-semibold mb-1 block">Description</label>
+              <UTextarea
+                v-model="editTeamDescription"
+                class="w-full"
+              />
+            </div>
+          </div>
+          <div class="flex gap-3 justify-end font-['Raleway']">
+            <UButton
+              color="neutral"
+              variant="outline"
+              @click="showEditTeam = false"
+            >
+              Cancel
+            </UButton>
+            <UButton
+              color="primary"
+              :loading="updateTeamMutation.isPending.value"
+              @click="handleUpdateTeam"
+            >
+              Save
+            </UButton>
+          </div>
+        </div>
+      </template>
+    </UModal>
+
+    <!-- Remove Member Confirmation Modal -->
+    <UModal
+      :open="!!removeConfirmUserId"
+      @update:open="val => { if (!val) removeConfirmUserId = null }"
+    >
+      <template #content>
+        <div class="p-6">
+          <h3 class="font-['Zalando_Sans_Expanded'] text-lg font-bold mb-2">
+            Remove Member
+          </h3>
+          <p class="font-['Raleway'] text-base mb-6">
+            Are you sure you want to remove this member from the team?
+          </p>
+          <div class="flex gap-3 justify-end font-['Raleway']">
+            <UButton
+              color="neutral"
+              variant="outline"
+              @click="removeConfirmUserId = null"
+            >
+              Cancel
+            </UButton>
+            <UButton
+              color="error"
+              :loading="removeTeamMemberMutation.isPending.value"
+              @click="handleRemoveMember"
+            >
+              Remove
+            </UButton>
+          </div>
+        </div>
+      </template>
+    </UModal>
 
     <!-- Leave Team Confirmation Modal -->
     <UModal v-model:open="showLeaveConfirm">

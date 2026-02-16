@@ -6,16 +6,18 @@ namespace HackOMania.Api.Services;
 
 public class SqlSugarDistributedCacheService(IDistributedCache cache) : ICacheService
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web);
+    private static readonly JsonSerializerOptions SerializerOptions = new(
+        JsonSerializerDefaults.Web
+    );
     private const int DefaultCacheSeconds = 60;
     private const string CacheKeyPrefix = "sqlsugar:data:";
 
-    public void Add<V>(string key, V value)
+    public void Add<TV>(string key, TV value)
     {
         Add(key, value, DefaultCacheSeconds);
     }
 
-    public void Add<V>(string key, V value, int cacheDurationInSeconds)
+    public void Add<TV>(string key, TV value, int cacheDurationInSeconds)
     {
         var bytes = JsonSerializer.SerializeToUtf8Bytes(value, SerializerOptions);
         cache.Set(
@@ -30,39 +32,34 @@ public class SqlSugarDistributedCacheService(IDistributedCache cache) : ICacheSe
         );
     }
 
-    public bool ContainsKey<V>(string key)
+    public bool ContainsKey<TV>(string key)
     {
         return cache.Get(GetCacheKey(key)) is not null;
     }
 
-    public V Get<V>(string key)
+    public TV Get<TV>(string key)
     {
         var bytes = cache.Get(GetCacheKey(key));
-        if (bytes is null)
-        {
-            return default!;
-        }
-
-        return JsonSerializer.Deserialize<V>(bytes, SerializerOptions)!;
+        return bytes is null ? default! : JsonSerializer.Deserialize<TV>(bytes, SerializerOptions)!;
     }
 
-    public IEnumerable<string> GetAllKey<V>()
+    public IEnumerable<string> GetAllKey<TV>()
     {
         throw new NotSupportedException(
             $"{nameof(GetAllKey)} is not supported by IDistributedCache providers."
         );
     }
 
-    public void Remove<V>(string key)
+    public void Remove<TV>(string key)
     {
         cache.Remove(GetCacheKey(key));
     }
 
-    public V GetOrCreate<V>(string cacheKey, Func<V> create, int cacheDurationInSeconds)
+    public TV GetOrCreate<TV>(string cacheKey, Func<TV> create, int cacheDurationInSeconds)
     {
-        if (ContainsKey<V>(cacheKey))
+        if (ContainsKey<TV>(cacheKey))
         {
-            return Get<V>(cacheKey);
+            return Get<TV>(cacheKey);
         }
 
         var value = create();

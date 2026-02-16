@@ -15,7 +15,7 @@ if (builder.Configuration.GetValue("UseVolumes", true))
 }
 
 var db = mysql.AddDatabase("db");
-var cache = builder.AddRedis("cache");
+var cache = builder.AddRedis("cache").WithRedisInsight();
 
 var api = builder
     .AddProject<HackOMania_Api>("api")
@@ -24,8 +24,7 @@ var api = builder
     .WithEnvironment("App:FrontendUrl", appFrontendUrl)
     .WithEnvironment("GitHub:ClientId", githubClientId)
     .WithEnvironment("GitHub:ClientSecret", githubClientSecret)
-    .WaitFor(db)
-    .WaitFor(cache);
+    .WaitFor(db);
 
 builder
     .AddJavaScriptApp("app", "../HackOMania.WebApp")

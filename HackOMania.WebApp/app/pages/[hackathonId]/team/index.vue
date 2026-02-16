@@ -6,6 +6,8 @@ const config = useRuntimeConfig()
 const hackathon = useRouteHackathon()
 const resolvedHackathonId = useResolvedHackathonId()
 
+useHead({ title: 'Team Portal | GeeksHacking Event Portal' })
+
 const { data: user, isLoading: authLoading } = useQuery(authQueries.whoAmI)
 const { data: status, isLoading: statusLoading } = useQuery(
   computed(() => ({

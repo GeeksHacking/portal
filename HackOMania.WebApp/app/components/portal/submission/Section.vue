@@ -189,7 +189,7 @@ function confirmSubmit() {
 <template>
   <section class="w-full">
     <!-- Section header -->
-    <header class="h-18 flex items-center justify-center bg-linear-to-r from-[#4B8BF5] via-[#7DB4FF] to-[#AAD4FF]">
+    <header class="h-18 flex items-center justify-center bg-[linear-gradient(to_right,#FBFFAA_0%,#FFCD7D_94%,#FFFEAA_100%)] border-y border-y-black" style="border-image: linear-gradient(to right, black, transparent) 1">
       <h2 class="font-['Zalando_Sans_Expanded'] text-black text-center m-0 text-2xl">
         SUBMISSION
       </h2>

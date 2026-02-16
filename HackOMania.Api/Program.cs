@@ -59,6 +59,21 @@ builder.Services.AddOptions<AppOptions>().Bind(builder.Configuration.GetSection(
 builder.Services.AddOptions<GitHubOptions>().Bind(builder.Configuration.GetSection("GitHub"));
 builder.Services.AddOptions<PostmarkOptions>().Bind(builder.Configuration.GetSection("Postmark"));
 
+var cacheConnectionString = builder.Configuration.GetConnectionString("cache");
+if (string.IsNullOrWhiteSpace(cacheConnectionString))
+{
+    builder.Services.AddDistributedMemoryCache();
+}
+else
+{
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        options.Configuration = cacheConnectionString;
+    });
+}
+
+builder.Services.AddSingleton<ICacheService, SqlSugarDistributedCacheService>();
+
 builder.Services.AddSingleton<ISqlSugarClient>(s =>
 {
     return new SqlSugarScope(
@@ -67,6 +82,10 @@ builder.Services.AddSingleton<ISqlSugarClient>(s =>
             DbType = DbType.MySql,
             ConnectionString = builder.Configuration.GetConnectionString("db"),
             IsAutoCloseConnection = true,
+            ConfigureExternalServices = new ConfigureExternalServices
+            {
+                DataInfoCacheService = s.GetRequiredService<ICacheService>(),
+            },
         },
         db => { }
     );

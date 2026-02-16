@@ -1,11 +1,13 @@
 using FastEndpoints;
 using HackOMania.Api.Authorization;
 using HackOMania.Api.Entities;
+using HackOMania.Api.Services;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Update;
 
-public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
+public class Endpoint(ISqlSugarClient sql, IHackathonCacheService cacheService)
+    : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -115,6 +117,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         }
 
         await sql.Updateable(hackathon).ExecuteCommandAsync(ct);
+
+        // Invalidate caches after update
+        await cacheService.InvalidateHackathonListCachesAsync(ct);
 
         var persistedTemplates = await sql.Queryable<HackathonNotificationTemplate>()
             .Where(t => t.HackathonId == hackathon.Id)

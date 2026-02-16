@@ -2,11 +2,13 @@ using FastEndpoints;
 using HackOMania.Api.Authorization;
 using HackOMania.Api.Entities;
 using HackOMania.Api.Extensions;
+using HackOMania.Api.Services;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Create;
 
-public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
+public class Endpoint(ISqlSugarClient sql, IHackathonCacheService cacheService)
+    : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -67,6 +69,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
             await sql.Insertable(notificationTemplates.ToList()).ExecuteCommandAsync(ct);
         }
+
+        // Invalidate caches after create
+        await cacheService.InvalidateHackathonListCachesAsync(ct);
 
         await Send.CreatedAtAsync<Get.Endpoint>(
             new { HackathonId = ent.Id },

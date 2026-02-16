@@ -6,8 +6,11 @@ using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.List;
 
-public class Endpoint(ISqlSugarClient sql, MembershipService membership)
-    : EndpointWithoutRequest<Response>
+public class Endpoint(
+    ISqlSugarClient sql,
+    MembershipService membership,
+    IHackathonCacheService cacheService
+) : EndpointWithoutRequest<Response>
 {
     public override void Configure()
     {
@@ -26,6 +29,15 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
         if (userId is null)
         {
             throw new ArgumentNullException(nameof(userId));
+        }
+
+        var cacheKey = await cacheService.GetOrganizerListCacheKeyAsync(userId.Value, ct);
+        var cachedResponse = await cacheService.GetAsync<Response>(cacheKey, ct);
+
+        if (cachedResponse is not null)
+        {
+            await Send.OkAsync(cachedResponse, ct);
+            return;
         }
 
         var isRoot = await membership.IsRoot(userId.Value, ct);
@@ -60,28 +72,28 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
                         )
             );
 
-        await Send.OkAsync(
-            new Response
+        var response = new Response
+        {
+            Hackathons = hackathons.Select(h => new Response.HackathonItem
             {
-                Hackathons = hackathons.Select(h => new Response.HackathonItem
-                {
-                    Id = h.Id,
-                    Name = h.Name,
-                    Description = h.Description,
-                    Venue = h.Venue,
-                    HomepageUri = h.HomepageUri,
-                    ShortCode = h.ShortCode,
-                    IsPublished = h.IsPublished,
-                    EventStartDate = h.EventStartDate,
-                    EventEndDate = h.EventEndDate,
-                    SubmissionsStartDate = h.SubmissionsStartDate,
-                    SubmissionsEndDate = h.SubmissionsEndDate,
-                    JudgingStartDate = h.JudgingStartDate,
-                    JudgingEndDate = h.JudgingEndDate,
-                    EmailTemplates = templatesByHackathon.GetValueOrDefault(h.Id) ?? [],
-                }),
-            },
-            ct
-        );
+                Id = h.Id,
+                Name = h.Name,
+                Description = h.Description,
+                Venue = h.Venue,
+                HomepageUri = h.HomepageUri,
+                ShortCode = h.ShortCode,
+                IsPublished = h.IsPublished,
+                EventStartDate = h.EventStartDate,
+                EventEndDate = h.EventEndDate,
+                SubmissionsStartDate = h.SubmissionsStartDate,
+                SubmissionsEndDate = h.SubmissionsEndDate,
+                JudgingStartDate = h.JudgingStartDate,
+                JudgingEndDate = h.JudgingEndDate,
+                EmailTemplates = templatesByHackathon.GetValueOrDefault(h.Id) ?? [],
+            }),
+        };
+
+        await cacheService.SetAsync(cacheKey, response, ct: ct);
+        await Send.OkAsync(response, ct);
     }
 }

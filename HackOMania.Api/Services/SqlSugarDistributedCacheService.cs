@@ -48,7 +48,9 @@ public class SqlSugarDistributedCacheService(IDistributedCache cache) : ICacheSe
 
     public IEnumerable<string> GetAllKey<V>()
     {
-        return [];
+        throw new NotSupportedException(
+            $"{nameof(GetAllKey)} is not supported by IDistributedCache providers."
+        );
     }
 
     public void Remove<V>(string key)

@@ -32,7 +32,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 Description = r.Description,
                 RedemptionStmt = r.RedemptionStmt,
             })
-            .WithCache(3600) // Cache for 1 hour
+            .WithCache()
             .ToListAsync(ct);
 
         await Send.OkAsync(new Response { Resources = resources }, ct);

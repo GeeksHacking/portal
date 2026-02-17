@@ -24,7 +24,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 h.Id.ToString() == req.HackathonIdOrShortCode
                 || h.ShortCode == req.HackathonIdOrShortCode
             )
-            .WithCache(300) // Cache for 5 minutes
+            .WithCache()
             .FirstAsync(ct);
 
         if (hackathon is null || !hackathon.IsPublished)

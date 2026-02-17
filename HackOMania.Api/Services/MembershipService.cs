@@ -16,7 +16,7 @@ public class MembershipService(ISqlSugarClient sql, IOptions<AppOptions> appOpti
 
     public async Task<User?> GetUser(Guid userId, CancellationToken ct = default)
     {
-        return await sql.Queryable<User>().WithCache(CacheSeconds).InSingleAsync(userId);
+        return await sql.Queryable<User>().WithCache().InSingleAsync(userId);
     }
 
     public async Task<bool> IsRoot(Guid userId, CancellationToken ct = default)
@@ -33,7 +33,7 @@ public class MembershipService(ISqlSugarClient sql, IOptions<AppOptions> appOpti
     public async Task<bool> IsAdminByGitHubLogin(Guid userId, CancellationToken ct = default)
     {
         var githubAccount = await sql.Queryable<GitHubOnlineAccount>()
-            .WithCache(CacheSeconds)
+            .WithCache()
             .Where(a => a.UserId == userId)
             .FirstAsync(ct);
         return githubAccount is not null && _adminGitHubLogins.Contains(githubAccount.GitHubLogin);
@@ -42,7 +42,7 @@ public class MembershipService(ISqlSugarClient sql, IOptions<AppOptions> appOpti
     private bool IsAdminByGitHubLogin(User user)
     {
         var githubAccount = sql.Queryable<GitHubOnlineAccount>()
-            .WithCache(CacheSeconds)
+            .WithCache()
             .Where(a => a.UserId == user.Id)
             .First();
         return githubAccount is not null && _adminGitHubLogins.Contains(githubAccount.GitHubLogin);

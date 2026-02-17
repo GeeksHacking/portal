@@ -6,6 +6,7 @@ using FastEndpoints.Security;
 using HackOMania.Api.Constants;
 using HackOMania.Api.Entities;
 using HackOMania.Api.Options;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
@@ -32,10 +33,9 @@ public class Endpoint(
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var openIddictResponse =
-            Microsoft.AspNetCore.OpenIddictClientAspNetCoreHelpers.GetOpenIddictClientResponse(
-                HttpContext
-            );
+        var openIddictResponse = OpenIddictClientAspNetCoreHelpers.GetOpenIddictClientResponse(
+            HttpContext
+        );
         if (openIddictResponse is not null && !string.IsNullOrWhiteSpace(openIddictResponse.Error))
         {
             logger.LogWarning(

@@ -4,6 +4,8 @@ using Pulumi.Gcp.Iam.Inputs;
 using Pulumi.Gcp.ServiceAccount;
 using Pulumi.Gcp.Storage;
 using Pulumi.Gcp.Storage.Inputs;
+using IAMMember = Pulumi.Gcp.Projects.IAMMember;
+using IAMMemberArgs = Pulumi.Gcp.Projects.IAMMemberArgs;
 
 namespace HackOMania.Infra.Stacks;
 
@@ -42,9 +44,9 @@ public class BootstrapStack : Stack
         for (var i = 0; i < deploymentRoles.Length; i++)
         {
             var role = deploymentRoles[i];
-            _ = new Pulumi.Gcp.Projects.IAMMember(
+            _ = new IAMMember(
                 $"deployer-role-{i}",
-                new Pulumi.Gcp.Projects.IAMMemberArgs
+                new IAMMemberArgs
                 {
                     Project = projectId,
                     Role = role,

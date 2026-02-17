@@ -1,3 +1,4 @@
+using System.Net.Mail;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using HackOMania.Api.Entities;
@@ -402,7 +403,7 @@ public class RegistrationValidationService
         try
         {
             // Use MailAddress for basic email validation
-            var addr = new System.Net.Mail.MailAddress(email);
+            var addr = new MailAddress(email);
             return addr.Address == email;
         }
         catch

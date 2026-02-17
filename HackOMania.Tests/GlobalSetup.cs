@@ -2,10 +2,12 @@
 
 // You can use attributes at the assembly level to apply to all tests in the assembly
 
+using System.Diagnostics.CodeAnalysis;
 using Aspire.Hosting;
+using Projects;
 
 [assembly: Retry(3)]
-[assembly: System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+[assembly: ExcludeFromCodeCoverage]
 
 namespace HackOMania.Tests;
 
@@ -30,10 +32,9 @@ public class GlobalHooks
         );
         Environment.SetEnvironmentVariable("Parameters__app-frontend-url", "http://localhost:3000");
 
-        var appHost =
-            await DistributedApplicationTestingBuilder.CreateAsync<Projects.HackOMania_AppHost>([
-                "UseVolumes=false", // We do not want DB data to be persisted and conflict with local development data
-            ]);
+        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<HackOMania_AppHost>([
+            "UseVolumes=false", // We do not want DB data to be persisted and conflict with local development data
+        ]);
 
         appHost.Services.ConfigureHttpClientDefaults(clientBuilder =>
         {

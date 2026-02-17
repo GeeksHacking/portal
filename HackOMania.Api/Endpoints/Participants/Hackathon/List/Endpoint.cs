@@ -21,6 +21,7 @@ public class Endpoint(ISqlSugarClient sql) : EndpointWithoutRequest<Response>
     {
         var hackathons = await sql.Queryable<Entities.Hackathon>()
             .Where(h => h.IsPublished)
+            .WithCache(300) // Cache for 5 minutes
             .ToListAsync(ct);
 
         await Send.OkAsync(

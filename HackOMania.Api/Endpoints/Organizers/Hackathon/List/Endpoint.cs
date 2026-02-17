@@ -41,11 +41,12 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
             );
         }
 
-        var hackathons = await query.ToListAsync(ct);
+        var hackathons = await query.WithCache(300).ToListAsync(ct); // Cache for 5 minutes
         var hackathonIds = hackathons.Select(h => h.Id).ToList();
 
         var templates = await sql.Queryable<HackathonNotificationTemplate>()
             .Where(t => hackathonIds.Contains(t.HackathonId))
+            .WithCache(300) // Cache for 5 minutes
             .ToListAsync(ct);
         var templatesByHackathon = templates
             .GroupBy(t => t.HackathonId)

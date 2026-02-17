@@ -33,7 +33,7 @@ public class HackathonPublicTests
         AuthenticatedHttpClientDataClass client
     )
     {
-        var request = CreateValidHackathonRequest(Guid.NewGuid().ToString()[..8], true);
+        var request = CreateValidHackathonRequest(Guid.NewGuid().ToString()[..8]);
         var response = await client.HttpClient.PostAsJsonAsync("/organizers/hackathons", request);
         return (await response.Content.ReadFromJsonAsync<HackathonResponse>())!;
     }

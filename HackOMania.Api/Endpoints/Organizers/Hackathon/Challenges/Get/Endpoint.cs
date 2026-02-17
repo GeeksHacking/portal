@@ -1,5 +1,6 @@
 using FastEndpoints;
 using HackOMania.Api.Authorization;
+using HackOMania.Api.Entities;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Challenges.Get;
@@ -27,7 +28,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             return;
         }
 
-        var challenge = await sql.Queryable<Entities.Challenge>().InSingleAsync(req.ChallengeId);
+        var challenge = await sql.Queryable<Challenge>().InSingleAsync(req.ChallengeId);
         if (challenge is null)
         {
             await Send.NotFoundAsync(ct);

@@ -7,7 +7,7 @@ public static class ParticipantReviewEmailTemplateModelFactory
     public static Dictionary<string, object> Create(
         Participant participant,
         User user,
-        Entities.Hackathon hackathon,
+        Hackathon hackathon,
         string reviewStatus,
         string? reason
     )

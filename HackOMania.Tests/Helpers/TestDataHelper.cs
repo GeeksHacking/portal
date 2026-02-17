@@ -55,7 +55,7 @@ public static class TestDataHelper
     /// </summary>
     public static async Task<HackathonResponse> CreateHackathonAndJoinAsync(HttpClient client)
     {
-        var hackathon = await CreateHackathonAsync(client, true);
+        var hackathon = await CreateHackathonAsync(client);
         await client.PostAsync($"/participants/hackathons/{hackathon.Id}/join", null);
         return hackathon;
     }

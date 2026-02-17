@@ -1,6 +1,8 @@
 using Pulumi;
 using Pulumi.Gcp.ArtifactRegistry;
+using Pulumi.Gcp.CloudRun.Inputs;
 using Pulumi.Gcp.CloudRunV2.Inputs;
+using Pulumi.Gcp.SecretManager.Inputs;
 using Pulumi.Gcp.ServiceAccount;
 using Pulumi.Gcp.Storage;
 using Pulumi.Gcp.Storage.Inputs;
@@ -8,6 +10,7 @@ using CloudRun = Pulumi.Gcp.CloudRunV2;
 using CloudRunV1 = Pulumi.Gcp.CloudRun;
 using ProjectIam = Pulumi.Gcp.Projects;
 using SecretManager = Pulumi.Gcp.SecretManager;
+using ServiceTemplateArgs = Pulumi.Gcp.CloudRunV2.Inputs.ServiceTemplateArgs;
 
 namespace HackOMania.Infra.Stacks;
 
@@ -73,10 +76,7 @@ public class DefaultStack : Stack
             new SecretManager.SecretArgs
             {
                 SecretId = "github-client-id",
-                Replication = new SecretManager.Inputs.SecretReplicationArgs
-                {
-                    Auto = new SecretManager.Inputs.SecretReplicationAutoArgs(),
-                },
+                Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
             }
         );
 
@@ -85,10 +85,7 @@ public class DefaultStack : Stack
             new SecretManager.SecretArgs
             {
                 SecretId = "github-client-secret",
-                Replication = new SecretManager.Inputs.SecretReplicationArgs
-                {
-                    Auto = new SecretManager.Inputs.SecretReplicationAutoArgs(),
-                },
+                Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
             }
         );
 
@@ -97,10 +94,7 @@ public class DefaultStack : Stack
             new SecretManager.SecretArgs
             {
                 SecretId = "tidb-connection-string",
-                Replication = new SecretManager.Inputs.SecretReplicationArgs
-                {
-                    Auto = new SecretManager.Inputs.SecretReplicationAutoArgs(),
-                },
+                Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
             }
         );
 
@@ -109,10 +103,7 @@ public class DefaultStack : Stack
             new SecretManager.SecretArgs
             {
                 SecretId = "postmark-server-token",
-                Replication = new SecretManager.Inputs.SecretReplicationArgs
-                {
-                    Auto = new SecretManager.Inputs.SecretReplicationAutoArgs(),
-                },
+                Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
             }
         );
 
@@ -121,10 +112,7 @@ public class DefaultStack : Stack
             new SecretManager.SecretArgs
             {
                 SecretId = "redis-connection-string",
-                Replication = new SecretManager.Inputs.SecretReplicationArgs
-                {
-                    Auto = new SecretManager.Inputs.SecretReplicationAutoArgs(),
-                },
+                Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
             }
         );
 
@@ -508,11 +496,8 @@ public class DefaultStack : Stack
             {
                 Name = "hackomania-api.geekshacking.com",
                 Location = "asia-southeast1",
-                Metadata = new CloudRunV1.Inputs.DomainMappingMetadataArgs
-                {
-                    Namespace = cloudRunService.Project,
-                },
-                Spec = new CloudRunV1.Inputs.DomainMappingSpecArgs
+                Metadata = new DomainMappingMetadataArgs { Namespace = cloudRunService.Project },
+                Spec = new DomainMappingSpecArgs
                 {
                     RouteName = cloudRunService.Name,
                     CertificateMode = "AUTOMATIC",

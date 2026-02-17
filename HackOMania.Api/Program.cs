@@ -61,21 +61,10 @@ builder.Services.AddOptions<AppOptions>().Bind(builder.Configuration.GetSection(
 builder.Services.AddOptions<GitHubOptions>().Bind(builder.Configuration.GetSection("GitHub"));
 builder.Services.AddOptions<PostmarkOptions>().Bind(builder.Configuration.GetSection("Postmark"));
 
-// Register SqlSugar cache service using Aspire's Redis integration if available
-// Otherwise use in-memory cache for testing/development
-builder.Services.AddSingleton<ICacheService>(s =>
-{
-    var connectionMultiplexer = s.GetService<IConnectionMultiplexer>();
-    if (connectionMultiplexer != null)
-    {
-        return new SqlSugarRedisCache(connectionMultiplexer);
-    }
-    else
-    {
-        // Fallback to in-memory cache when Redis is not available (e.g., in tests)
-        return new InMemorySqlSugarCache();
-    }
-});
+// Register SqlSugar cache service using Aspire's Redis integration
+builder.Services.AddSingleton<ICacheService>(s => new SqlSugarRedisCache(
+    s.GetRequiredService<IConnectionMultiplexer>()
+));
 
 builder.Services.AddSingleton<ISqlSugarClient>(s =>
 {

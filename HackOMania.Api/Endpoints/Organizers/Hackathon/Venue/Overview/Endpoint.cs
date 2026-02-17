@@ -32,7 +32,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .Select((p, u) => new { Participant = p, User = u })
             .ToListAsync(ct);
 
-        // Get all check-ins for this hackathon
+        // NOTE: VenueCheckIn data changes frequently during events, which may cause cache invalidation issues.
+        // See CACHING.md for details. Consider removing .WithCache() or implementing a short TTL (5-30 seconds)
+        // if stale data becomes problematic during high-traffic event periods.
         var checkIns = await sql.Queryable<VenueCheckIn>()
             .Where(v => v.HackathonId == hackathonId)
             .WithCache()

@@ -80,6 +80,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 : await sql.Queryable<Team>().Where(t => teamIds.Contains(t.Id)).WithCache().ToListAsync(ct);
         var teams = teamsList.ToDictionary(x => x.Id, x => x.Name);
 
+        // NOTE: ParticipantReview cache may be invalidated frequently during registration review periods.
+        // See CACHING.md for details. This is generally acceptable as reviews happen in bursts.
         var reviewsList = await sql.Queryable<ParticipantReview>()
             .Where(r => participantIds.Contains(r.ParticipantId))
             .OrderByDescending(r => r.CreatedAt)

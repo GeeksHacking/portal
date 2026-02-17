@@ -24,36 +24,71 @@ public class Endpoint(IWebHostEnvironment env, ISqlSugarClient db) : Endpoint<Re
             return;
         }
 
-        var existingAccount = await db.Queryable<GitHubOnlineAccount>()
-            .Includes(a => a.User)
-            .Where(a => a.GitHubId == req.GitHubId)
-            .SingleAsync();
-
-        User accountUser;
-        Guid githubAccountId;
-
-        if (existingAccount is null)
+        GitHubOnlineAccount? existingAccount = null;
+        User? accountUser = null;
+        var transactionResult = await db.Ado.UseTranAsync(async () =>
         {
+            existingAccount = await db.Queryable<GitHubOnlineAccount>()
+                .Where(a => a.GitHubId == req.GitHubId)
+                .TranLock(DbLockType.Wait)
+                .SingleAsync();
+
+            if (existingAccount is not null)
+            {
+                accountUser = await db.Queryable<User>()
+                    .Where(u => u.Id == existingAccount.UserId)
+                    .SingleAsync();
+                return;
+            }
+
             accountUser = new User
             {
+                Id = Guid.NewGuid(),
                 FirstName = req.FirstName,
                 LastName = req.LastName,
                 Email = req.Email,
             };
-            var newAccount = new GitHubOnlineAccount
+            await db.Insertable(accountUser).ExecuteCommandAsync(ct);
+
+            existingAccount = new GitHubOnlineAccount
             {
+                Id = Guid.NewGuid(),
+                UserId = accountUser.Id,
                 GitHubLogin = req.GitHubLogin,
                 GitHubId = req.GitHubId,
-                User = accountUser,
             };
-            await db.InsertNav(newAccount).Include(a => a.User).ExecuteCommandAsync();
-            githubAccountId = newAccount.Id;
-        }
-        else
+            await db.Insertable(existingAccount).ExecuteCommandAsync(ct);
+        });
+
+        if (!transactionResult.IsSuccess)
         {
-            accountUser = existingAccount.User;
-            githubAccountId = existingAccount.Id;
+            // If another concurrent request created the account first, recover by reading it.
+            existingAccount = await db.Queryable<GitHubOnlineAccount>()
+                .Where(a => a.GitHubId == req.GitHubId)
+                .SingleAsync();
+
+            if (existingAccount is null)
+            {
+                throw transactionResult.ErrorException!;
+            }
+
+            accountUser = await db.Queryable<User>()
+                .Where(u => u.Id == existingAccount.UserId)
+                .SingleAsync();
+
+            if (accountUser is null)
+            {
+                throw transactionResult.ErrorException!;
+            }
         }
+
+        if (existingAccount is null || accountUser is null)
+        {
+            ThrowError("Unable to resolve impersonated account.");
+            return;
+        }
+
+        var githubAccountId = existingAccount.Id;
 
         await CookieAuth.SignInAsync(o =>
         {

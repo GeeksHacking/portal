@@ -88,4 +88,32 @@ public class AuthEndpointsTests
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
     }
+
+    [Test]
+    [ClassDataSource<HttpClientDataClass>]
+    public async Task Impersonate_WithConcurrentRequests_ReturnsOk(HttpClientDataClass client)
+    {
+        // Arrange - use a unique identity so this test always covers first-time account creation.
+        var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        var request = new
+        {
+            GitHubId = timestamp,
+            GitHubLogin = $"concurrent-user-{timestamp}",
+            FirstName = "Concurrent",
+            LastName = "User",
+            Email = $"concurrent-user-{timestamp}@example.com",
+        };
+
+        // Act
+        var responses = await Task.WhenAll(
+            Enumerable
+                .Range(0, 8)
+                .Select(_ => client.HttpClient.PostAsJsonAsync("/auth/impersonate", request))
+        );
+
+        // Assert
+        await Assert
+            .That(responses.All(response => response.StatusCode == HttpStatusCode.OK))
+            .IsTrue();
+    }
 }

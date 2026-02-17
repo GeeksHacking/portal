@@ -53,7 +53,13 @@ public class AuthenticatedHttpClientDataClass : IAsyncInitializer, IAsyncDisposa
             }
         );
 
-        response.EnsureSuccessStatusCode();
+        if (!response.IsSuccessStatusCode)
+        {
+            var body = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException(
+                $"Authentication failed with {(int)response.StatusCode} ({response.StatusCode}). Body: {body}"
+            );
+        }
     }
 
     public async ValueTask DisposeAsync()

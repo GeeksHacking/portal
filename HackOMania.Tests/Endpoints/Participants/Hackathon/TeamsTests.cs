@@ -1000,7 +1000,7 @@ public class TeamsTests
         var response1 = await client.HttpClient.GetAsync(
             $"/participants/hackathons/{hackathonId}/teams/me"
         );
-        var result1 = await response1.Content.ReadFromJsonAsync<GetMyTeamResponse>();
+        var result1 = await response1.Content.ReadFromJsonAsync<MyTeamResponse>();
         await Assert.That(result1).IsNotNull();
         await Assert.That(result1!.Name).IsEqualTo("Original Team Name");
 
@@ -1016,7 +1016,7 @@ public class TeamsTests
         var response2 = await client.HttpClient.GetAsync(
             $"/participants/hackathons/{hackathonId}/teams/me"
         );
-        var result2 = await response2.Content.ReadFromJsonAsync<GetMyTeamResponse>();
+        var result2 = await response2.Content.ReadFromJsonAsync<MyTeamResponse>();
 
         // Assert - Should return updated data, not cached old data
         await Assert.That(result2).IsNotNull();

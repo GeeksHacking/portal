@@ -62,9 +62,19 @@ builder.Services.AddOptions<GitHubOptions>().Bind(builder.Configuration.GetSecti
 builder.Services.AddOptions<PostmarkOptions>().Bind(builder.Configuration.GetSection("Postmark"));
 
 // Register SqlSugar cache service using Aspire's Redis integration
-builder.Services.AddSingleton<ICacheService>(s => new SqlSugarRedisCache(
-    s.GetRequiredService<IConnectionMultiplexer>()
-));
+// Use GetService to allow graceful handling if Redis is not yet ready
+builder.Services.AddSingleton<ICacheService>(s =>
+{
+    var connectionMultiplexer = s.GetService<IConnectionMultiplexer>();
+    if (connectionMultiplexer != null)
+    {
+        return new SqlSugarRedisCache(connectionMultiplexer);
+    }
+    
+    // If Redis is not available, create a no-op cache service
+    // This prevents application startup failure when Redis is slow to initialize
+    return new NoOpCacheService();
+});
 
 builder.Services.AddSingleton<ISqlSugarClient>(s =>
 {

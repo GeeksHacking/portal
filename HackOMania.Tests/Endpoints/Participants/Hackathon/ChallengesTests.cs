@@ -188,4 +188,45 @@ public class ChallengesTests
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
     }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task UpdateChallenge_CacheInvalidation_ReturnsUpdatedData(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Arrange - Create hackathon with a challenge
+        var (hackathonId, challengeId) = await CreateHackathonWithPublishedChallengeAsync(client);
+
+        // Act 1 - Get challenge to populate cache
+        var response1 = await client.HttpClient.GetAsync(
+            $"/participants/hackathons/{hackathonId}/challenges/{challengeId}"
+        );
+        var result1 = await response1.Content.ReadFromJsonAsync<ParticipantChallengeResponse>();
+        await Assert.That(result1).IsNotNull();
+        await Assert.That(result1!.Title).IsEqualTo("Published Challenge");
+
+        // Act 2 - Update the challenge
+        var updateRequest = new
+        {
+            Title = "Updated Challenge Title",
+            Description = "Updated description",
+        };
+        var updateResponse = await client.HttpClient.PatchAsJsonAsync(
+            $"/organizers/hackathons/{hackathonId}/challenges/{challengeId}",
+            updateRequest
+        );
+        await Assert.That(updateResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+
+        // Act 3 - Get challenge again to verify cache was invalidated
+        var response2 = await client.HttpClient.GetAsync(
+            $"/participants/hackathons/{hackathonId}/challenges/{challengeId}"
+        );
+        var result2 = await response2.Content.ReadFromJsonAsync<ParticipantChallengeResponse>();
+
+        // Assert - Should return updated data, not cached old data
+        await Assert.That(result2).IsNotNull();
+        await Assert.That(result2!.Title).IsEqualTo("Updated Challenge Title");
+        await Assert.That(result2.Description).IsEqualTo("Updated description");
+    }
 }

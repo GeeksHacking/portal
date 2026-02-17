@@ -42,7 +42,6 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var submissions = await sql.Queryable<ParticipantRegistrationSubmission>()
             .Where(s => s.ParticipantId == participant.Id)
             .Includes(s => s.Question)
-            .WithCache()
             .ToListAsync(ct);
 
         var totalQuestions = await sql.Queryable<RegistrationQuestion>()

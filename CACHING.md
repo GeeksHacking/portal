@@ -39,10 +39,10 @@ This means that SqlSugar automatically invalidates cached queries when:
 
 ## Cached Endpoints
 
-### Currently Cached Endpoints (31 total)
+### Currently Cached Endpoints (29 total)
 
 #### Auth & User Profile
-- `GET /auth/whoami` - Current user information
+- ~~`GET /auth/whoami`~~ - Removed (uses navigation properties)
 - `GET /users/me` - User profile
 
 #### Hackathons (Organizers)
@@ -67,7 +67,7 @@ This means that SqlSugar automatically invalidates cached queries when:
 #### Registration Questions
 - `GET /organizers/hackathons/{id}/registration/questions` - List registration questions
 - `GET /participants/hackathons/{id}/registration/questions` - List registration questions (participant view)
-- `GET /participants/hackathons/{id}/registration/submissions` - Get user's registration submissions
+- ~~`GET /participants/hackathons/{id}/registration/submissions`~~ - Removed (uses navigation properties)
 
 #### Resources
 - `GET /organizers/hackathons/{id}/resources` - List resources
@@ -170,6 +170,7 @@ These endpoints cache data that changes infrequently:
 - Data changes on every request
 - Query is simple and fast
 - User-specific data that varies per request (unless cache key includes user ID)
+- **Query uses `.Includes()` for navigation properties** - SqlSugar caching doesn't support navigation property serialization
 
 ### Cache Key Considerations
 
@@ -179,6 +180,8 @@ SqlSugar automatically generates cache keys based on:
 - Table names
 
 **User-Specific Data**: Queries with `WHERE userId = {userId}` get unique cache keys per user, providing natural isolation.
+
+**Navigation Properties**: Queries using `.Includes()` for navigation properties should **NOT** use `.WithCache()` as SqlSugar's caching doesn't properly serialize/deserialize navigation properties. Load related entities separately or use explicit joins instead.
 
 ### Performance Monitoring
 
@@ -193,8 +196,8 @@ Monitor these metrics to identify cache effectiveness:
 ### What Changed
 
 #### Initial Implementation (Commits 1-3)
-Added `.WithCache()` to 11 previously uncached GET endpoints:
-1. Auth/WhoAmI
+Added `.WithCache()` to 9 previously uncached GET endpoints (2 removed due to navigation property issues):
+1. ~~Auth/WhoAmI~~ - Removed (uses `.Includes()` for navigation properties)
 2. Users/Profile/Get
 3. Organizers/Hackathon/Challenges/Get
 4. Organizers/Hackathon/Judges/Get
@@ -203,8 +206,10 @@ Added `.WithCache()` to 11 previously uncached GET endpoints:
 7. Participants/Hackathon/Status
 8. Organizers/Hackathon/Organizers/List
 9. Organizers/Hackathon/Participants/List
-10. Participants/Hackathon/Registration/Submissions/List
+10. ~~Participants/Hackathon/Registration/Submissions/List~~ - Removed (uses `.Includes()` for navigation properties)
 11. Organizers/Hackathon/Venue/Overview
+
+**Note**: Queries using `.Includes()` for navigation properties were excluded from caching as SqlSugar doesn't properly serialize/deserialize navigation properties in cached results.
 
 #### Team Endpoints Enhancement (Commit 4)
 Added `.WithCache()` to read queries within team-related write endpoints:

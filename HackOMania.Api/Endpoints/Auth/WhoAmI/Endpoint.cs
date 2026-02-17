@@ -36,7 +36,6 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
         var gh = await sql.Queryable<GitHubOnlineAccount>()
             .Includes(g => g.User)
             .Where(a => a.Id.ToString() == gitHubAccountId)
-            .WithCache()
             .FirstAsync(ct);
 
         await Send.OkAsync(

@@ -51,7 +51,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                         TeamCount = SqlFunc.AggregateCount(t.Id),
                     }
             )
-            .WithCache(600) // Cache for 10 minutes
+            .WithCache()
             .ToListAsync(ct);
 
         await Send.OkAsync(new Response { Challenges = challenges }, ct);

@@ -24,7 +24,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         var hackathon = await sql.Queryable<HackathonEntity>()
             .Where(h => h.Id == req.HackathonId)
-            .WithCache(300) // Cache for 5 minutes
+            .WithCache()
             .FirstAsync(ct);
 
         if (hackathon is null)
@@ -35,7 +35,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var emailTemplates = await sql.Queryable<HackathonNotificationTemplate>()
             .Where(t => t.HackathonId == hackathon.Id)
-            .WithCache(300) // Cache for 5 minutes
+            .WithCache()
             .ToListAsync(ct);
         var emailTemplateMap = emailTemplates
             .GroupBy(t => t.EventKey, StringComparer.OrdinalIgnoreCase)

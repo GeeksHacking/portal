@@ -32,7 +32,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .Where(q => q.HackathonId == req.HackathonId)
             .Includes(q => q.Options)
             .OrderBy(q => q.DisplayOrder)
-            .WithCache(1800) // Cache for 30 minutes
+            .WithCache()
             .ToListAsync(ct);
 
         var response = new Response

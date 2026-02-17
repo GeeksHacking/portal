@@ -37,7 +37,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var workshops = await sql.Queryable<Workshop>()
             .Where(w => w.HackathonId == hackathonId && w.IsPublished)
             .Includes(w => w.Participants)
-            .WithCache(1800) // Cache for 30 minutes
+            .WithCache()
             .ToListAsync(ct);
 
         await Send.OkAsync(

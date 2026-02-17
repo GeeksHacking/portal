@@ -194,6 +194,84 @@ public class JoinAndStatusTests
     }
 
     [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task GetStatus_CacheInvalidation_AfterJoin_ReturnsParticipant(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Arrange - Create a new published hackathon
+        var hackathonId = await CreatePublishedHackathonAsync(client);
+
+        // Act 1 - Get status before joining to populate cache
+        var beforeJoinResponse = await client.HttpClient.GetAsync(
+            $"/participants/hackathons/{hackathonId}/status"
+        );
+        var beforeJoinStatus =
+            await beforeJoinResponse.Content.ReadFromJsonAsync<ParticipantStatusResponse>();
+        await Assert.That(beforeJoinResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(beforeJoinStatus).IsNotNull();
+        await Assert.That(beforeJoinStatus!.IsParticipant).IsFalse();
+
+        // Act 2 - Join the hackathon (should invalidate Participant table cache)
+        var joinResponse = await client.HttpClient.PostAsync(
+            $"/participants/hackathons/{hackathonId}/join",
+            null
+        );
+        await Assert.That(joinResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+
+        // Act 3 - Get status again and verify it reflects joined state
+        var afterJoinResponse = await client.HttpClient.GetAsync(
+            $"/participants/hackathons/{hackathonId}/status"
+        );
+        var afterJoinStatus =
+            await afterJoinResponse.Content.ReadFromJsonAsync<ParticipantStatusResponse>();
+
+        // Assert - Should return fresh joined state, not stale cached pre-join state
+        await Assert.That(afterJoinResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(afterJoinStatus).IsNotNull();
+        await Assert.That(afterJoinStatus!.IsParticipant).IsTrue();
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task GetStatus_ConcurrentJoinAndReads_FinalStateIsParticipant(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Arrange - Create a new published hackathon
+        var hackathonId = await CreatePublishedHackathonAsync(client);
+
+        // Warm cache with pre-join state
+        var warmupResponse = await client.HttpClient.GetAsync(
+            $"/participants/hackathons/{hackathonId}/status"
+        );
+        await Assert.That(warmupResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+
+        // Act - Run join and multiple status reads concurrently
+        var joinTask = client.HttpClient.PostAsync($"/participants/hackathons/{hackathonId}/join", null);
+        var statusTasks = Enumerable
+            .Range(0, 6)
+            .Select(_ => client.HttpClient.GetAsync($"/participants/hackathons/{hackathonId}/status"))
+            .ToList();
+
+        await Task.WhenAll(statusTasks.Append(joinTask));
+
+        // Assert intermediate requests succeeded
+        await Assert.That(joinTask.Result.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        var allStatusReadsOk = statusTasks.All(t => t.Result.StatusCode == HttpStatusCode.OK);
+        await Assert.That(allStatusReadsOk).IsTrue();
+
+        // Final assert - eventual state must reflect joined participant
+        var finalResponse = await client.HttpClient.GetAsync(
+            $"/participants/hackathons/{hackathonId}/status"
+        );
+        var finalStatus = await finalResponse.Content.ReadFromJsonAsync<ParticipantStatusResponse>();
+        await Assert.That(finalResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(finalStatus).IsNotNull();
+        await Assert.That(finalStatus!.IsParticipant).IsTrue();
+    }
+
+    [Test]
     [ClassDataSource<HttpClientDataClass>]
     public async Task GetStatus_WithoutAuthentication_ReturnsUnauthorized(
         HttpClientDataClass client

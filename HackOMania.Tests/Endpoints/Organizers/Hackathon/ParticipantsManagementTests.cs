@@ -226,6 +226,106 @@ public class ParticipantsManagementTests
 
     [Test]
     [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task ListParticipants_CacheInvalidation_AfterReview_ReflectsAcceptedState(
+        AuthenticatedHttpClientDataClass organizerClient
+    )
+    {
+        // Arrange
+        var (hackathonId, participantUserId) = await CreateHackathonWithJoinedParticipantAsync(
+            organizerClient
+        );
+
+        // Act 1 - Warm participants list cache before review
+        var beforeReviewResponse = await organizerClient.HttpClient.GetAsync(
+            $"/organizers/hackathons/{hackathonId}/participants"
+        );
+        var beforeReview =
+            await beforeReviewResponse.Content.ReadFromJsonAsync<ParticipantsListResponse>();
+        await Assert.That(beforeReviewResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(beforeReview).IsNotNull();
+
+        // Act 2 - Review participant as accepted
+        var reviewRequest = new ParticipantReviewRequest
+        {
+            Decision = "accept",
+            Reason = "Cache invalidation test",
+        };
+        var reviewResponse = await organizerClient.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{hackathonId}/participants/{participantUserId}/review",
+            reviewRequest
+        );
+        await Assert.That(reviewResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+
+        // Act 3 - Read participants list again
+        var afterReviewResponse = await organizerClient.HttpClient.GetAsync(
+            $"/organizers/hackathons/{hackathonId}/participants"
+        );
+        var afterReview =
+            await afterReviewResponse.Content.ReadFromJsonAsync<ParticipantsListResponse>();
+
+        // Assert - Must reflect accepted review (not stale pending cache)
+        await Assert.That(afterReviewResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(afterReview).IsNotNull();
+        var reviewedParticipant = afterReview!.Participants?.FirstOrDefault(p =>
+            p.Id == participantUserId
+        );
+        await Assert.That(reviewedParticipant).IsNotNull();
+        await Assert.That(reviewedParticipant!.ConcludedStatus).IsEqualTo("Accepted");
+        await Assert.That(afterReview.AcceptedCount).IsGreaterThanOrEqualTo(1);
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task ParticipantStatus_CacheInvalidation_AfterReview_ReturnsAccepted(
+        AuthenticatedHttpClientDataClass organizerClient
+    )
+    {
+        // Arrange
+        var hackathonId = await CreateHackathonAsync(organizerClient);
+        await using var participantClient = await CreateParticipantClientAsync();
+        var participantWhoAmI = await participantClient.HttpClient.GetFromJsonAsync<WhoAmIResponse>(
+            "/auth/whoami"
+        );
+        await Assert.That(participantWhoAmI).IsNotNull();
+
+        var joinResponse = await participantClient.HttpClient.PostAsync(
+            $"/participants/hackathons/{hackathonId}/join",
+            null
+        );
+        await Assert.That(joinResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+
+        // Act 1 - Warm participant status cache before review
+        var beforeReviewStatusResponse = await participantClient.HttpClient.GetAsync(
+            $"/participants/hackathons/{hackathonId}/status"
+        );
+        var beforeReviewStatus =
+            await beforeReviewStatusResponse.Content.ReadFromJsonAsync<ParticipantStatusResponse>();
+        await Assert.That(beforeReviewStatusResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(beforeReviewStatus).IsNotNull();
+        await Assert.That(beforeReviewStatus!.Status).IsEqualTo("Pending");
+
+        // Act 2 - Organizer reviews participant as accepted
+        var reviewResponse = await organizerClient.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{hackathonId}/participants/{participantWhoAmI!.Id}/review",
+            new ParticipantReviewRequest { Decision = "accept", Reason = "Status cache test" }
+        );
+        await Assert.That(reviewResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+
+        // Act 3 - Participant checks status again
+        var afterReviewStatusResponse = await participantClient.HttpClient.GetAsync(
+            $"/participants/hackathons/{hackathonId}/status"
+        );
+        var afterReviewStatus =
+            await afterReviewStatusResponse.Content.ReadFromJsonAsync<ParticipantStatusResponse>();
+
+        // Assert - Must reflect accepted status, not stale pending cache
+        await Assert.That(afterReviewStatusResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(afterReviewStatus).IsNotNull();
+        await Assert.That(afterReviewStatus!.Status).IsEqualTo("Accepted");
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
     public async Task BatchEmail_WithInvalidHackathonId_ReturnsNotFound(
         AuthenticatedHttpClientDataClass client
     )

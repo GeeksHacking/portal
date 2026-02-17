@@ -52,6 +52,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 SlidesUri = s.SlidesUri,
                 SubmittedAt = s.SubmittedAt,
             })
+            .WithCache(30) // Cache for 30 seconds
             .ToListAsync(ct);
 
         await Send.OkAsync(new Response { Submissions = submissions }, ct);

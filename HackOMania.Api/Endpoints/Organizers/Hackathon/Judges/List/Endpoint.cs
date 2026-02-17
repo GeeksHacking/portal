@@ -37,6 +37,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 Secret = j.Secret,
                 Active = j.Active,
             })
+            .WithCache(1800) // Cache for 30 minutes
             .ToListAsync(ct);
 
         await Send.OkAsync(new Response { Judges = judges }, ct);

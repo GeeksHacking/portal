@@ -187,6 +187,78 @@ public class WorkshopsTests
 
         await Assert.That(deleteResponse.IsSuccessStatusCode).IsTrue();
     }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task UpdateWorkshop_CacheInvalidation_ReturnsUpdatedData(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Arrange - Create hackathon and workshop
+        var hackathonRequest = CreateValidHackathonRequest(Guid.NewGuid().ToString()[..8]);
+        var hackathonResponse = await client.HttpClient.PostAsJsonAsync(
+            "/organizers/hackathons",
+            hackathonRequest
+        );
+        var hackathon = await hackathonResponse.Content.ReadFromJsonAsync<HackathonResponse>();
+
+        var workshopRequest = new
+        {
+            Title = "Original Workshop",
+            Description = "Original description",
+            StartTime = DateTimeOffset.UtcNow.AddDays(1),
+            EndTime = DateTimeOffset.UtcNow.AddDays(1).AddHours(2),
+            Location = "Room 101",
+            MaxParticipants = 50,
+            IsPublished = true,
+        };
+        var createResponse = await client.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{hackathon!.Id}/workshops",
+            workshopRequest
+        );
+        var workshop = await createResponse.Content.ReadFromJsonAsync<WorkshopResponse>();
+
+        // Act 1 - List workshops to populate cache
+        var response1 = await client.HttpClient.GetAsync(
+            $"/organizers/hackathons/{hackathon.Id}/workshops"
+        );
+        var result1 = await response1.Content.ReadFromJsonAsync<WorkshopListResponse>();
+        await Assert.That(result1).IsNotNull();
+        var originalWorkshop = result1!.Workshops.FirstOrDefault(w => w.Id == workshop!.Id);
+        await Assert.That(originalWorkshop).IsNotNull();
+        await Assert.That(originalWorkshop!.Title).IsEqualTo("Original Workshop");
+
+        // Act 2 - Update the workshop
+        var updateRequest = new
+        {
+            Title = "Updated Workshop",
+            Description = "Updated description",
+            StartTime = DateTimeOffset.UtcNow.AddDays(1),
+            EndTime = DateTimeOffset.UtcNow.AddDays(1).AddHours(2),
+            Location = "Room 202",
+            MaxParticipants = 100,
+            IsPublished = true,
+        };
+        var updateResponse = await client.HttpClient.PutAsJsonAsync(
+            $"/organizers/hackathons/{hackathon.Id}/workshops/{workshop!.Id}",
+            updateRequest
+        );
+        await Assert.That(updateResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+
+        // Act 3 - List workshops again to verify cache was invalidated
+        var response2 = await client.HttpClient.GetAsync(
+            $"/organizers/hackathons/{hackathon.Id}/workshops"
+        );
+        var result2 = await response2.Content.ReadFromJsonAsync<WorkshopListResponse>();
+
+        // Assert - Should return updated data, not cached old data
+        await Assert.That(result2).IsNotNull();
+        var updatedWorkshop = result2!.Workshops.FirstOrDefault(w => w.Id == workshop.Id);
+        await Assert.That(updatedWorkshop).IsNotNull();
+        await Assert.That(updatedWorkshop!.Title).IsEqualTo("Updated Workshop");
+        await Assert.That(updatedWorkshop.Location).IsEqualTo("Room 202");
+        await Assert.That(updatedWorkshop.MaxParticipants).IsEqualTo(100);
+    }
 }
 
 public class WorkshopResponse

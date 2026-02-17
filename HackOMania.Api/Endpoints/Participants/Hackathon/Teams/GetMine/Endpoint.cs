@@ -46,6 +46,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 
         var team = await sql.Queryable<Team>()
             .Where(t => t.Id == participant.TeamId && t.HackathonId == hackathon.Id)
+            .WithCache(15) // Cache for 15 seconds
             .FirstAsync(ct);
 
         if (team is null)

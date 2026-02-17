@@ -36,6 +36,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 CreatedAt = c.CreatedAt,
                 UpdatedAt = c.UpdatedAt,
             })
+            .WithCache(600) // Cache for 10 minutes
             .ToListAsync(ct);
 
         await Send.OkAsync(new Response { Challenges = challenges }, ct);

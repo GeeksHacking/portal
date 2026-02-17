@@ -980,4 +980,47 @@ public class TeamsTests
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
     }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task UpdateTeam_CacheInvalidation_ReturnsUpdatedData(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Arrange - Create hackathon, join, and create a team
+        var hackathonId = await CreatePublishedHackathonAndJoinAsync(client);
+        var teamRequest = new { Name = "Original Team Name", Description = "Original description" };
+        var createResponse = await client.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathonId}/teams",
+            teamRequest
+        );
+        var team = await createResponse.Content.ReadFromJsonAsync<CreateTeamResponse>();
+
+        // Act 1 - Get team to populate cache
+        var response1 = await client.HttpClient.GetAsync(
+            $"/participants/hackathons/{hackathonId}/teams/me"
+        );
+        var result1 = await response1.Content.ReadFromJsonAsync<MyTeamResponse>();
+        await Assert.That(result1).IsNotNull();
+        await Assert.That(result1!.Name).IsEqualTo("Original Team Name");
+
+        // Act 2 - Update the team
+        var updateRequest = new { Name = "Updated Team Name", Description = "Updated description" };
+        var updateResponse = await client.HttpClient.PatchAsJsonAsync(
+            $"/participants/hackathons/{hackathonId}/teams/{team!.Id}",
+            updateRequest
+        );
+        await Assert.That(updateResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+
+        // Act 3 - Get team again to verify cache was invalidated
+        var response2 = await client.HttpClient.GetAsync(
+            $"/participants/hackathons/{hackathonId}/teams/me"
+        );
+        var result2 = await response2.Content.ReadFromJsonAsync<MyTeamResponse>();
+
+        // Assert - Should return updated data, not cached old data
+        await Assert.That(result2).IsNotNull();
+        await Assert.That(result2!.Name).IsEqualTo("Updated Team Name");
+        await Assert.That(result2.Description).IsEqualTo("Updated description");
+    }
 }

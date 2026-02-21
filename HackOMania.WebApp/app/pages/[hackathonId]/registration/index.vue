@@ -39,7 +39,10 @@ watchEffect(() => {
     <p class="text-sm font-medium text-gray-600 animate-pulse">
       Checking your session...
     </p>
-    <UIcon name="i-lucide-loader-circle" class="w-8 h-8 animate-spin text-primary" />
+    <UIcon
+      name="i-lucide-loader-circle"
+      class="w-8 h-8 animate-spin text-primary"
+    />
   </div>
 
   <!-- Show login UI only if not authenticated -->
@@ -68,6 +71,14 @@ watchEffect(() => {
           >
             Sign up with GitHub
           </UButton>
+        </div>
+        <div class="flex flex-col items-center gap-2 mt-6 max-w-md px-4">
+          <p class="font-normal text-base text-black text-center">
+            Note that due to a large number of registrations, all current registrations will be put on a waiting list.
+          </p>
+          <p class="font-normal text-base text-black text-center">
+            You will be notified when a slot is available.
+          </p>
         </div>
         <div class="mt-30">
           <NuxtLink

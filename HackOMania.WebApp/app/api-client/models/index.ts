@@ -1728,6 +1728,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticip
         "followUpValue": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem.followUpValue = n.getStringValue(); },
         "questionId": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem.questionId = n.getStringValue(); },
         "questionText": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem.questionText = n.getStringValue(); },
+        "updatedAt": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem.updatedAt = n.getDateValue(); },
         "value": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem.value = n.getStringValue(); },
     }
 }
@@ -3880,6 +3881,10 @@ export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsListRegist
      * The questionText property
      */
     questionText?: string | null;
+    /**
+     * The updatedAt property
+     */
+    updatedAt?: Date | null;
     /**
      * The value property
      */
@@ -6445,6 +6450,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonParticipantsLi
     writer.writeStringValue("followUpValue", hackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem.followUpValue);
     writer.writeStringValue("questionId", hackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem.questionId);
     writer.writeStringValue("questionText", hackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem.questionText);
+    writer.writeDateValue("updatedAt", hackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem.updatedAt);
     writer.writeStringValue("value", hackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem.value);
 }
 /**

@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/vue-query'
 import { hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
 import { organizerQueries } from '~/composables/organizers'
 import { authQueries } from '~/composables/auth'
+import ParticipantAnalytics from './ParticipantAnalytics.vue'
 import Participants from './participants.vue'
 import Challenges from './challenges.vue'
 import Teams from './teams.vue'
@@ -99,6 +100,11 @@ watch([isOrganizer, isLoadingOrganizerCheck], ([org, loading]) => {
           </div>
 
           <CheckIn
+            :hackathon-id="resolvedHackathonId ?? ''"
+            :is-organizer="isOrganizer"
+          />
+
+          <ParticipantAnalytics
             :hackathon-id="resolvedHackathonId ?? ''"
             :is-organizer="isOrganizer"
           />

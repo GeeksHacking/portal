@@ -170,7 +170,7 @@ const sortedParticipants = computed(() => {
       result = compareStrings(a.teamName, b.teamName)
     }
     else if (sortKey.value === 'applicationTime') {
-      result = getLatestSubmissionEpoch(a) - getLatestSubmissionEpoch(b)
+      result = getParticipantApplicationTimeEpoch(a) - getParticipantApplicationTimeEpoch(b)
     }
     else if (sortKey.value === 'status') {
       result = getStatusSortValue(a.concludedStatus) - getStatusSortValue(b.concludedStatus)

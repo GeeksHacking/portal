@@ -84,24 +84,7 @@ function isPendingParticipant(participant: ParticipantItem) {
   return !isIncomplete(participant) && isPendingStatus(participant.concludedStatus)
 }
 
-function getParticipantCreatedAtEpoch(participant: ParticipantItem) {
-  return participant.createdAt?.getTime() ?? 0
-}
-
 function getParticipantApplicationTimeEpoch(participant: ParticipantItem) {
-  // Calculate the last registration update time from the submissions
-  const submissions = participant.registrationSubmissions ?? []
-  if (submissions.length > 0) {
-    const maxUpdateTime = submissions.reduce((max, s) => {
-      const updateTime = s.updatedAt?.getTime() ?? 0
-      return updateTime > max ? updateTime : max
-    }, 0)
-    if (maxUpdateTime > 0) return maxUpdateTime
-  }
-  return participant.createdAt?.getTime() ?? 0
-}
-
-function getLatestSubmissionEpoch(participant: ParticipantItem) {
   const submissions = participant.registrationSubmissions ?? []
   if (submissions.length === 0) return 0
   return submissions.reduce((max, s) => {
@@ -110,11 +93,16 @@ function getLatestSubmissionEpoch(participant: ParticipantItem) {
   }, 0)
 }
 
+function getParticipantApplicationDate(participant: ParticipantItem): Date | null {
+  const submittedAtEpoch = getParticipantApplicationTimeEpoch(participant)
+  return submittedAtEpoch > 0 ? new Date(submittedAtEpoch) : null
+}
+
 function isReviewOverdue(participant: ParticipantItem) {
   if (!isPendingParticipant(participant)) return false
-  const createdAtEpoch = getParticipantCreatedAtEpoch(participant)
-  if (!createdAtEpoch) return false
-  return Date.now() - createdAtEpoch >= REVIEW_OVERDUE_MS
+  const submittedAtEpoch = getParticipantApplicationTimeEpoch(participant)
+  if (!submittedAtEpoch) return false
+  return Date.now() - submittedAtEpoch >= REVIEW_OVERDUE_MS
 }
 
 function getReviewPriorityBucket(participant: ParticipantItem) {
@@ -441,7 +429,7 @@ const prioritizedPendingParticipants = computed(() => {
     }
 
     // For review queue, older applications should be handled first.
-    return getParticipantCreatedAtEpoch(a) - getParticipantCreatedAtEpoch(b)
+    return getParticipantApplicationTimeEpoch(a) - getParticipantApplicationTimeEpoch(b)
   })
 })
 const overduePendingCount = computed(() => pendingParticipants.value.filter(p => isReviewOverdue(p)).length)
@@ -743,7 +731,7 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
                   Team: {{ participant.teamName ?? 'No team' }}
                 </p>
                 <p class="text-xs text-(--ui-text-muted)">
-                  Applied: {{ formatDateTime(getLatestSubmissionEpoch(participant) ? new Date(getLatestSubmissionEpoch(participant)) : participant.createdAt) }}
+                  Applied: {{ formatDateTime(getParticipantApplicationDate(participant)) }}
                 </p>
               </div>
               <div class="flex items-center gap-2 ml-2">
@@ -989,7 +977,7 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
                     <strong>Team:</strong> {{ reviewingParticipant.teamName ?? 'No team' }}
                   </p>
                   <p>
-                    <strong>Applied:</strong> {{ formatDateTime(reviewingParticipant.createdAt) }}
+                    <strong>Applied:</strong> {{ formatDateTime(getParticipantApplicationDate(reviewingParticipant)) }}
                   </p>
                   <p>
                     <strong>Current Status:</strong>

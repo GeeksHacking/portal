@@ -64,6 +64,7 @@ const sortOptions = [
   { label: 'Status', value: 'status' },
   { label: 'Application Time', value: 'applicationTime' },
 ] as const
+const tableVirtualizeOptions = { estimateSize: 65, overscan: 12 } as const
 
 // Filter state
 type FilterStatus = 'all' | 'incomplete' | 'pending' | 'approved' | 'rejected'
@@ -894,8 +895,8 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
           <UTable
             :data="sortedParticipants"
             :columns="tableColumns"
-            sticky="header"
-            class="min-w-full"
+            :virtualize="tableVirtualizeOptions"
+            class="min-w-full max-h-[42rem] overflow-auto"
           >
             <template #name-cell="{ row }">
               <div class="flex items-center gap-2">

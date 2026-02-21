@@ -55,7 +55,7 @@ const searchQuery = ref('')
 
 type SortKey = 'name' | 'team' | 'status' | 'applicationTime'
 const sortKey = ref<SortKey>('applicationTime')
-const sortDirection = ref<'asc' | 'desc'>('asc')
+const sortDirection = ref<'asc' | 'desc'>('desc')
 
 const sortOptions = [
   { label: 'Name', value: 'name' },
@@ -99,6 +99,15 @@ function getParticipantApplicationTimeEpoch(participant: ParticipantItem) {
     if (maxUpdateTime > 0) return maxUpdateTime
   }
   return participant.createdAt?.getTime() ?? 0
+}
+
+function getLatestSubmissionEpoch(participant: ParticipantItem) {
+  const submissions = participant.registrationSubmissions ?? []
+  if (submissions.length === 0) return 0
+  return submissions.reduce((max, s) => {
+    const t = s.updatedAt?.getTime() ?? 0
+    return t > max ? t : max
+  }, 0)
 }
 
 function isReviewOverdue(participant: ParticipantItem) {
@@ -161,7 +170,7 @@ const sortedParticipants = computed(() => {
       result = compareStrings(a.teamName, b.teamName)
     }
     else if (sortKey.value === 'applicationTime') {
-      result = getParticipantApplicationTimeEpoch(a) - getParticipantApplicationTimeEpoch(b)
+      result = getLatestSubmissionEpoch(a) - getLatestSubmissionEpoch(b)
     }
     else if (sortKey.value === 'status') {
       result = getStatusSortValue(a.concludedStatus) - getStatusSortValue(b.concludedStatus)
@@ -733,7 +742,7 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
                   Team: {{ participant.teamName ?? 'No team' }}
                 </p>
                 <p class="text-xs text-(--ui-text-muted)">
-                  Applied: {{ formatDateTime(participant.createdAt) }}
+                  Applied: {{ formatDateTime(getLatestSubmissionEpoch(participant) ? new Date(getLatestSubmissionEpoch(participant)) : participant.createdAt) }}
                 </p>
               </div>
               <div class="flex items-center gap-2 ml-2">

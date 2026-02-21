@@ -57,6 +57,10 @@ const stats = computed(() => {
   const inTeam = all.filter(p => !!p.teamId)
   const notInTeam = all.filter(p => !p.teamId)
 
+  const teamIds = new Set(inTeam.map(p => p.teamId).filter(Boolean))
+  const numTeams = teamIds.size
+  const avgPerTeam = numTeams > 0 ? Math.round((inTeam.length / numTeams) * 10) / 10 : 0
+
   return {
     total: all.length,
     incomplete: incomplete.length,
@@ -66,6 +70,8 @@ const stats = computed(() => {
     rejected: rejected.length,
     inTeam: inTeam.length,
     notInTeam: notInTeam.length,
+    numTeams,
+    avgPerTeam,
   }
 })
 
@@ -125,6 +131,20 @@ const statItems = computed(() => [
     icon: 'i-lucide-user',
     color: 'text-warning-500',
     bg: 'bg-warning-50 dark:bg-warning-950/30',
+  },
+  {
+    label: 'Teams Formed',
+    value: stats.value.numTeams,
+    icon: 'i-lucide-layout-grid',
+    color: 'text-primary-500',
+    bg: 'bg-primary-50 dark:bg-primary-950/30',
+  },
+  {
+    label: 'Avg per Team',
+    value: stats.value.avgPerTeam,
+    icon: 'i-lucide-bar-chart-2',
+    color: 'text-(--ui-text-muted)',
+    bg: 'bg-(--ui-bg-elevated)',
   },
 ])
 </script>

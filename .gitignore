@@ -7,3 +7,4 @@ riderModule.iml
 *.db
 *.DotSettings.user
 node_modules/
+HackOMania.WebApp/package-lock.json

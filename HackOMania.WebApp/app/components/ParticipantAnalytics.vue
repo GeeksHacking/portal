@@ -54,8 +54,8 @@ const stats = computed(() => {
       === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Rejected,
   )
 
-  const inTeam = all.filter(p => !!p.teamId)
-  const notInTeam = all.filter(p => !p.teamId)
+  const inTeam = accepted.filter(p => !!p.teamId)
+  const notInTeam = accepted.filter(p => !p.teamId)
 
   const teamIds = new Set(inTeam.map(p => p.teamId).filter(Boolean))
   const numTeams = teamIds.size

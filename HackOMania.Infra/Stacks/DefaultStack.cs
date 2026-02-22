@@ -250,6 +250,8 @@ public class DefaultStack : Stack
                 Scaling = new ServiceScalingArgs { MinInstanceCount = 0, MaxInstanceCount = 1 },
                 Template = new ServiceTemplateArgs
                 {
+                    // Required by Cloud Run for CPU allocations below 0.5 vCPU.
+                    ExecutionEnvironment = "EXECUTION_ENVIRONMENT_GEN1",
                     ServiceAccount = cloudRunServiceAccount.Email,
                     MaxInstanceRequestConcurrency = 1,
                     Containers = new[]
@@ -264,6 +266,8 @@ public class DefaultStack : Stack
                             },
                             Resources = new ServiceTemplateContainerResourcesArgs
                             {
+                                // Keep Cloud Run in request-based CPU allocation mode for lowest cost.
+                                CpuIdle = true,
                                 Limits = { { "cpu", "0.08" }, { "memory", "128Mi" } },
                             },
                             StartupProbe = new ServiceTemplateContainerStartupProbeArgs

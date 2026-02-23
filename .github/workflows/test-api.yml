@@ -36,3 +36,6 @@ jobs:
 
       - name: Run tests
         run: dotnet test --no-build --configuration Release
+
+      - name: Validate NativeAOT publish
+        run: dotnet publish ./HackOMania.Api/HackOMania.Api.csproj --configuration Release --runtime linux-x64 /p:PublishAot=true

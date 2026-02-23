@@ -167,13 +167,12 @@ builder
             .AddGitHub(github =>
             {
                 var githubOptions = builder
-                    .Configuration.GetSection("GitHub")
-                    .Get<GitHubOptions>()!;
+                    .Configuration.GetSection("GitHub");
 
                 github
                     .AddScopes("user:email")
-                    .SetClientId(githubOptions.ClientId)
-                    .SetClientSecret(githubOptions.ClientSecret)
+                    .SetClientId(githubOptions["ClientId"] ?? string.Empty)
+                    .SetClientSecret(githubOptions["ClientSecret"] ?? string.Empty)
                     .SetRedirectUri("/callback/login/github");
             });
     });

@@ -268,7 +268,7 @@ public class DefaultStack : Stack
                             {
                                 // Keep Cloud Run in request-based CPU allocation mode for lowest cost.
                                 CpuIdle = true,
-                                Limits = { { "cpu", "0.08" }, { "memory", "128Mi" } },
+                                Limits = { { "cpu", "0.5" }, { "memory", "512Mi" } },
                             },
                             StartupProbe = new ServiceTemplateContainerStartupProbeArgs
                             {

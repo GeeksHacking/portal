@@ -168,11 +168,27 @@ builder
             {
                 var githubOptions = builder
                     .Configuration.GetSection("GitHub");
+                var clientId =
+                    githubOptions["ClientId"]
+                    ?? throw new InvalidOperationException(
+                        "GitHub OAuth configuration is missing. Please set GitHub:ClientId."
+                    );
+                var clientSecret =
+                    githubOptions["ClientSecret"]
+                    ?? throw new InvalidOperationException(
+                        "GitHub OAuth configuration is missing. Please set GitHub:ClientSecret."
+                    );
+                if (string.IsNullOrWhiteSpace(clientId) || string.IsNullOrWhiteSpace(clientSecret))
+                {
+                    throw new InvalidOperationException(
+                        "GitHub OAuth configuration is invalid. GitHub:ClientId and GitHub:ClientSecret cannot be empty."
+                    );
+                }
 
                 github
                     .AddScopes("user:email")
-                    .SetClientId(githubOptions["ClientId"] ?? string.Empty)
-                    .SetClientSecret(githubOptions["ClientSecret"] ?? string.Empty)
+                    .SetClientId(clientId)
+                    .SetClientSecret(clientSecret)
                     .SetRedirectUri("/callback/login/github");
             });
     });

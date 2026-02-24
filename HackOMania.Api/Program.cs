@@ -25,7 +25,10 @@ using StackExchange.Redis;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-builder.AddRedisClient("cache");
+if (!string.IsNullOrEmpty(builder.Configuration.GetConnectionString("cache")))
+{
+    builder.AddRedisClient("cache");
+}
 
 if (builder.Environment.IsProduction())
 {
@@ -70,7 +73,7 @@ builder.Services.AddSingleton<ICacheService>(s =>
     {
         return new SqlSugarRedisCache(connectionMultiplexer);
     }
-    
+
     // If Redis is not available, create a no-op cache service
     // This prevents application startup failure when Redis is slow to initialize
     return new NoOpCacheService();

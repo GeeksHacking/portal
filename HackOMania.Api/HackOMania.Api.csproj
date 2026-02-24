@@ -3,17 +3,19 @@
     <TargetFramework>net11.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <EnablePreviewFeatures>true</EnablePreviewFeatures>
+    <Features>$(Features);runtime-async=on</Features>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Aspire.StackExchange.Redis" Version="13.1.1" />
     <PackageReference Include="FastEndpoints" Version="7.2.0" />
-    <PackageReference Include="FastEndpoints.Swagger" Version="7.2.0" />
-    <PackageReference Include="FastEndpoints.Security" Version="7.2.0" />
     <PackageReference Include="FastEndpoints.Generator" Version="7.2.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="FastEndpoints.Swagger" Version="7.2.0" />
+    <PackageReference Include="FastEndpoints.Security" Version="7.2.0" />
     <PackageReference Include="Google.Cloud.Diagnostics.AspNetCore3" Version="5.3.0" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="4.14.0" />
     <PackageReference Include="Jint" Version="4.6.0" />

@@ -77,7 +77,10 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var teamsList =
             teamIds.Count == 0
                 ? []
-                : await sql.Queryable<Team>().Where(t => teamIds.Contains(t.Id)).WithCache().ToListAsync(ct);
+                : await sql.Queryable<Team>()
+                    .Where(t => teamIds.Contains(t.Id))
+                    .WithCache()
+                    .ToListAsync(ct);
         var teams = teamsList.ToDictionary(x => x.Id, x => x.Name);
 
         // NOTE: ParticipantReview cache may be invalidated frequently during registration review periods.

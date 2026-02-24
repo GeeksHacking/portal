@@ -41,7 +41,10 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             query = query.Where(s => s.TeamId == req.TeamId.Value);
         }
 
-        var submissions = await query.OrderByDescending(s => s.SubmittedAt).WithCache().ToListAsync(ct);
+        var submissions = await query
+            .OrderByDescending(s => s.SubmittedAt)
+            .WithCache()
+            .ToListAsync(ct);
 
         var teamIds = submissions.Select(s => s.TeamId).Distinct().ToList();
         var challengeIds = submissions.Select(s => s.ChallengeId).Distinct().ToList();

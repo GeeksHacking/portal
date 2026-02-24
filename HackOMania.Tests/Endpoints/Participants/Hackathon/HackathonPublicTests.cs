@@ -160,7 +160,10 @@ public class HackathonPublicTests
     )
     {
         // Arrange - Create unpublished hackathon
-        var request = CreateValidHackathonRequest(Guid.NewGuid().ToString()[..8], isPublished: false);
+        var request = CreateValidHackathonRequest(
+            Guid.NewGuid().ToString()[..8],
+            isPublished: false
+        );
         var createResponse = await client.HttpClient.PostAsJsonAsync(
             "/organizers/hackathons",
             request
@@ -206,7 +209,9 @@ public class HackathonPublicTests
         var created = await CreatePublishedHackathonAsync(client);
 
         // Act 1 - Warm cache via public get
-        var warmupResponse = await client.HttpClient.GetAsync($"/participants/hackathons/{created.Id}");
+        var warmupResponse = await client.HttpClient.GetAsync(
+            $"/participants/hackathons/{created.Id}"
+        );
         await Assert.That(warmupResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
 
         // Act 2 - Unpublish hackathon

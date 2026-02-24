@@ -248,10 +248,15 @@ public class JoinAndStatusTests
         await Assert.That(warmupResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
 
         // Act - Run join and multiple status reads concurrently
-        var joinTask = client.HttpClient.PostAsync($"/participants/hackathons/{hackathonId}/join", null);
+        var joinTask = client.HttpClient.PostAsync(
+            $"/participants/hackathons/{hackathonId}/join",
+            null
+        );
         var statusTasks = Enumerable
             .Range(0, 6)
-            .Select(_ => client.HttpClient.GetAsync($"/participants/hackathons/{hackathonId}/status"))
+            .Select(_ =>
+                client.HttpClient.GetAsync($"/participants/hackathons/{hackathonId}/status")
+            )
             .ToList();
 
         await Task.WhenAll(statusTasks.Append(joinTask));
@@ -265,7 +270,8 @@ public class JoinAndStatusTests
         var finalResponse = await client.HttpClient.GetAsync(
             $"/participants/hackathons/{hackathonId}/status"
         );
-        var finalStatus = await finalResponse.Content.ReadFromJsonAsync<ParticipantStatusResponse>();
+        var finalStatus =
+            await finalResponse.Content.ReadFromJsonAsync<ParticipantStatusResponse>();
         await Assert.That(finalResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
         await Assert.That(finalStatus).IsNotNull();
         await Assert.That(finalStatus!.IsParticipant).IsTrue();

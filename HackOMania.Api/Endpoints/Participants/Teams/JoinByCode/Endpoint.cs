@@ -41,7 +41,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         }
 
         // Get the hackathon for this team
-        var hackathon = await sql.Queryable<Entities.Hackathon>().WithCache().InSingleAsync(team.HackathonId);
+        var hackathon = await sql.Queryable<Entities.Hackathon>()
+            .WithCache()
+            .InSingleAsync(team.HackathonId);
 
         if (hackathon is null || !hackathon.IsPublished)
         {

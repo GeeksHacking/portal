@@ -36,7 +36,11 @@ public class NoOpCacheService : ICacheService
         return [];
     }
 
-    public TV GetOrCreate<TV>(string cacheKey, Func<TV> create, int cacheDurationInSeconds = int.MaxValue)
+    public TV GetOrCreate<TV>(
+        string cacheKey,
+        Func<TV> create,
+        int cacheDurationInSeconds = int.MaxValue
+    )
     {
         // Always create - no caching
         return create();

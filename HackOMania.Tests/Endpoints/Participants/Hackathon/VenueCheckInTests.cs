@@ -243,7 +243,9 @@ public class VenueCheckInTests
         );
         var overviewTasks = Enumerable
             .Range(0, 6)
-            .Select(_ => client.HttpClient.GetAsync($"/organizers/hackathons/{hackathon.Id}/venue/overview"))
+            .Select(_ =>
+                client.HttpClient.GetAsync($"/organizers/hackathons/{hackathon.Id}/venue/overview")
+            )
             .ToList();
 
         await Task.WhenAll(overviewTasks.Append(checkInTask));
@@ -261,7 +263,9 @@ public class VenueCheckInTests
             await finalOverviewResponse.Content.ReadFromJsonAsync<VenueOverviewResponse>();
         await Assert.That(finalOverviewResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
         await Assert.That(finalOverview).IsNotNull();
-        var participant = finalOverview!.Participants.FirstOrDefault(p => p.UserId == participantUserId);
+        var participant = finalOverview!.Participants.FirstOrDefault(p =>
+            p.UserId == participantUserId
+        );
         await Assert.That(participant).IsNotNull();
         await Assert.That(participant!.IsCurrentlyCheckedIn).IsTrue();
     }

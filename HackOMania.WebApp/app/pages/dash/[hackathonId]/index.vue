@@ -89,13 +89,25 @@ watch([isOrganizer, isLoadingOrganizerCheck], ([org, loading]) => {
         </div>
 
         <template v-else-if="isOrganizer">
-          <div class="flex flex-col gap-1">
-            <h2 class="text-lg font-semibold">
-              Organizer Dashboard
-            </h2>
-            <p class="text-sm text-(--ui-text-muted)">
-              Manage participants, teams, and submissions for {{ hackathon?.name }}.
-            </p>
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div class="flex flex-col gap-1">
+              <h2 class="text-lg font-semibold">
+                Organizer Dashboard
+              </h2>
+              <p class="text-sm text-(--ui-text-muted)">
+                Manage participants, teams, and submissions for {{ hackathon?.name }}.
+              </p>
+            </div>
+            <UButton
+              :to="`/dash/${hackathonIdOrShortCode}/challenge-dashboard`"
+              icon="i-lucide-bar-chart-2"
+              color="primary"
+              variant="soft"
+              size="sm"
+              class="shrink-0"
+            >
+              Challenge Dashboard
+            </UButton>
           </div>
 
           <CheckIn

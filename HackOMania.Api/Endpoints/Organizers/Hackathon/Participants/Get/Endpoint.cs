@@ -65,6 +65,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 CreatedAt = participant.JoinedAt,
                 Id = participant.UserId,
                 Name = userName,
+                Email = user?.Email,
                 TeamId = participant.TeamId,
                 TeamName = participant.Team?.Name,
                 ConcludedStatus = concludedStatus,

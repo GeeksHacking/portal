@@ -66,7 +66,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .Where(u => userIds.Contains(u.Id))
             .WithCache()
             .ToListAsync(ct);
-        var users = usersList.ToDictionary(x => x.Id, x => x.FirstName + " " + x.LastName);
+        var users = usersList.ToDictionary(x => x.Id, x => (Name: x.FirstName + " " + x.LastName, Email: x.Email));
 
         var teamIds = participants
             .Where(p => p.TeamId.HasValue)
@@ -132,6 +132,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var participantResponses = participants
             .Select(p =>
             {
+                var userInfo = users.GetValueOrDefault(p.UserId);
                 var reviews = reviewsByParticipant.GetValueOrDefault(p.Id) ?? [];
                 var deliveryLogs = emailDeliveriesByParticipant.GetValueOrDefault(p.Id) ?? [];
                 var latestDelivery = deliveryLogs.FirstOrDefault();
@@ -148,7 +149,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 {
                     CreatedAt = p.JoinedAt,
                     Id = p.UserId,
-                    Name = users.GetValueOrDefault(p.UserId, "Unknown"),
+                    Name = userInfo.Name ?? "Unknown",
+                    Email = userInfo.Email,
                     TeamId = p.TeamId,
                     TeamName = p.TeamId.HasValue ? teams.GetValueOrDefault(p.TeamId.Value) : null,
                     ConcludedStatus = concludedStatus,

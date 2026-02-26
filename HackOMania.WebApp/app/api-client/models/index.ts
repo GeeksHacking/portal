@@ -1696,6 +1696,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticip
         "id": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.id = n.getStringValue(); },
         "lastEmailSentAt": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.lastEmailSentAt = n.getDateValue(); },
         "lastEmailStatus": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.lastEmailStatus = n.getStringValue(); },
+        "email": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.email = n.getStringValue(); },
         "name": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.name = n.getStringValue(); },
         "registrationSubmissions": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.registrationSubmissions = n.getCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem>(createHackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItemFromDiscriminatorValue); },
         "reviews": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.reviews = n.getCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem>(createHackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemFromDiscriminatorValue); },
@@ -3828,6 +3829,10 @@ export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsListPartic
      * The lastEmailStatus property
      */
     lastEmailStatus?: string | null;
+    /**
+     * The email property
+     */
+    email?: string | null;
     /**
      * The name property
      */

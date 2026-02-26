@@ -246,9 +246,9 @@ function downloadParticipantsExcel() {
   // Calculate statistics for participants
   const stats: SummaryStats = {
     total: participants.value.length,
-    approved: participants.value.filter(p => p.concludedStatus === 1).length,
-    rejected: participants.value.filter(p => p.concludedStatus === 2).length,
-    pending: participants.value.filter(p => p.concludedStatus === 0 || p.concludedStatus === null || p.concludedStatus === undefined).length,
+    approved: participants.value.filter(p => p.concludedStatus === 'Accepted').length,
+    rejected: participants.value.filter(p => p.concludedStatus === 'Rejected').length,
+    pending: participants.value.filter(p => p.concludedStatus === 'Pending' || p.concludedStatus === null || p.concludedStatus === undefined).length,
   }
 
   downloadExcel(participants.value, 'participants', stats)
@@ -266,6 +266,22 @@ function downloadTeamsExcel() {
   downloadExcel(teams.value, 'teams')
   setCachedCount('teams', teams.value.length)
   hasNewTeams.value = false
+}
+
+function downloadParticipantEmailsExcel() {
+  const data = participants.value.map(p => ({
+    'Name': p.name ?? '',
+    'Telegram Handle': p.registrationSubmissions?.find(s =>
+      s.questionText?.toLowerCase().includes('telegram'),
+    )?.value ?? '',
+    'Status': p.concludedStatus ?? 'Pending',
+    'Email': p.email ?? '',
+  }))
+
+  const workbook = XLSX.utils.book_new()
+  const worksheet = XLSX.utils.json_to_sheet(data)
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Participant Emails')
+  XLSX.writeFile(workbook, `participant-emails-${new Date().toISOString().split('T')[0]}.xlsx`)
 }
 </script>
 
@@ -330,6 +346,35 @@ function downloadTeamsExcel() {
                 Excel
               </UButton>
             </div>
+          </div>
+        </div>
+
+        <!-- Participant Emails Section -->
+        <div class="p-4 rounded-lg bg-elevated border border-default">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <div>
+                <h4 class="text-sm font-medium">
+                  Participant Emails
+                </h4>
+                <p class="text-xs text-(--ui-text-muted)">
+                  <template v-if="isLoadingParticipants">
+                    Loading...
+                  </template>
+                  <template v-else>
+                    {{ participants.length }} record{{ participants.length !== 1 ? 's' : '' }}
+                  </template>
+                </p>
+              </div>
+            </div>
+            <UButton
+              size="xs"
+              icon="i-lucide-file-spreadsheet"
+              :disabled="isLoadingParticipants || !participants.length"
+              @click="downloadParticipantEmailsExcel"
+            >
+              Excel
+            </UButton>
           </div>
         </div>
 

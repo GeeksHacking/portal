@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 import { challengeQueries } from '~/composables/challenges'
 import { hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
@@ -9,7 +9,7 @@ import { authQueries } from '~/composables/auth'
 const route = useRoute()
 const hackathonIdOrShortCode = computed(() => (route.params.hackathonId as string | undefined) ?? null)
 
-const { data: hackathon } = useQuery(
+const { data: hackathon, isLoading: isLoadingHackathon } = useQuery(
   computed(() => ({
     ...participantHackathonQueries.detail(hackathonIdOrShortCode.value ?? ''),
     enabled: !!hackathonIdOrShortCode.value,
@@ -18,7 +18,7 @@ const { data: hackathon } = useQuery(
 
 const resolvedHackathonId = computed(() => hackathon.value?.id ?? null)
 
-const { data: user } = useQuery(authQueries.whoAmI)
+const { data: user, isLoading: isLoadingUser } = useQuery(authQueries.whoAmI)
 
 const { data: organizersData, isLoading: isLoadingOrganizers } = useQuery(
   computed(() => ({
@@ -33,14 +33,16 @@ const isOrganizer = computed(() => {
   return organizersData.value?.organizers?.some(org => org.userId === user.value?.id) ?? false
 })
 
-watch([isOrganizer, isLoadingOrganizers], ([org, loading]) => {
+const isLoadingOrganizerCheck = computed(() => isLoadingHackathon.value || isLoadingUser.value || isLoadingOrganizers.value)
+
+watch([isOrganizer, isLoadingOrganizerCheck], ([org, loading]) => {
   if (!loading && !org) {
     navigateTo(`/dash/${hackathonIdOrShortCode.value}`)
   }
 })
 
 // Poll challenges every 10 seconds for live updates
-const { data: challengesData, dataUpdatedAt } = useQuery(
+const { data: challengesData, dataUpdatedAt, isLoading: isLoadingChallenges } = useQuery(
   computed(() => ({
     ...challengeQueries.list(resolvedHackathonId.value ?? ''),
     enabled: !!resolvedHackathonId.value && isOrganizer.value,
@@ -75,6 +77,37 @@ let _notifId = 0
 
 // Previous counts for change detection
 const prevCounts = ref(new Map<string, number>())
+const dashboardElement = ref<HTMLElement | null>(null)
+const isFullscreen = ref(false)
+
+function syncFullscreenState() {
+  isFullscreen.value = !!document.fullscreenElement
+}
+
+async function toggleFullscreen() {
+  if (!import.meta.client) return
+  if (!document.fullscreenEnabled) return
+  try {
+    if (!document.fullscreenElement) {
+      await (dashboardElement.value ?? document.documentElement).requestFullscreen()
+    }
+    else {
+      await document.exitFullscreen()
+    }
+  }
+  catch (error) {
+    console.error('Failed to toggle fullscreen mode', error)
+    syncFullscreenState()
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('fullscreenchange', syncFullscreenState)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('fullscreenchange', syncFullscreenState)
+})
 
 // When data updates, accumulate history and emit notifications
 watch(dataUpdatedAt, () => {
@@ -192,6 +225,16 @@ function hasChart(challengeId: string | null | undefined): boolean {
 
         <template #trailing>
           <div class="flex items-center gap-3">
+            <UButton
+              :icon="isFullscreen ? 'i-lucide-shrink' : 'i-lucide-expand'"
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              :aria-label="isFullscreen ? 'Exit full screen' : 'View full screen'"
+              @click="toggleFullscreen"
+            >
+              {{ isFullscreen ? 'Exit full screen' : 'Full screen' }}
+            </UButton>
             <div class="text-sm text-(--ui-text-muted)">
               <span class="font-semibold text-(--ui-text)">{{ totalTeams }}</span> teams total
             </div>
@@ -208,14 +251,23 @@ function hasChart(challengeId: string | null | undefined): boolean {
     </template>
 
     <template #body>
-      <!-- Full-screen dark dashboard -->
-      <div class="h-full min-h-0 overflow-y-auto bg-gray-950 p-6">
+      <!-- Full-screen light dashboard -->
+      <div
+        ref="dashboardElement"
+        class="h-full min-h-0 overflow-y-auto bg-gray-50 p-6"
+      >
         <!-- Loading state -->
         <div
-          v-if="!challenges.length"
-          class="flex items-center justify-center h-64 text-gray-500 text-sm"
+          v-if="isLoadingOrganizerCheck || isLoadingChallenges"
+          class="flex items-center justify-center h-64 text-gray-600 text-sm"
         >
-          Loading challenges…
+          Loading dashboard…
+        </div>
+        <div
+          v-else-if="!challenges.length"
+          class="flex items-center justify-center h-64 text-gray-600 text-sm"
+        >
+          No challenges available yet.
         </div>
 
         <!-- Challenge grid -->
@@ -226,20 +278,20 @@ function hasChart(challengeId: string | null | undefined): boolean {
           <div
             v-for="challenge in sortedChallenges"
             :key="challenge.id ?? ''"
-            class="relative bg-gray-900 border border-gray-800 rounded-2xl p-6 flex flex-col gap-3 overflow-hidden group transition-all duration-300 hover:border-orange-500/40 hover:shadow-[0_0_32px_-4px_rgba(249,115,22,0.15)]"
+            class="relative bg-white border border-gray-200 rounded-2xl p-6 flex flex-col gap-3 overflow-hidden group transition-all duration-300 hover:border-orange-500/40 hover:shadow-[0_0_32px_-4px_rgba(249,115,22,0.15)]"
           >
             <!-- Subtle gradient accent -->
-            <div class="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-transparent pointer-events-none" />
+            <div class="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-transparent pointer-events-none" />
 
             <!-- Challenge title -->
-            <p class="text-gray-400 text-xs font-semibold uppercase tracking-widest truncate">
+            <p class="text-gray-500 text-xs font-semibold uppercase tracking-widest truncate">
               {{ challenge.title }}
             </p>
 
             <!-- Team count -->
             <div class="flex items-end gap-3">
               <span
-                class="text-white font-bold tabular-nums leading-none"
+                class="text-gray-900 font-bold tabular-nums leading-none"
                 style="font-size: clamp(3rem, 5vw, 5rem)"
               >
                 {{ challenge.teamCount ?? 0 }}
@@ -298,7 +350,7 @@ function hasChart(challengeId: string | null | undefined): boolean {
                 v-else
                 class="w-full h-full flex items-center"
               >
-                <div class="w-full h-px bg-gray-800" />
+                <div class="w-full h-px bg-gray-200" />
               </div>
             </div>
           </div>

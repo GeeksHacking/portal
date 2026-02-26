@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using SqlSugar;
 using StackExchange.Redis;
 
@@ -7,6 +8,10 @@ namespace HackOMania.Api.Services;
 public class SqlSugarRedisCache(IConnectionMultiplexer connectionMultiplexer) : ICacheService
 {
     private const string SqlSugarCachePrefix = "SqlSugarDataCache.";
+    private static readonly Regex WhereClauseRegex = new(
+        @"\bWHERE\b",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled
+    );
     private readonly IDatabase _db = connectionMultiplexer.GetDatabase();
 
     public void Add<TV>(string key, TV value)
@@ -114,13 +119,9 @@ public class SqlSugarRedisCache(IConnectionMultiplexer connectionMultiplexer) : 
 
     private static string? GetSemanticSegment(string key)
     {
-        if (key.Contains("`Hackathon`", StringComparison.OrdinalIgnoreCase))
+        if (key.Contains("Hackathon", StringComparison.OrdinalIgnoreCase))
         {
-            if (
-                key.Contains(" where ", StringComparison.OrdinalIgnoreCase)
-                || key.Contains(".`Id`", StringComparison.OrdinalIgnoreCase)
-                || key.Contains("ShortCode", StringComparison.OrdinalIgnoreCase)
-            )
+            if (WhereClauseRegex.IsMatch(key))
             {
                 return "hackathon-details";
             }

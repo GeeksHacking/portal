@@ -12,7 +12,7 @@ The HackOMania Event Platform uses a dual-layer caching system to improve perfor
    - Implementation: `SqlSugarRedisCache` service
    - Uses StackExchange.Redis via Aspire integration
    - JSON serialization for cache entries
-   - Keys follow pattern: `SqlSugarDataCache.*`
+   - Keys follow pattern: `SqlSugarDataCache.{semantic-segment}.*` for hot hackathon queries (fallback remains `SqlSugarDataCache.*`)
 
 2. **Fallback Cache: NoOpCacheService**
    - Activated when Redis is unavailable during startup

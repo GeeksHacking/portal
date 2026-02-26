@@ -81,17 +81,23 @@ const dashboardElement = ref<HTMLElement | null>(null)
 const isFullscreen = ref(false)
 
 function syncFullscreenState() {
-  if (!import.meta.client) return
   isFullscreen.value = !!document.fullscreenElement
 }
 
 async function toggleFullscreen() {
   if (!import.meta.client) return
-  if (!document.fullscreenElement) {
-    await (dashboardElement.value ?? document.documentElement).requestFullscreen()
+  if (!document.fullscreenEnabled) return
+  try {
+    if (!document.fullscreenElement) {
+      await (dashboardElement.value ?? document.documentElement).requestFullscreen()
+    }
+    else {
+      await document.exitFullscreen()
+    }
   }
-  else {
-    await document.exitFullscreen()
+  catch (error) {
+    console.error('Failed to toggle fullscreen mode', error)
+    syncFullscreenState()
   }
 }
 
@@ -255,7 +261,7 @@ function hasChart(challengeId: string | null | undefined): boolean {
           v-if="isLoadingOrganizerCheck || isLoadingChallenges"
           class="flex items-center justify-center h-64 text-gray-500 text-sm"
         >
-          Loading challenges…
+          Loading dashboard…
         </div>
         <div
           v-else-if="!challenges.length"

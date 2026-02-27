@@ -3,17 +3,20 @@ import { computed, ref } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { challengeQueries, challengeOrganizerQueries, useCreateChallengeMutation, useDeleteChallengeMutation, useUpdateChallengeMutation } from '~/composables/challenges'
 
-const props = defineProps<{
-  hackathonId: string
-  isOrganizer: boolean
-}>()
+const route = useRoute()
+const props = withDefaults(defineProps<{
+  hackathonId?: string
+}>(), {
+  hackathonId: '',
+})
+const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
 const queryClient = useQueryClient()
 
 const { data: challengesData, isLoading: isLoadingChallenges } = useQuery(
   computed(() => ({
-    ...challengeOrganizerQueries.list(props.hackathonId),
-    enabled: !!props.hackathonId && props.isOrganizer,
+    ...challengeOrganizerQueries.list(hackathonId.value),
+    enabled: !!hackathonId.value,
   })),
 )
 
@@ -22,8 +25,8 @@ const challenges = computed(() => challengesData.value?.challenges ?? [])
 // Fetch participant challenges list for team counts
 const { data: participantChallengesData } = useQuery(
   computed(() => ({
-    ...challengeQueries.list(props.hackathonId),
-    enabled: !!props.hackathonId && props.isOrganizer,
+    ...challengeQueries.list(hackathonId.value),
+    enabled: !!hackathonId.value,
   })),
 )
 
@@ -38,9 +41,9 @@ const teamCountByChallengeId = computed(() => {
 })
 
 // Mutations
-const createMutation = useCreateChallengeMutation(props.hackathonId)
-const updateMutation = useUpdateChallengeMutation(props.hackathonId)
-const deleteMutation = useDeleteChallengeMutation(props.hackathonId)
+const createMutation = useCreateChallengeMutation(hackathonId)
+const updateMutation = useUpdateChallengeMutation(hackathonId)
+const deleteMutation = useDeleteChallengeMutation(hackathonId)
 
 // Modal state
 const isModalOpen = ref(false)
@@ -93,14 +96,14 @@ async function handleSubmit() {
   else {
     await createMutation.mutateAsync(form.value)
   }
-  await queryClient.invalidateQueries({ queryKey: ['hackathons', props.hackathonId, 'challenges', 'organizer'] })
+  await queryClient.invalidateQueries({ queryKey: ['hackathons', hackathonId.value, 'challenges', 'organizer'] })
   isModalOpen.value = false
   resetForm()
 }
 
 async function handleDelete(challengeId: string) {
   await deleteMutation.mutateAsync(challengeId)
-  await queryClient.invalidateQueries({ queryKey: ['hackathons', props.hackathonId, 'challenges', 'organizer'] })
+  await queryClient.invalidateQueries({ queryKey: ['hackathons', hackathonId.value, 'challenges', 'organizer'] })
 }
 
 const isSubmitting = computed(() => createMutation.isPending.value || updateMutation.isPending.value)

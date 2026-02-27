@@ -1,4 +1,6 @@
 import { queryOptions, useMutation } from '@tanstack/vue-query'
+import { toValue } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
 import type { HackOManiaApiEndpointsOrganizersHackathonJudgesCreateRequest, HackOManiaApiEndpointsOrganizersHackathonJudgesUpdateRequest } from '~/api-client/models'
 
 export const judgeQueries = {
@@ -24,21 +26,21 @@ export const judgeQueries = {
     }),
 }
 
-export function useCreateJudgeMutation(hackathonId: string) {
+export function useCreateJudgeMutation(hackathonId: MaybeRefOrGetter<string>) {
   return useMutation({
     mutationFn(data: HackOManiaApiEndpointsOrganizersHackathonJudgesCreateRequest) {
       return useNuxtApp()
-        .$apiClient.organizers.hackathons.byHackathonId(hackathonId)
+        .$apiClient.organizers.hackathons.byHackathonId(toValue(hackathonId))
         .judges.post(data)
     },
   })
 }
 
-export function useUpdateJudgeMutation(hackathonId: string) {
+export function useUpdateJudgeMutation(hackathonId: MaybeRefOrGetter<string>) {
   return useMutation({
     mutationFn({ judgeId, data }: { judgeId: string, data: HackOManiaApiEndpointsOrganizersHackathonJudgesUpdateRequest }) {
       return useNuxtApp()
-        .$apiClient.organizers.hackathons.byHackathonId(hackathonId)
+        .$apiClient.organizers.hackathons.byHackathonId(toValue(hackathonId))
         .judges.byJudgeId(judgeId)
         .patch(data)
     },

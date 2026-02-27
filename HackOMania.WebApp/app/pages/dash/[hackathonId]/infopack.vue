@@ -5,15 +5,18 @@ import * as XLSX from 'xlsx'
 import { participantOrganizerQueries } from '~/composables/participants'
 import { teamOrganizerQueries } from '~/composables/teams'
 
-const props = defineProps<{
-  hackathonId: string
-  isOrganizer: boolean
-}>()
+const route = useRoute()
+const props = withDefaults(defineProps<{
+  hackathonId?: string
+}>(), {
+  hackathonId: '',
+})
+const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
 // Cache keys for localStorage
 const CACHE_KEY_PREFIX = 'infopack-count'
 function getCacheKey(dataType: string) {
-  return `${CACHE_KEY_PREFIX}-${props.hackathonId}-${dataType}`
+  return `${CACHE_KEY_PREFIX}-${hackathonId.value}-${dataType}`
 }
 
 // Get cached count from localStorage
@@ -32,16 +35,16 @@ function setCachedCount(dataType: string, count: number) {
 // Fetch participants data
 const { data: participantsData, isLoading: isLoadingParticipants } = useQuery(
   computed(() => ({
-    ...participantOrganizerQueries.list(props.hackathonId),
-    enabled: !!props.hackathonId && props.isOrganizer,
+    ...participantOrganizerQueries.list(hackathonId.value),
+    enabled: !!hackathonId.value,
   })),
 )
 
 // Fetch teams data
 const { data: teamsData, isLoading: isLoadingTeams } = useQuery(
   computed(() => ({
-    ...teamOrganizerQueries.list(props.hackathonId),
-    enabled: !!props.hackathonId && props.isOrganizer,
+    ...teamOrganizerQueries.list(hackathonId.value),
+    enabled: !!hackathonId.value,
   })),
 )
 

@@ -1,5 +1,5 @@
 import { queryOptions, useMutation } from '@tanstack/vue-query'
-import { unref, type MaybeRef, type Ref } from 'vue'
+import { toValue, unref, type MaybeRef, type MaybeRefOrGetter, type Ref } from 'vue'
 import type {
   HackOManiaApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitRequest,
   HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto,
@@ -19,32 +19,32 @@ export async function fetchOrganizerQuestions(hackathonId: string) {
     .registration.questions.get()
 }
 
-export function useUpdateQuestionMutation(hackathonId: string) {
+export function useUpdateQuestionMutation(hackathonId: MaybeRefOrGetter<string>) {
   return useMutation({
     mutationFn({ questionId, data }: { questionId: string, data: HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest }) {
       return useNuxtApp().$apiClient.organizers.hackathons
-        .byHackathonId(hackathonId)
+        .byHackathonId(toValue(hackathonId))
         .registration.questions.byQuestionId(questionId)
         .patch(data, undefined)
     },
   })
 }
 
-export function useCreateQuestionMutation(hackathonId: string) {
+export function useCreateQuestionMutation(hackathonId: MaybeRefOrGetter<string>) {
   return useMutation({
     mutationFn(data: HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateRequest) {
       return useNuxtApp().$apiClient.organizers.hackathons
-        .byHackathonId(hackathonId)
+        .byHackathonId(toValue(hackathonId))
         .registration.questions.post(data)
     },
   })
 }
 
-export function useDeleteQuestionMutation(hackathonId: string) {
+export function useDeleteQuestionMutation(hackathonId: MaybeRefOrGetter<string>) {
   return useMutation({
     mutationFn(questionId: string) {
       return useNuxtApp().$apiClient.organizers.hackathons
-        .byHackathonId(hackathonId)
+        .byHackathonId(toValue(hackathonId))
         .registration.questions.byQuestionId(questionId)
         .delete()
     },

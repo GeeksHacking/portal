@@ -1,4 +1,6 @@
 import { queryOptions, useMutation } from '@tanstack/vue-query'
+import { toValue } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
 import type { HackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest, HackOManiaApiEndpointsOrganizersHackathonChallengesUpdateRequest } from '~/api-client/models'
 
 export const challengeQueries = {
@@ -47,32 +49,32 @@ export const challengeOrganizerQueries = {
     }),
 }
 
-export function useCreateChallengeMutation(hackathonId: string) {
+export function useCreateChallengeMutation(hackathonId: MaybeRefOrGetter<string>) {
   return useMutation({
     mutationFn(data: HackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest) {
       return useNuxtApp()
-        .$apiClient.organizers.hackathons.byHackathonId(hackathonId)
+        .$apiClient.organizers.hackathons.byHackathonId(toValue(hackathonId))
         .challenges.post(data)
     },
   })
 }
 
-export function useDeleteChallengeMutation(hackathonId: string) {
+export function useDeleteChallengeMutation(hackathonId: MaybeRefOrGetter<string>) {
   return useMutation({
     mutationFn(challengeId: string) {
       return useNuxtApp()
-        .$apiClient.organizers.hackathons.byHackathonId(hackathonId)
+        .$apiClient.organizers.hackathons.byHackathonId(toValue(hackathonId))
         .challenges.byChallengeId(challengeId)
         .delete()
     },
   })
 }
 
-export function useUpdateChallengeMutation(hackathonId: string) {
+export function useUpdateChallengeMutation(hackathonId: MaybeRefOrGetter<string>) {
   return useMutation({
     mutationFn({ challengeId, data }: { challengeId: string, data: HackOManiaApiEndpointsOrganizersHackathonChallengesUpdateRequest }) {
       return useNuxtApp()
-        .$apiClient.organizers.hackathons.byHackathonId(hackathonId)
+        .$apiClient.organizers.hackathons.byHackathonId(toValue(hackathonId))
         .challenges.byChallengeId(challengeId)
         .patch(data)
     },

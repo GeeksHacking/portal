@@ -9,17 +9,20 @@ import type {
 
 type Question = HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto
 
-const props = defineProps<{
-  hackathonId: string
-  isOrganizer: boolean
-}>()
+const route = useRoute()
+const props = withDefaults(defineProps<{
+  hackathonId?: string
+}>(), {
+  hackathonId: '',
+})
+const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
 const queryClient = useQueryClient()
 
 const { data: questionsData, isLoading } = useQuery(
   computed(() => ({
-    ...registrationQuestionOrganizerQueries.list(props.hackathonId),
-    enabled: !!props.hackathonId && props.isOrganizer,
+    ...registrationQuestionOrganizerQueries.list(hackathonId.value),
+    enabled: !!hackathonId.value,
   })),
 )
 
@@ -58,20 +61,20 @@ const questionTypes = [
   { value: 10, label: 'Dropdown' },
 ]
 
-const updateMutation = useUpdateQuestionMutation(props.hackathonId)
+const updateMutation = useUpdateQuestionMutation(hackathonId)
 const initMutation = useInitQuestionMutation()
-const createMutation = useCreateQuestionMutation(props.hackathonId)
-const deleteMutation = useDeleteQuestionMutation(props.hackathonId)
+const createMutation = useCreateQuestionMutation(hackathonId)
+const deleteMutation = useDeleteQuestionMutation(hackathonId)
 
 async function invalidateQuestions() {
   await queryClient.invalidateQueries({
-    queryKey: ['hackathons', props.hackathonId, 'registration', 'questions', 'organizer'],
+    queryKey: ['hackathons', hackathonId.value, 'registration', 'questions', 'organizer'],
   })
 }
 
 async function initializeQuestions() {
-  if (!props.hackathonId) return
-  await initMutation.mutateAsync(props.hackathonId)
+  if (!hackathonId.value) return
+  await initMutation.mutateAsync(hackathonId.value)
   await invalidateQuestions()
 }
 

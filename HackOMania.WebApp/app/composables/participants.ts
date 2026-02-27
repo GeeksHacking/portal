@@ -1,4 +1,6 @@
 import { queryOptions, useMutation } from '@tanstack/vue-query'
+import { toValue } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
 import type { HackOManiaApiEndpointsOrganizersHackathonParticipantsReviewRequest } from '~/api-client/models'
 
 export const participantOrganizerQueries = {
@@ -25,11 +27,11 @@ export const participantOrganizerQueries = {
     }),
 }
 
-export function useReviewParticipantMutation(hackathonId: string) {
+export function useReviewParticipantMutation(hackathonId: MaybeRefOrGetter<string>) {
   return useMutation({
     mutationFn(data: { participantUserId: string, review: HackOManiaApiEndpointsOrganizersHackathonParticipantsReviewRequest }) {
       return useNuxtApp()
-        .$apiClient.organizers.hackathons.byHackathonId(hackathonId)
+        .$apiClient.organizers.hackathons.byHackathonId(toValue(hackathonId))
         .participants.byParticipantUserId(data.participantUserId)
         .review.post(data.review)
     },

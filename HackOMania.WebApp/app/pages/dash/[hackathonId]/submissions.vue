@@ -4,15 +4,18 @@ import { useQuery } from '@tanstack/vue-query'
 import { useVirtualList } from '@vueuse/core'
 import { submissionOrganizerQueries } from '~/composables/submissions'
 
-const props = defineProps<{
-  hackathonId: string
-  isOrganizer: boolean
-}>()
+const route = useRoute()
+const props = withDefaults(defineProps<{
+  hackathonId?: string
+}>(), {
+  hackathonId: '',
+})
+const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
 const { data: submissionsData, isLoading: isLoadingSubmissions } = useQuery(
   computed(() => ({
-    ...submissionOrganizerQueries.list(props.hackathonId),
-    enabled: !!props.hackathonId && props.isOrganizer,
+    ...submissionOrganizerQueries.list(hackathonId.value),
+    enabled: !!hackathonId.value,
   })),
 )
 

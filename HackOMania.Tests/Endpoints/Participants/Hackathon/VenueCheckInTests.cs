@@ -269,6 +269,80 @@ public class VenueCheckInTests
         await Assert.That(participant).IsNotNull();
         await Assert.That(participant!.IsCurrentlyCheckedIn).IsTrue();
     }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task OrganizerCheckOutEndpoint_ShouldAllowOrganizerToCheckOutParticipant(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        var hackathonRequest = CreateValidHackathonRequest(Guid.NewGuid().ToString()[..8]);
+        var hackathonResponse = await client.HttpClient.PostAsJsonAsync(
+            "/organizers/hackathons",
+            hackathonRequest
+        );
+        var hackathon = await hackathonResponse.Content.ReadFromJsonAsync<HackathonResponse>();
+        await client.HttpClient.PostAsync($"/participants/hackathons/{hackathon!.Id}/join", null);
+        var participantUserId = await GetCurrentUserIdAsync(client.HttpClient);
+
+        await client.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{hackathon.Id}/participants/{participantUserId}/venue/check-in",
+            new { }
+        );
+
+        var checkOutResponse = await client.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{hackathon.Id}/participants/{participantUserId}/venue/check-out",
+            new { }
+        );
+
+        await Assert.That(checkOutResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        var checkOut = await checkOutResponse.Content.ReadFromJsonAsync<CheckOutResponse>();
+        await Assert.That(checkOut).IsNotNull();
+        await Assert.That(checkOut!.IsCheckedIn).IsFalse();
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task OrganizerHistoryAndAuditTrail_ShouldContainCheckInAndCheckOutEvents(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        var hackathonRequest = CreateValidHackathonRequest(Guid.NewGuid().ToString()[..8]);
+        var hackathonResponse = await client.HttpClient.PostAsJsonAsync(
+            "/organizers/hackathons",
+            hackathonRequest
+        );
+        var hackathon = await hackathonResponse.Content.ReadFromJsonAsync<HackathonResponse>();
+        await client.HttpClient.PostAsync($"/participants/hackathons/{hackathon!.Id}/join", null);
+        var participantUserId = await GetCurrentUserIdAsync(client.HttpClient);
+
+        await client.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{hackathon.Id}/participants/{participantUserId}/venue/check-in",
+            new { }
+        );
+        await client.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{hackathon.Id}/participants/{participantUserId}/venue/check-out",
+            new { }
+        );
+
+        var historyResponse = await client.HttpClient.GetAsync(
+            $"/organizers/hackathons/{hackathon.Id}/participants/{participantUserId}/venue/history"
+        );
+        await Assert.That(historyResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        var history = await historyResponse.Content.ReadFromJsonAsync<OrganizerVenueHistoryResponse>();
+        await Assert.That(history).IsNotNull();
+        await Assert.That(history!.History.Count).IsGreaterThan(0);
+        await Assert.That(history.History.Any(x => x.CheckOutTime is not null)).IsTrue();
+
+        var overviewResponse = await client.HttpClient.GetAsync(
+            $"/organizers/hackathons/{hackathon.Id}/venue/overview"
+        );
+        var overview = await overviewResponse.Content.ReadFromJsonAsync<VenueOverviewResponse>();
+        await Assert.That(overviewResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(overview).IsNotNull();
+        await Assert.That(overview!.AuditTrail.Any(a => a.Action == "checked in")).IsTrue();
+        await Assert.That(overview.AuditTrail.Any(a => a.Action == "checked out")).IsTrue();
+    }
 }
 
 public class CheckInResponse
@@ -288,6 +362,7 @@ public class CheckOutResponse
 public class VenueOverviewResponse
 {
     public List<ParticipantCheckInDto> Participants { get; set; } = new();
+    public List<VenueAuditTrailItemDto> AuditTrail { get; set; } = new();
 }
 
 public class ParticipantCheckInDto
@@ -299,4 +374,29 @@ public class ParticipantCheckInDto
     public DateTimeOffset? LastCheckInTime { get; set; }
     public DateTimeOffset? LastCheckOutTime { get; set; }
     public int TotalCheckIns { get; set; }
+}
+
+public class VenueAuditTrailItemDto
+{
+    public Guid ParticipantId { get; set; }
+    public Guid UserId { get; set; }
+    public string UserName { get; set; } = null!;
+    public string Action { get; set; } = null!;
+    public DateTimeOffset Timestamp { get; set; }
+}
+
+public class OrganizerVenueHistoryResponse
+{
+    public Guid ParticipantId { get; set; }
+    public Guid UserId { get; set; }
+    public string UserName { get; set; } = null!;
+    public bool IsCurrentlyCheckedIn { get; set; }
+    public List<OrganizerVenueHistoryItem> History { get; set; } = new();
+}
+
+public class OrganizerVenueHistoryItem
+{
+    public DateTimeOffset CheckInTime { get; set; }
+    public DateTimeOffset? CheckOutTime { get; set; }
+    public bool IsCheckedIn { get; set; }
 }

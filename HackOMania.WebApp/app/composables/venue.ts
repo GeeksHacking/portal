@@ -23,3 +23,40 @@ export function useCheckInMutation(hackathonId: string) {
     },
   })
 }
+
+export function useCheckOutMutation(hackathonId: string) {
+  return useMutation({
+    async mutationFn(participantUserId: string) {
+      const { public: { api } } = useRuntimeConfig()
+      return await $fetch<{ id: string, checkOutTime: string, isCheckedIn: boolean }>(
+        `${api}/organizers/hackathons/${hackathonId}/participants/${participantUserId}/venue/check-out`,
+        {
+          method: 'POST',
+          credentials: 'include',
+        },
+      )
+    },
+  })
+}
+
+export const venueHistoryQueries = {
+  participant: (hackathonId: string, participantUserId: string) =>
+    queryOptions({
+      queryKey: ['hackathons', hackathonId, 'venue', 'history', participantUserId],
+      async queryFn() {
+        const { public: { api } } = useRuntimeConfig()
+        return await $fetch<{
+          participantId: string
+          userId: string
+          userName: string
+          isCurrentlyCheckedIn: boolean
+          history: { checkInTime: string, checkOutTime?: string | null, isCheckedIn: boolean }[]
+        }>(
+          `${api}/organizers/hackathons/${hackathonId}/participants/${participantUserId}/venue/history`,
+          {
+            credentials: 'include',
+          },
+        )
+      },
+    }),
+}

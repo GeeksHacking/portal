@@ -5,22 +5,25 @@ import { useVirtualList } from '@vueuse/core'
 import { teamOrganizerQueries } from '~/composables/teams'
 import { participantOrganizerQueries } from '~/composables/participants'
 
-const props = defineProps<{
-  hackathonId: string
-  isOrganizer: boolean
-}>()
+const route = useRoute()
+const props = withDefaults(defineProps<{
+  hackathonId?: string
+}>(), {
+  hackathonId: '',
+})
+const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
 const { data: teamsData, isLoading: isLoadingTeams } = useQuery(
   computed(() => ({
-    ...teamOrganizerQueries.list(props.hackathonId),
-    enabled: !!props.hackathonId && props.isOrganizer,
+    ...teamOrganizerQueries.list(hackathonId.value),
+    enabled: !!hackathonId.value,
   })),
 )
 
 const { data: participantsData } = useQuery(
   computed(() => ({
-    ...participantOrganizerQueries.list(props.hackathonId),
-    enabled: !!props.hackathonId && props.isOrganizer,
+    ...participantOrganizerQueries.list(hackathonId.value),
+    enabled: !!hackathonId.value,
   })),
 )
 

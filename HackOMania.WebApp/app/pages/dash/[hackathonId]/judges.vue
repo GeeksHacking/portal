@@ -4,17 +4,20 @@ import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { useVirtualList } from '@vueuse/core'
 import { judgeQueries, useCreateJudgeMutation, useUpdateJudgeMutation } from '~/composables/judges'
 
-const props = defineProps<{
-  hackathonId: string
-  isOrganizer: boolean
-}>()
+const route = useRoute()
+const props = withDefaults(defineProps<{
+  hackathonId?: string
+}>(), {
+  hackathonId: '',
+})
+const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
 const queryClient = useQueryClient()
 
 const { data: judgesData, isLoading: isLoadingJudges } = useQuery(
   computed(() => ({
-    ...judgeQueries.list(props.hackathonId),
-    enabled: !!props.hackathonId && props.isOrganizer,
+    ...judgeQueries.list(hackathonId.value),
+    enabled: !!hackathonId.value,
   })),
 )
 
@@ -30,8 +33,8 @@ const {
 })
 
 // Mutations
-const createMutation = useCreateJudgeMutation(props.hackathonId)
-const updateMutation = useUpdateJudgeMutation(props.hackathonId)
+const createMutation = useCreateJudgeMutation(hackathonId.value)
+const updateMutation = useUpdateJudgeMutation(hackathonId.value)
 
 // Modal state
 const isModalOpen = ref(false)
@@ -85,7 +88,7 @@ async function handleSubmit() {
   else {
     await createMutation.mutateAsync({ name: form.value.name })
   }
-  await queryClient.invalidateQueries({ queryKey: ['hackathons', props.hackathonId, 'judges'] })
+  await queryClient.invalidateQueries({ queryKey: ['hackathons', hackathonId.value, 'judges'] })
   isModalOpen.value = false
   resetForm()
 }

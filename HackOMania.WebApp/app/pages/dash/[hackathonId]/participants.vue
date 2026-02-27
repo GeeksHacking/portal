@@ -18,18 +18,21 @@ import {
   HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject,
 } from '~/api-client/models'
 
-const props = defineProps<{
-  hackathonId: string
-  isOrganizer: boolean
-}>()
+const route = useRoute()
+const props = withDefaults(defineProps<{
+  hackathonId?: string
+}>(), {
+  hackathonId: '',
+})
+const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
 const toast = useToast()
 const queryClient = useQueryClient()
 
 const { data: participantsData, isLoading: isLoadingParticipants } = useQuery(
   computed(() => ({
-    ...participantOrganizerQueries.list(props.hackathonId),
-    enabled: !!props.hackathonId && props.isOrganizer,
+    ...participantOrganizerQueries.list(hackathonId.value),
+    enabled: !!hackathonId.value,
   })),
 )
 
@@ -270,7 +273,7 @@ const expandedParticipantId = ref<string | null>(null)
 
 const { data: participantDetail, isLoading: isLoadingDetail } = useQuery(
   computed(() => ({
-    ...participantOrganizerQueries.detail(props.hackathonId, expandedParticipantId.value ?? ''),
+    ...participantOrganizerQueries.detail(hackathonId.value, expandedParticipantId.value ?? ''),
     enabled: !!expandedParticipantId.value,
   })),
 )
@@ -278,8 +281,8 @@ const { data: participantDetail, isLoading: isLoadingDetail } = useQuery(
 // Fetch registration questions for ordering
 const { data: questionsData } = useQuery(
   computed(() => ({
-    ...registrationQuestionQueries.list(props.hackathonId),
-    enabled: !!props.hackathonId && props.isOrganizer,
+    ...registrationQuestionQueries.list(hackathonId.value),
+    enabled: !!hackathonId.value,
   })),
 )
 
@@ -434,7 +437,7 @@ function toggleParticipant(participantId: string) {
 }
 
 // Review mutation
-const reviewMutation = useReviewParticipantMutation(props.hackathonId)
+const reviewMutation = useReviewParticipantMutation(hackathonId.value)
 
 // Modal state
 const isReviewModalOpen = ref(false)
@@ -534,7 +537,7 @@ async function handleReview(decision: 'accept' | 'reject') {
         reason: trimmedReason,
       },
     })
-    await queryClient.invalidateQueries({ queryKey: ['hackathons', props.hackathonId, 'participants', 'organizer'] })
+    await queryClient.invalidateQueries({ queryKey: ['hackathons', hackathonId.value, 'participants', 'organizer'] })
     closeReviewModal()
     toast.add({
       title: 'Review submitted',
@@ -545,7 +548,7 @@ async function handleReview(decision: 'accept' | 'reject') {
   catch (error) {
     const statusCode = getErrorStatusCode(error)
     if (statusCode === 409) {
-      await queryClient.invalidateQueries({ queryKey: ['hackathons', props.hackathonId, 'participants', 'organizer'] })
+      await queryClient.invalidateQueries({ queryKey: ['hackathons', hackathonId.value, 'participants', 'organizer'] })
       closeReviewModal()
       toast.add({
         title: 'Already reviewed',

@@ -63,6 +63,48 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             })
             .ToList();
 
-        await Send.OkAsync(new Response { Participants = participantDtos }, ct);
+        var userNameByParticipantId = participants.ToDictionary(
+            p => p.Participant.Id,
+            p => p.User.FirstName + " " + p.User.LastName
+        );
+        var userIdByParticipantId = participants.ToDictionary(p => p.Participant.Id, p => p.Participant.UserId);
+
+        var auditTrail = checkIns
+            .SelectMany(c =>
+            {
+                var userName = userNameByParticipantId.GetValueOrDefault(c.ParticipantId, "Unknown");
+                var events = new List<VenueAuditTrailItemDto>
+                {
+                    new()
+                    {
+                        ParticipantId = c.ParticipantId,
+                        UserId = userIdByParticipantId.GetValueOrDefault(c.ParticipantId),
+                        UserName = userName,
+                        Action = "checked in",
+                        Timestamp = c.CheckInTime,
+                    },
+                };
+
+                if (c.CheckOutTime.HasValue)
+                {
+                    events.Add(
+                        new VenueAuditTrailItemDto
+                        {
+                            ParticipantId = c.ParticipantId,
+                            UserId = userIdByParticipantId.GetValueOrDefault(c.ParticipantId),
+                            UserName = userName,
+                            Action = "checked out",
+                            Timestamp = c.CheckOutTime.Value,
+                        }
+                    );
+                }
+
+                return events;
+            })
+            .OrderByDescending(e => e.Timestamp)
+            .Take(50)
+            .ToList();
+
+        await Send.OkAsync(new Response { Participants = participantDtos, AuditTrail = auditTrail }, ct);
     }
 }

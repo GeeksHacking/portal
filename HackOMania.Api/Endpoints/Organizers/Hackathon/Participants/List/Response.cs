@@ -14,6 +14,7 @@ public class ParticipantItem
     public required DateTimeOffset CreatedAt { get; init; }
     public required Guid Id { get; init; }
     public required string Name { get; init; }
+    public string? Email { get; init; }
     public Guid? TeamId { get; init; }
     public string? TeamName { get; init; }
     public required ParticipantConcludedStatus ConcludedStatus { get; init; }

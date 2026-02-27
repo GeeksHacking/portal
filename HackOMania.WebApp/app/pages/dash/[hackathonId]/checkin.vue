@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, watch, nextTick, onUnmounted, computed } from 'vue'
-import { useQuery } from '@tanstack/vue-query'
+import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { Html5Qrcode } from 'html5-qrcode'
-import { useCheckInMutation } from '~/composables/venue'
+import { useCheckInMutation, venueOverviewQueries } from '~/composables/venue'
 import { participantOrganizerQueries } from '~/composables/participants'
+import type { HackOManiaApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto } from '~/api-client/models'
 
 const props = defineProps<{
   hackathonId: string
@@ -19,6 +20,7 @@ const scanResult = ref<{ success: boolean, message: string, userId?: string, nam
 let autoScanTimer: ReturnType<typeof setTimeout> | null = null
 
 const checkInMutation = useCheckInMutation(props.hackathonId)
+const queryClient = useQueryClient()
 
 // Fetch participant details when we have a scanned user ID
 const { data: participantDetail } = useQuery(
@@ -27,6 +29,52 @@ const { data: participantDetail } = useQuery(
     enabled: !!scannedUserId.value,
   })),
 )
+
+// Live check-in history
+const { data: venueOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useQuery(
+  computed(() => ({
+    ...venueOverviewQueries.overview(props.hackathonId),
+    enabled: !!props.hackathonId && props.isOrganizer,
+  })),
+)
+
+type ParticipantCheckInDto = HackOManiaApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto
+
+const historySearchQuery = ref('')
+
+const allParticipants = computed<ParticipantCheckInDto[]>(() => venueOverview.value?.participants ?? [])
+
+const checkedInCount = computed(() => allParticipants.value.filter(p => p.isCurrentlyCheckedIn).length)
+
+const normalizedHistorySearch = computed(() => historySearchQuery.value.trim().toLowerCase())
+
+const filteredParticipants = computed(() => {
+  const query = normalizedHistorySearch.value
+  const sorted = [...allParticipants.value].sort((a, b) => {
+    // Checked-in participants first
+    if (a.isCurrentlyCheckedIn !== b.isCurrentlyCheckedIn) {
+      return a.isCurrentlyCheckedIn ? -1 : 1
+    }
+    return (a.userName ?? '').localeCompare(b.userName ?? '', undefined, { sensitivity: 'base' })
+  })
+  if (!query) return sorted
+  return sorted.filter(p => (p.userName ?? '').toLowerCase().includes(query))
+})
+
+const checkInTimeFormatter = new Intl.DateTimeFormat(undefined, {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+  timeZone: 'Asia/Singapore',
+})
+
+function formatCheckInTime(date: Date | null | undefined) {
+  if (!date) return '—'
+  return `${checkInTimeFormatter.format(date)} SGT`
+}
+
+function refreshOverview() {
+  queryClient.invalidateQueries({ queryKey: ['hackathons', props.hackathonId, 'venue', 'overview'] })
+}
 
 let html5QrCode: Html5Qrcode | null = null
 
@@ -133,6 +181,8 @@ const handleCheckIn = async (userId: string) => {
       userId,
       name: participantName,
     }
+    // Refresh the live overview after a successful check-in
+    refreshOverview()
   }
   catch (err) {
     console.error('Check-in error:', err)
@@ -201,7 +251,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div>
+  <div class="space-y-4">
+    <!-- Scanner Card -->
     <UCard>
       <template #header>
         <div class="flex flex-col gap-3">
@@ -230,6 +281,116 @@ onUnmounted(() => {
         <p class="mt-2">
           Participants should present their unique QR code for check-in.
         </p>
+      </div>
+    </UCard>
+
+    <!-- Live Check-In History -->
+    <UCard>
+      <template #header>
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 class="text-sm font-semibold">
+              Live Check-In History
+            </h3>
+            <p class="text-xs text-(--ui-text-muted) mt-1">
+              <span v-if="!isLoadingOverview">
+                {{ checkedInCount }} / {{ allParticipants.length }} checked in
+                <span
+                  v-if="dataUpdatedAt"
+                  class="ml-1"
+                >
+                  · Updated {{ new Date(dataUpdatedAt).toLocaleTimeString() }}
+                </span>
+              </span>
+              <span v-else>Loading...</span>
+            </p>
+          </div>
+          <UButton
+            icon="i-lucide-refresh-cw"
+            size="sm"
+            variant="soft"
+            color="neutral"
+            class="w-full sm:w-auto"
+            :loading="isLoadingOverview"
+            @click="refreshOverview"
+          >
+            Refresh
+          </UButton>
+        </div>
+      </template>
+
+      <div class="space-y-3">
+        <!-- Search -->
+        <UInput
+          v-model="historySearchQuery"
+          icon="i-lucide-search"
+          placeholder="Search by participant name..."
+          size="sm"
+        />
+
+        <!-- Loading state -->
+        <div
+          v-if="isLoadingOverview && !allParticipants.length"
+          class="text-sm text-(--ui-text-muted) py-4 text-center"
+        >
+          Loading check-in history...
+        </div>
+
+        <!-- Empty state -->
+        <div
+          v-else-if="!isLoadingOverview && !allParticipants.length"
+          class="text-sm text-(--ui-text-muted) py-4 text-center"
+        >
+          No participants found.
+        </div>
+
+        <!-- No search results -->
+        <div
+          v-else-if="filteredParticipants.length === 0"
+          class="text-sm text-(--ui-text-muted) py-4 text-center"
+        >
+          No participants matching "{{ historySearchQuery }}".
+        </div>
+
+        <!-- Participant list -->
+        <ul
+          v-else
+          class="divide-y divide-(--ui-border)"
+        >
+          <li
+            v-for="(participant, index) in filteredParticipants"
+            :key="participant.userId ?? participant.participantId ?? index"
+            class="flex items-center justify-between gap-3 py-2.5 first:pt-0 last:pb-0"
+          >
+            <div class="flex items-center gap-2 min-w-0">
+              <UIcon
+                :name="participant.isCurrentlyCheckedIn ? 'i-lucide-circle-check' : 'i-lucide-circle'"
+                :class="[
+                  'w-4 h-4 shrink-0',
+                  participant.isCurrentlyCheckedIn
+                    ? 'text-green-500'
+                    : 'text-(--ui-text-muted)',
+                ]"
+              />
+              <span class="text-sm font-medium truncate">{{ participant.userName }}</span>
+            </div>
+            <div class="flex items-center gap-2 shrink-0 text-right">
+              <div class="text-xs text-(--ui-text-muted) hidden sm:block">
+                <span v-if="participant.isCurrentlyCheckedIn">
+                  {{ formatCheckInTime(participant.lastCheckInTime) }}
+                </span>
+                <span v-else>Not checked in</span>
+              </div>
+              <UBadge
+                :color="participant.isCurrentlyCheckedIn ? 'success' : 'neutral'"
+                variant="soft"
+                size="xs"
+              >
+                {{ participant.isCurrentlyCheckedIn ? 'Checked In' : 'Absent' }}
+              </UBadge>
+            </div>
+          </li>
+        </ul>
       </div>
     </UCard>
 

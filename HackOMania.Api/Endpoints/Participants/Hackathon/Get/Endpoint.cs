@@ -19,11 +19,26 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathonCacheKey = $"hackathon:public-details:{req.HackathonIdOrShortCode}";
+        var requestedToken = (req.HackathonIdOrShortCode ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(requestedToken))
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+        var isGuidToken = Guid.TryParse(requestedToken, out var parsedHackathonId);
+        var normalizedShortCode = requestedToken.ToLower();
+        var cacheKeySegment = isGuidToken
+            ? parsedHackathonId.ToString("D")
+            : normalizedShortCode;
+        var hackathonCacheKey = $"hackathon:public-details:{cacheKeySegment}";
         var hackathon = await sql.Queryable<Entities.Hackathon>()
             .Where(h =>
-                h.Id.ToString() == req.HackathonIdOrShortCode
-                || h.ShortCode == req.HackathonIdOrShortCode
+                (isGuidToken && h.Id == parsedHackathonId)
+                || (
+                    !isGuidToken
+                    && h.ShortCode != null
+                    && SqlFunc.ToLower(h.ShortCode) == normalizedShortCode
+                )
             )
             .WithCache(hackathonCacheKey)
             .FirstAsync(ct);

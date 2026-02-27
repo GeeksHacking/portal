@@ -22,8 +22,6 @@ jobs:
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 11.0.x
-          include-prerelease: true
-          cache: true
           
       - uses: google-github-actions/auth@v3
         with:

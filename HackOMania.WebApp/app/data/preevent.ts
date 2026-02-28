@@ -29,7 +29,7 @@ export const itineraryItems: ItineraryItem[] = [
 
 export const workshopItems: WorkshopItem[] = [
   {
-    logo: '/logos/Interledger Foundation (3).png',
+    logo: '/logos/Interledger-Foundation.png',
     title: 'Open Payments',
     description: 'This tutorial introduces Open Payments, an open standard that enables third-party applications, like e-commerce stores, to gain direct, secure access to user accounts. These accounts can exist on any financial platform, from mobile money to bank accounts to digital wallets, in any currency, anywhere in the world. Learn how Open Payments simplifies transactions, enhances transparency and user control, protects sensitive financial information, and empowers developers to integrate payments with just a few API calls.',
     speakerName: 'Ioana Chiorean',

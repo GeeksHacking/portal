@@ -25,7 +25,7 @@ const links = computed<NavigationMenuItem[][]>(() => {
     },
   ]
 
-  const isParticipantView = route.path.includes('/participant') || route.path.includes('/registration')
+  const isParticipantView = (route.path.includes('/participant/') || route.path.endsWith('/participant')) || route.path.includes('/registration')
 
   if (!hackathonId.value || isParticipantView) {
     return [defaultLinks, []]

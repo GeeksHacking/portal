@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, nextTick, onUnmounted, computed } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import { useVirtualList } from '@vueuse/core'
 import { Html5Qrcode } from 'html5-qrcode'
 import { useCheckInMutation, useCheckOutMutation, venueHistoryQueries, venueOverviewQueries } from '~/composables/venue'
 import { participantOrganizerQueries } from '~/composables/participants'
@@ -83,6 +84,14 @@ const filteredParticipants = computed(() => {
   })
   if (!query) return sorted
   return sorted.filter(p => (p.userName ?? '').toLowerCase().includes(query))
+})
+const {
+  list: virtualParticipants,
+  containerProps: participantListContainerProps,
+  wrapperProps: participantListWrapperProps,
+} = useVirtualList(filteredParticipants, {
+  itemHeight: 52,
+  overscan: 8,
 })
 
 const selectedParticipant = computed(() =>
@@ -426,56 +435,49 @@ onUnmounted(() => {
 
             <div
               v-else
-              class="overflow-x-auto"
+              class="space-y-2"
             >
-              <table class="w-full text-sm">
-                <thead>
-                  <tr class="text-left text-(--ui-text-muted)">
-                    <th class="pb-2 pr-3 font-medium">
-                      Participant
-                    </th>
-                    <th class="pb-2 pr-3 font-medium">
-                      Status
-                    </th>
-                    <th class="pb-2 pr-3 font-medium">
-                      Last activity
-                    </th>
-                    <th class="pb-2 text-right font-medium">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-(--ui-border)">
-                  <tr
-                    v-for="(participant, index) in filteredParticipants"
+              <div class="grid grid-cols-[minmax(0,1.2fr)_auto_minmax(0,1fr)_auto] gap-3 text-left text-xs text-(--ui-text-muted) px-2">
+                <span class="font-medium">Participant</span>
+                <span class="font-medium">Status</span>
+                <span class="font-medium">Last activity</span>
+                <span class="font-medium text-right">Actions</span>
+              </div>
+              <div
+                v-bind="participantListContainerProps"
+                class="max-h-[28rem] overflow-y-auto"
+              >
+                <div
+                  v-bind="participantListWrapperProps"
+                  class="divide-y divide-(--ui-border)"
+                >
+                  <div
+                    v-for="{ data: participant, index } in virtualParticipants"
                     :key="participant.userId ?? participant.participantId ?? index"
+                    class="grid grid-cols-[minmax(0,1.2fr)_auto_minmax(0,1fr)_auto] gap-3 py-2.5 px-2 text-sm items-center"
                   >
-                    <td class="py-2.5 pr-3 font-medium">
-                      {{ participant.userName }}
-                    </td>
-                    <td class="py-2.5 pr-3">
-                      <UBadge
-                        :color="participant.isCurrentlyCheckedIn ? 'success' : 'neutral'"
-                        variant="soft"
-                        size="xs"
-                      >
-                        {{
-                          participant.isCurrentlyCheckedIn
-                            ? 'Checked In'
-                            : participant.totalCheckIns
-                              ? 'Checked Out'
-                              : 'Absent'
-                        }}
-                      </UBadge>
-                    </td>
-                    <td class="py-2.5 pr-3 text-(--ui-text-muted)">
+                    <span class="font-medium truncate">{{ participant.userName }}</span>
+                    <UBadge
+                      :color="participant.isCurrentlyCheckedIn ? 'success' : 'neutral'"
+                      variant="soft"
+                      size="xs"
+                    >
+                      {{
+                        participant.isCurrentlyCheckedIn
+                          ? 'Checked In'
+                          : participant.totalCheckIns
+                            ? 'Checked Out'
+                            : 'Absent'
+                      }}
+                    </UBadge>
+                    <span class="text-(--ui-text-muted)">
                       {{
                         participant.isCurrentlyCheckedIn
                           ? formatCheckInTime(participant.lastCheckInTime)
                           : formatCheckInTime(participant.lastCheckOutTime)
                       }}
-                    </td>
-                    <td class="py-2.5 text-right">
+                    </span>
+                    <div class="text-right">
                       <UButton
                         size="xs"
                         variant="ghost"
@@ -483,10 +485,10 @@ onUnmounted(() => {
                       >
                         View history
                       </UButton>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </UCard>

@@ -33,7 +33,6 @@ const links = computed<NavigationMenuItem[][]>(() => {
 
   const organizerLinks: NavigationMenuItem[] = [
     { label: 'Check Ins', icon: 'i-lucide-qr-code', to: `/dash/${hackathonId.value}/checkin` },
-    { label: 'Analytics', icon: 'i-lucide-chart-line', to: `/dash/${hackathonId.value}/challenge-dashboard` },
     { label: 'Participants', icon: 'i-lucide-users', to: `/dash/${hackathonId.value}/participants` },
     { label: 'Teams', icon: 'i-lucide-user-round-plus', to: `/dash/${hackathonId.value}/teams` },
     { label: 'Challenges', icon: 'i-lucide-trophy', to: `/dash/${hackathonId.value}/challenges` },

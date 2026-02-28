@@ -2,22 +2,17 @@
 
 ## Overview
 
-The HackOMania Event Platform uses a dual-layer caching system to improve performance and reduce database load. This document outlines the caching strategy, implementation details, and potential cache invalidation concerns.
+The HackOMania Event Platform uses an in-memory caching system to improve performance and reduce database load. This document outlines the caching strategy, implementation details, and potential cache invalidation concerns.
 
 ## Architecture
 
-### Caching Layers
+### Caching Layer
 
-1. **Primary Cache: Redis**
-   - Implementation: `SqlSugarRedisCache` service
-   - Uses StackExchange.Redis via Aspire integration
-   - JSON serialization for cache entries
-   - Keys follow pattern: `SqlSugarDataCache.*`
-
-2. **Fallback Cache: NoOpCacheService**
-   - Activated when Redis is unavailable during startup
-   - Gracefully degrades to no caching
-   - Prevents application startup failures
+**In-Memory Cache: `InMemoryCacheService`**
+- Implementation: `InMemoryCacheService` using `ConcurrentDictionary`
+- Registered as a singleton for the application lifetime
+- No external dependencies (no Redis required)
+- Works with a single always-on instance (max 1 instance)
 
 ### Automatic Cache Invalidation
 
@@ -36,6 +31,7 @@ This means that SqlSugar automatically invalidates cached queries when:
 - When you call `.WithCache()` on a query, SqlSugar caches the result
 - When you insert/update/delete data in any table, ALL cache entries for that table are automatically removed
 - No manual cache invalidation is needed in most cases
+- Since the deployment is limited to a single instance, in-memory cache is always consistent
 
 ## Cached Endpoints
 
@@ -186,10 +182,10 @@ SqlSugar automatically generates cache keys based on:
 ### Performance Monitoring
 
 Monitor these metrics to identify cache effectiveness:
-- Redis hit/miss ratio
-- Cache entry eviction rate
+- Cache hit/miss ratio
 - Query response times
 - Database load during peak periods
+- Application memory usage
 
 ## Migration Notes
 
@@ -266,17 +262,16 @@ Instead of invalidating all cache entries for a table, invalidate only affected 
 ## Troubleshooting
 
 ### Cache Not Working
-1. Check Redis connection: Ensure Redis is running and accessible
-2. Verify `IsAutoRemoveDataCache = true` in `Program.cs`
-3. Check logs for `NoOpCacheService` usage (indicates Redis unavailable)
+1. Verify `IsAutoRemoveDataCache = true` in `Program.cs`
+2. Ensure `InMemoryCacheService` is registered as a singleton
 
 ### Stale Data Issues
 1. Verify automatic invalidation is working
 2. Check if manual cache invalidation is needed for complex scenarios
-3. Consider reducing cache TTL for affected endpoints
+3. Note: Cache is cleared on application restart
 
 ### Performance Issues
-1. Monitor Redis memory usage
+1. Monitor application memory usage
 2. Check for cache key explosion (too many unique keys)
 3. Review query complexity - caching doesn't fix inefficient queries
 
@@ -284,6 +279,5 @@ Instead of invalidating all cache entries for a table, invalidate only affected 
 
 For questions or issues related to caching:
 1. Check this documentation first
-2. Review `SqlSugarRedisCache.cs` implementation
-3. Monitor Redis using Redis CLI: `redis-cli MONITOR`
-4. Check application logs for cache-related warnings
+2. Review `InMemoryCacheService.cs` implementation
+3. Check application logs for cache-related warnings

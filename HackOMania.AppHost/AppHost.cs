@@ -15,19 +15,14 @@ if (builder.Configuration.GetValue("UseVolumes", true))
 }
 
 var db = mysql.AddDatabase("db");
-#pragma warning disable ASPIRECERTIFICATES001
-var cache = builder.AddRedis("cache").WithRedisInsight().WithoutHttpsCertificate();
-#pragma warning restore ASPIRECERTIFICATES001
 
 var api = builder
     .AddProject<HackOMania_Api>("api")
     .WithReference(db)
-    .WithReference(cache)
     .WithEnvironment("App:FrontendUrl", appFrontendUrl)
     .WithEnvironment("GitHub:ClientId", githubClientId)
     .WithEnvironment("GitHub:ClientSecret", githubClientSecret)
-    .WaitFor(db)
-    .WaitFor(cache);
+    .WaitFor(db);
 
 builder
     .AddJavaScriptApp("app", "../HackOMania.WebApp")

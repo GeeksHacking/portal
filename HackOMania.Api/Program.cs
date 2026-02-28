@@ -20,15 +20,10 @@ using Microsoft.EntityFrameworkCore;
 using OpenIddict.Client;
 using Scalar.AspNetCore;
 using SqlSugar;
-using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-if (!string.IsNullOrEmpty(builder.Configuration.GetConnectionString("cache")))
-{
-    builder.AddRedisClient("cache");
-}
 
 if (builder.Environment.IsProduction())
 {
@@ -64,20 +59,7 @@ builder.Services.AddOptions<AppOptions>().Bind(builder.Configuration.GetSection(
 builder.Services.AddOptions<GitHubOptions>().Bind(builder.Configuration.GetSection("GitHub"));
 builder.Services.AddOptions<PostmarkOptions>().Bind(builder.Configuration.GetSection("Postmark"));
 
-// Register SqlSugar cache service using Aspire's Redis integration
-// Use GetService to allow graceful handling if Redis is not yet ready
-builder.Services.AddSingleton<ICacheService>(s =>
-{
-    var connectionMultiplexer = s.GetService<IConnectionMultiplexer>();
-    if (connectionMultiplexer != null)
-    {
-        return new SqlSugarRedisCache(connectionMultiplexer);
-    }
-
-    // If Redis is not available, create a no-op cache service
-    // This prevents application startup failure when Redis is slow to initialize
-    return new NoOpCacheService();
-});
+builder.Services.AddSingleton<ICacheService, InMemoryCacheService>();
 
 builder.Services.AddSingleton<ISqlSugarClient>(s =>
 {

@@ -107,15 +107,6 @@ public class DefaultStack : Stack
             }
         );
 
-        var redisConnectionString = new SecretManager.Secret(
-            "redis-connection-string",
-            new SecretManager.SecretArgs
-            {
-                SecretId = "redis-connection-string",
-                Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
-            }
-        );
-
         var githubClientIdAccessor = new SecretManager.SecretIamMember(
             "github-client-id-accessor",
             new SecretManager.SecretIamMemberArgs
@@ -151,16 +142,6 @@ public class DefaultStack : Stack
             new SecretManager.SecretIamMemberArgs
             {
                 SecretId = postmarkServerToken.SecretId,
-                Role = "roles/secretmanager.secretAccessor",
-                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
-            }
-        );
-
-        var redisConnectionStringAccessor = new SecretManager.SecretIamMember(
-            "redis-connection-string-accessor",
-            new SecretManager.SecretIamMemberArgs
-            {
-                SecretId = redisConnectionString.SecretId,
                 Role = "roles/secretmanager.secretAccessor",
                 Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
             }
@@ -247,11 +228,9 @@ public class DefaultStack : Stack
                 Location = "asia-southeast1",
                 Description = "HackOMania API Service",
                 Ingress = "INGRESS_TRAFFIC_ALL",
-                Scaling = new ServiceScalingArgs { MinInstanceCount = 0, MaxInstanceCount = 10 },
+                Scaling = new ServiceScalingArgs { MinInstanceCount = 1, MaxInstanceCount = 1 },
                 Template = new ServiceTemplateArgs
                 {
-                    // Required by Cloud Run for CPU allocations below 0.5 vCPU.
-                    ExecutionEnvironment = "EXECUTION_ENVIRONMENT_GEN1",
                     ServiceAccount = cloudRunServiceAccount.Email,
                     MaxInstanceRequestConcurrency = 128,
                     Containers = new[]
@@ -266,9 +245,9 @@ public class DefaultStack : Stack
                             },
                             Resources = new ServiceTemplateContainerResourcesArgs
                             {
-                                // Keep Cloud Run in request-based CPU allocation mode for lowest cost.
-                                CpuIdle = true,
-                                Limits = { { "cpu", "1" }, { "memory", "1Gi" } },
+                                // With min instances = 1, CPU is always allocated.
+                                CpuIdle = false,
+                                Limits = { { "cpu", "2" }, { "memory", "2Gi" } },
                             },
                             StartupProbe = new ServiceTemplateContainerStartupProbeArgs
                             {
@@ -434,19 +413,6 @@ public class DefaultStack : Stack
                                             new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
                                             {
                                                 Secret = postmarkServerToken.SecretId,
-                                                Version = "latest",
-                                            },
-                                    },
-                                },
-                                new ServiceTemplateContainerEnvArgs
-                                {
-                                    Name = "ConnectionStrings__cache",
-                                    ValueSource = new ServiceTemplateContainerEnvValueSourceArgs
-                                    {
-                                        SecretKeyRef =
-                                            new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
-                                            {
-                                                Secret = redisConnectionString.SecretId,
                                                 Version = "latest",
                                             },
                                     },

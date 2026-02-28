@@ -22,7 +22,7 @@ export const itineraryItems: ItineraryItem[] = [
   { time: '1:25 PM', event: 'Lunch' },
   { time: '1:55 PM', event: 'Workshop 2: ClickHouse', bgColor: 'bg-[linear-gradient(to_right,#FFA94600_0%,#FBFF4680_100%)]' },
   { time: '2:55 PM', event: 'Break' },
-  { time: '3:05 PM', event: 'Workshop 3: GeeksHacking', bgColor: 'bg-[linear-gradient(to_right,#FFF40200_0%,#FFF40280_100%)]' },
+  { time: '3:05 PM', event: 'Workshop 3: Google', bgColor: 'bg-[linear-gradient(to_right,#4286F50D_0%,#109D5833_50%,#F5B40059_75%,#DC443780_100%)]' },
   { time: '3:50 PM', event: 'Closing, Lucky Draw & Phototaking' },
   { time: '4:20 PM', event: 'Networking' },
 ]
@@ -48,6 +48,6 @@ export const workshopItems: WorkshopItem[] = [
     title: 'Design and Build Multi-agent Systems with ADK',
     description: 'In this hands-on workshop, you will learn how to build Multi-agent Systems using Agent Development Kit, how to design agentic applications, and how to ensure they can communicate to each other using A2A protocol.',
     speakerName: 'Thu Ya',
-    speakerBackground: 'GeeksHacking, Board Member',
+    speakerBackground: 'Google Cloud Developer Advocate',
   },
 ]

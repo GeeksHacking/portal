@@ -8,6 +8,8 @@ import { ChallengesRequestBuilderNavigationMetadata, ChallengesRequestBuilderReq
 // @ts-ignore
 import { JoinRequestBuilderRequestsMetadata, type JoinRequestBuilder } from './join/index.js';
 // @ts-ignore
+import { LeaveRequestBuilderRequestsMetadata, type LeaveRequestBuilder } from './leave/index.js';
+// @ts-ignore
 import { RegistrationRequestBuilderNavigationMetadata, type RegistrationRequestBuilder } from './registration/index.js';
 // @ts-ignore
 import { ResourcesRequestBuilderRequestsMetadata, type ResourcesRequestBuilder } from './resources/index.js';
@@ -38,6 +40,10 @@ export interface HackathonIdOrShortCodeItemRequestBuilder extends BaseRequestBui
      * The join property
      */
     get join(): JoinRequestBuilder;
+    /**
+     * The leave property
+     */
+    get leave(): LeaveRequestBuilder;
     /**
      * The registration property
      */
@@ -97,6 +103,9 @@ export const HackathonIdOrShortCodeItemRequestBuilderNavigationMetadata: Record<
     },
     join: {
         requestsMetadata: JoinRequestBuilderRequestsMetadata,
+    },
+    leave: {
+        requestsMetadata: LeaveRequestBuilderRequestsMetadata,
     },
     registration: {
         navigationMetadata: RegistrationRequestBuilderNavigationMetadata,

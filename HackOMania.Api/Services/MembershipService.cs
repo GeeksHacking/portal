@@ -79,7 +79,7 @@ public class MembershipService(ISqlSugarClient sql, IOptions<AppOptions> appOpti
     )
     {
         return await sql.Queryable<Participant>()
-            .Where(p => p.UserId == userId && p.HackathonId == hackathonId)
+            .Where(p => p.UserId == userId && p.HackathonId == hackathonId && p.LeftAt == null)
             .FirstAsync(ct);
     }
 
@@ -90,6 +90,6 @@ public class MembershipService(ISqlSugarClient sql, IOptions<AppOptions> appOpti
     )
     {
         return await sql.Queryable<Participant>()
-            .AnyAsync(p => p.UserId == userId && p.HackathonId == hackathonId, ct);
+            .AnyAsync(p => p.UserId == userId && p.HackathonId == hackathonId && p.LeftAt == null, ct);
     }
 }

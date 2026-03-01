@@ -37,3 +37,15 @@ export function useReviewParticipantMutation(hackathonId: MaybeRefOrGetter<strin
     },
   })
 }
+
+export function useLeaveHackathon(hackathonId: MaybeRefOrGetter<string | null>) {
+  return useMutation({
+    async mutationFn() {
+      const id = toValue(hackathonId)
+      if (!id) throw new Error('No hackathon ID')
+      return await useNuxtApp()
+        .$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(id)
+        .leave.post()
+    },
+  })
+}

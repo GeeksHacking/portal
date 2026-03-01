@@ -799,6 +799,15 @@ export function createHackOManiaApiEndpointsParticipantsHackathonJoinResponseFro
 /**
  * Creates a new instance of the appropriate class based on discriminator value
  * @param parseNode The parse node to use to read the discriminator value and create the object
+ * @returns {HackOManiaApiEndpointsParticipantsHackathonLeaveResponse}
+ */
+// @ts-ignore
+export function createHackOManiaApiEndpointsParticipantsHackathonLeaveResponseFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
+    return deserializeIntoHackOManiaApiEndpointsParticipantsHackathonLeaveResponse;
+}
+/**
+ * Creates a new instance of the appropriate class based on discriminator value
+ * @param parseNode The parse node to use to read the discriminator value and create the object
  * @returns {HackOManiaApiEndpointsParticipantsHackathonListResponse_HackathonItem}
  */
 // @ts-ignore
@@ -2529,6 +2538,17 @@ export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonJoinRe
         "hackathonId": n => { hackOManiaApiEndpointsParticipantsHackathonJoinResponse.hackathonId = n.getStringValue(); },
         "joinedAt": n => { hackOManiaApiEndpointsParticipantsHackathonJoinResponse.joinedAt = n.getDateValue(); },
         "userId": n => { hackOManiaApiEndpointsParticipantsHackathonJoinResponse.userId = n.getStringValue(); },
+    }
+}
+/**
+ * The deserialization information for the current model
+ * @param HackOManiaApiEndpointsParticipantsHackathonLeaveResponse The instance to deserialize into.
+ * @returns {Record<string, (node: ParseNode) => void>}
+ */
+// @ts-ignore
+export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonLeaveResponse(hackOManiaApiEndpointsParticipantsHackathonLeaveResponse: Partial<HackOManiaApiEndpointsParticipantsHackathonLeaveResponse> | undefined = {}) : Record<string, (node: ParseNode) => void> {
+    return {
+        "message": n => { hackOManiaApiEndpointsParticipantsHackathonLeaveResponse.message = n.getStringValue(); },
     }
 }
 /**
@@ -5157,6 +5177,12 @@ export interface HackOManiaApiEndpointsParticipantsHackathonJoinResponse extends
      */
     userId?: string | null;
 }
+export interface HackOManiaApiEndpointsParticipantsHackathonLeaveResponse extends Parsable {
+    /**
+     * The message property
+     */
+    message?: string | null;
+}
 export interface HackOManiaApiEndpointsParticipantsHackathonListResponse extends Parsable {
     /**
      * The hackathons property
@@ -7297,6 +7323,17 @@ export function serializeHackOManiaApiEndpointsParticipantsHackathonJoinResponse
     writer.writeStringValue("hackathonId", hackOManiaApiEndpointsParticipantsHackathonJoinResponse.hackathonId);
     writer.writeDateValue("joinedAt", hackOManiaApiEndpointsParticipantsHackathonJoinResponse.joinedAt);
     writer.writeStringValue("userId", hackOManiaApiEndpointsParticipantsHackathonJoinResponse.userId);
+}
+/**
+ * Serializes information the current object
+ * @param HackOManiaApiEndpointsParticipantsHackathonLeaveResponse The instance to serialize from.
+ * @param isSerializingDerivedType A boolean indicating whether the serialization is for a derived type.
+ * @param writer Serialization writer to use to serialize this model
+ */
+// @ts-ignore
+export function serializeHackOManiaApiEndpointsParticipantsHackathonLeaveResponse(writer: SerializationWriter, hackOManiaApiEndpointsParticipantsHackathonLeaveResponse: Partial<HackOManiaApiEndpointsParticipantsHackathonLeaveResponse> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
+    if (!hackOManiaApiEndpointsParticipantsHackathonLeaveResponse || isSerializingDerivedType) { return; }
+    writer.writeStringValue("message", hackOManiaApiEndpointsParticipantsHackathonLeaveResponse.message);
 }
 /**
  * Serializes information the current object

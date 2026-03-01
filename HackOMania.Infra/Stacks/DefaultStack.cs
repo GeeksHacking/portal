@@ -247,7 +247,7 @@ public class DefaultStack : Stack
                             {
                                 // With min instances = 1, CPU is always allocated.
                                 CpuIdle = false,
-                                Limits = { { "cpu", "2" }, { "memory", "2Gi" } },
+                                Limits = { { "cpu", "0.5" }, { "memory", "2Gi" } },
                             },
                             StartupProbe = new ServiceTemplateContainerStartupProbeArgs
                             {

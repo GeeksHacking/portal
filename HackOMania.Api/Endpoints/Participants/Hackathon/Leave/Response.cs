@@ -1,4 +1,4 @@
-namespace HackOMania.Api.Endpoints.Participants.Hackathon.Leave;
+namespace HackOMania.Api.Endpoints.Participants.Hackathon.Withdraw;
 
 public class Response
 {

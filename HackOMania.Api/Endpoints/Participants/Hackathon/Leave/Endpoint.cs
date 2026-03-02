@@ -4,20 +4,20 @@ using HackOMania.Api.Entities;
 using HackOMania.Api.Extensions;
 using SqlSugar;
 
-namespace HackOMania.Api.Endpoints.Participants.Hackathon.Leave;
+namespace HackOMania.Api.Endpoints.Participants.Hackathon.Withdraw;
 
 public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Post("participants/hackathons/{HackathonId:guid}/leave");
+        Post("participants/hackathons/{HackathonId:guid}/withdraw");
         Policies(PolicyNames.ParticipantForHackathon);
         Description(b => b.WithTags("Participants", "Hackathons").Accepts<Request>());
         Summary(s =>
         {
-            s.Summary = "Leave a hackathon";
+            s.Summary = "Withdraw from a hackathon";
             s.Description =
-                "Removes the current user from the hackathon. The participant must not be in a team before leaving. Historical records are preserved.";
+                "Withdraws the current user from the hackathon. The participant must not be in a team before withdrawing. Historical records are preserved.";
         });
     }
 
@@ -35,7 +35,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var currentUserId = User.GetUserId();
 
         var participant = await sql.Queryable<Participant>()
-            .Where(p => p.HackathonId == hackathon.Id && p.UserId == currentUserId && p.LeftAt == null)
+            .Where(p => p.HackathonId == hackathon.Id && p.UserId == currentUserId && p.WithdrawnAt == null)
             .WithCache()
             .FirstAsync(ct);
 
@@ -47,14 +47,14 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         if (participant.TeamId is not null)
         {
-            AddError("You must leave your team before leaving the hackathon");
+            AddError("You must leave your team before withdrawing from the hackathon");
             await Send.ErrorsAsync(cancellation: ct);
             return;
         }
 
-        participant.LeftAt = DateTimeOffset.UtcNow;
+        participant.WithdrawnAt = DateTimeOffset.UtcNow;
         await sql.Updateable(participant).ExecuteCommandAsync(ct);
 
-        await Send.OkAsync(new Response { Message = "You have left the hackathon" }, ct);
+        await Send.OkAsync(new Response { Message = "You have withdrawn from the hackathon" }, ct);
     }
 }

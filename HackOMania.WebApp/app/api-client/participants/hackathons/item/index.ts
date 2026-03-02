@@ -8,7 +8,7 @@ import { ChallengesRequestBuilderNavigationMetadata, ChallengesRequestBuilderReq
 // @ts-ignore
 import { JoinRequestBuilderRequestsMetadata, type JoinRequestBuilder } from './join/index.js';
 // @ts-ignore
-import { LeaveRequestBuilderRequestsMetadata, type LeaveRequestBuilder } from './leave/index.js';
+import { WithdrawRequestBuilderRequestsMetadata, type WithdrawRequestBuilder } from './leave/index.js';
 // @ts-ignore
 import { RegistrationRequestBuilderNavigationMetadata, type RegistrationRequestBuilder } from './registration/index.js';
 // @ts-ignore
@@ -41,9 +41,9 @@ export interface HackathonIdOrShortCodeItemRequestBuilder extends BaseRequestBui
      */
     get join(): JoinRequestBuilder;
     /**
-     * The leave property
+     * The withdraw property
      */
-    get leave(): LeaveRequestBuilder;
+    get withdraw(): WithdrawRequestBuilder;
     /**
      * The registration property
      */
@@ -104,8 +104,8 @@ export const HackathonIdOrShortCodeItemRequestBuilderNavigationMetadata: Record<
     join: {
         requestsMetadata: JoinRequestBuilderRequestsMetadata,
     },
-    leave: {
-        requestsMetadata: LeaveRequestBuilderRequestsMetadata,
+    withdraw: {
+        requestsMetadata: WithdrawRequestBuilderRequestsMetadata,
     },
     registration: {
         navigationMetadata: RegistrationRequestBuilderNavigationMetadata,

@@ -4,18 +4,18 @@ using HackOMania.Tests.Models;
 
 namespace HackOMania.Tests.Endpoints.Participants.Hackathon;
 
-public class LeaveHackathonTests
+public class WithdrawFromHackathonTests
 {
     private static CreateHackathonRequest CreateValidHackathonRequest(string suffix = "")
     {
         var now = DateTimeOffset.UtcNow;
         return new CreateHackathonRequest
         {
-            Name = $"Leave Test Hackathon {suffix}",
-            Description = "A test hackathon for leave tests",
+            Name = $"Withdraw Test Hackathon {suffix}",
+            Description = "A test hackathon for withdraw tests",
             Venue = "Virtual",
             HomepageUri = new Uri("https://example.com/hackathon"),
-            ShortCode = $"LEAV{suffix}",
+            ShortCode = $"WITH{suffix}",
             EventStartDate = now.AddDays(7),
             EventEndDate = now.AddDays(9),
             SubmissionsStartDate = now.AddDays(7).AddHours(2),
@@ -41,14 +41,14 @@ public class LeaveHackathonTests
 
     [Test]
     [ClassDataSource<AuthenticatedHttpClientDataClass>]
-    public async Task LeaveHackathon_WithNoTeam_ReturnsOk(AuthenticatedHttpClientDataClass client)
+    public async Task WithdrawFromHackathon_WithNoTeam_ReturnsOk(AuthenticatedHttpClientDataClass client)
     {
         // Arrange
         var hackathonId = await CreatePublishedHackathonAndJoinAsync(client);
 
         // Act
         var response = await client.HttpClient.PostAsync(
-            $"/participants/hackathons/{hackathonId}/leave",
+            $"/participants/hackathons/{hackathonId}/withdraw",
             null
         );
 
@@ -58,7 +58,7 @@ public class LeaveHackathonTests
 
     [Test]
     [ClassDataSource<AuthenticatedHttpClientDataClass>]
-    public async Task LeaveHackathon_WhenInTeam_ReturnsBadRequest(
+    public async Task WithdrawFromHackathon_WhenInTeam_ReturnsBadRequest(
         AuthenticatedHttpClientDataClass client
     )
     {
@@ -68,12 +68,12 @@ public class LeaveHackathonTests
         // Create a team (participant is auto-assigned to it)
         await client.HttpClient.PostAsJsonAsync(
             $"/participants/hackathons/{hackathonId}/teams",
-            new { Name = "Test Team", Description = "Team for leave test" }
+            new { Name = "Test Team", Description = "Team for withdraw test" }
         );
 
-        // Act - Try to leave hackathon while in a team
+        // Act - Try to withdraw from hackathon while in a team
         var response = await client.HttpClient.PostAsync(
-            $"/participants/hackathons/{hackathonId}/leave",
+            $"/participants/hackathons/{hackathonId}/withdraw",
             null
         );
 
@@ -83,7 +83,7 @@ public class LeaveHackathonTests
 
     [Test]
     [ClassDataSource<AuthenticatedHttpClientDataClass>]
-    public async Task LeaveHackathon_AfterLeavingTeam_ReturnsOk(
+    public async Task WithdrawFromHackathon_AfterLeavingTeam_ReturnsOk(
         AuthenticatedHttpClientDataClass client
     )
     {
@@ -93,16 +93,16 @@ public class LeaveHackathonTests
         // Create and then leave the team
         await client.HttpClient.PostAsJsonAsync(
             $"/participants/hackathons/{hackathonId}/teams",
-            new { Name = "Test Team", Description = "Team for leave test" }
+            new { Name = "Test Team", Description = "Team for withdraw test" }
         );
         await client.HttpClient.PostAsync(
             $"/participants/hackathons/{hackathonId}/teams/leave",
             null
         );
 
-        // Act - Leave hackathon after leaving team
+        // Act - Withdraw from hackathon after leaving team
         var response = await client.HttpClient.PostAsync(
-            $"/participants/hackathons/{hackathonId}/leave",
+            $"/participants/hackathons/{hackathonId}/withdraw",
             null
         );
 
@@ -112,58 +112,58 @@ public class LeaveHackathonTests
 
     [Test]
     [ClassDataSource<AuthenticatedHttpClientDataClass>]
-    public async Task LeaveHackathon_SetsStatusToNotParticipant(
+    public async Task WithdrawFromHackathon_SetsStatusToNotParticipant(
         AuthenticatedHttpClientDataClass client
     )
     {
         // Arrange
         var hackathonId = await CreatePublishedHackathonAndJoinAsync(client);
 
-        // Verify participant before leaving
-        var beforeLeaveStatus = await client.HttpClient.GetAsync(
+        // Verify participant before withdrawing
+        var beforeWithdrawStatus = await client.HttpClient.GetAsync(
             $"/participants/hackathons/{hackathonId}/status"
         );
         var beforeStatus =
-            await beforeLeaveStatus.Content.ReadFromJsonAsync<ParticipantStatusResponse>();
+            await beforeWithdrawStatus.Content.ReadFromJsonAsync<ParticipantStatusResponse>();
         await Assert.That(beforeStatus!.IsParticipant).IsTrue();
 
         // Act
         await client.HttpClient.PostAsync(
-            $"/participants/hackathons/{hackathonId}/leave",
+            $"/participants/hackathons/{hackathonId}/withdraw",
             null
         );
 
         // Assert
-        var afterLeaveStatus = await client.HttpClient.GetAsync(
+        var afterWithdrawStatus = await client.HttpClient.GetAsync(
             $"/participants/hackathons/{hackathonId}/status"
         );
         var afterStatus =
-            await afterLeaveStatus.Content.ReadFromJsonAsync<ParticipantStatusResponse>();
+            await afterWithdrawStatus.Content.ReadFromJsonAsync<ParticipantStatusResponse>();
         await Assert.That(afterStatus!.IsParticipant).IsFalse();
     }
 
     [Test]
     [ClassDataSource<AuthenticatedHttpClientDataClass>]
-    public async Task LeaveHackathon_ThenRejoin_ReturnsParticipant(
+    public async Task WithdrawFromHackathon_ThenRejoin_ReturnsParticipant(
         AuthenticatedHttpClientDataClass client
     )
     {
         // Arrange
         var hackathonId = await CreatePublishedHackathonAndJoinAsync(client);
 
-        // Leave hackathon
+        // Withdraw from hackathon
         await client.HttpClient.PostAsync(
-            $"/participants/hackathons/{hackathonId}/leave",
+            $"/participants/hackathons/{hackathonId}/withdraw",
             null
         );
 
         // Verify not participant
-        var afterLeaveStatus = await client.HttpClient.GetAsync(
+        var afterWithdrawStatus = await client.HttpClient.GetAsync(
             $"/participants/hackathons/{hackathonId}/status"
         );
-        var afterLeave =
-            await afterLeaveStatus.Content.ReadFromJsonAsync<ParticipantStatusResponse>();
-        await Assert.That(afterLeave!.IsParticipant).IsFalse();
+        var afterWithdraw =
+            await afterWithdrawStatus.Content.ReadFromJsonAsync<ParticipantStatusResponse>();
+        await Assert.That(afterWithdraw!.IsParticipant).IsFalse();
 
         // Act - Rejoin hackathon
         var rejoinResponse = await client.HttpClient.PostAsync(
@@ -183,13 +183,13 @@ public class LeaveHackathonTests
 
     [Test]
     [ClassDataSource<AuthenticatedHttpClientDataClass>]
-    public async Task LeaveHackathon_WithInvalidHackathonId_ReturnsNotFound(
+    public async Task WithdrawFromHackathon_WithInvalidHackathonId_ReturnsNotFound(
         AuthenticatedHttpClientDataClass client
     )
     {
         // Act
         var response = await client.HttpClient.PostAsync(
-            $"/participants/hackathons/{Guid.NewGuid()}/leave",
+            $"/participants/hackathons/{Guid.NewGuid()}/withdraw",
             null
         );
 
@@ -199,13 +199,13 @@ public class LeaveHackathonTests
 
     [Test]
     [ClassDataSource<HttpClientDataClass>]
-    public async Task LeaveHackathon_WithoutAuthentication_ReturnsUnauthorized(
+    public async Task WithdrawFromHackathon_WithoutAuthentication_ReturnsUnauthorized(
         HttpClientDataClass client
     )
     {
         // Act
         var response = await client.HttpClient.PostAsync(
-            $"/participants/hackathons/{Guid.NewGuid()}/leave",
+            $"/participants/hackathons/{Guid.NewGuid()}/withdraw",
             null
         );
 

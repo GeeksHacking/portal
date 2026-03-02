@@ -10,7 +10,7 @@ public class Participant : HackathonUser
     public DateTimeOffset JoinedAt { get; set; } = DateTimeOffset.UtcNow;
 
     [SugarColumn(IsNullable = true)]
-    public DateTimeOffset? LeftAt { get; set; }
+    public DateTimeOffset? WithdrawnAt { get; set; }
 
     [Navigate(NavigateType.ManyToOne, nameof(TeamId), nameof(Team.Id))]
     public Team? Team { get; set; } = null!;

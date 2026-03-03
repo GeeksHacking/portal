@@ -68,11 +68,11 @@ watch(() => props.title, () => {
         {{ title }}
       </span>
     </div>
-    <div class="bg-white py-6 lg:py-12 px-4 lg:px-6 text-center flex flex-col gap-4 lg:gap-8">
-      <div class="font-['Zalando_Sans_Expanded'] font-bold text-4xl lg:text-7xl">
+    <div class="bg-white py-6 lg:py-8 px-4 lg:px-6 text-center flex flex-col gap-4 lg:gap-4">
+      <div class="font-['Zalando_Sans_Expanded'] font-bold text-4xl lg:text-5xl">
         {{ teamCount }}
       </div>
-      <div class="font-['Zalando_Sans_Expanded'] text-xl lg:text-4xl">
+      <div class="font-['Zalando_Sans_Expanded'] text-xl lg:text-2xl">
         Teams
       </div>
     </div>

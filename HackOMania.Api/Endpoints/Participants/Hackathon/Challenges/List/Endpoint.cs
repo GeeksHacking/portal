@@ -36,6 +36,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 c.Id,
                 c.Title,
                 c.Description,
+                c.Sponsor,
                 c.SelectionCriteriaStmt,
                 c.CreatedAt,
             })
@@ -47,6 +48,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                         Id = c.Id,
                         Title = c.Title,
                         Description = c.Description,
+                        Sponsor = c.Sponsor,
                         SelectionCriteriaStmt = c.SelectionCriteriaStmt,
                         TeamCount = SqlFunc.AggregateCount(t.Id),
                     }

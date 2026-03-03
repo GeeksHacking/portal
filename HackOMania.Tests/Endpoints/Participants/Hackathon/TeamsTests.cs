@@ -59,6 +59,7 @@ public class TeamsTests
         {
             Title = "Test Challenge",
             Description = "A test challenge for team selection",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "Test criteria",
             IsPublished = true,
         };
@@ -555,6 +556,7 @@ public class TeamsTests
         {
             Title = "Past Deadline Challenge",
             Description = "Challenge for past deadline test",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "Test criteria",
             IsPublished = true,
         };
@@ -622,6 +624,7 @@ public class TeamsTests
         {
             Title = "Challenge 1",
             Description = "First challenge",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "Criteria 1",
             IsPublished = true,
         };
@@ -635,6 +638,7 @@ public class TeamsTests
         {
             Title = "Challenge 2",
             Description = "Second challenge",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "Criteria 2",
             IsPublished = true,
         };

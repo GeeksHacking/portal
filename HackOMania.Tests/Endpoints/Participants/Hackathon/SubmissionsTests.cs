@@ -45,6 +45,7 @@ public class SubmissionsTests
         {
             Title = "Submission Test Challenge",
             Description = "A challenge for submission tests",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "true",
             IsPublished = true,
         };

@@ -43,6 +43,11 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             challenge.Description = req.Description;
         }
 
+        if (req.Sponsor is not null)
+        {
+            challenge.Sponsor = req.Sponsor;
+        }
+
         if (req.Criteria is not null)
         {
             challenge.SelectionCriteriaStmt = req.Criteria;
@@ -64,6 +69,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 HackathonId = challenge.HackathonId,
                 Title = challenge.Title,
                 Description = challenge.Description,
+                Sponsor = challenge.Sponsor,
                 Criteria = challenge.SelectionCriteriaStmt,
                 IsPublished = challenge.IsPublished,
                 UpdatedAt = challenge.UpdatedAt,

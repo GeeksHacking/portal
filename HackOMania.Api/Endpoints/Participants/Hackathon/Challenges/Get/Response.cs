@@ -6,6 +6,7 @@ public class Response
     public required Guid HackathonId { get; set; }
     public required string Title { get; set; }
     public required string Description { get; set; }
+    public required string Sponsor { get; set; }
     public required string SelectionCriteriaStmt { get; set; }
     public required bool IsPublished { get; set; }
 }

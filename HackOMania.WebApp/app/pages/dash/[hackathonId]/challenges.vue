@@ -54,6 +54,7 @@ const editingChallengeId = ref<string | null>(null)
 const form = ref({
   title: '',
   description: '',
+  sponsor: '',
   criteria: '',
   isPublished: false,
 })
@@ -62,6 +63,7 @@ function resetForm() {
   form.value = {
     title: '',
     description: '',
+    sponsor: '',
     criteria: '',
     isPublished: false,
   }
@@ -78,6 +80,7 @@ function openEditModal(challenge: typeof challenges.value[number]) {
   form.value = {
     title: challenge.title ?? '',
     description: challenge.description ?? '',
+    sponsor: challenge.sponsor ?? '',
     criteria: challenge.criteria ?? '',
     isPublished: challenge.isPublished ?? false,
   }
@@ -243,6 +246,13 @@ const isSubmitting = computed(() => createMutation.isPending.value || updateMuta
                     v-model="form.description"
                     placeholder="Challenge description"
                     :rows="3"
+                  />
+                </UFormField>
+
+                <UFormField label="Sponsor">
+                  <UInput
+                    v-model="form.sponsor"
+                    placeholder="Sponsor name"
                   />
                 </UFormField>
 

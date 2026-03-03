@@ -31,6 +31,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 Id = c.Id,
                 Title = c.Title,
                 Description = c.Description,
+                Sponsor = c.Sponsor,
                 Criteria = c.SelectionCriteriaStmt,
                 IsPublished = c.IsPublished,
                 CreatedAt = c.CreatedAt,

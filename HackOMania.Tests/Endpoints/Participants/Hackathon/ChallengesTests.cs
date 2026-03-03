@@ -44,6 +44,7 @@ public class ChallengesTests
         {
             Title = "Published Challenge",
             Description = "A published challenge for tests",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "Test criteria",
             IsPublished = true,
         };
@@ -127,6 +128,7 @@ public class ChallengesTests
         {
             Title = "Unpublished Challenge",
             Description = "An unpublished challenge",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "Test criteria",
             IsPublished = false,
         };

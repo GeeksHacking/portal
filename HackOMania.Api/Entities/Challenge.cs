@@ -13,6 +13,8 @@ public class Challenge
 
     public string Description { get; set; } = null!;
 
+    public string Sponsor { get; set; } = null!;
+
     public string SelectionCriteriaStmt { get; set; } = "true";
 
     public bool IsPublished { get; set; }

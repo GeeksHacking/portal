@@ -1244,6 +1244,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonChalleng
         "description": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.description = n.getStringValue(); },
         "isPublished": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.isPublished = n.getBooleanValue(); },
         "selectionCriteriaStmt": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.selectionCriteriaStmt = n.getStringValue(); },
+        "sponsor": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.sponsor = n.getStringValue(); },
         "title": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.title = n.getStringValue(); },
     }
 }
@@ -1261,6 +1262,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonChalleng
         "hackathonId": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesCreateResponse.hackathonId = n.getStringValue(); },
         "id": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesCreateResponse.id = n.getStringValue(); },
         "isPublished": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesCreateResponse.isPublished = n.getBooleanValue(); },
+        "sponsor": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesCreateResponse.sponsor = n.getStringValue(); },
         "title": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesCreateResponse.title = n.getStringValue(); },
     }
 }
@@ -1277,6 +1279,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonChalleng
         "id": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesGetResponse.id = n.getStringValue(); },
         "isPublished": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesGetResponse.isPublished = n.getBooleanValue(); },
         "selectionCriteriaStmt": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesGetResponse.selectionCriteriaStmt = n.getStringValue(); },
+        "sponsor": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesGetResponse.sponsor = n.getStringValue(); },
         "title": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesGetResponse.title = n.getStringValue(); },
         "updatedAt": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesGetResponse.updatedAt = n.getDateValue(); },
     }
@@ -1305,6 +1308,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonChalleng
         "description": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.description = n.getStringValue(); },
         "id": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.id = n.getStringValue(); },
         "isPublished": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.isPublished = n.getBooleanValue(); },
+        "sponsor": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.sponsor = n.getStringValue(); },
         "title": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.title = n.getStringValue(); },
         "updatedAt": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.updatedAt = n.getDateValue(); },
     }
@@ -1320,6 +1324,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonChalleng
         "criteria": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateRequest.criteria = n.getStringValue(); },
         "description": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateRequest.description = n.getStringValue(); },
         "isPublished": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateRequest.isPublished = n.getBooleanValue(); },
+        "sponsor": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateRequest.sponsor = n.getStringValue(); },
         "title": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateRequest.title = n.getStringValue(); },
     }
 }
@@ -1336,6 +1341,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonChalleng
         "hackathonId": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateResponse.hackathonId = n.getStringValue(); },
         "id": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateResponse.id = n.getStringValue(); },
         "isPublished": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateResponse.isPublished = n.getBooleanValue(); },
+        "sponsor": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateResponse.sponsor = n.getStringValue(); },
         "title": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateResponse.title = n.getStringValue(); },
         "updatedAt": n => { hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateResponse.updatedAt = n.getDateValue(); },
     }
@@ -2434,6 +2440,7 @@ export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonChalle
         "id": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.id = n.getStringValue(); },
         "isPublished": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.isPublished = n.getBooleanValue(); },
         "selectionCriteriaStmt": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.selectionCriteriaStmt = n.getStringValue(); },
+        "sponsor": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.sponsor = n.getStringValue(); },
         "title": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.title = n.getStringValue(); },
     }
 }
@@ -2459,6 +2466,7 @@ export function deserializeIntoHackOManiaApiEndpointsParticipantsHackathonChalle
         "description": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.description = n.getStringValue(); },
         "id": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.id = n.getStringValue(); },
         "selectionCriteriaStmt": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.selectionCriteriaStmt = n.getStringValue(); },
+        "sponsor": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.sponsor = n.getStringValue(); },
         "teamCount": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.teamCount = n.getNumberValue(); },
         "title": n => { hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.title = n.getStringValue(); },
     }
@@ -3203,6 +3211,10 @@ export interface HackOManiaApiEndpointsOrganizersHackathonChallengesCreateReques
      */
     selectionCriteriaStmt?: string | null;
     /**
+     * The sponsor property
+     */
+    sponsor?: string | null;
+    /**
      * The title property
      */
     title?: string | null;
@@ -3233,6 +3245,10 @@ export interface HackOManiaApiEndpointsOrganizersHackathonChallengesCreateRespon
      */
     isPublished?: boolean | null;
     /**
+     * The sponsor property
+     */
+    sponsor?: string | null;
+    /**
      * The title property
      */
     title?: string | null;
@@ -3258,6 +3274,10 @@ export interface HackOManiaApiEndpointsOrganizersHackathonChallengesGetResponse 
      * The selectionCriteriaStmt property
      */
     selectionCriteriaStmt?: string | null;
+    /**
+     * The sponsor property
+     */
+    sponsor?: string | null;
     /**
      * The title property
      */
@@ -3295,6 +3315,10 @@ export interface HackOManiaApiEndpointsOrganizersHackathonChallengesListResponse
      */
     isPublished?: boolean | null;
     /**
+     * The sponsor property
+     */
+    sponsor?: string | null;
+    /**
      * The title property
      */
     title?: string | null;
@@ -3316,6 +3340,10 @@ export interface HackOManiaApiEndpointsOrganizersHackathonChallengesUpdateReques
      * The isPublished property
      */
     isPublished?: boolean | null;
+    /**
+     * The sponsor property
+     */
+    sponsor?: string | null;
     /**
      * The title property
      */
@@ -3342,6 +3370,10 @@ export interface HackOManiaApiEndpointsOrganizersHackathonChallengesUpdateRespon
      * The isPublished property
      */
     isPublished?: boolean | null;
+    /**
+     * The sponsor property
+     */
+    sponsor?: string | null;
     /**
      * The title property
      */
@@ -4997,6 +5029,10 @@ export interface HackOManiaApiEndpointsParticipantsHackathonChallengesGetRespons
      */
     selectionCriteriaStmt?: string | null;
     /**
+     * The sponsor property
+     */
+    sponsor?: string | null;
+    /**
      * The title property
      */
     title?: string | null;
@@ -5020,6 +5056,10 @@ export interface HackOManiaApiEndpointsParticipantsHackathonChallengesListRespon
      * The selectionCriteriaStmt property
      */
     selectionCriteriaStmt?: string | null;
+    /**
+     * The sponsor property
+     */
+    sponsor?: string | null;
     /**
      * The teamCount property
      */
@@ -5966,6 +6006,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonChallengesCrea
     writer.writeStringValue("description", hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.description);
     writer.writeBooleanValue("isPublished", hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.isPublished);
     writer.writeStringValue("selectionCriteriaStmt", hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.selectionCriteriaStmt);
+    writer.writeStringValue("sponsor", hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.sponsor);
     writer.writeStringValue("title", hackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest.title);
 }
 /**
@@ -5983,6 +6024,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonChallengesCrea
     writer.writeStringValue("hackathonId", hackOManiaApiEndpointsOrganizersHackathonChallengesCreateResponse.hackathonId);
     writer.writeStringValue("id", hackOManiaApiEndpointsOrganizersHackathonChallengesCreateResponse.id);
     writer.writeBooleanValue("isPublished", hackOManiaApiEndpointsOrganizersHackathonChallengesCreateResponse.isPublished);
+    writer.writeStringValue("sponsor", hackOManiaApiEndpointsOrganizersHackathonChallengesCreateResponse.sponsor);
     writer.writeStringValue("title", hackOManiaApiEndpointsOrganizersHackathonChallengesCreateResponse.title);
 }
 /**
@@ -5999,6 +6041,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonChallengesGetR
     writer.writeStringValue("id", hackOManiaApiEndpointsOrganizersHackathonChallengesGetResponse.id);
     writer.writeBooleanValue("isPublished", hackOManiaApiEndpointsOrganizersHackathonChallengesGetResponse.isPublished);
     writer.writeStringValue("selectionCriteriaStmt", hackOManiaApiEndpointsOrganizersHackathonChallengesGetResponse.selectionCriteriaStmt);
+    writer.writeStringValue("sponsor", hackOManiaApiEndpointsOrganizersHackathonChallengesGetResponse.sponsor);
     writer.writeStringValue("title", hackOManiaApiEndpointsOrganizersHackathonChallengesGetResponse.title);
     writer.writeDateValue("updatedAt", hackOManiaApiEndpointsOrganizersHackathonChallengesGetResponse.updatedAt);
 }
@@ -6027,6 +6070,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonChallengesList
     writer.writeStringValue("description", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.description);
     writer.writeStringValue("id", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.id);
     writer.writeBooleanValue("isPublished", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.isPublished);
+    writer.writeStringValue("sponsor", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.sponsor);
     writer.writeStringValue("title", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.title);
     writer.writeDateValue("updatedAt", hackOManiaApiEndpointsOrganizersHackathonChallengesListResponse_ResponseChallenge.updatedAt);
 }
@@ -6042,6 +6086,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonChallengesUpda
     writer.writeStringValue("criteria", hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateRequest.criteria);
     writer.writeStringValue("description", hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateRequest.description);
     writer.writeBooleanValue("isPublished", hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateRequest.isPublished);
+    writer.writeStringValue("sponsor", hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateRequest.sponsor);
     writer.writeStringValue("title", hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateRequest.title);
 }
 /**
@@ -6058,6 +6103,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonChallengesUpda
     writer.writeStringValue("hackathonId", hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateResponse.hackathonId);
     writer.writeStringValue("id", hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateResponse.id);
     writer.writeBooleanValue("isPublished", hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateResponse.isPublished);
+    writer.writeStringValue("sponsor", hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateResponse.sponsor);
     writer.writeStringValue("title", hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateResponse.title);
     writer.writeDateValue("updatedAt", hackOManiaApiEndpointsOrganizersHackathonChallengesUpdateResponse.updatedAt);
 }
@@ -7162,6 +7208,7 @@ export function serializeHackOManiaApiEndpointsParticipantsHackathonChallengesGe
     writer.writeStringValue("id", hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.id);
     writer.writeBooleanValue("isPublished", hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.isPublished);
     writer.writeStringValue("selectionCriteriaStmt", hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.selectionCriteriaStmt);
+    writer.writeStringValue("sponsor", hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.sponsor);
     writer.writeStringValue("title", hackOManiaApiEndpointsParticipantsHackathonChallengesGetResponse.title);
 }
 /**
@@ -7187,6 +7234,7 @@ export function serializeHackOManiaApiEndpointsParticipantsHackathonChallengesLi
     writer.writeStringValue("description", hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.description);
     writer.writeStringValue("id", hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.id);
     writer.writeStringValue("selectionCriteriaStmt", hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.selectionCriteriaStmt);
+    writer.writeStringValue("sponsor", hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.sponsor);
     writer.writeNumberValue("teamCount", hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.teamCount);
     writer.writeStringValue("title", hackOManiaApiEndpointsParticipantsHackathonChallengesListResponse_ChallengeItem.title);
 }

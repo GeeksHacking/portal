@@ -29,6 +29,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             HackathonId = hackathonId,
             Title = req.Title,
             Description = req.Description,
+            Sponsor = req.Sponsor,
             SelectionCriteriaStmt = req.SelectionCriteriaStmt ?? "true",
             IsPublished = req.IsPublished,
         };
@@ -42,6 +43,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 HackathonId = challenge.HackathonId,
                 Title = challenge.Title,
                 Description = challenge.Description,
+                Sponsor = challenge.Sponsor,
                 Criteria = challenge.SelectionCriteriaStmt,
                 IsPublished = challenge.IsPublished,
                 CreatedAt = challenge.CreatedAt,

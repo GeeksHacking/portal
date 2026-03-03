@@ -134,6 +134,15 @@ watch(selectedIndex, (val) => {
     </div>
 
     <div
+      v-else-if="challenges.length === 0"
+      class="flex flex-col items-center p-8 lg:py-16 lg:px-28 mx-auto lg:max-w-300"
+    >
+      <p class="font-['Raleway'] text-base lg:text-xl text-center">
+        Challenge statements will be released soon!
+      </p>
+    </div>
+
+    <div
       v-else
       class="flex flex-col items-center p-8 lg:py-16 lg:px-28 mx-auto lg:max-w-300"
     >

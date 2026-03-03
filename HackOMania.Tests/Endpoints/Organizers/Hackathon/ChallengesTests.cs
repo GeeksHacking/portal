@@ -46,6 +46,7 @@ public class ChallengesTests
         {
             Title = "Test Challenge",
             Description = "A test challenge description",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "Innovation and creativity",
             IsPublished = false,
         };
@@ -78,6 +79,7 @@ public class ChallengesTests
         {
             Title = "List Test Challenge",
             Description = "A challenge for list test",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "Test criteria",
             IsPublished = true,
         };
@@ -112,6 +114,7 @@ public class ChallengesTests
         {
             Title = "Get Test Challenge",
             Description = "A challenge for get test",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "Test criteria",
             IsPublished = true,
         };
@@ -165,6 +168,7 @@ public class ChallengesTests
         {
             Title = "Update Test Challenge",
             Description = "A challenge for update test",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "Test criteria",
             IsPublished = false,
         };
@@ -209,6 +213,7 @@ public class ChallengesTests
         {
             Title = "Delete Test Challenge",
             Description = "A challenge for delete test",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "Test criteria",
             IsPublished = false,
         };
@@ -256,6 +261,7 @@ public class ChallengesTests
         {
             Title = "Unauthorized Challenge",
             Description = "Should fail",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "Test criteria",
             IsPublished = false,
         };

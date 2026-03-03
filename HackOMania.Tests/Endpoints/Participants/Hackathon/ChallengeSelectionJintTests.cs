@@ -58,6 +58,7 @@ public class ChallengeSelectionJintTests
         {
             Title = "Team Challenge",
             Description = "Requires team of 3+",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "teamSize >= 3",
             IsPublished = true,
         };
@@ -107,6 +108,7 @@ public class ChallengeSelectionJintTests
         {
             Title = "Limited Challenge",
             Description = "Max 1 team",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "currentTeamsInChallenge < 1",
             IsPublished = true,
         };
@@ -200,6 +202,7 @@ public class ChallengeSelectionJintTests
         {
             Title = "Open Challenge",
             Description = "Open to all",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "true",
             IsPublished = true,
         };

@@ -4,7 +4,6 @@ import QRCode from 'qrcode'
 
 const items = [
   { label: 'home', target: 'home' },
-  { label: 'pre-event', target: 'preevent' },
   { label: 'challenges', target: 'challenges' },
   { label: 'team', target: 'team' },
   { label: 'submission', target: 'submission' },

@@ -46,12 +46,6 @@ watch(
       <AppHeroSection />
     </div>
     <div
-      id="preevent"
-      class="scroll-mt-12 lg:scroll-mt-18"
-    >
-      <PortalPreeventSection />
-    </div>
-    <div
       id="challenges"
       class="scroll-mt-12 lg:scroll-mt-18"
     >

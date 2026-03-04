@@ -623,6 +623,7 @@ public class TeamsTests
         {
             Title = "Before Start Challenge",
             Description = "Challenge for before-start test",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "Test criteria",
             IsPublished = true,
         };

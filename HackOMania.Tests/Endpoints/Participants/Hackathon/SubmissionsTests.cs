@@ -203,6 +203,7 @@ public class SubmissionsTests
         {
             Title = "Submission Window Challenge",
             Description = "A challenge for submission window tests",
+            Sponsor = "Test Sponsor",
             SelectionCriteriaStmt = "true",
             IsPublished = true,
         };

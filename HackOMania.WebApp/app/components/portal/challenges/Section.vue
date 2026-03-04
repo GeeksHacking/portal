@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useQuery, useQueries } from '@tanstack/vue-query'
-import { computed, ref } from 'vue'
+import { useQueries, useQuery } from '@tanstack/vue-query'
 import { useLocalStorage } from '@vueuse/core'
+import { computed, ref } from 'vue'
 
 const hackathonId = useResolvedHackathonId()
 
@@ -25,7 +25,7 @@ const detailsQueries = useQueries({
 })
 
 // Track selected challenge and get its description from prefetched data
-const selectedIndex = useLocalStorage<number>('challenge-selected-index', 0, { serializer: { read: (v) => Number(v), write: (v) => String(v) } })
+const selectedIndex = useLocalStorage<number>('challenge-selected-index', 0, { serializer: { read: v => Number(v), write: v => String(v) } })
 const selectedDescription = computed(() =>
   detailsQueries.value[selectedIndex.value]?.data?.description ?? null,
 )
@@ -49,7 +49,7 @@ const fallbackColours = [
   ['#FFF3A0', '#FFD74B', '#FFF3A0'],
 ]
 
-const getSponsorColours = (challenge: { sponsor?: string | null, id?: string | null }, index: number) => {
+function getSponsorColours(challenge: { sponsor?: string | null, id?: string | null }, index: number) {
   if (challenge.sponsor && sponsorColours[challenge.sponsor]) {
     return sponsorColours[challenge.sponsor]
   }
@@ -67,11 +67,13 @@ const selectedSponsorName = computed(() =>
   challenges.value[selectedIndex.value]?.sponsor || null,
 )
 const selectedSponsorLogo = computed(() => {
-  if (!selectedSponsorName.value) return null
+  if (!selectedSponsorName.value)
+    return null
   return sponsorLogos[selectedSponsorName.value]?.src ?? null
 })
 const selectedSponsorLogoMaxHeight = computed(() => {
-  if (!selectedSponsorName.value) return '200px'
+  if (!selectedSponsorName.value)
+    return '200px'
   return sponsorLogos[selectedSponsorName.value]?.maxHeight ?? '200px'
 })
 
@@ -82,7 +84,7 @@ const maxTitleHeight = computed(() => {
   return heights.length > 0 ? Math.max(...heights) : 0
 })
 
-const onTitleMounted = (index: number, height: number) => {
+function onTitleMounted(index: number, height: number) {
   titleHeights.value.set(index, height)
   // Trigger reactivity
   titleHeights.value = new Map(titleHeights.value)
@@ -93,7 +95,8 @@ const mobileIndex = ref(selectedIndex.value)
 
 // Auto-select challenge when loaded (restore from localStorage or default to first)
 watch(challenges, (val) => {
-  if (val.length === 0) return
+  if (val.length === 0)
+    return
   if (selectedIndex.value >= val.length) {
     selectedIndex.value = 0
   }
@@ -102,13 +105,15 @@ watch(challenges, (val) => {
 const slideDirection = ref<'left' | 'right'>('right')
 
 function mobilePrev() {
-  if (challenges.value.length === 0) return
+  if (challenges.value.length === 0)
+    return
   slideDirection.value = 'left'
   mobileIndex.value = (mobileIndex.value - 1 + challenges.value.length) % challenges.value.length
   selectedIndex.value = mobileIndex.value
 }
 function mobileNext() {
-  if (challenges.value.length === 0) return
+  if (challenges.value.length === 0)
+    return
   slideDirection.value = 'right'
   mobileIndex.value = (mobileIndex.value + 1) % challenges.value.length
   selectedIndex.value = mobileIndex.value

@@ -56,7 +56,9 @@ watchEffect(() => {
   }
 
   // Registration already complete - redirect to team page
-  if (submissionsData.value?.requiredQuestionsRemaining === 0) {
+  // Guard with current participant status to avoid redirect loops when cached
+  // submissions exist for users who have withdrawn.
+  if (statusData.value?.isParticipant && submissionsData.value?.requiredQuestionsRemaining === 0) {
     navigateTo({ path: `/${hackathon.value.shortCode}/team`, query: route.query }, { replace: true })
     return
   }

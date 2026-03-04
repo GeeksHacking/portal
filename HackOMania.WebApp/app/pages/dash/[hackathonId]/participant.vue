@@ -6,7 +6,7 @@ import { authQueries } from '~/composables/auth'
 import { useJoinHackathonMutation } from '~/composables/hackathon'
 import { formatParticipantStatus, hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
 import { organizerQueries } from '~/composables/organizers'
-import { useReviewParticipantMutation } from '~/composables/participants'
+import { useReviewParticipantMutation, useWithdrawFromHackathon } from '~/composables/participants'
 
 const route = useRoute()
 const toast = useToast()
@@ -43,6 +43,8 @@ const { data: submissionsData } = useQuery(
 const isRegistrationComplete = computed(() => submissionsData.value?.requiredQuestionsRemaining === 0)
 
 const joinMutation = useJoinHackathonMutation()
+const withdrawMutation = useWithdrawFromHackathon(resolvedHackathonId)
+const isWithdrawModalOpen = ref(false)
 
 // Organizer check
 const { data: user } = useQuery(authQueries.whoAmI)
@@ -57,6 +59,34 @@ const { data: organizersData } = useQuery(
 const isOrganizer = computed(() => {
   if (!user.value?.id) {
     return false
+  }
+
+  async function withdrawFromHackathon() {
+    try {
+      await withdrawMutation.mutateAsync()
+      await queryClient.invalidateQueries({ queryKey: participantHackathonQueries.status(resolvedHackathonId.value ?? '').queryKey })
+      await queryClient.invalidateQueries({ queryKey: participantHackathonQueries.list.queryKey })
+      await queryClient.invalidateQueries({ queryKey: ['hackathons', resolvedHackathonId.value, 'registration', 'submissions'] })
+      isWithdrawModalOpen.value = false
+      toast.add({
+        title: 'Withdrawn',
+        description: 'You have withdrawn from this hackathon.',
+        color: 'success',
+      })
+    }
+    catch (error) {
+      console.error('[DASH] Failed to withdraw from hackathon', error)
+      const statusCode = getErrorStatusCode(error)
+      const description = statusCode === 400
+        ? 'Leave your team before withdrawing from this hackathon.'
+        : 'Please try again in a moment.'
+
+      toast.add({
+        title: 'Could not withdraw',
+        description,
+        color: 'error',
+      })
+    }
   }
   if (user.value.isRoot)
     return true
@@ -316,6 +346,17 @@ function formatReviewedDate(value: Date | string | null | undefined) {
                 >
                   Review notes: {{ statusData.reviewReason }}
                 </p>
+                <div class="mt-3">
+                  <UButton
+                    size="sm"
+                    color="error"
+                    variant="soft"
+                    icon="i-lucide-user-minus"
+                    @click="isWithdrawModalOpen = true"
+                  >
+                    Withdraw from hackathon
+                  </UButton>
+                </div>
               </template>
             </UCard>
 
@@ -407,6 +448,37 @@ function formatReviewedDate(value: Date | string | null | undefined) {
                 </UButton>
               </div>
             </form>
+          </UCard>
+        </div>
+      </template>
+    </UModal>
+
+    <UModal
+      v-model:open="isWithdrawModalOpen"
+      title="Withdraw from hackathon"
+      description="This removes your participant access for this hackathon."
+    >
+      <template #content>
+        <div class="overflow-auto max-h-[80vh]">
+          <UCard>
+            <p class="text-sm text-(--ui-text-muted)">
+              Are you sure you want to withdraw? You must leave your team first if you are currently in one.
+            </p>
+            <div class="mt-4 flex justify-end gap-2">
+              <UButton
+                variant="ghost"
+                @click="isWithdrawModalOpen = false"
+              >
+                Cancel
+              </UButton>
+              <UButton
+                color="error"
+                :loading="withdrawMutation.isPending.value"
+                @click="withdrawFromHackathon"
+              >
+                Withdraw
+              </UButton>
+            </div>
           </UCard>
         </div>
       </template>

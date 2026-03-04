@@ -2,31 +2,11 @@ import { fetchQuestions } from '~/composables/question'
 
 interface RegistrationSetupOptions {
   hackathonId: string
-  joinMutation: { mutateAsync: (id: string) => Promise<unknown> }
   initQuestionMutation: { mutateAsync: (id: string) => Promise<unknown> }
 }
 
-export async function registrationSetup({ hackathonId, joinMutation, initQuestionMutation }: RegistrationSetupOptions) {
+export async function registrationSetup({ hackathonId, initQuestionMutation }: RegistrationSetupOptions) {
   try {
-    // Check if user is already a participant
-    const statusResponse = await useNuxtApp()
-      .$apiClient
-      .participants
-      .hackathons
-      .byHackathonIdOrShortCodeId(hackathonId)
-      .status
-      .get()
-
-    // Join the hackathon only if not already a participant
-    if (!statusResponse?.isParticipant) {
-      try {
-        await joinMutation.mutateAsync(hackathonId)
-      }
-      catch (joinError) {
-        console.error('[REGIS-INIT] Error joining hackathon:', joinError)
-      }
-    }
-
     // Check if registration questions exist, if not initialize them
     const questionsResponse = await fetchQuestions(hackathonId)
 

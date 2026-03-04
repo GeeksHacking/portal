@@ -15,7 +15,7 @@ const hackathonId = computed(() => props.hackathonId ?? null)
 const setupComplete = ref(false)
 const setupError = ref<string | null>(null)
 const lastSetupHackathonId = ref<string | null>(null)
-const isJoining = ref(false)
+const canJoinFromHere = ref(false)
 
 // Initialize mutations at component level (must be in setup)
 const initQuestionMutation = useInitQuestionMutation()
@@ -36,30 +36,17 @@ watch(
     if (!id || status === undefined)
       return
 
-    // If not a participant, auto-join the hackathon
+    // If not a participant, do not auto-join. This prevents withdrawn participants
+    // from being silently re-joined by registration initialization.
     if (!status.isParticipant) {
-      if (isJoining.value)
-        return // Prevent duplicate join attempts
-
-      isJoining.value = true
       setupComplete.value = false
       lastSetupHackathonId.value = null
-
-      try {
-        await joinMutation.mutateAsync(id)
-        // Invalidate status query to refetch participant status
-        await queryClient.invalidateQueries({ queryKey: ['hackathons', id, 'status'] })
-      }
-      catch (error) {
-        console.error('[FORM] Failed to join hackathon:', error)
-        setupError.value = 'Failed to join hackathon. Please try again.'
-        isJoining.value = false
-      }
+      canJoinFromHere.value = true
+      setupError.value = 'You are not currently participating in this hackathon. Please join to continue.'
       return
     }
 
-    // Reset joining state once we're a participant
-    isJoining.value = false
+    canJoinFromHere.value = false
 
     if (lastSetupHackathonId.value === id && setupComplete.value)
       return
@@ -68,9 +55,10 @@ watch(
     setupComplete.value = false
 
     try {
-      await registrationSetup({ hackathonId: id, joinMutation, initQuestionMutation })
+      await registrationSetup({ hackathonId: id, initQuestionMutation })
       lastSetupHackathonId.value = id
       setupComplete.value = true
+      await queryClient.invalidateQueries({ queryKey: ['hackathons', id, 'status'] })
     }
     catch (error) {
       console.error('[FORM] Registration setup failed:', error)
@@ -86,6 +74,21 @@ const { data: questions, isLoading, error } = useQuery(computed(() => ({
   queryFn: () => fetchQuestions(hackathonId.value ?? ''),
   enabled: setupComplete.value && !!hackathonId.value,
 })))
+
+async function joinHackathonFromRegistration() {
+  if (!hackathonId.value)
+    return
+
+  try {
+    await joinMutation.mutateAsync(hackathonId.value)
+    await queryClient.invalidateQueries({ queryKey: ['hackathons', hackathonId.value, 'status'] })
+    setupError.value = null
+  }
+  catch (joinError) {
+    console.error('[FORM] Failed to join hackathon:', joinError)
+    setupError.value = 'Unable to join right now. Please try again from the participant dashboard.'
+  }
+}
 </script>
 
 <template>
@@ -111,29 +114,11 @@ const { data: questions, isLoading, error } = useQuery(computed(() => ({
     </div>
 
     <div
-      v-else-if="isJoining"
-      class="text-center py-8"
-    >
-      <p class="text-gray-900 dark:text-gray-100">
-        Joining hackathon...
-      </p>
-    </div>
-
-    <div
       v-else-if="statusError"
       class="text-center py-8"
     >
       <p class="text-red-600 dark:text-red-400">
         Unable to load your participation status. Please return to the dashboard and try again.
-      </p>
-    </div>
-
-    <div
-      v-else-if="!setupComplete"
-      class="text-center py-8"
-    >
-      <p class="text-gray-900 dark:text-gray-100">
-        Preparing your registration form...
       </p>
     </div>
 
@@ -144,6 +129,28 @@ const { data: questions, isLoading, error } = useQuery(computed(() => ({
     >
       <p class="text-red-600 dark:text-red-400">
         {{ setupError }}
+      </p>
+      <div
+        v-if="canJoinFromHere"
+        class="mt-4"
+      >
+        <UButton
+          color="neutral"
+          variant="solid"
+          :loading="joinMutation.isPending.value"
+          @click="joinHackathonFromRegistration"
+        >
+          Join hackathon
+        </UButton>
+      </div>
+    </div>
+
+    <div
+      v-else-if="!setupComplete"
+      class="text-center py-8"
+    >
+      <p class="text-gray-900 dark:text-gray-100">
+        Preparing your registration form...
       </p>
     </div>
 

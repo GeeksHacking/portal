@@ -1,6 +1,6 @@
+import type { HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatus } from '~/api-client/models'
 import { queryOptions, useQuery } from '@tanstack/vue-query'
 import { computed } from 'vue'
-import type { HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatus } from '~/api-client/models'
 import { HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject } from '~/api-client/models'
 
 export const hackathonQueries = {
@@ -21,8 +21,12 @@ export const hackathonQueries = {
       queryKey: ['hackathons', hackathonId, 'status'],
       async queryFn() {
         return await useNuxtApp()
-          .$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(hackathonId)
-          .status.get()
+          .$apiClient
+          .participants
+          .hackathons
+          .byHackathonIdOrShortCodeId(hackathonId)
+          .status
+          .get()
       },
     }),
   detail: (hackathonId: string) =>
@@ -30,17 +34,18 @@ export const hackathonQueries = {
       queryKey: ['hackathons', hackathonId, 'detail'],
       async queryFn() {
         return await useNuxtApp()
-          .$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(hackathonId)
+          .$apiClient
+          .participants
+          .hackathons
+          .byHackathonIdOrShortCodeId(hackathonId)
           .get()
       },
     }),
 }
 
-export const formatParticipantStatus = (
-  status: HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatus | null | undefined,
-  isParticipant?: boolean | null,
-) => {
-  if (!isParticipant) return { label: 'Not joined', color: 'neutral' as const }
+export function formatParticipantStatus(status: HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatus | null | undefined, isParticipant?: boolean | null) {
+  if (!isParticipant)
+    return { label: 'Not joined', color: 'neutral' as const }
   switch (status) {
     case HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject.Accepted:
       return { label: 'Accepted', color: 'success' as const }

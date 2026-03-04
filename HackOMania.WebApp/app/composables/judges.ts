@@ -1,7 +1,7 @@
-import { queryOptions, useMutation } from '@tanstack/vue-query'
-import { toValue } from 'vue'
 import type { MaybeRefOrGetter } from 'vue'
 import type { HackOManiaApiEndpointsOrganizersHackathonJudgesCreateRequest, HackOManiaApiEndpointsOrganizersHackathonJudgesUpdateRequest } from '~/api-client/models'
+import { queryOptions, useMutation } from '@tanstack/vue-query'
+import { toValue } from 'vue'
 
 export const judgeQueries = {
   list: (hackathonId: string) =>
@@ -9,8 +9,12 @@ export const judgeQueries = {
       queryKey: ['hackathons', hackathonId, 'judges'],
       async queryFn() {
         return await useNuxtApp()
-          .$apiClient.organizers.hackathons.byHackathonId(hackathonId)
-          .judges.get()
+          .$apiClient
+          .organizers
+          .hackathons
+          .byHackathonId(hackathonId)
+          .judges
+          .get()
       },
     }),
 
@@ -19,8 +23,12 @@ export const judgeQueries = {
       queryKey: ['hackathons', hackathonId, 'judges', judgeId],
       async queryFn() {
         return await useNuxtApp()
-          .$apiClient.organizers.hackathons.byHackathonId(hackathonId)
-          .judges.byJudgeId(judgeId)
+          .$apiClient
+          .organizers
+          .hackathons
+          .byHackathonId(hackathonId)
+          .judges
+          .byJudgeId(judgeId)
           .get()
       },
     }),
@@ -30,8 +38,12 @@ export function useCreateJudgeMutation(hackathonId: MaybeRefOrGetter<string>) {
   return useMutation({
     mutationFn(data: HackOManiaApiEndpointsOrganizersHackathonJudgesCreateRequest) {
       return useNuxtApp()
-        .$apiClient.organizers.hackathons.byHackathonId(toValue(hackathonId))
-        .judges.post(data)
+        .$apiClient
+        .organizers
+        .hackathons
+        .byHackathonId(toValue(hackathonId))
+        .judges
+        .post(data)
     },
   })
 }
@@ -40,8 +52,12 @@ export function useUpdateJudgeMutation(hackathonId: MaybeRefOrGetter<string>) {
   return useMutation({
     mutationFn({ judgeId, data }: { judgeId: string, data: HackOManiaApiEndpointsOrganizersHackathonJudgesUpdateRequest }) {
       return useNuxtApp()
-        .$apiClient.organizers.hackathons.byHackathonId(toValue(hackathonId))
-        .judges.byJudgeId(judgeId)
+        .$apiClient
+        .organizers
+        .hackathons
+        .byHackathonId(toValue(hackathonId))
+        .judges
+        .byJudgeId(judgeId)
         .patch(data)
     },
   })

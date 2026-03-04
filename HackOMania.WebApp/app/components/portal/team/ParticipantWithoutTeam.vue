@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 
 const props = defineProps<{
   hackathonId: string | null
@@ -20,7 +20,8 @@ const joinTeamMutation = useJoinTeamByCode()
 
 // Handlers
 function handleCreateTeam() {
-  if (!newTeamName.value.trim()) return
+  if (!newTeamName.value.trim())
+    return
   createTeamMutation.mutate({
     name: newTeamName.value.trim(),
     description: newTeamDescription.value.trim() || '',
@@ -40,7 +41,8 @@ function handleCreateTeam() {
 }
 
 function handleJoinTeam() {
-  if (!joinCode.value.trim()) return
+  if (!joinCode.value.trim())
+    return
   joinTeamMutation.mutate(joinCode.value.trim(), {
     onSuccess() {
       joinCode.value = ''

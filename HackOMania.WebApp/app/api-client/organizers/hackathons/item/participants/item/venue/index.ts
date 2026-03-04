@@ -4,6 +4,10 @@
 // @ts-ignore
 import { CheckInRequestBuilderRequestsMetadata, type CheckInRequestBuilder } from './checkIn/index.js';
 // @ts-ignore
+import { CheckOutRequestBuilderRequestsMetadata, type CheckOutRequestBuilder } from './checkOut/index.js';
+// @ts-ignore
+import { HistoryRequestBuilderRequestsMetadata, type HistoryRequestBuilder } from './history/index.js';
+// @ts-ignore
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata } from '@microsoft/kiota-abstractions';
 
 /**
@@ -14,6 +18,14 @@ export interface VenueRequestBuilder extends BaseRequestBuilder<VenueRequestBuil
      * The checkIn property
      */
     get checkIn(): CheckInRequestBuilder;
+    /**
+     * The checkOut property
+     */
+    get checkOut(): CheckOutRequestBuilder;
+    /**
+     * The history property
+     */
+    get history(): HistoryRequestBuilder;
 }
 /**
  * Uri template for the request builder.
@@ -25,6 +37,12 @@ export const VenueRequestBuilderUriTemplate = "{+baseurl}/organizers/hackathons/
 export const VenueRequestBuilderNavigationMetadata: Record<Exclude<keyof VenueRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     checkIn: {
         requestsMetadata: CheckInRequestBuilderRequestsMetadata,
+    },
+    checkOut: {
+        requestsMetadata: CheckOutRequestBuilderRequestsMetadata,
+    },
+    history: {
+        requestsMetadata: HistoryRequestBuilderRequestsMetadata,
     },
 };
 /* tslint:enable */

@@ -16,12 +16,12 @@ public class SubmissionsTests
             Venue = "Virtual",
             HomepageUri = new Uri("https://example.com/hackathon"),
             ShortCode = $"PSBM{suffix}",
-            EventStartDate = now.AddDays(7),
-            EventEndDate = now.AddDays(9),
-            SubmissionsStartDate = now.AddDays(7).AddHours(2),
-            SubmissionsEndDate = now.AddDays(8).AddHours(20),
-            JudgingStartDate = now.AddDays(8).AddHours(21),
-            JudgingEndDate = now.AddDays(9).AddHours(-2),
+            EventStartDate = now.AddDays(-1),
+            EventEndDate = now.AddDays(2),
+            SubmissionsStartDate = now.AddHours(-1),
+            SubmissionsEndDate = now.AddDays(1),
+            JudgingStartDate = now.AddDays(1).AddHours(1),
+            JudgingEndDate = now.AddDays(1).AddHours(12),
             IsPublished = true,
         };
     }
@@ -161,6 +161,78 @@ public class SubmissionsTests
         // Act
         var response = await client.HttpClient.PostAsJsonAsync(
             $"/participants/hackathons/{hackathonId}/teams/{teamId}/submissions",
+            request
+        );
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task CreateSubmission_BeforeSubmissionStartDate_ReturnsBadRequest(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Arrange - Create a hackathon where submissions are not open yet
+        var now = DateTimeOffset.UtcNow;
+        var hackathonRequest = new CreateHackathonRequest
+        {
+            Name = $"Submission Window Test {Guid.NewGuid().ToString()[..8]}",
+            Description = "A test hackathon with upcoming submission window",
+            Venue = "Virtual",
+            HomepageUri = new Uri("https://example.com/hackathon"),
+            ShortCode = "SBFR" + Guid.NewGuid().ToString()[..8],
+            EventStartDate = now.AddDays(1),
+            EventEndDate = now.AddDays(5),
+            SubmissionsStartDate = now.AddDays(2),
+            SubmissionsEndDate = now.AddDays(3),
+            JudgingStartDate = now.AddDays(3).AddHours(1),
+            JudgingEndDate = now.AddDays(4),
+            IsPublished = true,
+        };
+
+        var hackathonResponse = await client.HttpClient.PostAsJsonAsync(
+            "/organizers/hackathons",
+            hackathonRequest
+        );
+        await Assert.That(hackathonResponse.IsSuccessStatusCode).IsTrue();
+        var hackathon = await hackathonResponse.Content.ReadFromJsonAsync<HackathonResponse>();
+
+        var challengeRequest = new
+        {
+            Title = "Submission Window Challenge",
+            Description = "A challenge for submission window tests",
+            Sponsor = "Test Sponsor",
+            SelectionCriteriaStmt = "true",
+            IsPublished = true,
+        };
+        var challengeResponse = await client.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{hackathon!.Id}/challenges",
+            challengeRequest
+        );
+        await Assert.That(challengeResponse.IsSuccessStatusCode).IsTrue();
+        var challenge = await challengeResponse.Content.ReadFromJsonAsync<ChallengeResponse>();
+
+        await client.HttpClient.PostAsync($"/participants/hackathons/{hackathon.Id}/join", null);
+
+        var teamResponse = await client.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathon.Id}/teams",
+            new { Name = "Submission Window Team", Description = "Team for submission timing" }
+        );
+        await Assert.That(teamResponse.IsSuccessStatusCode).IsTrue();
+        var team = await teamResponse.Content.ReadFromJsonAsync<CreateTeamResponse>();
+
+        var request = new
+        {
+            ChallengeId = challenge!.Id,
+            Title = "Too Early Submission",
+            Summary = "Should fail before submissions start",
+        };
+
+        // Act
+        var response = await client.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathon.Id}/teams/{team!.Id}/submissions",
             request
         );
 

@@ -52,6 +52,13 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             return;
         }
 
+        if (DateTimeOffset.UtcNow < hackathon.SubmissionsStartDate)
+        {
+            AddError("Challenge selection is not open yet");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
+
         // Check if challenge selection deadline has passed
         if (DateTimeOffset.UtcNow > hackathon.SubmissionsEndDate)
         {

@@ -19,13 +19,15 @@ const { data: user, isLoading, isError } = useQuery({
 
 // Watch for authentication status and redirect
 watch([user, isError, isLoading], ([userData, hasError, loading]) => {
-  if (loading || hasNavigated.value) return
+  if (loading || hasNavigated.value)
+    return
 
   if (userData) {
     // User is authenticated, redirect to dashboard
     hasNavigated.value = true
     navigateTo('/dash')
-  } else {
+  }
+  else {
     // User is not authenticated, redirect to login
     hasNavigated.value = true
     navigateTo('/login')

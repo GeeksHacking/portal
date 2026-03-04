@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ref, watch, nextTick, onUnmounted, computed } from 'vue'
+import type { HackOManiaApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto } from '~/api-client/models'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { Html5Qrcode } from 'html5-qrcode'
-import { useCheckInMutation, useCheckOutMutation, venueHistoryQueries, venueOverviewQueries } from '~/composables/venue'
+import { computed, nextTick, onUnmounted, ref, watch } from 'vue'
 import { participantOrganizerQueries } from '~/composables/participants'
-import type { HackOManiaApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto } from '~/api-client/models'
+import { useCheckInMutation, useCheckOutMutation, venueHistoryQueries, venueOverviewQueries } from '~/composables/venue'
 
-const route = useRoute()
 const props = withDefaults(defineProps<{
   hackathonId?: string
 }>(), {
   hackathonId: '',
 })
+const route = useRoute()
 const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
 const isScannerOpen = ref(false)
@@ -52,7 +52,7 @@ const { data: venueOverview, isLoading: isLoadingOverview, dataUpdatedAt } = use
 )
 
 type ParticipantCheckInDto = HackOManiaApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto
-type VenueAuditTrailItem = {
+interface VenueAuditTrailItem {
   participantId?: string
   userId?: string
   userName?: string
@@ -81,7 +81,8 @@ const filteredParticipants = computed(() => {
     }
     return (a.userName ?? '').localeCompare(b.userName ?? '', undefined, { sensitivity: 'base' })
   })
-  if (!query) return sorted
+  if (!query)
+    return sorted
   return sorted.filter(p => (p.userName ?? '').toLowerCase().includes(query))
 })
 
@@ -115,12 +116,14 @@ const checkInTimeFormatter = new Intl.DateTimeFormat(undefined, {
 })
 
 function formatCheckInTime(date: Date | null | undefined) {
-  if (!date) return '—'
+  if (!date)
+    return '—'
   return `${checkInTimeFormatter.format(date)} SGT`
 }
 
 function formatEventTime(timestamp: string | undefined) {
-  if (!timestamp) return '—'
+  if (!timestamp)
+    return '—'
   return formatCheckInTime(new Date(timestamp))
 }
 
@@ -133,7 +136,7 @@ function refreshOverview() {
 
 let html5QrCode: Html5Qrcode | null = null
 
-const startScanner = async () => {
+async function startScanner() {
   error.value = ''
   scannedUserId.value = ''
   scanResult.value = null
@@ -195,7 +198,7 @@ const startScanner = async () => {
   }
 }
 
-const stopScanner = async () => {
+async function stopScanner() {
   isScanning.value = false
   if (html5QrCode) {
     try {
@@ -211,7 +214,7 @@ const stopScanner = async () => {
   }
 }
 
-const closeScanner = async () => {
+async function closeScanner() {
   await stopScanner()
   scannedUserId.value = ''
   error.value = ''
@@ -221,7 +224,7 @@ const closeScanner = async () => {
   isScannerOpen.value = false
 }
 
-const handleCheckIn = async () => {
+async function handleCheckIn() {
   if (!selectedParticipantUserId.value)
     return
   scanResult.value = null
@@ -252,7 +255,7 @@ const handleCheckIn = async () => {
   }
 }
 
-const handleCheckOut = async () => {
+async function handleCheckOut() {
   if (!selectedParticipantUserId.value)
     return
   scanResult.value = null
@@ -272,12 +275,12 @@ const handleCheckOut = async () => {
   }
 }
 
-const openScanner = () => {
+function openScanner() {
   isScannerOpen.value = true
   scanResult.value = null
 }
 
-const resetAndScanAgain = async () => {
+async function resetAndScanAgain() {
   scanResult.value = null
   scannedUserId.value = ''
   error.value = ''
@@ -666,8 +669,7 @@ onUnmounted(() => {
                   class="space-y-4"
                 >
                   <div
-                    :class="[
-                      'p-4 rounded-lg',
+                    class="p-4 rounded-lg" :class="[
                       scanResult.success
                         ? 'bg-green-100 dark:bg-green-900/20'
                         : 'bg-red-100 dark:bg-red-900/20',
@@ -676,8 +678,7 @@ onUnmounted(() => {
                     <div class="flex items-start gap-3">
                       <UIcon
                         :name="scanResult.success ? 'i-lucide-check-circle' : 'i-lucide-x-circle'"
-                        :class="[
-                          'w-5 h-5 flex-shrink-0 mt-0.5',
+                        class="w-5 h-5 flex-shrink-0 mt-0.5" :class="[
                           scanResult.success
                             ? 'text-green-800 dark:text-green-200'
                             : 'text-red-800 dark:text-red-200',
@@ -685,8 +686,7 @@ onUnmounted(() => {
                       />
                       <div class="flex-1">
                         <p
-                          :class="[
-                            'text-sm font-medium',
+                          class="text-sm font-medium" :class="[
                             scanResult.success
                               ? 'text-green-800 dark:text-green-200'
                               : 'text-red-800 dark:text-red-200',
@@ -695,8 +695,7 @@ onUnmounted(() => {
                           {{ scanResult.success ? 'Action Successful!' : 'Action Failed' }}
                         </p>
                         <p
-                          :class="[
-                            'text-sm mt-1',
+                          class="text-sm mt-1" :class="[
                             scanResult.success
                               ? 'text-green-700 dark:text-green-300'
                               : 'text-red-700 dark:text-red-300',

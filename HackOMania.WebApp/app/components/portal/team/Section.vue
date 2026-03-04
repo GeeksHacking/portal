@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
-import { computed, ref, watch, nextTick } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 
 const route = useRoute()
 const hackathon = useRouteHackathon()
@@ -38,7 +38,8 @@ const hasTeam = computed(() => !!teamData.value?.id)
 // Check if hackathon has started
 const eventStartDate = computed(() => hackathon.value?.eventStartDate ?? null)
 const hasHackathonStarted = computed(() => {
-  if (!eventStartDate.value) return true // If no start date, show content
+  if (!eventStartDate.value)
+    return true // If no start date, show content
   return new Date() >= eventStartDate.value
 })
 

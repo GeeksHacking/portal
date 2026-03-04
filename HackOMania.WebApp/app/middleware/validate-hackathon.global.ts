@@ -5,18 +5,21 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const pathSegments = to.path.split('/').filter(Boolean)
 
   // Skip if no path segments
-  if (pathSegments.length === 0) return
+  if (pathSegments.length === 0)
+    return
 
   const firstSegment = pathSegments[0]
 
   // Skip known non-hackathon routes
-  if (firstSegment === 'dash' || firstSegment === 'login') return
+  if (firstSegment === 'dash' || firstSegment === 'login')
+    return
 
   // Extract hackathon ID from the first path segment
   const hackathonId = firstSegment
 
   // Validate that it looks like a hackathon ID (not empty)
-  if (!hackathonId) return
+  if (!hackathonId)
+    return
 
   try {
     // Try to fetch the hackathon to verify it exists
@@ -25,9 +28,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
   catch (error: any) {
     // Check multiple possible error structures from the API client
     const status = error?.status || error?.response?.status || error?.statusCode
-    const isNotFound = status === 404 ||
-                       error?.message?.includes('404') ||
-                       error?.message?.includes('not found')
+    const isNotFound = status === 404
+      || error?.message?.includes('404')
+      || error?.message?.includes('not found')
 
     if (isNotFound) {
       throw createError({

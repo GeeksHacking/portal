@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
 import type { HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse } from '~/api-client/models'
-
-const MAX_TEAM_SIZE = 5
+import { computed, ref } from 'vue'
 
 const props = defineProps<{
   team: HackOManiaApiEndpointsParticipantsHackathonTeamsGetMineResponse
   hackathonId: string | null
 }>()
+
+const MAX_TEAM_SIZE = 5
 
 const hackathonIdRef = computed(() => props.hackathonId)
 const teamIdRef = computed(() => props.team.id ?? null)
@@ -48,7 +48,8 @@ function handleUpdateTeam() {
 }
 
 function handleRemoveMember() {
-  if (!removeConfirmUserId.value) return
+  if (!removeConfirmUserId.value)
+    return
   removeTeamMemberMutation.mutate(removeConfirmUserId.value, {
     onSuccess() {
       removeConfirmUserId.value = null

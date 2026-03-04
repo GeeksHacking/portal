@@ -16,12 +16,14 @@ const { data: status, isLoading: statusLoading } = useQuery(
 watch(
   [() => status.value, statusLoading, hackathon],
   ([statusData, statusIsLoading, hackathonData]) => {
-    if (statusIsLoading || !hackathonData) return
+    if (statusIsLoading || !hackathonData)
+      return
     const query = route.query
     const shortCode = hackathonData.shortCode
     if (!statusData?.isParticipant) {
       navigateTo({ path: `/${shortCode}/registration`, query }, { replace: true })
-    } else {
+    }
+    else {
       navigateTo({ path: `/${shortCode}/team`, query }, { replace: true })
     }
   },

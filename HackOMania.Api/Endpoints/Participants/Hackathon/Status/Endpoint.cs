@@ -41,7 +41,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .WithCache()
             .FirstAsync(ct);
 
-        if (participant is null)
+        if (participant is null || participant.WithdrawnAt is not null)
         {
             await Send.OkAsync(
                 new Response

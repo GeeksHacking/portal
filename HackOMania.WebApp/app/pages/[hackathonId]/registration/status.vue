@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
-import { hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
 import { HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject } from '~/api-client/models'
+import { hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
 
 definePageMeta({
   // Explicitly mark as public route
@@ -36,9 +36,7 @@ const { data: statusData, isLoading: isLoadingStatus } = useQuery(
 const { data: submissionsData, isLoading: isLoadingSubmissions } = useQuery(
   computed(() => ({
     queryKey: ['hackathons', resolvedHackathonId.value, 'registration', 'submissions'],
-    queryFn: () => useNuxtApp().$apiClient.participants.hackathons
-      .byHackathonIdOrShortCodeId(resolvedHackathonId.value ?? '')
-      .registration.submissions.get(),
+    queryFn: () => useNuxtApp().$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(resolvedHackathonId.value ?? '').registration.submissions.get(),
     enabled: !!resolvedHackathonId.value && statusData.value?.isParticipant === true,
   })),
 )
@@ -130,7 +128,8 @@ const stateContent = computed(() => {
 
 // Handle auth state changes
 watchEffect(() => {
-  if (isLoadingUser.value || !hackathon.value) return
+  if (isLoadingUser.value || !hackathon.value)
+    return
 
   // Not authenticated - redirect to login
   if (!user.value || isError.value) {
@@ -141,8 +140,10 @@ watchEffect(() => {
   }
 
   // Wait for status and submissions data to load for participants
-  if (isLoadingStatus.value) return
-  if (statusData.value?.isParticipant && isLoadingSubmissions.value) return
+  if (isLoadingStatus.value)
+    return
+  if (statusData.value?.isParticipant && isLoadingSubmissions.value)
+    return
 
   // Show the page once auth is confirmed and redirects are handled
   showPage.value = true
@@ -181,7 +182,6 @@ watchEffect(() => {
 
           <div class="font-raleway text-base md:text-lg font-normal text-black text-center max-w-lg space-y-4">
             <p>{{ stateContent.description }}</p>
-
           </div>
         </div>
 

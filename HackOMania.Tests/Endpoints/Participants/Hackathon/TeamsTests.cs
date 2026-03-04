@@ -1,6 +1,6 @@
-using System.Net.Http.Json;
 using HackOMania.Tests.Data;
 using HackOMania.Tests.Models;
+using System.Net.Http.Json;
 
 namespace HackOMania.Tests.Endpoints.Participants.Hackathon;
 
@@ -16,12 +16,12 @@ public class TeamsTests
             Venue = "Virtual",
             HomepageUri = new Uri("https://example.com/hackathon"),
             ShortCode = $"TEAM{suffix}",
-            EventStartDate = now.AddDays(7),
-            EventEndDate = now.AddDays(9),
-            SubmissionsStartDate = now.AddDays(7).AddHours(2),
-            SubmissionsEndDate = now.AddDays(8).AddHours(20),
-            JudgingStartDate = now.AddDays(8).AddHours(21),
-            JudgingEndDate = now.AddDays(9).AddHours(-2),
+            EventStartDate = now.AddDays(-1),
+            EventEndDate = now.AddDays(2),
+            SubmissionsStartDate = now.AddHours(-1),
+            SubmissionsEndDate = now.AddDays(1),
+            JudgingStartDate = now.AddDays(1).AddHours(1),
+            JudgingEndDate = now.AddDays(1).AddHours(12),
             IsPublished = true,
         };
     }
@@ -586,6 +586,70 @@ public class TeamsTests
         );
 
         // Assert - Should return 400 Bad Request with error about deadline
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task SelectChallenge_BeforeSubmissionStartDate_ReturnsError(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        // Arrange - Create a hackathon with upcoming submission start
+        var now = DateTimeOffset.UtcNow;
+        var hackathonRequest = new CreateHackathonRequest
+        {
+            Name = "Before Start Hackathon",
+            Description = "Hackathon with upcoming submission start",
+            Venue = "Virtual",
+            HomepageUri = new Uri("https://example.com/hackathon"),
+            ShortCode = "BFR" + Guid.NewGuid().ToString()[..8],
+            EventStartDate = now.AddDays(1),
+            EventEndDate = now.AddDays(5),
+            SubmissionsStartDate = now.AddDays(2),
+            SubmissionsEndDate = now.AddDays(3),
+            JudgingStartDate = now.AddDays(3).AddHours(1),
+            JudgingEndDate = now.AddDays(4),
+            IsPublished = true,
+        };
+        var hackathonResponse = await client.HttpClient.PostAsJsonAsync(
+            "/organizers/hackathons",
+            hackathonRequest
+        );
+        await Assert.That(hackathonResponse.IsSuccessStatusCode).IsTrue();
+        var hackathon = await hackathonResponse.Content.ReadFromJsonAsync<HackathonResponse>();
+
+        var challengeRequest = new
+        {
+            Title = "Before Start Challenge",
+            Description = "Challenge for before-start test",
+            Sponsor = "Test Sponsor",
+            SelectionCriteriaStmt = "Test criteria",
+            IsPublished = true,
+        };
+        var challengeResponse = await client.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{hackathon!.Id}/challenges",
+            challengeRequest
+        );
+        await Assert.That(challengeResponse.IsSuccessStatusCode).IsTrue();
+        var challenge = await challengeResponse.Content.ReadFromJsonAsync<ChallengeResponse>();
+
+        await client.HttpClient.PostAsync($"/participants/hackathons/{hackathon.Id}/join", null);
+
+        var teamResponse = await client.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathon.Id}/teams",
+            new { Name = "Before Start Team", Description = "Team for before-start test" }
+        );
+        await Assert.That(teamResponse.IsSuccessStatusCode).IsTrue();
+        var team = await teamResponse.Content.ReadFromJsonAsync<CreateTeamResponse>();
+
+        // Act
+        var response = await client.HttpClient.PutAsJsonAsync(
+            $"/participants/hackathons/{hackathon.Id}/teams/{team!.Id}/challenge",
+            new { ChallengeId = challenge!.Id }
+        );
+
+        // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
     }
 

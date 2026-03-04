@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
-import { participantOrganizerQueries } from '~/composables/participants'
+import { computed } from 'vue'
 import { HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject } from '~/api-client/models'
+import { participantOrganizerQueries } from '~/composables/participants'
 
 const props = defineProps<{
   hackathonId: string
@@ -34,7 +34,8 @@ const stats = computed(() => {
 
   const overdue = pending.filter((p) => {
     const submissions = p.registrationSubmissions ?? []
-    if (!submissions.length) return false
+    if (!submissions.length)
+      return false
     const latestMs = submissions.reduce((max, s) => {
       const t = s.updatedAt?.getTime() ?? 0
       return t > max ? t : max
@@ -171,16 +172,16 @@ const statItems = computed(() => [
       <div
         v-for="item in statItems"
         :key="item.label"
-        :class="['rounded-lg p-4 flex flex-col gap-2', item.bg]"
+        class="rounded-lg p-4 flex flex-col gap-2" :class="[item.bg]"
       >
         <div class="flex items-center justify-between">
           <span class="text-xs text-(--ui-text-muted) font-medium">{{ item.label }}</span>
           <UIcon
             :name="item.icon"
-            :class="['w-4 h-4', item.color]"
+            class="w-4 h-4" :class="[item.color]"
           />
         </div>
-        <span :class="['text-2xl font-bold', item.color]">{{ item.value }}</span>
+        <span class="text-2xl font-bold" :class="[item.color]">{{ item.value }}</span>
       </div>
     </div>
   </UCard>

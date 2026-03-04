@@ -56,6 +56,11 @@ public class Endpoint(ISqlSugarClient sql, IWebHostEnvironment env) : Endpoint<R
 
             await sql.Insertable(existing).ExecuteCommandAsync(ct);
         }
+        else if (existing.WithdrawnAt is not null)
+        {
+            existing.WithdrawnAt = null;
+            await sql.Updateable(existing).ExecuteCommandAsync(ct);
+        }
 
         await Send.OkAsync(
             new Response

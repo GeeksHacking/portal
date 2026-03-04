@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 
 const props = defineProps<{
   title: string
@@ -34,7 +34,8 @@ const headerStyle = computed(() => {
 
 // Fallback class when no custom colours
 const headerClass = computed(() => {
-  if (props.colours) return ''
+  if (props.colours)
+    return ''
   return props.selected ? 'bg-[#FF5B84]' : 'bg-[#FF5B84]/40'
 })
 

@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { unref, ref, computed } from 'vue'
-import { useQuery, useQueries, useQueryClient } from '@tanstack/vue-query'
-import { formatParticipantStatus, hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
-import { useJoinHackathonMutation, useCreateHackathonMutation, useUpdateHackathonMutation } from '~/composables/hackathon'
 import type {
-  HackOManiaApiEndpointsParticipantsHackathonStatusResponse,
   HackOManiaApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse,
+  HackOManiaApiEndpointsParticipantsHackathonStatusResponse,
 } from '~/api-client/models'
+import { useQueries, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { computed, ref, unref } from 'vue'
 import { HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject } from '~/api-client/models'
+import { useCreateHackathonMutation, useJoinHackathonMutation, useUpdateHackathonMutation } from '~/composables/hackathon'
+import { formatParticipantStatus, hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
 
 const toast = useToast()
 const queryClient = useQueryClient()
@@ -152,12 +152,14 @@ const hackathons = computed(() => {
 
   // Add organizer hackathons first (they may include unpublished ones)
   for (const h of organizerList) {
-    if (h.id) hackathonMap.set(h.id, h)
+    if (h.id)
+      hackathonMap.set(h.id, h)
   }
 
   // Add participant hackathons (won't overwrite if already present)
   for (const h of participantList) {
-    if (h.id && !hackathonMap.has(h.id)) hackathonMap.set(h.id, h)
+    if (h.id && !hackathonMap.has(h.id))
+      hackathonMap.set(h.id, h)
   }
 
   return Array.from(hackathonMap.values())
@@ -181,27 +183,27 @@ const submissionQueries = useQueries({
       const isParticipant = status?.isParticipant === true
       return {
         queryKey: ['hackathons', hackathon.id, 'registration', 'submissions'],
-        queryFn: () => useNuxtApp().$apiClient.participants.hackathons
-          .byHackathonIdOrShortCodeId(hackathon.id ?? '')
-          .registration.submissions.get(),
+        queryFn: () => useNuxtApp().$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(hackathon.id ?? '').registration.submissions.get(),
         enabled: !!hackathon.id && isParticipant,
       }
     }),
   ),
 })
 
-const statusDataForIndex = (index: number): HackOManiaApiEndpointsParticipantsHackathonStatusResponse | undefined =>
-  unref(statusQueries.value[index]?.data) as HackOManiaApiEndpointsParticipantsHackathonStatusResponse | undefined
+function statusDataForIndex(index: number): HackOManiaApiEndpointsParticipantsHackathonStatusResponse | undefined {
+  return unref(statusQueries.value[index]?.data) as HackOManiaApiEndpointsParticipantsHackathonStatusResponse | undefined
+}
 
-const submissionsDataForIndex = (index: number): HackOManiaApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse | undefined =>
-  unref(submissionQueries.value[index]?.data) as HackOManiaApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse | undefined
+function submissionsDataForIndex(index: number): HackOManiaApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse | undefined {
+  return unref(submissionQueries.value[index]?.data) as HackOManiaApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse | undefined
+}
 
-const isRegistrationComplete = (index: number): boolean => {
+function isRegistrationComplete(index: number): boolean {
   const submissions = submissionsDataForIndex(index)
   return submissions?.requiredQuestionsRemaining === 0
 }
 
-const joinHackathon = async (hackathon: { id: string, shortCode: string }) => {
+async function joinHackathon(hackathon: { id: string, shortCode: string }) {
   try {
     await joinMutation.mutateAsync(hackathon.id)
     await queryClient.invalidateQueries({ queryKey: participantHackathonQueries.status(hackathon.id).queryKey })

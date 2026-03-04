@@ -1,31 +1,25 @@
-import { queryOptions, useMutation } from '@tanstack/vue-query'
-import { toValue, unref, type MaybeRef, type MaybeRefOrGetter, type Ref } from 'vue'
+import type { MaybeRef, MaybeRefOrGetter, Ref } from 'vue'
 import type {
-  HackOManiaApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitRequest,
-  HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto,
-  HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest,
   HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateRequest,
+  HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest,
+  HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto,
+  HackOManiaApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitRequest,
 } from '~/api-client/models'
+import { queryOptions, useMutation } from '@tanstack/vue-query'
+import { toValue, unref } from 'vue'
 
 export async function fetchQuestions(hackathonId: string) {
-  return await useNuxtApp().$apiClient.participants.hackathons
-    .byHackathonIdOrShortCodeId(hackathonId)
-    .registration.questions.get()
+  return await useNuxtApp().$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(hackathonId).registration.questions.get()
 }
 
 export async function fetchOrganizerQuestions(hackathonId: string) {
-  return await useNuxtApp().$apiClient.organizers.hackathons
-    .byHackathonId(hackathonId)
-    .registration.questions.get()
+  return await useNuxtApp().$apiClient.organizers.hackathons.byHackathonId(hackathonId).registration.questions.get()
 }
 
 export function useUpdateQuestionMutation(hackathonId: MaybeRefOrGetter<string>) {
   return useMutation({
     mutationFn({ questionId, data }: { questionId: string, data: HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateRequest }) {
-      return useNuxtApp().$apiClient.organizers.hackathons
-        .byHackathonId(toValue(hackathonId))
-        .registration.questions.byQuestionId(questionId)
-        .patch(data, undefined)
+      return useNuxtApp().$apiClient.organizers.hackathons.byHackathonId(toValue(hackathonId)).registration.questions.byQuestionId(questionId).patch(data, undefined)
     },
   })
 }
@@ -33,9 +27,7 @@ export function useUpdateQuestionMutation(hackathonId: MaybeRefOrGetter<string>)
 export function useCreateQuestionMutation(hackathonId: MaybeRefOrGetter<string>) {
   return useMutation({
     mutationFn(data: HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateRequest) {
-      return useNuxtApp().$apiClient.organizers.hackathons
-        .byHackathonId(toValue(hackathonId))
-        .registration.questions.post(data)
+      return useNuxtApp().$apiClient.organizers.hackathons.byHackathonId(toValue(hackathonId)).registration.questions.post(data)
     },
   })
 }
@@ -43,10 +35,7 @@ export function useCreateQuestionMutation(hackathonId: MaybeRefOrGetter<string>)
 export function useDeleteQuestionMutation(hackathonId: MaybeRefOrGetter<string>) {
   return useMutation({
     mutationFn(questionId: string) {
-      return useNuxtApp().$apiClient.organizers.hackathons
-        .byHackathonId(toValue(hackathonId))
-        .registration.questions.byQuestionId(questionId)
-        .delete()
+      return useNuxtApp().$apiClient.organizers.hackathons.byHackathonId(toValue(hackathonId)).registration.questions.byQuestionId(questionId).delete()
     },
   })
 }
@@ -70,9 +59,7 @@ export const registrationQuestionOrganizerQueries = {
 export function useInitQuestionMutation() {
   return useMutation({
     mutationFn(hackathonId: string) {
-      return useNuxtApp().$apiClient.organizers.hackathons
-        .byHackathonId(hackathonId)
-        .registration.questions.initialize.post()
+      return useNuxtApp().$apiClient.organizers.hackathons.byHackathonId(hackathonId).registration.questions.initialize.post()
     },
   })
 }
@@ -90,9 +77,7 @@ export function useSubmitRegistrationMutation(hackathonId: MaybeRef<string>, que
       submissionError.value = false
 
       const id = unref(hackathonId)
-      return useNuxtApp().$apiClient.participants.hackathons
-        .byHackathonIdOrShortCodeId(id)
-        .registration.submissions.post(data)
+      return useNuxtApp().$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(id).registration.submissions.post(data)
     },
     onError(error: unknown) {
       submissionError.value = true
@@ -130,7 +115,8 @@ function parseErrorsToFields(
 
     for (const [fieldId, messages] of Object.entries(errorBag)) {
       const question = questionById.get(fieldId)
-      if (!question?.questionKey) continue
+      if (!question?.questionKey)
+        continue
       const message = Array.isArray(messages) ? messages[0] : String(messages)
       if (message) {
         fieldErrors[question.questionKey] = message

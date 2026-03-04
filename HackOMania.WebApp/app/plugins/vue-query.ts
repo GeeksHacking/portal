@@ -1,13 +1,12 @@
-import { DefaultApiError } from '@microsoft/kiota-abstractions'
 import type {
   DehydratedState,
   VueQueryPluginOptions,
 } from '@tanstack/vue-query'
 import {
-  VueQueryPlugin,
-  QueryClient,
-  hydrate,
   dehydrate,
+  hydrate,
+  QueryClient,
+  VueQueryPlugin,
 } from '@tanstack/vue-query'
 
 export default defineNuxtPlugin((nuxt) => {

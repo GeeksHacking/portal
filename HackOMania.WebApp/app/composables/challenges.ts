@@ -1,7 +1,7 @@
-import { queryOptions, useMutation } from '@tanstack/vue-query'
-import { toValue } from 'vue'
 import type { MaybeRefOrGetter } from 'vue'
 import type { HackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest, HackOManiaApiEndpointsOrganizersHackathonChallengesUpdateRequest } from '~/api-client/models'
+import { queryOptions, useMutation } from '@tanstack/vue-query'
+import { toValue } from 'vue'
 
 export const challengeQueries = {
   list: (hackathonId: string) =>
@@ -9,8 +9,12 @@ export const challengeQueries = {
       queryKey: ['hackathons', hackathonId, 'challenges'],
       async queryFn() {
         return await useNuxtApp()
-          .$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(hackathonId)
-          .challenges.get()
+          .$apiClient
+          .participants
+          .hackathons
+          .byHackathonIdOrShortCodeId(hackathonId)
+          .challenges
+          .get()
       },
     }),
 
@@ -19,8 +23,12 @@ export const challengeQueries = {
       queryKey: ['hackathons', hackathonId, 'challenges', challengeId],
       async queryFn() {
         return await useNuxtApp()
-          .$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(hackathonId)
-          .challenges.byChallengeId(challengeId)
+          .$apiClient
+          .participants
+          .hackathons
+          .byHackathonIdOrShortCodeId(hackathonId)
+          .challenges
+          .byChallengeId(challengeId)
           .get()
       },
     }),
@@ -32,8 +40,12 @@ export const challengeOrganizerQueries = {
       queryKey: ['hackathons', hackathonId, 'challenges', 'organizer'],
       async queryFn() {
         return await useNuxtApp()
-          .$apiClient.organizers.hackathons.byHackathonId(hackathonId)
-          .challenges.get()
+          .$apiClient
+          .organizers
+          .hackathons
+          .byHackathonId(hackathonId)
+          .challenges
+          .get()
       },
     }),
 
@@ -42,8 +54,12 @@ export const challengeOrganizerQueries = {
       queryKey: ['hackathons', hackathonId, 'challenges', challengeId, 'organizer'],
       async queryFn() {
         return await useNuxtApp()
-          .$apiClient.organizers.hackathons.byHackathonId(hackathonId)
-          .challenges.byChallengeId(challengeId)
+          .$apiClient
+          .organizers
+          .hackathons
+          .byHackathonId(hackathonId)
+          .challenges
+          .byChallengeId(challengeId)
           .get()
       },
     }),
@@ -53,8 +69,12 @@ export function useCreateChallengeMutation(hackathonId: MaybeRefOrGetter<string>
   return useMutation({
     mutationFn(data: HackOManiaApiEndpointsOrganizersHackathonChallengesCreateRequest) {
       return useNuxtApp()
-        .$apiClient.organizers.hackathons.byHackathonId(toValue(hackathonId))
-        .challenges.post(data)
+        .$apiClient
+        .organizers
+        .hackathons
+        .byHackathonId(toValue(hackathonId))
+        .challenges
+        .post(data)
     },
   })
 }
@@ -63,8 +83,12 @@ export function useDeleteChallengeMutation(hackathonId: MaybeRefOrGetter<string>
   return useMutation({
     mutationFn(challengeId: string) {
       return useNuxtApp()
-        .$apiClient.organizers.hackathons.byHackathonId(toValue(hackathonId))
-        .challenges.byChallengeId(challengeId)
+        .$apiClient
+        .organizers
+        .hackathons
+        .byHackathonId(toValue(hackathonId))
+        .challenges
+        .byChallengeId(challengeId)
         .delete()
     },
   })
@@ -74,8 +98,12 @@ export function useUpdateChallengeMutation(hackathonId: MaybeRefOrGetter<string>
   return useMutation({
     mutationFn({ challengeId, data }: { challengeId: string, data: HackOManiaApiEndpointsOrganizersHackathonChallengesUpdateRequest }) {
       return useNuxtApp()
-        .$apiClient.organizers.hackathons.byHackathonId(toValue(hackathonId))
-        .challenges.byChallengeId(challengeId)
+        .$apiClient
+        .organizers
+        .hackathons
+        .byHackathonId(toValue(hackathonId))
+        .challenges
+        .byChallengeId(challengeId)
         .patch(data)
     },
   })

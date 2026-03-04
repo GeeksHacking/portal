@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListResponse } from '~/api-client/models'
-import { registrationPageConfig } from '~/config/registration-pages'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { useSubmitRegistrationMutation } from '~/composables/question'
 import { useUpdateUserMutation } from '~/composables/user'
+import { registrationPageConfig } from '~/config/registration-pages'
 
 const props = defineProps<{
   hackathonId: string
@@ -26,7 +26,8 @@ const allQuestions = computed(() =>
 
 // Format ALL questions grouped by section (page config)
 const formattedSections = computed(() => {
-  if (!props.questions?.categories) return []
+  if (!props.questions?.categories)
+    return []
 
   return registrationPageConfig.map((pageConfig, sectionIndex) => {
     const sectionCategories = props.questions.categories
@@ -65,10 +66,11 @@ const isDataReady = ref(false)
 const isTshirtImageModalOpen = ref(false)
 
 // Get selected options that have follow-up text for a question
-type FormattedItem = { label: string, value: string, hasFollowUpText: boolean, followUpPlaceholder: string }
-const getSelectedFollowUpOptions = (questionKey: string, items: FormattedItem[]): FormattedItem[] => {
+interface FormattedItem { label: string, value: string, hasFollowUpText: boolean, followUpPlaceholder: string }
+function getSelectedFollowUpOptions(questionKey: string, items: FormattedItem[]): FormattedItem[] {
   const selectedValue = state[questionKey]
-  if (!selectedValue) return []
+  if (!selectedValue)
+    return []
 
   const selectedValues = Array.isArray(selectedValue) ? selectedValue : [selectedValue]
   return items.filter(item => selectedValues.includes(item.value) && item.hasFollowUpText)
@@ -76,8 +78,9 @@ const getSelectedFollowUpOptions = (questionKey: string, items: FormattedItem[])
 
 // Parse and evaluate conditional logic for a question
 // ConditionalLogic format: {"questionKey": "value"} or {"questionKey": ["value1", "value2"]}
-const isQuestionVisible = (conditionalLogic: string | null | undefined): boolean => {
-  if (!conditionalLogic) return true
+function isQuestionVisible(conditionalLogic: string | null | undefined): boolean {
+  if (!conditionalLogic)
+    return true
 
   try {
     const conditions = JSON.parse(conditionalLogic) as Record<string, string | string[]>
@@ -184,19 +187,22 @@ const { mutateAsync, isPending: isSubmitting, fieldErrors, submissionError } = u
 // User profile update mutation
 const updateUserMutation = useUpdateUserMutation()
 
-const onSubmit = async () => {
+async function onSubmit() {
   const submissions = Object.entries(state)
     .filter(([questionKey, value]) => {
       // Only submit if the question is visible
       const question = allQuestions.value.find(q => q.questionKey === questionKey)
-      if (!question || !isQuestionVisible(question.conditionalLogic)) return false
+      if (!question || !isQuestionVisible(question.conditionalLogic))
+        return false
 
-      if (Array.isArray(value)) return value.length > 0
+      if (Array.isArray(value))
+        return value.length > 0
       return value !== '' && value !== null && value !== undefined
     })
     .map(([questionKey, value]) => {
       const question = allQuestions.value.find(q => q.questionKey === questionKey)
-      if (!question?.id) return null
+      if (!question?.id)
+        return null
 
       // Collect follow-up values for this question
       const selectedValues = Array.isArray(value) ? value : [value]
@@ -254,25 +260,32 @@ const onSubmit = async () => {
   }
 }
 
-const getCategoryGroupName = (sectionIndex: number, categoryName: string) => {
+function getCategoryGroupName(sectionIndex: number, categoryName: string) {
   const logisticsCategories = ['Hackathon Preferences', 'Dietary & Preferences']
 
-  if (sectionIndex === 1 && logisticsCategories.includes(categoryName)) return 'Logistics'
+  if (sectionIndex === 1 && logisticsCategories.includes(categoryName))
+    return 'Logistics'
   return null
 }
 
-const getSectionIcon = (sectionIndex: number, sectionName: string | null) => {
-  if (sectionName === 'Skills') return '/logos/skills.svg'
-  if (sectionName === 'Logistics') return '/logos/logistics.svg'
-  if (sectionIndex === 0) return '/logos/personaldetails.svg'
-  if (sectionIndex === 1) return '/logos/logistics.svg'
-  if (sectionIndex === 2) return '/logos/outreach.svg'
+function getSectionIcon(sectionIndex: number, sectionName: string | null) {
+  if (sectionName === 'Skills')
+    return '/logos/skills.svg'
+  if (sectionName === 'Logistics')
+    return '/logos/logistics.svg'
+  if (sectionIndex === 0)
+    return '/logos/personaldetails.svg'
+  if (sectionIndex === 1)
+    return '/logos/logistics.svg'
+  if (sectionIndex === 2)
+    return '/logos/outreach.svg'
   return '/logos/personaldetails.svg'
 }
 
 // Check if a question should span full width
-const shouldBeFullWidth = (question: { id?: string | null, isLong: boolean, conditionalLogic?: string | null }, categoryQuestions: { id?: string | null, isLong: boolean, conditionalLogic?: string | null }[]) => {
-  if (question.isLong) return true
+function shouldBeFullWidth(question: { id?: string | null, isLong: boolean, conditionalLogic?: string | null }, categoryQuestions: { id?: string | null, isLong: boolean, conditionalLogic?: string | null }[]) {
+  if (question.isLong)
+    return true
 
   // Get visible questions that are not already full-width (long)
   const visibleRegularQuestions = categoryQuestions.filter(q =>
@@ -289,13 +302,16 @@ const shouldBeFullWidth = (question: { id?: string | null, isLong: boolean, cond
 }
 
 const isFormValid = computed(() => {
-  if (!props.questions?.categories) return false
+  if (!props.questions?.categories)
+    return false
 
   // Validate First Name and Last Name are filled
   const firstName = state.first_name as string
   const lastName = state.last_name as string
-  if (!firstName || firstName.trim() === '') return false
-  if (!lastName || lastName.trim() === '') return false
+  if (!firstName || firstName.trim() === '')
+    return false
+  if (!lastName || lastName.trim() === '')
+    return false
 
   // Only validate required questions that are currently visible
   // Conditional questions (those with conditionalLogic) are implicitly required when visible
@@ -309,7 +325,8 @@ const isFormValid = computed(() => {
 
   return allRequiredQuestions.every((question) => {
     const key = question.questionKey
-    if (!key) return false
+    if (!key)
+      return false
 
     const value = state[key]
 
@@ -317,11 +334,13 @@ const isFormValid = computed(() => {
     let isMainValueFilled = false
     if (Array.isArray(value)) {
       isMainValueFilled = value.length > 0
-    } else {
+    }
+    else {
       isMainValueFilled = value !== '' && value !== null && value !== undefined
     }
 
-    if (!isMainValueFilled) return false
+    if (!isMainValueFilled)
+      return false
 
     // Check if any selected options require follow-up text
     const selectedValues = Array.isArray(value) ? value : [value]
@@ -333,7 +352,7 @@ const isFormValid = computed(() => {
     }))
 
     const followUpOptions = items.filter(item =>
-      selectedValues.includes(item.value) && item.hasFollowUpText
+      selectedValues.includes(item.value) && item.hasFollowUpText,
     )
 
     // Validate that all required follow-up fields are filled

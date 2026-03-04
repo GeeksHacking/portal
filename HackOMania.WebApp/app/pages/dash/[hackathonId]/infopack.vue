@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
+import { computed, ref, watch } from 'vue'
 import * as XLSX from 'xlsx'
 import { participantOrganizerQueries } from '~/composables/participants'
 import { teamOrganizerQueries } from '~/composables/teams'
 
-const route = useRoute()
 const props = withDefaults(defineProps<{
   hackathonId?: string
 }>(), {
   hackathonId: '',
 })
+const route = useRoute()
 const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
 // Cache keys for localStorage
@@ -21,14 +21,16 @@ function getCacheKey(dataType: string) {
 
 // Get cached count from localStorage
 function getCachedCount(dataType: string): number | null {
-  if (typeof window === 'undefined') return null
+  if (typeof window === 'undefined')
+    return null
   const cached = localStorage.getItem(getCacheKey(dataType))
   return cached ? Number.parseInt(cached, 10) : null
 }
 
 // Set cached count in localStorage
 function setCachedCount(dataType: string, count: number) {
-  if (typeof window === 'undefined') return
+  if (typeof window === 'undefined')
+    return
   localStorage.setItem(getCacheKey(dataType), count.toString())
 }
 
@@ -57,7 +59,8 @@ const hasNewTeams = ref(false)
 
 // Watch for changes in participants count
 watch(() => participants.value.length, (newCount) => {
-  if (newCount === 0) return
+  if (newCount === 0)
+    return
   const cachedCount = getCachedCount('participants')
   if (cachedCount !== null && cachedCount !== newCount) {
     hasNewParticipants.value = true
@@ -66,7 +69,8 @@ watch(() => participants.value.length, (newCount) => {
 
 // Watch for changes in teams count
 watch(() => teams.value.length, (newCount) => {
-  if (newCount === 0) return
+  if (newCount === 0)
+    return
   const cachedCount = getCachedCount('teams')
   if (cachedCount !== null && cachedCount !== newCount) {
     hasNewTeams.value = true

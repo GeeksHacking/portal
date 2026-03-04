@@ -19,12 +19,14 @@ const { data: status, isLoading: statusLoading } = useQuery(
 watch(
   [() => user.value, authLoading, () => status.value, statusLoading, hackathon],
   ([userData, authIsLoading, statusData, statusIsLoading, hackathonData]) => {
-    if (authIsLoading) return
+    if (authIsLoading)
+      return
     if (!userData) {
       navigateTo(`${config.public.api}/auth/login?redirect_uri=${encodeURIComponent(route.fullPath)}`, { external: true })
       return
     }
-    if (statusIsLoading || !hackathonData) return
+    if (statusIsLoading || !hackathonData)
+      return
     if (!statusData?.isParticipant) {
       navigateTo({ path: `/${hackathonData.shortCode}/registration`, query: route.query }, { replace: true })
     }

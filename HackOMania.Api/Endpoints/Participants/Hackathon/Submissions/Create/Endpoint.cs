@@ -25,6 +25,21 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             return;
         }
 
+        var now = DateTimeOffset.UtcNow;
+        if (now < hackathon.SubmissionsStartDate)
+        {
+            AddError("Submissions are not open yet");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
+
+        if (now > hackathon.SubmissionsEndDate)
+        {
+            AddError("Submissions are closed");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
+
         var team = await sql.Queryable<Team>()
             .Where(t => t.Id == req.TeamId && t.HackathonId == hackathon.Id)
             .FirstAsync(ct);
@@ -110,7 +125,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             RepositoryUri = req.RepoUri ?? new Uri("https://example.com"),
             DemoUri = req.DemoUri ?? new Uri("https://example.com"),
             SlidesUri = req.SlidesUri ?? new Uri("https://example.com"),
-            SubmittedAt = DateTimeOffset.UtcNow,
+            SubmittedAt = now,
         };
 
         await sql.Insertable(submission).ExecuteCommandAsync(ct);

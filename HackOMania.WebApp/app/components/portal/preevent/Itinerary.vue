@@ -8,7 +8,9 @@ defineProps<{
 
 <template>
   <div>
-    <h3 class="font-['Zalando_Sans_Expanded'] font-bold uppercase text-3xl mb-8">Itinerary</h3>
+    <h3 class="font-['Zalando_Sans_Expanded'] font-bold uppercase text-3xl mb-8">
+      Itinerary
+    </h3>
     <div class="flex flex-col gap-6">
       <PortalPreeventItineraryCard
         v-for="(item, index) in items"

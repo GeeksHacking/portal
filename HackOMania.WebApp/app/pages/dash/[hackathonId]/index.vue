@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
+import { computed, watch } from 'vue'
+import { authQueries } from '~/composables/auth'
 import { hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
 import { organizerQueries } from '~/composables/organizers'
-import { authQueries } from '~/composables/auth'
 
 const route = useRoute()
 const hackathonIdOrShortCode = computed(() => (route.params.hackathonId as string | undefined) ?? null)

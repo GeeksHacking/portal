@@ -35,9 +35,7 @@ const { data: statusData, isLoading: isLoadingStatus } = useQuery(
 const { data: submissionsData, isLoading: isLoadingSubmissions } = useQuery(
   computed(() => ({
     queryKey: ['hackathons', resolvedHackathonId.value, 'registration', 'submissions'],
-    queryFn: () => useNuxtApp().$apiClient.participants.hackathons
-      .byHackathonIdOrShortCodeId(resolvedHackathonId.value ?? '')
-      .registration.submissions.get(),
+    queryFn: () => useNuxtApp().$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(resolvedHackathonId.value ?? '').registration.submissions.get(),
     enabled: !!resolvedHackathonId.value && statusData.value?.isParticipant === true,
   })),
 )
@@ -46,7 +44,8 @@ const isLoading = computed(() => isLoadingUser.value || isLoadingStatus.value ||
 
 // Handle auth and registration state
 watchEffect(() => {
-  if (isLoading.value || !hackathon.value) return
+  if (isLoading.value || !hackathon.value)
+    return
 
   // Not authenticated - redirect to login
   if (!user.value || isError.value) {

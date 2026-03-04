@@ -1,6 +1,6 @@
-using System.Net.Http.Json;
 using HackOMania.Tests.Data;
 using HackOMania.Tests.Models;
+using System.Net.Http.Json;
 
 namespace HackOMania.Tests.Endpoints.Participants.Hackathon;
 
@@ -16,12 +16,12 @@ public class ChallengeSelectionJintTests
             Venue = "Virtual",
             HomepageUri = new Uri("https://example.com/hackathon"),
             ShortCode = $"CJT{suffix}",
-            EventStartDate = now.AddDays(7),
-            EventEndDate = now.AddDays(9),
-            SubmissionsStartDate = now.AddDays(7).AddHours(2),
-            SubmissionsEndDate = now.AddDays(8).AddHours(20),
-            JudgingStartDate = now.AddDays(8).AddHours(21),
-            JudgingEndDate = now.AddDays(9).AddHours(-2),
+            EventStartDate = now.AddDays(-1),
+            EventEndDate = now.AddDays(2),
+            SubmissionsStartDate = now.AddHours(-1),
+            SubmissionsEndDate = now.AddDays(1),
+            JudgingStartDate = now.AddDays(1).AddHours(1),
+            JudgingEndDate = now.AddDays(1).AddHours(12),
             IsPublished = true,
         };
     }

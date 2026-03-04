@@ -6,12 +6,16 @@ interface RegistrationSetupOptions {
   initQuestionMutation: { mutateAsync: (id: string) => Promise<unknown> }
 }
 
-export const registrationSetup = async ({ hackathonId, joinMutation, initQuestionMutation }: RegistrationSetupOptions) => {
+export async function registrationSetup({ hackathonId, joinMutation, initQuestionMutation }: RegistrationSetupOptions) {
   try {
     // Check if user is already a participant
     const statusResponse = await useNuxtApp()
-      .$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(hackathonId)
-      .status.get()
+      .$apiClient
+      .participants
+      .hackathons
+      .byHackathonIdOrShortCodeId(hackathonId)
+      .status
+      .get()
 
     // Join the hackathon only if not already a participant
     if (!statusResponse?.isParticipant) {

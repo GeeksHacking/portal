@@ -1,10 +1,4 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import { useVirtualList } from '@vueuse/core'
-import { participantOrganizerQueries, useReviewParticipantMutation } from '~/composables/participants'
-import { registrationQuestionQueries } from '~/composables/question'
-import { registrationPageConfig } from '~/config/registration-pages'
 import type {
   HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus,
   HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem,
@@ -13,17 +7,23 @@ import type {
   HackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem,
   HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto,
 } from '~/api-client/models'
+import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import { useVirtualList } from '@vueuse/core'
+import { computed, ref } from 'vue'
 import {
   HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject,
   HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject,
 } from '~/api-client/models'
+import { participantOrganizerQueries, useReviewParticipantMutation } from '~/composables/participants'
+import { registrationQuestionQueries } from '~/composables/question'
+import { registrationPageConfig } from '~/config/registration-pages'
 
-const route = useRoute()
 const props = withDefaults(defineProps<{
   hackathonId?: string
 }>(), {
   hackathonId: '',
 })
+const route = useRoute()
 const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
 const toast = useToast()
@@ -91,7 +91,8 @@ function isPendingParticipant(participant: ParticipantItem) {
 
 function getParticipantApplicationTimeEpoch(participant: ParticipantItem) {
   const submissions = participant.registrationSubmissions ?? []
-  if (submissions.length === 0) return 0
+  if (submissions.length === 0)
+    return 0
   return submissions.reduce((max, s) => {
     const t = s.updatedAt?.getTime() ?? 0
     return t > max ? t : max
@@ -104,15 +105,19 @@ function getParticipantApplicationDate(participant: ParticipantItem): Date | nul
 }
 
 function isReviewOverdue(participant: ParticipantItem) {
-  if (!isPendingParticipant(participant)) return false
+  if (!isPendingParticipant(participant))
+    return false
   const submittedAtEpoch = getParticipantApplicationTimeEpoch(participant)
-  if (!submittedAtEpoch) return false
+  if (!submittedAtEpoch)
+    return false
   return Date.now() - submittedAtEpoch >= REVIEW_OVERDUE_MS
 }
 
 function getReviewPriorityBucket(participant: ParticipantItem) {
-  if (isReviewOverdue(participant)) return 0
-  if (isPendingParticipant(participant)) return 1
+  if (isReviewOverdue(participant))
+    return 0
+  if (isPendingParticipant(participant))
+    return 1
   return 2
 }
 
@@ -145,7 +150,8 @@ const normalizedSearch = computed(() => searchQuery.value.trim().toLowerCase())
 
 const searchFilteredParticipants = computed(() => {
   const query = normalizedSearch.value
-  if (!query) return statusFilteredParticipants.value
+  if (!query)
+    return statusFilteredParticipants.value
   return statusFilteredParticipants.value.filter(participant => matchesSearch(participant, query))
 })
 
@@ -216,8 +222,10 @@ function compareStrings(a?: string | null, b?: string | null) {
 }
 
 function getStatusSortValue(status: ParticipantConcludedStatus | null | undefined) {
-  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Accepted) return 2
-  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Rejected) return 3
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Accepted)
+    return 2
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Rejected)
+    return 3
   return 1
 }
 
@@ -229,7 +237,8 @@ const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
 })
 
 function formatDateTime(value: Date | null | undefined) {
-  if (!value) return '—'
+  if (!value)
+    return '—'
   return `${dateTimeFormatter.format(value)} SGT`
 }
 
@@ -239,14 +248,16 @@ function matchesSearch(participant: ParticipantItem, query: string) {
     .join(' ')
     .toLowerCase()
 
-  if (base.includes(query)) return true
+  if (base.includes(query))
+    return true
 
   for (const submission of participant.registrationSubmissions ?? []) {
     const text = [submission.questionText, submission.value, submission.followUpValue]
       .filter(Boolean)
       .join(' ')
       .toLowerCase()
-    if (text.includes(query)) return true
+    if (text.includes(query))
+      return true
   }
 
   return false
@@ -256,14 +267,18 @@ function formatSubmissionAnswer(submission: RegistrationSubmission) {
   const value = (submission.value ?? '').toString().trim()
   const followUp = (submission.followUpValue ?? '').toString().trim()
 
-  if (!value && !followUp) return '—'
-  if (value && followUp) return `${value}\nFollow-up: ${followUp}`
-  if (followUp) return `Follow-up: ${followUp}`
+  if (!value && !followUp)
+    return '—'
+  if (value && followUp)
+    return `${value}\nFollow-up: ${followUp}`
+  if (followUp)
+    return `Follow-up: ${followUp}`
   return value
 }
 
 function getParticipantAnswer(participantId: string, questionId: string) {
-  if (!participantId || !questionId) return '—'
+  if (!participantId || !questionId)
+    return '—'
   const answers = participantAnswerMap.value.get(participantId)
   return answers?.[questionId] ?? '—'
 }
@@ -328,10 +343,12 @@ const questionOrderMap = computed(() => {
 const participantAnswerMap = computed(() => {
   const map = new Map<string, Record<string, string>>()
   for (const participant of participants.value) {
-    if (!participant.id) continue
+    if (!participant.id)
+      continue
     const answers: Record<string, string> = {}
     for (const submission of participant.registrationSubmissions ?? []) {
-      if (!submission.questionId) continue
+      if (!submission.questionId)
+        continue
       answers[submission.questionId] = formatSubmissionAnswer(submission)
     }
     map.set(participant.id, answers)
@@ -399,7 +416,8 @@ const tableColumns = computed(() => {
 
 const sortedSubmissions = computed(() => {
   const submissions = participantDetail.value?.registrationSubmissions
-  if (!submissions) return []
+  if (!submissions)
+    return []
   const order = questionOrderMap.value
   return [...submissions].sort((a, b) => {
     const orderA = order.get(a.questionId ?? '') ?? Number.MAX_SAFE_INTEGER
@@ -410,8 +428,10 @@ const sortedSubmissions = computed(() => {
 
 function getParticipantListItemHeight(index: number) {
   const participant = sortedParticipants.value[index]
-  if (!participant) return 84
-  if (expandedParticipantId.value !== participant.id) return 84
+  if (!participant)
+    return 84
+  if (expandedParticipantId.value !== participant.id)
+    return 84
 
   const reviewCount = participantDetail.value?.reviews?.length ?? 0
   const submissionCount = sortedSubmissions.value.length
@@ -459,7 +479,8 @@ const prioritizedPendingParticipants = computed(() => {
 const overduePendingCount = computed(() => pendingParticipants.value.filter(p => isReviewOverdue(p)).length)
 
 const reviewingParticipant = computed(() => {
-  if (!reviewingParticipantId.value) return null
+  if (!reviewingParticipantId.value)
+    return null
   return participants.value.find(p => p.id === reviewingParticipantId.value) ?? null
 })
 
@@ -498,7 +519,8 @@ const reviewModalDescription = computed(() => {
 })
 
 function openReviewModal(participantId: string) {
-  if (!participantId) return
+  if (!participantId)
+    return
   reviewingParticipantId.value = participantId
   reviewReason.value = ''
   isReviewModalOpen.value = true
@@ -506,7 +528,8 @@ function openReviewModal(participantId: string) {
 
 function openFirstPendingReviewModal() {
   const firstPendingId = prioritizedPendingParticipants.value[0]?.id
-  if (!firstPendingId) return
+  if (!firstPendingId)
+    return
   openReviewModal(firstPendingId)
 }
 
@@ -517,7 +540,8 @@ function closeReviewModal() {
 }
 
 async function handleReview(decision: 'accept' | 'reject') {
-  if (!reviewingParticipantId.value) return
+  if (!reviewingParticipantId.value)
+    return
 
   const trimmedReason = reviewReason.value?.trim() || null
   if (decision === 'reject' && !trimmedReason) {
@@ -567,40 +591,52 @@ async function handleReview(decision: 'accept' | 'reject') {
 }
 
 function getErrorStatusCode(error: unknown): number | null {
-  if (!error || typeof error !== 'object') return null
+  if (!error || typeof error !== 'object')
+    return null
   const unknownError = error as {
     responseStatusCode?: unknown
     statusCode?: unknown
     response?: { status?: unknown }
   }
 
-  if (typeof unknownError.responseStatusCode === 'number') return unknownError.responseStatusCode
-  if (typeof unknownError.statusCode === 'number') return unknownError.statusCode
-  if (typeof unknownError.response?.status === 'number') return unknownError.response.status
+  if (typeof unknownError.responseStatusCode === 'number')
+    return unknownError.responseStatusCode
+  if (typeof unknownError.statusCode === 'number')
+    return unknownError.statusCode
+  if (typeof unknownError.response?.status === 'number')
+    return unknownError.response.status
   return null
 }
 
 function getStatusColor(status: ParticipantConcludedStatus | null | undefined): 'success' | 'error' | 'warning' {
-  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Accepted) return 'success'
-  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Rejected) return 'error'
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Accepted)
+    return 'success'
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Rejected)
+    return 'error'
   return 'warning'
 }
 
 function getStatusLabel(status: ParticipantConcludedStatus | null | undefined): string {
-  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Accepted) return 'Approved'
-  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Rejected) return 'Rejected'
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Accepted)
+    return 'Approved'
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject.Rejected)
+    return 'Rejected'
   return 'Pending'
 }
 
 function getReviewStatusLabel(status: ParticipantReviewStatus | null | undefined): string {
-  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject.Accepted) return 'Accepted'
-  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject.Rejected) return 'Rejected'
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject.Accepted)
+    return 'Accepted'
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject.Rejected)
+    return 'Rejected'
   return 'Unknown'
 }
 
 function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined): 'success' | 'error' | 'neutral' {
-  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject.Accepted) return 'success'
-  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject.Rejected) return 'error'
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject.Accepted)
+    return 'success'
+  if (status === HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject.Rejected)
+    return 'error'
   return 'neutral'
 }
 </script>
@@ -749,8 +785,7 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
                 <div
                   v-for="{ data: participant, index } in virtualParticipants"
                   :key="participant.id ?? index"
-                  :class="[
-                    'py-2',
+                  class="py-2" :class="[
                     isReviewOverdue(participant) ? 'rounded-md bg-error/5 px-2 -mx-2' : '',
                   ]"
                 >

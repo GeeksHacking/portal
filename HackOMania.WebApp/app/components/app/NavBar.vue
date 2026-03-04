@@ -24,7 +24,8 @@ const loginUrl = `${config.public.api}/auth/login`
 const { data: user, isLoading } = useQuery(authQueries.whoAmI)
 
 async function generateQrCode() {
-  if (!user.value?.id) return
+  if (!user.value?.id)
+    return
 
   const qrData = JSON.stringify({ userId: user.value.id })
 
@@ -55,17 +56,21 @@ function closeQrModal() {
     <!-- Desktop -->
     <div class="hidden lg:flex items-center justify-between h-full px-32">
       <div class="flex items-center gap-20">
-        <button v-for="item in items" :key="item.label" @click="scrollTo(item.target)">{{ item.label }}</button>
+        <button v-for="item in items" :key="item.label" @click="scrollTo(item.target)">
+          {{ item.label }}
+        </button>
       </div>
       <div class="flex items-center gap-3">
         <span v-if="isLoading">...</span>
         <template v-else-if="user">
-          <button @click="generateQrCode" class="hover:opacity-70 transition-opacity flex items-center">
+          <button class="hover:opacity-70 transition-opacity flex items-center" @click="generateQrCode">
             <UIcon name="i-lucide-qr-code" class="size-5" />
           </button>
           <span>{{ user.gitHubLogin }}</span>
         </template>
-        <NuxtLink v-else :to="loginUrl" external>log in</NuxtLink>
+        <NuxtLink v-else :to="loginUrl" external>
+          log in
+        </NuxtLink>
       </div>
     </div>
 
@@ -84,17 +89,21 @@ function closeQrModal() {
       v-if="expanded"
       class="lg:hidden absolute top-12 left-0 w-full bg-white border-b border-black flex flex-col gap-4 py-4 px-3 items-end z-50"
     >
-      <button v-for="item in items" :key="item.label" @click="scrollTo(item.target)">{{ item.label }}</button>
+      <button v-for="item in items" :key="item.label" @click="scrollTo(item.target)">
+        {{ item.label }}
+      </button>
       <span v-if="isLoading">...</span>
       <template v-else-if="user">
         <div class="flex items-center gap-3">
-          <button @click="generateQrCode" class="hover:opacity-70 transition-opacity flex items-center">
+          <button class="hover:opacity-70 transition-opacity flex items-center" @click="generateQrCode">
             <UIcon name="i-lucide-qr-code" class="size-5" />
           </button>
           <span>{{ user.gitHubLogin }}</span>
         </div>
       </template>
-      <NuxtLink v-else :to="loginUrl" external>log in</NuxtLink>
+      <NuxtLink v-else :to="loginUrl" external>
+        log in
+      </NuxtLink>
     </div>
 
     <!-- QR Code Modal -->
@@ -108,14 +117,18 @@ function closeQrModal() {
         @click.stop
       >
         <div class="flex flex-col items-center gap-3 sm:gap-4">
-          <h3 class="text-base sm:text-lg font-semibold">Your QR Code</h3>
+          <h3 class="text-base sm:text-lg font-semibold">
+            Your QR Code
+          </h3>
           <img
             v-if="qrCodeDataUrl"
             :src="qrCodeDataUrl"
             alt="User QR Code"
             class="w-full max-w-[280px] sm:max-w-[300px] h-auto"
-          />
-          <p class="text-sm text-gray-600">{{ user?.gitHubLogin }}</p>
+          >
+          <p class="text-sm text-gray-600">
+            {{ user?.gitHubLogin }}
+          </p>
         </div>
       </div>
     </div>

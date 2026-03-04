@@ -1,7 +1,7 @@
-import { queryOptions, useMutation } from '@tanstack/vue-query'
-import { toValue } from 'vue'
 import type { MaybeRefOrGetter } from 'vue'
 import type { HackOManiaApiEndpointsOrganizersHackathonParticipantsReviewRequest } from '~/api-client/models'
+import { queryOptions, useMutation } from '@tanstack/vue-query'
+import { toValue } from 'vue'
 
 export const participantOrganizerQueries = {
   list: (hackathonId: string) =>
@@ -10,8 +10,12 @@ export const participantOrganizerQueries = {
       staleTime: 30_000,
       async queryFn() {
         return await useNuxtApp()
-          .$apiClient.organizers.hackathons.byHackathonId(hackathonId)
-          .participants.get()
+          .$apiClient
+          .organizers
+          .hackathons
+          .byHackathonId(hackathonId)
+          .participants
+          .get()
       },
     }),
   detail: (hackathonId: string, participantUserId: string) =>
@@ -20,8 +24,12 @@ export const participantOrganizerQueries = {
       staleTime: 30_000,
       async queryFn() {
         return await useNuxtApp()
-          .$apiClient.organizers.hackathons.byHackathonId(hackathonId)
-          .participants.byParticipantUserId(participantUserId)
+          .$apiClient
+          .organizers
+          .hackathons
+          .byHackathonId(hackathonId)
+          .participants
+          .byParticipantUserId(participantUserId)
           .get()
       },
     }),
@@ -31,9 +39,31 @@ export function useReviewParticipantMutation(hackathonId: MaybeRefOrGetter<strin
   return useMutation({
     mutationFn(data: { participantUserId: string, review: HackOManiaApiEndpointsOrganizersHackathonParticipantsReviewRequest }) {
       return useNuxtApp()
-        .$apiClient.organizers.hackathons.byHackathonId(toValue(hackathonId))
-        .participants.byParticipantUserId(data.participantUserId)
-        .review.post(data.review)
+        .$apiClient
+        .organizers
+        .hackathons
+        .byHackathonId(toValue(hackathonId))
+        .participants
+        .byParticipantUserId(data.participantUserId)
+        .review
+        .post(data.review)
+    },
+  })
+}
+
+export function useWithdrawFromHackathon(hackathonId: MaybeRefOrGetter<string | null>) {
+  return useMutation({
+    async mutationFn() {
+      const id = toValue(hackathonId)
+      if (!id)
+        throw new Error('No hackathon ID')
+      return await useNuxtApp()
+        .$apiClient
+        .participants
+        .hackathons
+        .byHackathonIdOrShortCodeId(id)
+        .withdraw
+        .post()
     },
   })
 }

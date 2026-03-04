@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 import { useVirtualList } from '@vueuse/core'
+import { computed } from 'vue'
 import { submissionOrganizerQueries } from '~/composables/submissions'
 
-const route = useRoute()
 const props = withDefaults(defineProps<{
   hackathonId?: string
 }>(), {
   hackathonId: '',
 })
+const route = useRoute()
 const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
 const { data: submissionsData, isLoading: isLoadingSubmissions } = useQuery(
@@ -31,7 +31,8 @@ const {
 })
 
 function formatDate(date: Date | null | undefined): string {
-  if (!date) return 'Unknown'
+  if (!date)
+    return 'Unknown'
   return new Date(date).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { authQueries } from '~/composables/auth'
 import { challengeQueries } from '~/composables/challenges'
 import { hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
 import { organizerQueries } from '~/composables/organizers'
-import { authQueries } from '~/composables/auth'
 
 const route = useRoute()
 const hackathonIdOrShortCode = computed(() => (route.params.hackathonId as string | undefined) ?? null)
@@ -28,8 +28,10 @@ const { data: organizersData, isLoading: isLoadingOrganizers } = useQuery(
 )
 
 const isOrganizer = computed(() => {
-  if (!user.value?.id) return false
-  if (user.value.isRoot) return true
+  if (!user.value?.id)
+    return false
+  if (user.value.isRoot)
+    return true
   return organizersData.value?.organizers?.some(org => org.userId === user.value?.id) ?? false
 })
 
@@ -85,8 +87,10 @@ function syncFullscreenState() {
 }
 
 async function toggleFullscreen() {
-  if (!import.meta.client) return
-  if (!document.fullscreenEnabled) return
+  if (!import.meta.client)
+    return
+  if (!document.fullscreenEnabled)
+    return
   try {
     if (!document.fullscreenElement) {
       await (dashboardElement.value ?? document.documentElement).requestFullscreen()
@@ -113,14 +117,16 @@ onUnmounted(() => {
 watch(dataUpdatedAt, () => {
   const now = Date.now()
   for (const challenge of challenges.value) {
-    if (!challenge.id) continue
+    if (!challenge.id)
+      continue
     const count = challenge.teamCount ?? 0
     const prev = prevCounts.value.get(challenge.id)
 
     // Accumulate history
     const history = historyMap.value.get(challenge.id) ?? []
     history.push({ timestamp: now, count })
-    if (history.length > MAX_HISTORY) history.splice(0, history.length - MAX_HISTORY)
+    if (history.length > MAX_HISTORY)
+      history.splice(0, history.length - MAX_HISTORY)
     historyMap.value.set(challenge.id, history)
 
     // Emit notification when count increases
@@ -134,7 +140,8 @@ watch(dataUpdatedAt, () => {
       notifications.value.push(notif)
       setTimeout(() => {
         const idx = notifications.value.findIndex(n => n.id === notif.id)
-        if (idx !== -1) notifications.value.splice(idx, 1)
+        if (idx !== -1)
+          notifications.value.splice(idx, 1)
       }, 5000)
     }
 
@@ -145,7 +152,8 @@ watch(dataUpdatedAt, () => {
 // Build SVG sparkline path for a challenge
 function getSparklinePath(challengeId: string): string {
   const history = historyMap.value.get(challengeId) ?? []
-  if (history.length < 2) return ''
+  if (history.length < 2)
+    return ''
 
   const W = 200
   const H = 48
@@ -172,7 +180,8 @@ function getSparklinePath(challengeId: string): string {
 // Build SVG fill path (area under sparkline)
 function getSparklineFill(challengeId: string): string {
   const history = historyMap.value.get(challengeId) ?? []
-  if (history.length < 2) return ''
+  if (history.length < 2)
+    return ''
 
   const W = 200
   const H = 48

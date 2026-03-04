@@ -22,6 +22,8 @@ import { TimelineRequestBuilderRequestsMetadata, type TimelineRequestBuilder } f
 // @ts-ignore
 import { type VenueRequestBuilder, VenueRequestBuilderNavigationMetadata } from './venue/index.js';
 // @ts-ignore
+import { type WithdrawRequestBuilder, WithdrawRequestBuilderRequestsMetadata } from './withdraw/index.js';
+// @ts-ignore
 import { type WorkshopsRequestBuilder, WorkshopsRequestBuilderNavigationMetadata, WorkshopsRequestBuilderRequestsMetadata } from './workshops/index.js';
 // @ts-ignore
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
@@ -66,6 +68,10 @@ export interface HackathonIdOrShortCodeItemRequestBuilder extends BaseRequestBui
      * The venue property
      */
     get venue(): VenueRequestBuilder;
+    /**
+     * The withdraw property
+     */
+    get withdraw(): WithdrawRequestBuilder;
     /**
      * The workshops property
      */
@@ -119,6 +125,9 @@ export const HackathonIdOrShortCodeItemRequestBuilderNavigationMetadata: Record<
     },
     venue: {
         navigationMetadata: VenueRequestBuilderNavigationMetadata,
+    },
+    withdraw: {
+        requestsMetadata: WithdrawRequestBuilderRequestsMetadata,
     },
     workshops: {
         requestsMetadata: WorkshopsRequestBuilderRequestsMetadata,

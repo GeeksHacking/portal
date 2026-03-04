@@ -1,3 +1,7 @@
-[issuetracker "GitHub Issue"]
-	regex = "#(\\d+)"
-	url = https://github.com/GeeksHacking/hackomania-event-platform/issues/$1
+# Integration with Issue Tracker
+#
+# (note that '\' need to be escaped).
+
+[issuetracker "GitHub"]
+  regex = "#(\\d+)"
+  url = "https://github.com/GeeksHacking/hackomania-event-platform/issues/$1"

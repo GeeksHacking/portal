@@ -28,7 +28,8 @@ const { data: user, isLoading, isError } = useQuery({
 
 // Compute status page path with joinCode if present
 const statusPagePath = computed(() => {
-  if (!hackathon.value) return null
+  if (!hackathon.value)
+    return null
   const basePath = `/${hackathon.value.shortCode}/registration/status`
   if (route.query.joinCode) {
     return { path: basePath, query: { joinCode: route.query.joinCode } }

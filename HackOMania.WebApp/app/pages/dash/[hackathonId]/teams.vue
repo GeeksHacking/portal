@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 import { useVirtualList } from '@vueuse/core'
-import { teamOrganizerQueries } from '~/composables/teams'
+import { computed, ref } from 'vue'
 import { participantOrganizerQueries } from '~/composables/participants'
+import { teamOrganizerQueries } from '~/composables/teams'
 
-const route = useRoute()
 const props = withDefaults(defineProps<{
   hackathonId?: string
 }>(), {
   hackathonId: '',
 })
+const route = useRoute()
 const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
 const { data: teamsData, isLoading: isLoadingTeams } = useQuery(
@@ -46,7 +46,8 @@ const expandedTeamId = ref<string | null>(null)
 
 function getTeamListItemHeight(index: number) {
   const team = teams.value[index]
-  if (!team) return 68
+  if (!team)
+    return 68
   return expandedTeamId.value === team.id ? 360 : 68
 }
 

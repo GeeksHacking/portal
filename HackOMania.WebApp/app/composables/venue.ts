@@ -1,6 +1,6 @@
+import type { MaybeRefOrGetter } from 'vue'
 import { queryOptions, useMutation } from '@tanstack/vue-query'
 import { toValue } from 'vue'
-import type { MaybeRefOrGetter } from 'vue'
 
 export const venueOverviewQueries = {
   overview: (hackathonId: string) =>
@@ -9,8 +9,13 @@ export const venueOverviewQueries = {
       refetchInterval: 15_000,
       async queryFn() {
         return await useNuxtApp()
-          .$apiClient.organizers.hackathons.byHackathonId(hackathonId)
-          .venue.overview.get()
+          .$apiClient
+          .organizers
+          .hackathons
+          .byHackathonId(hackathonId)
+          .venue
+          .overview
+          .get()
       },
     }),
 }
@@ -19,9 +24,15 @@ export function useCheckInMutation(hackathonId: MaybeRefOrGetter<string>) {
   return useMutation({
     mutationFn(participantUserId: string) {
       return useNuxtApp()
-        .$apiClient.organizers.hackathons.byHackathonId(toValue(hackathonId))
-        .participants.byParticipantUserId(participantUserId)
-        .venue.checkIn.post()
+        .$apiClient
+        .organizers
+        .hackathons
+        .byHackathonId(toValue(hackathonId))
+        .participants
+        .byParticipantUserId(participantUserId)
+        .venue
+        .checkIn
+        .post()
     },
   })
 }

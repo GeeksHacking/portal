@@ -1,7 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
-    '@nuxt/eslint',
     '@nuxt/hints',
     '@nuxt/image',
     '@nuxt/scripts',
@@ -17,20 +16,14 @@ export default defineNuxtConfig({
     dirs: ['composables/constants'],
   },
   devtools: { enabled: true },
-  app: {
-    head: {
-      script: [
-        {
-          type: 'text/javascript',
-          innerHTML: `
-              (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "v9hg1hk686");
-          `,
+
+  $production: {
+    scripts: {
+      registry: {
+        clarity: {
+          id: 'v9hg1hk686',
         },
-      ],
+      },
     },
   },
 
@@ -43,7 +36,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      api: process.env['services__api__http__0'] || process.env.SERVICES__API_HTTP_0 || 'https://hackomania-api.geekshacking.com',
+      api: process.env.services__api__http__0 || process.env.SERVICES__API_HTTP_0 || 'https://hackomania-api.geekshacking.com',
     },
   },
 

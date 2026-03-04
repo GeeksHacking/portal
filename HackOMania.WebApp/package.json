@@ -8,16 +8,17 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "lint": "eslint"
   },
   "dependencies": {
+    "@antfu/eslint-config": "^7.6.1",
     "@microsoft/kiota-abstractions": "1.0.0-preview.99",
     "@microsoft/kiota-http-fetchlibrary": "1.0.0-preview.99",
     "@microsoft/kiota-serialization-form": "1.0.0-preview.99",
     "@microsoft/kiota-serialization-json": "1.0.0-preview.99",
     "@microsoft/kiota-serialization-multipart": "1.0.0-preview.99",
     "@microsoft/kiota-serialization-text": "1.0.0-preview.99",
-    "@nuxt/eslint": "1.14.0",
     "@nuxt/fonts": "^0.13.0",
     "@nuxt/hints": "1.0.0-alpha.6",
     "@nuxt/image": "2.0.0",

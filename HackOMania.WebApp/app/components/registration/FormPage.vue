@@ -1,18 +1,14 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import { fetchQuestions, useInitQuestionMutation } from '~/composables/question'
-import { useJoinHackathonMutation } from '~/composables/hackathon'
-import { registrationSetup } from '~/regis-init'
 import { hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
-
-useHead({
-  titleTemplate: title => (title ? `${title} - HackOMania` : 'HackOMania'),
-})
 
 const props = defineProps<{
   hackathonId?: string | null
 }>()
+
+useHead({
+  titleTemplate: title => (title ? `${title} - HackOMania` : 'HackOMania'),
+})
 
 const hackathonId = computed(() => props.hackathonId ?? null)
 
@@ -37,11 +33,13 @@ const { data: statusData, isLoading: isLoadingStatus, error: statusError } = use
 watch(
   () => ({ id: hackathonId.value, status: statusData.value }),
   async ({ id, status }) => {
-    if (!id || status === undefined) return
+    if (!id || status === undefined)
+      return
 
     // If not a participant, auto-join the hackathon
     if (!status.isParticipant) {
-      if (isJoining.value) return // Prevent duplicate join attempts
+      if (isJoining.value)
+        return // Prevent duplicate join attempts
 
       isJoining.value = true
       setupComplete.value = false
@@ -63,7 +61,8 @@ watch(
     // Reset joining state once we're a participant
     isJoining.value = false
 
-    if (lastSetupHackathonId.value === id && setupComplete.value) return
+    if (lastSetupHackathonId.value === id && setupComplete.value)
+      return
 
     setupError.value = null
     setupComplete.value = false
@@ -87,7 +86,6 @@ const { data: questions, isLoading, error } = useQuery(computed(() => ({
   queryFn: () => fetchQuestions(hackathonId.value ?? ''),
   enabled: setupComplete.value && !!hackathonId.value,
 })))
-
 </script>
 
 <template>

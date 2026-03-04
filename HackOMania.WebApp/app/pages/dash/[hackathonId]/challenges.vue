@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import { challengeQueries, challengeOrganizerQueries, useCreateChallengeMutation, useDeleteChallengeMutation, useUpdateChallengeMutation } from '~/composables/challenges'
+import { computed, ref } from 'vue'
+import { challengeOrganizerQueries, challengeQueries, useCreateChallengeMutation, useDeleteChallengeMutation, useUpdateChallengeMutation } from '~/composables/challenges'
 
-const route = useRoute()
 const props = withDefaults(defineProps<{
   hackathonId?: string
 }>(), {
   hackathonId: '',
 })
+const route = useRoute()
 const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
 const queryClient = useQueryClient()

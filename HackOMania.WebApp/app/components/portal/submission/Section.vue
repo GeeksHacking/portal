@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
-import { ref, computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const hackathonId = useResolvedHackathonId()
 const hackathon = useRouteHackathon()
@@ -33,16 +33,20 @@ const submissionsEndDate = computed(() => hackathon.value?.submissionsEndDate ??
 
 // Check if hackathon has started
 const hasHackathonStarted = computed(() => {
-  if (!eventStartDate.value) return true // If no start date, show content
+  if (!eventStartDate.value)
+    return true // If no start date, show content
   return new Date() >= eventStartDate.value
 })
 
 // Computed submission status based on dates
 const submissionStatus = computed(() => {
   const now = new Date()
-  if (!submissionsStartDate.value) return 'upcoming'
-  if (now < submissionsStartDate.value) return 'upcoming'
-  if (submissionsEndDate.value && now > submissionsEndDate.value) return 'closed'
+  if (!submissionsStartDate.value)
+    return 'upcoming'
+  if (now < submissionsStartDate.value)
+    return 'upcoming'
+  if (submissionsEndDate.value && now > submissionsEndDate.value)
+    return 'closed'
   return 'open'
 })
 
@@ -83,11 +87,13 @@ const location = ref('')
 
 // URL validation
 function isValidUrl(url: string): boolean {
-  if (!url.trim()) return true // Empty is valid (optional field)
+  if (!url.trim())
+    return true // Empty is valid (optional field)
   try {
     new URL(url)
     return true
-  } catch {
+  }
+  catch {
     return false
   }
 }
@@ -155,7 +161,8 @@ function openConfirmModal() {
 
 // Performs actual submission
 function confirmSubmit() {
-  if (!challengeId.value) return
+  if (!challengeId.value)
+    return
 
   createSubmissionMutation.mutate({
     challengeId: challengeId.value,

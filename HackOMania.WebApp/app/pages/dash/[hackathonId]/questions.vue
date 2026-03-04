@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import { registrationQuestionOrganizerQueries, useUpdateQuestionMutation, useInitQuestionMutation, useCreateQuestionMutation, useDeleteQuestionMutation } from '~/composables/question'
 import type {
   HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto,
   HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateUpdateOptionDto,
 } from '~/api-client/models'
+import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import { computed } from 'vue'
+import { registrationQuestionOrganizerQueries, useCreateQuestionMutation, useDeleteQuestionMutation, useInitQuestionMutation, useUpdateQuestionMutation } from '~/composables/question'
 
 type Question = HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto
 
-const route = useRoute()
 const props = withDefaults(defineProps<{
   hackathonId?: string
 }>(), {
   hackathonId: '',
 })
+const route = useRoute()
 const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
 const queryClient = useQueryClient()
@@ -73,7 +73,8 @@ async function invalidateQuestions() {
 }
 
 async function initializeQuestions() {
-  if (!hackathonId.value) return
+  if (!hackathonId.value)
+    return
   await initMutation.mutateAsync(hackathonId.value)
   await invalidateQuestions()
 }
@@ -130,11 +131,14 @@ function cancelEditing() {
 
 function parseOptionsJson(): Record<string, unknown>[] | null {
   const hasOptions = typesWithOptions.includes(editForm.value.type)
-  if (!hasOptions) return null
+  if (!hasOptions)
+    return null
   const raw = editForm.value.optionsJson.trim()
-  if (!raw || raw === '[]') return []
+  if (!raw || raw === '[]')
+    return []
   const parsed = JSON.parse(raw)
-  if (!Array.isArray(parsed)) throw new Error('Options must be an array')
+  if (!Array.isArray(parsed))
+    throw new Error('Options must be an array')
   return parsed
 }
 
@@ -189,14 +193,16 @@ async function saveQuestion() {
 }
 
 async function deleteQuestion(questionId: string) {
-  if (!confirm('Are you sure you want to delete this question?')) return
+  if (!confirm('Are you sure you want to delete this question?'))
+    return
   await deleteMutation.mutateAsync(questionId)
   await invalidateQuestions()
 }
 
 async function deleteAllQuestions() {
   const count = questions.value.length
-  if (!confirm(`Are you sure you want to delete all ${count} questions? This action cannot be undone.`)) return
+  if (!confirm(`Are you sure you want to delete all ${count} questions? This action cannot be undone.`))
+    return
 
   for (const question of questions.value) {
     if (question.id) {

@@ -1,5 +1,5 @@
-import { queryOptions, useMutation } from '@tanstack/vue-query'
 import type { HackOManiaApiEndpointsOrganizersHackathonCreateRequest, HackOManiaApiEndpointsOrganizersHackathonUpdateRequest } from '~/api-client/models'
+import { queryOptions, useMutation } from '@tanstack/vue-query'
 
 export const hackathonOrganizerQueries = {
   list: queryOptions({

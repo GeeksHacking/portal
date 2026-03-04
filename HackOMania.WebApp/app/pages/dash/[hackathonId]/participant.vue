@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import { formatParticipantStatus, hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
-import { useJoinHackathonMutation } from '~/composables/hackathon'
-import { organizerQueries } from '~/composables/organizers'
-import { authQueries } from '~/composables/auth'
-import { useReviewParticipantMutation } from '~/composables/participants'
+import { computed, ref } from 'vue'
 import { HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject } from '~/api-client/models'
+import { authQueries } from '~/composables/auth'
+import { useJoinHackathonMutation } from '~/composables/hackathon'
+import { formatParticipantStatus, hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
+import { organizerQueries } from '~/composables/organizers'
+import { useReviewParticipantMutation } from '~/composables/participants'
 
 const route = useRoute()
 const toast = useToast()
@@ -35,9 +35,7 @@ const { data: statusData, isLoading: isLoadingStatus, error: statusError } = use
 const { data: submissionsData } = useQuery(
   computed(() => ({
     queryKey: ['hackathons', resolvedHackathonId.value, 'registration', 'submissions'],
-    queryFn: () => useNuxtApp().$apiClient.participants.hackathons
-      .byHackathonIdOrShortCodeId(resolvedHackathonId.value ?? '')
-      .registration.submissions.get(),
+    queryFn: () => useNuxtApp().$apiClient.participants.hackathons.byHackathonIdOrShortCodeId(resolvedHackathonId.value ?? '').registration.submissions.get(),
     enabled: !!resolvedHackathonId.value && statusData.value?.isParticipant === true,
   })),
 )
@@ -82,7 +80,8 @@ function openReviewModal(decision: string) {
 }
 
 async function handleReview() {
-  if (!participantUserId.value) return
+  if (!participantUserId.value)
+    return
   try {
     await reviewMutation.mutateAsync({
       participantUserId: participantUserId.value,
@@ -122,16 +121,20 @@ async function handleReview() {
 }
 
 function getErrorStatusCode(error: unknown): number | null {
-  if (!error || typeof error !== 'object') return null
+  if (!error || typeof error !== 'object')
+    return null
   const unknownError = error as {
     responseStatusCode?: unknown
     statusCode?: unknown
     response?: { status?: unknown }
   }
 
-  if (typeof unknownError.responseStatusCode === 'number') return unknownError.responseStatusCode
-  if (typeof unknownError.statusCode === 'number') return unknownError.statusCode
-  if (typeof unknownError.response?.status === 'number') return unknownError.response.status
+  if (typeof unknownError.responseStatusCode === 'number')
+    return unknownError.responseStatusCode
+  if (typeof unknownError.statusCode === 'number')
+    return unknownError.statusCode
+  if (typeof unknownError.response?.status === 'number')
+    return unknownError.response.status
   return null
 }
 
@@ -145,8 +148,9 @@ const statusDisplay = computed(() => {
 
 const isParticipant = computed(() => statusData.value?.isParticipant === true)
 
-const joinHackathon = async () => {
-  if (!resolvedHackathonId.value || !hackathon.value) return
+async function joinHackathon() {
+  if (!resolvedHackathonId.value || !hackathon.value)
+    return
   try {
     await joinMutation.mutateAsync(resolvedHackathonId.value)
     await queryClient.invalidateQueries({ queryKey: participantHackathonQueries.status(resolvedHackathonId.value).queryKey })
@@ -169,9 +173,11 @@ const reviewedDateFormatter = new Intl.DateTimeFormat(undefined, {
 })
 
 function formatReviewedDate(value: Date | string | null | undefined) {
-  if (!value) return '—'
+  if (!value)
+    return '—'
   const parsed = value instanceof Date ? value : new Date(value)
-  if (Number.isNaN(parsed.getTime())) return '—'
+  if (Number.isNaN(parsed.getTime()))
+    return '—'
   return `${reviewedDateFormatter.format(parsed)} SGT`
 }
 </script>

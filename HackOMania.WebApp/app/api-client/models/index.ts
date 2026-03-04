@@ -3260,26 +3260,20 @@ export function deserializeIntoHackOManiaApiEndpointsUsersProfileUpdateResponse(
         "name": n => { hackOManiaApiEndpointsUsersProfileUpdateResponse.name = n.getStringValue(); },
     }
 }
-/**
- * the dto used to send an error response to the client
- */
 export interface FastEndpointsErrorResponse extends ApiError, Parsable {
     /**
-     * the collection of errors for the current context
+     * The errors property
      */
     errors?: FastEndpointsErrorResponse_errors | null;
     /**
-     * the message for the error response
+     * The message property
      */
     messageEscaped?: string | null;
     /**
-     * the http status code sent to the client. default is 400.
+     * The statusCode property
      */
     statusCode?: number | null;
 }
-/**
- * the collection of errors for the current context
- */
 export interface FastEndpointsErrorResponse_errors extends AdditionalDataHolder, Parsable {
 }
 export interface HackOManiaApiEndpointsAuthWhoAmIResponse extends Parsable {

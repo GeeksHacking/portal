@@ -1,6 +1,6 @@
 {
-  "descriptionHash": "D3C50289CD6FBF9EB31578655489A400C132CED2DFC29B3002383B3C7522C575310D1CC4A1416AE0BC48324923373AA818F3079035572010F8DD0318D7F16050",
-  "descriptionLocation": "http://localhost:5227/openapi/v1.json",
+  "descriptionHash": "2D0D911AF599FD1CD2619D5C186B096558E1D794E4C2B7B12B73BAA0DC04B1222E887C794B0EA7B33341DB1A8C4492AD4E7F049358ABE346D13AE274FA933FC2",
+  "descriptionLocation": "https://hackomania-api.geekshacking.com/openapi/v1.json",
   "lockFileVersion": "1.0.0",
   "kiotaVersion": "1.30.0",
   "clientClassName": "ApiClient",

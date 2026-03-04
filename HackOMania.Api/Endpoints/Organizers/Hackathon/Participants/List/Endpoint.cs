@@ -40,6 +40,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 UserId = p.UserId,
                 TeamId = p.TeamId,
                 JoinedAt = p.JoinedAt,
+                WithdrawnAt = p.WithdrawnAt,
             })
             .ToListAsync(ct);
 
@@ -148,6 +149,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 return new ParticipantItem
                 {
                     CreatedAt = p.JoinedAt,
+                    WithdrawnAt = p.WithdrawnAt,
+                    IsWithdrawn = p.WithdrawnAt is not null,
                     Id = p.UserId,
                     Name = userInfo.Name ?? "Unknown",
                     Email = userInfo.Email,
@@ -182,18 +185,20 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             })
             .ToList();
 
+        var activeParticipants = participantResponses.Where(p => !p.IsWithdrawn).ToList();
+
         await Send.OkAsync(
             new Response
             {
                 Participants = participantResponses,
                 TotalCount = participants.Count,
-                PendingCount = participantResponses.Count(p =>
+                PendingCount = activeParticipants.Count(p =>
                     p.ConcludedStatus == ParticipantConcludedStatus.Pending
                 ),
-                AcceptedCount = participantResponses.Count(p =>
+                AcceptedCount = activeParticipants.Count(p =>
                     p.ConcludedStatus == ParticipantConcludedStatus.Accepted
                 ),
-                RejectedCount = participantResponses.Count(p =>
+                RejectedCount = activeParticipants.Count(p =>
                     p.ConcludedStatus == ParticipantConcludedStatus.Rejected
                 ),
             },

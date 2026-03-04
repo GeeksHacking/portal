@@ -63,6 +63,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             new Response
             {
                 CreatedAt = participant.JoinedAt,
+                WithdrawnAt = participant.WithdrawnAt,
+                IsWithdrawn = participant.WithdrawnAt is not null,
                 Id = participant.UserId,
                 Name = userName,
                 Email = user?.Email,

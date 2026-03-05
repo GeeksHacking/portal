@@ -134,7 +134,7 @@ watch(
               </div>
 
               <p class="text-sm text-(--ui-text-muted)">
-                Are you sure you want to withdraw?
+                Are you sure you want to withdraw? You will need to be reviewed again if you want to re-join.
               </p>
 
               <div class="flex justify-end gap-2">

@@ -1246,9 +1246,9 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
                       </div>
                     </div>
 
-                    <div v-if="reviewingParticipantReviews.length > 0">
+                    <div v-if="reviewingParticipantReviews.length > 0 || hasPreviouslyWithdrawn(reviewingParticipant)">
                       <h4 class="text-sm font-semibold mb-2">
-                        Review History ({{ reviewingParticipantReviews.length }})
+                        Review History ({{ reviewingParticipantReviews.length + (hasPreviouslyWithdrawn(reviewingParticipant) ? 1 : 0) }})
                       </h4>
                       <div class="max-h-48 overflow-y-auto rounded-lg border border-default p-3 space-y-3">
                         <div
@@ -1279,6 +1279,23 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
                             class="text-xs text-(--ui-text-muted) italic mt-1"
                           >
                             No reason provided
+                          </p>
+                        </div>
+                        <div
+                          v-if="hasPreviouslyWithdrawn(reviewingParticipant)"
+                          class="border-b border-default last:border-b-0 pb-3 last:pb-0"
+                        >
+                          <div class="flex items-start justify-between mb-1">
+                            <UBadge
+                              color="neutral"
+                              variant="subtle"
+                              size="xs"
+                            >
+                              Withdrawn
+                            </UBadge>
+                          </div>
+                          <p class="text-xs text-(--ui-text-muted) italic mt-1">
+                            Participant previously withdrew
                           </p>
                         </div>
                       </div>

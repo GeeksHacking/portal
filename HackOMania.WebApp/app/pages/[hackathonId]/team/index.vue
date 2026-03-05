@@ -93,6 +93,12 @@ async function withdrawFromHackathon() {
       <PortalChallengesSection />
     </div>
     <div
+      id="timeline"
+      class="scroll-mt-12 lg:scroll-mt-18"
+    >
+      <PortalTimelineSection />
+    </div>
+    <div
       id="team"
       class="scroll-mt-12 lg:scroll-mt-18"
     >

@@ -12,15 +12,17 @@ import { prehackItems, day1Items, day2Items } from '~/data/timeline'
         TIMELINE
       </h2>
     </header>
-    <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 p-8 lg:py-16 lg:px-28 mx-auto lg:max-w-300">
-      <div class="w-full lg:w-1/3">
-        <PortalPreeventItinerary title="PREHACK" :items="prehackItems" />
-      </div>
-      <div class="w-full lg:w-1/3">
-        <PortalPreeventItinerary title="DAY 1" :items="day1Items" />
-      </div>
-      <div class="w-full lg:w-1/3">
-        <PortalPreeventItinerary title="DAY 2" :items="day2Items" />
+    <div class="mx-auto max-w-7xl p-8 lg:py-16 lg:px-28">
+      <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
+        <div class="w-full lg:w-1/3">
+          <PortalPreeventItinerary title="PREHACK" :items="prehackItems" />
+        </div>
+        <div class="w-full lg:w-1/3">
+          <PortalPreeventItinerary title="DAY 1" :items="day1Items" />
+        </div>
+        <div class="w-full lg:w-1/3">
+          <PortalPreeventItinerary title="DAY 2" :items="day2Items" />
+        </div>
       </div>
     </div>
   </section>

@@ -60,7 +60,7 @@ const sponsorLogos: Record<string, { src: string, maxHeight?: string }> = {
   'GovTech': { src: '/logos/govtech-colored-logo.png' },
   'Ahrefs': { src: '/logos/ahrefs-colored-logo.svg', maxHeight: '120px' },
   'Interledger': { src: '/logos/Interledger-Foundation.png' },
-  'SP Group': { src: '/logos/SP Group_Full Colour Logo_Horizontal_RGB.png' },
+  'SP Group': { src: '/logos/SP_Group_Full_Colour_Logo_Horizontal_RGB.png' },
 }
 
 const selectedSponsorName = computed(() =>

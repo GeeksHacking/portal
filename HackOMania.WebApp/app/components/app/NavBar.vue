@@ -23,6 +23,15 @@ const loginUrl = `${config.public.api}/auth/login`
 
 const { data: user, isLoading } = useQuery(authQueries.whoAmI)
 
+const hackathonId = useResolvedHackathonId()
+const { data: teamData } = useQuery(
+  computed(() => ({
+    ...teamQueries.me(hackathonId.value ?? ''),
+    enabled: !!hackathonId.value,
+  })),
+)
+const teamName = computed(() => teamData.value?.name ?? null)
+
 async function generateQrCode() {
   if (!user.value?.id)
     return
@@ -126,8 +135,11 @@ function closeQrModal() {
             alt="User QR Code"
             class="w-full max-w-[280px] sm:max-w-[300px] h-auto"
           >
-          <p class="text-sm text-gray-600">
-            {{ user?.gitHubLogin }}
+          <p v-if="teamName" class="text-sm text-gray-600">
+            {{ teamName }}
+          </p>
+          <p v-else class="text-sm text-red-600">
+            No Team
           </p>
         </div>
       </div>

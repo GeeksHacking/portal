@@ -2,6 +2,7 @@
 import { useQuery } from '@tanstack/vue-query'
 import { useVirtualList } from '@vueuse/core'
 import { computed, ref } from 'vue'
+import { challengeOrganizerQueries } from '~/composables/challenges'
 import { participantOrganizerQueries } from '~/composables/participants'
 import { teamOrganizerQueries } from '~/composables/teams'
 
@@ -27,8 +28,24 @@ const { data: participantsData } = useQuery(
   })),
 )
 
+const { data: challengesData } = useQuery(
+  computed(() => ({
+    ...challengeOrganizerQueries.list(hackathonId.value),
+    enabled: !!hackathonId.value,
+  })),
+)
+
 const teams = computed(() => teamsData.value?.teams ?? [])
 const teamSearchQuery = ref('')
+const challengeTitleById = computed(() => {
+  const map = new Map<string, string>()
+  for (const challenge of challengesData.value?.challenges ?? []) {
+    if (challenge.id && challenge.title) {
+      map.set(challenge.id, challenge.title)
+    }
+  }
+  return map
+})
 
 // Map teamId -> list of participant names
 const membersByTeamId = computed(() => {
@@ -193,7 +210,7 @@ function toggleTeam(teamId: string) {
                   >
                     <UFormField label="Challenge">
                       <UInput
-                        model-value="Not Selected Yet"
+                        :model-value="team.challengeId ? (challengeTitleById.get(team.challengeId) ?? 'Unknown challenge') : 'Not Selected Yet'"
                         disabled
                         class="w-full"
                       />

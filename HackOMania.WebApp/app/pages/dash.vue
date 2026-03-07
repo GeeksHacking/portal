@@ -43,6 +43,7 @@
                     { label: 'Analytics', to: `/dash/${hackathonId.value}/challenge-dashboard` }
                 ]
             },
+            { label: 'Submissions', icon: 'i-lucide-file-text', to: `/dash/${hackathonId.value}/submissions` },
             { label: 'Judges', icon: 'i-lucide-scale', to: `/dash/${hackathonId.value}/judges` },
             { label: 'Questions', icon: 'i-lucide-circle-help', to: `/dash/${hackathonId.value}/questions` },
             { label: 'Data Export', icon: 'i-lucide-file-down', to: `/dash/${hackathonId.value}/infopack` },

@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import type { HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem } from '~/api-client/models'
+import type {
+  OrganizerResourceItem,
+  OrganizerResourceStatisticsRecentActivityItem,
+  OrganizerResourceStatisticsResponse,
+  OrganizerResourceStatisticsTeamItem,
+} from '~/composables/resources'
 import { useQuery } from '@tanstack/vue-query'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject } from '~/api-client/models'
 import { challengeOrganizerQueries } from '~/composables/challenges'
 import { participantOrganizerQueries } from '~/composables/participants'
+import { resourceOrganizerQueries } from '~/composables/resources'
 import { teamOrganizerQueries } from '~/composables/teams'
 import { venueOverviewQueries } from '~/composables/venue'
+import { HACKATHON_TIME_ZONE, HACKATHON_TIME_ZONE_LABEL, parseHackathonDateTimeValue } from '~/utils/hackathon-date-time'
 
 type ParticipantItem = HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem
 type StatColor = 'primary' | 'success' | 'error' | 'warning' | 'neutral'
@@ -25,6 +33,8 @@ interface StatSection {
   gridClass: string
   footer?: string | null
 }
+
+const ALL_RESOURCES_VALUE = '__all__'
 
 const cardBorderClass: Record<StatColor, string> = {
   primary: 'border-l-primary',
@@ -73,13 +83,60 @@ const { data: venueOverviewData, isLoading: isLoadingVenueOverview } = useQuery(
   })),
 )
 
+const { data: resourcesData, isLoading: isLoadingResources } = useQuery(
+  computed(() => ({
+    ...resourceOrganizerQueries.list(hackathonId.value),
+    enabled: !!hackathonId.value,
+  })),
+)
+
+const selectedResourceStatsId = ref(ALL_RESOURCES_VALUE)
+const resourceBreakdownSearch = ref('')
+
+const organizerResources = computed<OrganizerResourceItem[]>(() => resourcesData.value?.resources ?? [])
+
+watch(organizerResources, (items) => {
+  if (selectedResourceStatsId.value === ALL_RESOURCES_VALUE)
+    return
+
+  if (!items.some(item => item.id === selectedResourceStatsId.value))
+    selectedResourceStatsId.value = ALL_RESOURCES_VALUE
+}, { immediate: true })
+
+const selectedResourceStatsResourceId = computed(() =>
+  selectedResourceStatsId.value === ALL_RESOURCES_VALUE ? undefined : selectedResourceStatsId.value,
+)
+
+const selectedResourceStatsResource = computed(() =>
+  organizerResources.value.find(resource => resource.id === selectedResourceStatsResourceId.value) ?? null,
+)
+
+const {
+  data: resourceStatisticsData,
+  isLoading: isLoadingResourceStatistics,
+  refetch: refetchResourceStatistics,
+  dataUpdatedAt: resourceStatisticsUpdatedAt,
+} = useQuery(
+  computed(() => ({
+    ...resourceOrganizerQueries.statistics(hackathonId.value, selectedResourceStatsResourceId.value),
+    enabled: !!hackathonId.value,
+  })),
+)
+
 const REVIEW_OVERDUE_DAYS = 5
 const REVIEW_OVERDUE_MS = REVIEW_OVERDUE_DAYS * 24 * 60 * 60 * 1000
+
+const resourceStatsTimeFormatter = new Intl.DateTimeFormat(undefined, {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+  timeZone: HACKATHON_TIME_ZONE,
+})
 
 const participants = computed(() => participantsData.value?.participants ?? [])
 const teams = computed(() => teamsData.value?.teams ?? [])
 const challenges = computed(() => challengesData.value?.challenges ?? [])
 const checkInParticipants = computed(() => venueOverviewData.value?.participants ?? [])
+const resourceStatistics = computed<OrganizerResourceStatisticsResponse | null>(() => resourceStatisticsData.value ?? null)
 const isLoading = computed(
   () => isLoadingParticipants.value || isLoadingTeams.value || isLoadingChallenges.value || isLoadingVenueOverview.value,
 )
@@ -102,6 +159,29 @@ function getApplicationTimeEpoch(participant: ParticipantItem) {
     const updatedAt = submission.updatedAt?.getTime() ?? 0
     return updatedAt > max ? updatedAt : max
   }, 0)
+}
+
+function pluralize(value: number, singular: string, plural = `${singular}s`) {
+  return `${value} ${value === 1 ? singular : plural}`
+}
+
+function formatResourceStatsTime(value: Date | string | null | undefined) {
+  const date = parseHackathonDateTimeValue(value)
+  if (!date)
+    return '—'
+
+  return `${resourceStatsTimeFormatter.format(date)} ${HACKATHON_TIME_ZONE_LABEL}`
+}
+
+function summarizeParticipantResources(teamParticipant: OrganizerResourceStatisticsTeamItem['participants'][number]) {
+  const resourceNames = [...new Set(teamParticipant.redemptions.map(redemption => redemption.resourceName))]
+  if (!resourceNames.length)
+    return '—'
+
+  if (resourceNames.length <= 2)
+    return resourceNames.join(', ')
+
+  return `${resourceNames.slice(0, 2).join(', ')} +${resourceNames.length - 2} more`
 }
 
 const activeParticipants = computed(() => participants.value.filter(participant => !isWithdrawn(participant)))
@@ -196,7 +276,6 @@ const memberCheckInByUserId = computed(() => {
 const activeParticipantsWithCheckIn = computed(() =>
   activeParticipants.value.map(participant => ({
     participant,
-    // Organizer participant list uses userId as the public Id field.
     checkIn: participant.id ? memberCheckInByUserId.value.get(participant.id) : undefined,
   })),
 )
@@ -426,6 +505,122 @@ const statSections = computed<StatSection[]>(() => [
     gridClass: 'grid grid-cols-2 gap-4 sm:grid-cols-3',
   },
 ])
+
+const resourceStatisticsOptions = computed(() => [
+  { label: 'All resources', value: ALL_RESOURCES_VALUE },
+  ...organizerResources.value.map(resource => ({
+    label: resource.isPublished ? resource.name : `${resource.name} (Unpublished)`,
+    value: resource.id,
+  })),
+])
+
+const resourceStatisticsCards = computed<StatCard[]>(() => {
+  const stats = resourceStatistics.value
+  if (!stats)
+    return []
+
+  return [
+    { label: 'Resources in Scope', value: stats.resourceCount, icon: 'i-lucide-package', color: 'primary' },
+    { label: 'Redeemed Resources', value: stats.resourcesWithRedemptions, icon: 'i-lucide-badge-check', color: 'success' },
+    { label: 'Total Redemptions', value: stats.totalRedemptions, icon: 'i-lucide-history', color: 'primary' },
+    { label: 'Participants Redeemed', value: stats.participantsWithRedemptions, icon: 'i-lucide-user-check', color: 'success' },
+    { label: 'Not Yet Redeemed', value: stats.participantsWithoutRedemptions, icon: 'i-lucide-user-minus', color: 'warning' },
+    { label: 'Teams Represented', value: stats.teamsWithRedemptions, icon: 'i-lucide-users', color: 'primary' },
+    { label: 'No-Team Redeemers', value: stats.redeemersWithoutTeam, icon: 'i-lucide-user-round-x', color: 'neutral' },
+    { label: 'Avg / Redeemer', value: stats.averageRedemptionsPerRedeemer.toFixed(2), icon: 'i-lucide-bar-chart-3', color: 'neutral' },
+  ]
+})
+
+const resourceStatisticsScopeLabel = computed(() =>
+  selectedResourceStatsResource.value ? 'Selected resource' : 'All resources',
+)
+
+const resourceStatisticsScopeDescription = computed(() => {
+  if (selectedResourceStatsResource.value)
+    return selectedResourceStatsResource.value.description || 'No description provided for this resource.'
+
+  return 'Combined redemption activity across every organizer resource in this hackathon.'
+})
+
+const resourceStatisticsFooter = computed(() => {
+  const stats = resourceStatistics.value
+  if (!stats)
+    return null
+
+  const parts = [
+    `${stats.participantsWithRedemptions} of ${stats.totalParticipants} participants have redeemed in this scope`,
+  ]
+
+  if (stats.firstRedeemedAt)
+    parts.push(`First redemption: ${formatResourceStatsTime(stats.firstRedeemedAt)}`)
+
+  if (stats.lastRedeemedAt)
+    parts.push(`Latest redemption: ${formatResourceStatsTime(stats.lastRedeemedAt)}`)
+
+  return parts.join(' · ')
+})
+
+const resourceLeaderboard = computed(() =>
+  [...(resourceStatistics.value?.resourceSummaries ?? [])]
+    .sort((a, b) => {
+      if (b.totalRedemptions !== a.totalRedemptions)
+        return b.totalRedemptions - a.totalRedemptions
+
+      const timeDiff = (parseHackathonDateTimeValue(b.lastRedeemedAt)?.getTime() ?? 0)
+        - (parseHackathonDateTimeValue(a.lastRedeemedAt)?.getTime() ?? 0)
+
+      if (timeDiff !== 0)
+        return timeDiff
+
+      return a.resourceName.localeCompare(b.resourceName, undefined, { sensitivity: 'base' })
+    }),
+)
+
+const hasMultipleResourceScope = computed(() => (resourceStatistics.value?.resourceCount ?? 0) > 1)
+const recentResourceActivity = computed<OrganizerResourceStatisticsRecentActivityItem[]>(() => resourceStatistics.value?.recentActivity ?? [])
+const normalizedResourceBreakdownSearch = computed(() => resourceBreakdownSearch.value.trim().toLowerCase())
+
+const filteredResourceTeamBreakdown = computed<OrganizerResourceStatisticsTeamItem[]>(() => {
+  const groups = resourceStatistics.value?.teamBreakdown ?? []
+  const query = normalizedResourceBreakdownSearch.value
+
+  if (!query)
+    return groups
+
+  return groups.flatMap((group) => {
+    const matchesTeam = group.teamName.toLowerCase().includes(query)
+    if (matchesTeam)
+      return [group]
+
+    const participants = group.participants.filter((participant) => {
+      return [participant.userName, participant.userId]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase()
+        .includes(query)
+    })
+
+    if (!participants.length)
+      return []
+
+    const lastRedeemedAt = participants.reduce<Date | string | null | undefined>((latest, participant) => {
+      const participantEpoch = parseHackathonDateTimeValue(participant.lastRedeemedAt)?.getTime() ?? 0
+      const latestEpoch = parseHackathonDateTimeValue(latest)?.getTime() ?? 0
+      return participantEpoch > latestEpoch ? participant.lastRedeemedAt : latest
+    }, null)
+
+    return [{
+      ...group,
+      redeemerCount: participants.length,
+      totalRedemptions: participants.reduce((sum, participant) => sum + participant.redemptionCount, 0),
+      distinctResourcesRedeemed: new Set(
+        participants.flatMap(participant => participant.redemptions.map(redemption => redemption.resourceId)),
+      ).size,
+      lastRedeemedAt,
+      participants,
+    }]
+  })
+})
 </script>
 
 <template>
@@ -439,7 +634,7 @@ const statSections = computed<StatSection[]>(() => [
     </template>
 
     <template #body>
-      <div class="p-4 space-y-6 overflow-y-auto">
+      <div class="space-y-6 overflow-y-auto p-4">
         <div
           v-if="isLoading"
           class="text-sm text-(--ui-text-muted)"
@@ -484,6 +679,390 @@ const statSections = computed<StatSection[]>(() => [
               class="mt-3 text-xs text-(--ui-text-muted)"
             >
               {{ section.footer }}
+            </div>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <div class="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <h3 class="text-sm font-semibold">
+                      Resource Redemption
+                    </h3>
+                    <UBadge
+                      size="xs"
+                      variant="soft"
+                      color="primary"
+                    >
+                      {{ resourceStatisticsScopeLabel }}
+                    </UBadge>
+                  </div>
+                  <p class="mt-1 text-xs text-(--ui-text-muted)">
+                    View redemption statistics for all resources or drill into a single resource with team-grouped participant detail.
+                  </p>
+                </div>
+
+                <div class="flex flex-col gap-2 sm:flex-row sm:items-end">
+                  <UFormField label="Resource scope">
+                    <USelect
+                      :model-value="selectedResourceStatsId"
+                      :items="resourceStatisticsOptions"
+                      size="sm"
+                      class="w-full min-w-60"
+                      :loading="isLoadingResources"
+                      @update:model-value="selectedResourceStatsId = String($event || ALL_RESOURCES_VALUE)"
+                    />
+                  </UFormField>
+
+                  <UButton
+                    icon="i-lucide-refresh-cw"
+                    size="sm"
+                    variant="soft"
+                    color="neutral"
+                    :loading="isLoadingResourceStatistics"
+                    @click="refetchResourceStatistics()"
+                  >
+                    Refresh
+                  </UButton>
+                </div>
+              </div>
+            </template>
+
+            <div class="space-y-4">
+              <div class="rounded-xl border border-(--ui-border) bg-(--ui-bg-elevated) p-4">
+                <div class="flex flex-wrap items-center gap-2">
+                  <h4 class="text-sm font-semibold">
+                    {{ selectedResourceStatsResource?.name || 'All resources' }}
+                  </h4>
+                  <UBadge
+                    size="xs"
+                    variant="soft"
+                    :color="selectedResourceStatsResource?.isPublished === false ? 'warning' : 'success'"
+                  >
+                    {{
+                      selectedResourceStatsResource
+                        ? selectedResourceStatsResource.isPublished ? 'Published' : 'Unpublished'
+                        : 'Aggregate view'
+                    }}
+                  </UBadge>
+                </div>
+                <p class="mt-2 text-sm text-(--ui-text-muted)">
+                  {{ resourceStatisticsScopeDescription }}
+                </p>
+              </div>
+
+              <div
+                v-if="!organizerResources.length"
+                class="rounded-xl border border-dashed border-(--ui-border) p-4 text-sm text-(--ui-text-muted)"
+              >
+                No resources have been configured for this hackathon yet.
+              </div>
+
+              <div
+                v-else-if="isLoadingResourceStatistics && !resourceStatistics"
+                class="rounded-xl border border-dashed border-(--ui-border) p-4 text-sm text-(--ui-text-muted)"
+              >
+                Loading redemption statistics...
+              </div>
+
+              <template v-else-if="resourceStatistics">
+                <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+                  <div
+                    v-for="card in resourceStatisticsCards"
+                    :key="card.label"
+                    class="rounded-lg border border-(--ui-border) border-l-3 p-3"
+                    :class="cardBorderClass[card.color]"
+                  >
+                    <div class="mb-1 flex items-center gap-2">
+                      <UIcon
+                        :name="card.icon"
+                        class="h-4 w-4 shrink-0"
+                        :class="cardIconClass[card.color]"
+                      />
+                      <span class="text-xs text-(--ui-text-muted)">{{ card.label }}</span>
+                    </div>
+                    <p class="text-2xl font-semibold text-(--ui-text-highlighted)">
+                      {{ card.value }}
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  v-if="resourceStatisticsFooter"
+                  class="text-xs text-(--ui-text-muted)"
+                >
+                  {{ resourceStatisticsFooter }}
+                </div>
+
+                <div class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+                  <div class="rounded-xl border border-(--ui-border) p-4">
+                    <div class="flex items-center justify-between gap-2">
+                      <div>
+                        <h4 class="text-sm font-semibold">
+                          {{ hasMultipleResourceScope ? 'Resource Distribution' : 'Resource Snapshot' }}
+                        </h4>
+                        <p class="mt-1 text-xs text-(--ui-text-muted)">
+                          {{
+                            hasMultipleResourceScope
+                              ? 'See which resources are driving redemption volume.'
+                              : 'The selected resource summary for this scope.'
+                          }}
+                        </p>
+                      </div>
+                      <span class="text-xs text-(--ui-text-muted)">
+                        {{ pluralize(resourceLeaderboard.length, 'resource') }}
+                      </span>
+                    </div>
+
+                    <div
+                      v-if="!resourceLeaderboard.length"
+                      class="mt-4 text-sm text-(--ui-text-muted)"
+                    >
+                      No redemptions captured yet.
+                    </div>
+
+                    <ul
+                      v-else
+                      class="mt-4 space-y-3"
+                    >
+                      <li
+                        v-for="resource in resourceLeaderboard"
+                        :key="resource.resourceId"
+                        class="rounded-lg border border-(--ui-border) bg-(--ui-bg-elevated) p-3"
+                      >
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                          <div class="flex items-center gap-2">
+                            <span class="font-medium text-(--ui-text-highlighted)">{{ resource.resourceName }}</span>
+                            <UBadge
+                              size="xs"
+                              variant="soft"
+                              :color="resource.isPublished ? 'success' : 'warning'"
+                            >
+                              {{ resource.isPublished ? 'Published' : 'Unpublished' }}
+                            </UBadge>
+                          </div>
+                          <span class="text-sm font-medium text-(--ui-text-highlighted)">
+                            {{ pluralize(resource.totalRedemptions, 'redemption') }}
+                          </span>
+                        </div>
+                        <p class="mt-2 text-xs text-(--ui-text-muted)">
+                          {{ pluralize(resource.uniqueRedeemers, 'participant') }} redeemed · Latest {{ formatResourceStatsTime(resource.lastRedeemedAt) }}
+                        </p>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="rounded-xl border border-(--ui-border) p-4">
+                    <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <h4 class="text-sm font-semibold">
+                          Recent Activity
+                        </h4>
+                        <p class="mt-1 text-xs text-(--ui-text-muted)">
+                          Latest 25 redemptions in the selected scope.
+                        </p>
+                      </div>
+                      <span
+                        v-if="resourceStatisticsUpdatedAt"
+                        class="text-xs text-(--ui-text-muted)"
+                      >
+                        Updated {{ new Date(resourceStatisticsUpdatedAt).toLocaleTimeString() }}
+                      </span>
+                    </div>
+
+                    <div
+                      v-if="!recentResourceActivity.length"
+                      class="mt-4 text-sm text-(--ui-text-muted)"
+                    >
+                      No redemption activity yet.
+                    </div>
+
+                    <ul
+                      v-else
+                      class="mt-4 space-y-3"
+                    >
+                      <li
+                        v-for="activity in recentResourceActivity"
+                        :key="activity.redemptionId"
+                        class="rounded-lg border border-(--ui-border) bg-(--ui-bg-elevated) p-3"
+                      >
+                        <p class="text-sm text-(--ui-text-muted)">
+                          <span class="font-medium text-(--ui-text-highlighted)">{{ activity.userName }}</span>
+                          redeemed
+                          <span class="font-medium text-(--ui-text-highlighted)">{{ activity.resourceName }}</span>
+                        </p>
+                        <p class="mt-1 text-xs text-(--ui-text-muted)">
+                          {{ formatResourceStatsTime(activity.timestamp) }} · {{ activity.teamName }}
+                        </p>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="rounded-xl border border-(--ui-border) p-4">
+                  <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                      <h4 class="text-sm font-semibold">
+                        Team Breakdown
+                      </h4>
+                      <p class="mt-1 text-xs text-(--ui-text-muted)">
+                        Participants that redeemed in this scope, grouped by team with counts and redemption timing.
+                      </p>
+                    </div>
+
+                    <UInput
+                      v-model="resourceBreakdownSearch"
+                      icon="i-lucide-search"
+                      size="sm"
+                      class="w-full lg:max-w-sm"
+                      placeholder="Search by team, participant, or user ID..."
+                    />
+                  </div>
+
+                  <div
+                    v-if="!resourceStatistics.teamBreakdown.length"
+                    class="mt-4 text-sm text-(--ui-text-muted)"
+                  >
+                    No participants have redeemed in this scope yet.
+                  </div>
+
+                  <div
+                    v-else-if="!filteredResourceTeamBreakdown.length"
+                    class="mt-4 text-sm text-(--ui-text-muted)"
+                  >
+                    No teams or participants matching "{{ resourceBreakdownSearch }}".
+                  </div>
+
+                  <div
+                    v-else
+                    class="mt-4 space-y-4"
+                  >
+                    <section
+                      v-for="team in filteredResourceTeamBreakdown"
+                      :key="team.teamId ?? team.teamName"
+                      class="rounded-lg border border-(--ui-border)"
+                    >
+                      <div class="border-b border-(--ui-border) bg-(--ui-bg-elevated) p-4">
+                        <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                          <div>
+                            <div class="flex flex-wrap items-center gap-2">
+                              <h5 class="text-sm font-semibold">
+                                {{ team.teamName }}
+                              </h5>
+                              <UBadge
+                                size="xs"
+                                variant="soft"
+                                :color="team.teamId ? 'primary' : 'neutral'"
+                              >
+                                {{ team.teamId ? 'Team' : 'No team' }}
+                              </UBadge>
+                              <UBadge
+                                v-if="hasMultipleResourceScope"
+                                size="xs"
+                                variant="soft"
+                                color="neutral"
+                              >
+                                {{ pluralize(team.distinctResourcesRedeemed, 'resource') }}
+                              </UBadge>
+                            </div>
+                            <p class="mt-1 text-xs text-(--ui-text-muted)">
+                              {{ pluralize(team.redeemerCount, 'redeemer') }} ·
+                              {{ pluralize(team.totalRedemptions, 'redemption') }} ·
+                              {{ pluralize(team.memberCount, 'member') }}
+                            </p>
+                          </div>
+
+                          <p class="text-xs text-(--ui-text-muted)">
+                            Latest redemption: {{ formatResourceStatsTime(team.lastRedeemedAt) }}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div class="overflow-x-auto">
+                        <table class="w-full min-w-[56rem] text-sm">
+                          <thead>
+                            <tr class="text-left text-(--ui-text-muted)">
+                              <th class="px-4 py-3 font-medium">
+                                Participant
+                              </th>
+                              <th class="px-4 py-3 font-medium">
+                                Count
+                              </th>
+                              <th class="px-4 py-3 font-medium">
+                                {{ hasMultipleResourceScope ? 'Resources' : 'Scope' }}
+                              </th>
+                              <th class="px-4 py-3 font-medium">
+                                First redeemed
+                              </th>
+                              <th class="px-4 py-3 font-medium">
+                                Latest redeemed
+                              </th>
+                              <th class="px-4 py-3 font-medium">
+                                Timeline
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody class="divide-y divide-(--ui-border)">
+                            <tr
+                              v-for="participant in team.participants"
+                              :key="participant.userId"
+                            >
+                              <td class="px-4 py-3">
+                                <div class="font-medium text-(--ui-text-highlighted)">
+                                  {{ participant.userName }}
+                                </div>
+                                <div class="text-xs text-(--ui-text-muted)">
+                                  {{ participant.userId }}
+                                </div>
+                              </td>
+                              <td class="px-4 py-3 text-(--ui-text-highlighted)">
+                                {{ participant.redemptionCount }}
+                              </td>
+                              <td class="px-4 py-3 text-(--ui-text-muted)">
+                                <template v-if="hasMultipleResourceScope">
+                                  <div>{{ pluralize(participant.distinctResourcesRedeemed, 'resource') }}</div>
+                                  <div class="text-xs">
+                                    {{ summarizeParticipantResources(participant) }}
+                                  </div>
+                                </template>
+                                <span v-else>
+                                  {{ selectedResourceStatsResource?.name || resourceStatistics.resourceName || 'Selected resource' }}
+                                </span>
+                              </td>
+                              <td class="px-4 py-3 text-(--ui-text-muted)">
+                                {{ formatResourceStatsTime(participant.firstRedeemedAt) }}
+                              </td>
+                              <td class="px-4 py-3 text-(--ui-text-muted)">
+                                {{ formatResourceStatsTime(participant.lastRedeemedAt) }}
+                              </td>
+                              <td class="px-4 py-3 text-(--ui-text-muted)">
+                                <details class="group max-w-md">
+                                  <summary class="cursor-pointer text-xs hover:text-(--ui-text)">
+                                    View timeline
+                                  </summary>
+                                  <ul class="mt-2 space-y-1 text-xs">
+                                    <li
+                                      v-for="redemption in participant.redemptions"
+                                      :key="redemption.redemptionId"
+                                    >
+                                      <template v-if="hasMultipleResourceScope">
+                                        <span class="text-(--ui-text-highlighted)">{{ redemption.resourceName }}</span>
+                                        <span> · </span>
+                                      </template>
+                                      <span>{{ formatResourceStatsTime(redemption.timestamp) }}</span>
+                                    </li>
+                                  </ul>
+                                </details>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </div>
+              </template>
             </div>
           </UCard>
         </template>

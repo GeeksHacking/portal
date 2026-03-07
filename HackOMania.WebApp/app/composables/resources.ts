@@ -58,6 +58,76 @@ export interface OrganizerResourceHistoryResponse {
   history: OrganizerResourceHistoryItem[]
 }
 
+export interface OrganizerResourceStatisticsSummaryItem {
+  resourceId: string
+  resourceName: string
+  isPublished: boolean
+  totalRedemptions: number
+  uniqueRedeemers: number
+  lastRedeemedAt?: Date | string | null
+}
+
+export interface OrganizerResourceStatisticsParticipantEvent {
+  redemptionId: string
+  resourceId: string
+  resourceName: string
+  timestamp: Date | string
+}
+
+export interface OrganizerResourceStatisticsParticipantItem {
+  participantId: string
+  userId: string
+  userName: string
+  redemptionCount: number
+  distinctResourcesRedeemed: number
+  firstRedeemedAt?: Date | string | null
+  lastRedeemedAt?: Date | string | null
+  redemptions: OrganizerResourceStatisticsParticipantEvent[]
+}
+
+export interface OrganizerResourceStatisticsTeamItem {
+  teamId?: string | null
+  teamName: string
+  memberCount: number
+  redeemerCount: number
+  totalRedemptions: number
+  distinctResourcesRedeemed: number
+  lastRedeemedAt?: Date | string | null
+  participants: OrganizerResourceStatisticsParticipantItem[]
+}
+
+export interface OrganizerResourceStatisticsRecentActivityItem {
+  redemptionId: string
+  resourceId: string
+  resourceName: string
+  participantId: string
+  userId: string
+  userName: string
+  teamId?: string | null
+  teamName: string
+  timestamp: Date | string
+}
+
+export interface OrganizerResourceStatisticsResponse {
+  resourceId?: string | null
+  resourceName?: string | null
+  resourceCount: number
+  resourcesWithRedemptions: number
+  resourcesWithoutRedemptions: number
+  totalParticipants: number
+  participantsWithRedemptions: number
+  participantsWithoutRedemptions: number
+  teamsWithRedemptions: number
+  redeemersWithoutTeam: number
+  totalRedemptions: number
+  averageRedemptionsPerRedeemer: number
+  firstRedeemedAt?: Date | string | null
+  lastRedeemedAt?: Date | string | null
+  resourceSummaries: OrganizerResourceStatisticsSummaryItem[]
+  teamBreakdown: OrganizerResourceStatisticsTeamItem[]
+  recentActivity: OrganizerResourceStatisticsRecentActivityItem[]
+}
+
 export interface ResourceRedeemResponse {
   redemptionId: string
   resourceId: string
@@ -98,6 +168,19 @@ export const resourceOrganizerQueries = {
         return await $fetch<OrganizerResourceHistoryResponse>(`/organizers/hackathons/${hackathonId}/participants/${participantUserId}/resources/${resourceId}/history`, {
           baseURL: config.public.api,
           credentials: 'include',
+        })
+      },
+    }),
+  statistics: (hackathonId: string, resourceId?: string | null) =>
+    queryOptions({
+      queryKey: ['hackathons', hackathonId, 'resources', 'organizer', resourceId ?? 'all', 'statistics'],
+      refetchInterval: 15_000,
+      async queryFn() {
+        const config = useRuntimeConfig()
+        return await $fetch<OrganizerResourceStatisticsResponse>(`/organizers/hackathons/${hackathonId}/resources/statistics`, {
+          baseURL: config.public.api,
+          credentials: 'include',
+          query: resourceId ? { resourceId } : undefined,
         })
       },
     }),

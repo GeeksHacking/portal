@@ -82,7 +82,6 @@ const summary = ref('')
 const repoUri = ref('')
 const demoUri = ref('')
 const slidesUri = ref('')
-const devpostUri = ref('')
 const location = ref('')
 
 // URL validation
@@ -114,6 +113,33 @@ function openConfirmModal() {
     return
   }
 
+  if (!summary.value.trim()) {
+    toast.add({
+      title: 'Summary is required',
+      description: 'Please enter a summary for your submission.',
+      color: 'error',
+    })
+    return
+  }
+
+  if (!repoUri.value.trim()) {
+    toast.add({
+      title: 'Repository URL is required',
+      description: 'Please enter a repository URL for your submission.',
+      color: 'error',
+    })
+    return
+  }
+
+  if (!slidesUri.value.trim()) {
+    toast.add({
+      title: 'Slides URL is required',
+      description: 'Please enter a slides URL for your submission.',
+      color: 'error',
+    })
+    return
+  }
+
   if (!challengeId.value) {
     toast.add({
       title: 'No challenge selected',
@@ -128,7 +154,6 @@ function openConfirmModal() {
     { name: 'Repository URL', value: repoUri.value },
     { name: 'Demo URL', value: demoUri.value },
     { name: 'Slides URL', value: slidesUri.value },
-    { name: 'Devpost URL', value: devpostUri.value },
   ]
 
   for (const field of urlFields) {
@@ -158,7 +183,6 @@ function confirmSubmit() {
     repoUri: repoUri.value.trim() || null,
     demoUri: demoUri.value.trim() || null,
     slidesUri: slidesUri.value.trim() || null,
-    devpostUri: devpostUri.value.trim() || null,
     location: location.value.trim() || null,
   }, {
     onSuccess() {
@@ -278,15 +302,6 @@ function confirmSubmit() {
               </a>
             </div>
 
-            <div v-if="existingSubmission?.devpostUri">
-              <h3 class="font-['Zalando_Sans_Expanded'] text-base lg:text-xl font-bold mb-1">
-                Devpost URL
-              </h3>
-              <a :href="existingSubmission.devpostUri" target="_blank" rel="noopener noreferrer" class="font-['Raleway'] text-base lg:text-xl text-blue-600 underline break-all">
-                {{ existingSubmission.devpostUri }}
-              </a>
-            </div>
-
             <div v-if="existingSubmission?.location">
               <h3 class="font-['Zalando_Sans_Expanded'] text-base lg:text-xl font-bold mb-1">
                 Location
@@ -348,7 +363,7 @@ function confirmSubmit() {
             <!-- Summary -->
             <div>
               <label class="block font-['Zalando_Sans_Expanded'] text-base lg:text-xl font-bold mb-2">
-                Summary
+                Summary *
               </label>
               <textarea
                 v-model="summary"
@@ -362,7 +377,7 @@ function confirmSubmit() {
             <!-- Repository URL -->
             <div>
               <label class="block font-['Zalando_Sans_Expanded'] text-base lg:text-xl font-bold mb-2">
-                Repository URL
+                Repository URL *
               </label>
               <input
                 v-model="repoUri"
@@ -376,7 +391,7 @@ function confirmSubmit() {
             <!-- Slides URL -->
             <div>
               <label class="block font-['Zalando_Sans_Expanded'] text-base lg:text-xl font-bold mb-2">
-                Slides URL
+                Slides URL *
               </label>
               <input
                 v-model="slidesUri"
@@ -397,20 +412,6 @@ function confirmSubmit() {
                 type="url"
                 class="w-full bg-transparent border border-black/20 rounded px-4 py-3 font-['Raleway'] text-base lg:text-xl focus:outline-none focus:border-black/40 disabled:opacity-50 disabled:cursor-not-allowed"
                 placeholder="https://your-demo-link.com"
-                :disabled="isFormDisabled"
-              >
-            </div>
-
-            <!-- Devpost URL -->
-            <div>
-              <label class="block font-['Zalando_Sans_Expanded'] text-base lg:text-xl font-bold mb-2">
-                Devpost URL <span class="font-normal text-black/50">(optional)</span>
-              </label>
-              <input
-                v-model="devpostUri"
-                type="url"
-                class="w-full bg-transparent border border-black/20 rounded px-4 py-3 font-['Raleway'] text-base lg:text-xl focus:outline-none focus:border-black/40 disabled:opacity-50 disabled:cursor-not-allowed"
-                placeholder="https://devpost.com/software/..."
                 :disabled="isFormDisabled"
               >
             </div>
@@ -474,9 +475,6 @@ function confirmSubmit() {
             </div>
             <div v-if="demoUri">
               <span class="font-bold">Demo:</span> {{ demoUri }}
-            </div>
-            <div v-if="devpostUri">
-              <span class="font-bold">Devpost:</span> {{ devpostUri }}
             </div>
             <div v-if="location">
               <span class="font-bold">Location:</span> {{ location }}

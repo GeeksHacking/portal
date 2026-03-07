@@ -41,11 +41,11 @@ export function formatHackathonDateTimeInput(value: Date | string | null | undef
   return `${year}-${month}-${day}T${hour}:${minute}`
 }
 
-export function parseHackathonDateTimeInput(value: string | null | undefined): Date | undefined {
+export function serializeHackathonDateTimeInput(value: string | null | undefined): string | undefined {
   if (!value)
     return undefined
 
-  return new Date(`${value}:00${HACKATHON_TIME_ZONE_OFFSET}`)
+  return `${value}:00${HACKATHON_TIME_ZONE_OFFSET}`
 }
 
 export function formatHackathonDate(value: Date | string | null | undefined): string {

@@ -12,7 +12,7 @@ import {
   formatHackathonDate,
   formatHackathonDateTimeInput,
   HACKATHON_TIME_ZONE_LABEL,
-  parseHackathonDateTimeInput,
+  serializeHackathonDateTimeInput,
 } from '~/utils/hackathon-date-time'
 
 const toast = useToast()
@@ -92,12 +92,12 @@ async function handleHackathonSubmit() {
     description: hackathonForm.value.description || undefined,
     venue: hackathonForm.value.venue || undefined,
     homepageUri: hackathonForm.value.homepageUri || undefined,
-    eventStartDate: parseHackathonDateTimeInput(hackathonForm.value.eventStartDate),
-    eventEndDate: parseHackathonDateTimeInput(hackathonForm.value.eventEndDate),
-    submissionsStartDate: parseHackathonDateTimeInput(hackathonForm.value.submissionsStartDate),
-    submissionsEndDate: parseHackathonDateTimeInput(hackathonForm.value.submissionsEndDate),
-    judgingStartDate: parseHackathonDateTimeInput(hackathonForm.value.judgingStartDate),
-    judgingEndDate: parseHackathonDateTimeInput(hackathonForm.value.judgingEndDate),
+    eventStartDate: serializeHackathonDateTimeInput(hackathonForm.value.eventStartDate),
+    eventEndDate: serializeHackathonDateTimeInput(hackathonForm.value.eventEndDate),
+    submissionsStartDate: serializeHackathonDateTimeInput(hackathonForm.value.submissionsStartDate),
+    submissionsEndDate: serializeHackathonDateTimeInput(hackathonForm.value.submissionsEndDate),
+    judgingStartDate: serializeHackathonDateTimeInput(hackathonForm.value.judgingStartDate),
+    judgingEndDate: serializeHackathonDateTimeInput(hackathonForm.value.judgingEndDate),
     isPublished: hackathonForm.value.isPublished,
   }
 

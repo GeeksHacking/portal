@@ -55,6 +55,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                         Id = t.Id,
                         Name = t.Name,
                         Description = t.Description,
+                        ChallengeId = t.ChallengeId,
                         CreatedAt = t.CreatedAt,
                         MemberCount = memberCountDict.GetValueOrDefault(t.Id, 0),
                     }),

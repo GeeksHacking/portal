@@ -252,6 +252,7 @@ builder.Services.SwaggerDocument(options =>
         t["Participants"] = "Participant management and reviews";
         t["Organizers"] = "Organizer management";
         t["Judges"] = "Judge management and scoring";
+        t["Admin"] = "Administrative and operational endpoints";
     };
 });
 

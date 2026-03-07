@@ -2191,6 +2191,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonTeamsLis
 // @ts-ignore
 export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonTeamsListTeamItem(hackOManiaApiEndpointsOrganizersHackathonTeamsListTeamItem: Partial<HackOManiaApiEndpointsOrganizersHackathonTeamsListTeamItem> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
+        "challengeId": n => { hackOManiaApiEndpointsOrganizersHackathonTeamsListTeamItem.challengeId = n.getStringValue(); },
         "createdAt": n => { hackOManiaApiEndpointsOrganizersHackathonTeamsListTeamItem.createdAt = n.getDateValue(); },
         "description": n => { hackOManiaApiEndpointsOrganizersHackathonTeamsListTeamItem.description = n.getStringValue(); },
         "id": n => { hackOManiaApiEndpointsOrganizersHackathonTeamsListTeamItem.id = n.getStringValue(); },
@@ -4650,6 +4651,10 @@ export interface HackOManiaApiEndpointsOrganizersHackathonTeamsListResponse exte
 }
 export interface HackOManiaApiEndpointsOrganizersHackathonTeamsListTeamItem extends Parsable {
     /**
+     * The challengeId property
+     */
+    challengeId?: string | null;
+    /**
      * The createdAt property
      */
     createdAt?: Date | null;
@@ -7108,6 +7113,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonTeamsListRespo
 // @ts-ignore
 export function serializeHackOManiaApiEndpointsOrganizersHackathonTeamsListTeamItem(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonTeamsListTeamItem: Partial<HackOManiaApiEndpointsOrganizersHackathonTeamsListTeamItem> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
     if (!hackOManiaApiEndpointsOrganizersHackathonTeamsListTeamItem || isSerializingDerivedType) { return; }
+    writer.writeStringValue("challengeId", hackOManiaApiEndpointsOrganizersHackathonTeamsListTeamItem.challengeId);
     writer.writeDateValue("createdAt", hackOManiaApiEndpointsOrganizersHackathonTeamsListTeamItem.createdAt);
     writer.writeStringValue("description", hackOManiaApiEndpointsOrganizersHackathonTeamsListTeamItem.description);
     writer.writeStringValue("id", hackOManiaApiEndpointsOrganizersHackathonTeamsListTeamItem.id);

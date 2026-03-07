@@ -28,6 +28,7 @@ const { data: participantsData } = useQuery(
 )
 
 const teams = computed(() => teamsData.value?.teams ?? [])
+const teamSearchQuery = ref('')
 
 // Map teamId -> list of participant names
 const membersByTeamId = computed(() => {
@@ -42,10 +43,29 @@ const membersByTeamId = computed(() => {
   return map
 })
 
+const normalizedTeamSearch = computed(() => teamSearchQuery.value.trim().toLowerCase())
+
+const filteredTeams = computed(() => {
+  const query = normalizedTeamSearch.value
+  if (!query)
+    return teams.value
+
+  return teams.value.filter((team) => {
+    const members = membersByTeamId.value.get(team.id ?? '') ?? []
+    const searchableText = [
+      team.name ?? '',
+      team.description ?? '',
+      ...members,
+    ].join(' ').toLowerCase()
+
+    return searchableText.includes(query)
+  })
+})
+
 const expandedTeamId = ref<string | null>(null)
 
 function getTeamListItemHeight(index: number) {
-  const team = teams.value[index]
+  const team = filteredTeams.value[index]
   if (!team)
     return 68
   return expandedTeamId.value === team.id ? 360 : 68
@@ -55,7 +75,7 @@ const {
   list: virtualTeams,
   containerProps: teamsContainerProps,
   wrapperProps: teamsWrapperProps,
-} = useVirtualList(teams, {
+} = useVirtualList(filteredTeams, {
   itemHeight: getTeamListItemHeight,
   overscan: 8,
 })
@@ -80,15 +100,29 @@ function toggleTeam(teamId: string) {
         <UCard>
           <template #header>
             <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <h3 class="text-sm font-semibold">
-                Teams
-              </h3>
-              <UBadge
-                variant="subtle"
+              <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                <h3 class="text-sm font-semibold">
+                  Teams
+                </h3>
+                <UBadge
+                  variant="subtle"
+                  size="sm"
+                >
+                  <template v-if="teamSearchQuery">
+                    {{ filteredTeams.length }} shown · {{ teams.length }} total
+                  </template>
+                  <template v-else>
+                    {{ teams.length }} total
+                  </template>
+                </UBadge>
+              </div>
+              <UInput
+                v-model="teamSearchQuery"
+                icon="i-lucide-search"
+                placeholder="Search teams or members..."
                 size="sm"
-              >
-                {{ teams.length }} total
-              </UBadge>
+                class="w-full sm:max-w-xs"
+              />
             </div>
           </template>
 
@@ -104,6 +138,13 @@ function toggleTeam(teamId: string) {
             class="text-(--ui-text-muted) text-sm"
           >
             No teams yet.
+          </div>
+
+          <div
+            v-else-if="!filteredTeams.length"
+            class="text-(--ui-text-muted) text-sm"
+          >
+            No teams matching "{{ teamSearchQuery }}".
           </div>
 
           <div

@@ -8,6 +8,12 @@ import { computed, ref, unref } from 'vue'
 import { HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject } from '~/api-client/models'
 import { useCreateHackathonMutation, useJoinHackathonMutation, useUpdateHackathonMutation } from '~/composables/hackathon'
 import { formatParticipantStatus, hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
+import {
+  formatHackathonDate,
+  formatHackathonDateTimeInput,
+  HACKATHON_TIME_ZONE_LABEL,
+  parseHackathonDateTimeInput,
+} from '~/utils/hackathon-date-time'
 
 const toast = useToast()
 const queryClient = useQueryClient()
@@ -59,16 +65,6 @@ function openCreateHackathonModal() {
   isHackathonModalOpen.value = true
 }
 
-function toLocalDateTimeString(value: string | Date): string {
-  const date = new Date(value)
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
-  return `${year}-${month}-${day}T${hours}:${minutes}`
-}
-
 function openEditHackathonModal(hackathon: typeof hackathons.value[number]) {
   hackathonForm.value = {
     name: hackathon.name ?? '',
@@ -76,12 +72,12 @@ function openEditHackathonModal(hackathon: typeof hackathons.value[number]) {
     description: hackathon.description ?? '',
     venue: hackathon.venue ?? '',
     homepageUri: hackathon.homepageUri ?? '',
-    eventStartDate: hackathon.eventStartDate ? toLocalDateTimeString(hackathon.eventStartDate) : '',
-    eventEndDate: hackathon.eventEndDate ? toLocalDateTimeString(hackathon.eventEndDate) : '',
-    submissionsStartDate: hackathon.submissionsStartDate ? toLocalDateTimeString(hackathon.submissionsStartDate) : '',
-    submissionsEndDate: hackathon.submissionsEndDate ? toLocalDateTimeString(hackathon.submissionsEndDate) : '',
-    judgingStartDate: hackathon.judgingStartDate ? toLocalDateTimeString(hackathon.judgingStartDate) : '',
-    judgingEndDate: hackathon.judgingEndDate ? toLocalDateTimeString(hackathon.judgingEndDate) : '',
+    eventStartDate: formatHackathonDateTimeInput(hackathon.eventStartDate),
+    eventEndDate: formatHackathonDateTimeInput(hackathon.eventEndDate),
+    submissionsStartDate: formatHackathonDateTimeInput(hackathon.submissionsStartDate),
+    submissionsEndDate: formatHackathonDateTimeInput(hackathon.submissionsEndDate),
+    judgingStartDate: formatHackathonDateTimeInput(hackathon.judgingStartDate),
+    judgingEndDate: formatHackathonDateTimeInput(hackathon.judgingEndDate),
     isPublished: hackathon.isPublished ?? false,
   }
   isEditingHackathon.value = true
@@ -96,12 +92,12 @@ async function handleHackathonSubmit() {
     description: hackathonForm.value.description || undefined,
     venue: hackathonForm.value.venue || undefined,
     homepageUri: hackathonForm.value.homepageUri || undefined,
-    eventStartDate: hackathonForm.value.eventStartDate ? new Date(hackathonForm.value.eventStartDate) : undefined,
-    eventEndDate: hackathonForm.value.eventEndDate ? new Date(hackathonForm.value.eventEndDate) : undefined,
-    submissionsStartDate: hackathonForm.value.submissionsStartDate ? new Date(hackathonForm.value.submissionsStartDate) : undefined,
-    submissionsEndDate: hackathonForm.value.submissionsEndDate ? new Date(hackathonForm.value.submissionsEndDate) : undefined,
-    judgingStartDate: hackathonForm.value.judgingStartDate ? new Date(hackathonForm.value.judgingStartDate) : undefined,
-    judgingEndDate: hackathonForm.value.judgingEndDate ? new Date(hackathonForm.value.judgingEndDate) : undefined,
+    eventStartDate: parseHackathonDateTimeInput(hackathonForm.value.eventStartDate),
+    eventEndDate: parseHackathonDateTimeInput(hackathonForm.value.eventEndDate),
+    submissionsStartDate: parseHackathonDateTimeInput(hackathonForm.value.submissionsStartDate),
+    submissionsEndDate: parseHackathonDateTimeInput(hackathonForm.value.submissionsEndDate),
+    judgingStartDate: parseHackathonDateTimeInput(hackathonForm.value.judgingStartDate),
+    judgingEndDate: parseHackathonDateTimeInput(hackathonForm.value.judgingEndDate),
     isPublished: hackathonForm.value.isPublished,
   }
 
@@ -334,11 +330,11 @@ async function joinHackathon(hackathon: { id: string, shortCode: string }) {
               <div class="mt-3 flex flex-col gap-2">
                 <div class="flex flex-wrap items-center gap-2 text-xs text-(--ui-text-muted)">
                   <span>
-                    Starts: {{ hackathon.eventStartDate ? new Date(hackathon.eventStartDate).toLocaleDateString() : 'TBC' }}
+                    Starts: {{ formatHackathonDate(hackathon.eventStartDate) }}
                   </span>
                   <span>•</span>
                   <span>
-                    Ends: {{ hackathon.eventEndDate ? new Date(hackathon.eventEndDate).toLocaleDateString() : 'TBC' }}
+                    Ends: {{ formatHackathonDate(hackathon.eventEndDate) }}
                   </span>
                 </div>
 
@@ -504,6 +500,9 @@ async function joinHackathon(hackathon: { id: string, shortCode: string }) {
             </UFormField>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <p class="text-xs text-(--ui-text-muted) sm:col-span-2">
+                Schedule fields use {{ HACKATHON_TIME_ZONE_LABEL }} (UTC+8).
+              </p>
               <UFormField label="Event Start">
                 <UInput
                   v-model="hackathonForm.eventStartDate"

@@ -1,6 +1,7 @@
 using FastEndpoints;
 using HackOMania.Api.Authorization;
 using HackOMania.Api.Entities;
+using HackOMania.Api.Extensions;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Venue.History;
@@ -38,12 +39,6 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var history = await sql.Queryable<VenueCheckIn>()
             .Where(v => v.ParticipantId == participantData.Participant.Id)
             .OrderByDescending(v => v.CheckInTime)
-            .Select(v => new HistoryItemDto
-            {
-                CheckInTime = v.CheckInTime,
-                CheckOutTime = v.CheckOutTime,
-                IsCheckedIn = v.IsCheckedIn,
-            })
             .ToListAsync(ct);
 
         await Send.OkAsync(
@@ -53,7 +48,15 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 UserId = participantData.Participant.UserId,
                 UserName = participantData.User.FirstName + " " + participantData.User.LastName,
                 IsCurrentlyCheckedIn = history.FirstOrDefault()?.IsCheckedIn ?? false,
-                History = history,
+                History =
+                [
+                    .. history.Select(v => new HistoryItemDto
+                    {
+                        CheckInTime = v.CheckInTime.AssumeStoredAsUtc(),
+                        CheckOutTime = v.CheckOutTime.AssumeStoredAsUtc(),
+                        IsCheckedIn = v.IsCheckedIn,
+                    }),
+                ],
             },
             ct
         );

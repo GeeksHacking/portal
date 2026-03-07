@@ -1,6 +1,7 @@
 using FastEndpoints;
 using HackOMania.Api.Authorization;
 using HackOMania.Api.Entities;
+using HackOMania.Api.Extensions;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Resources.History;
@@ -52,7 +53,6 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 && r.RedeemerId == req.ParticipantUserId
             )
             .OrderByDescending(r => r.CreatedAt)
-            .Select(r => new HistoryItemDto { RedemptionId = r.Id, CreatedAt = r.CreatedAt })
             .ToListAsync(ct);
 
         await Send.OkAsync(
@@ -66,7 +66,14 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 ResourceIsPublished = resource.IsPublished,
                 HasRedeemed = history.Count > 0,
                 RedemptionCount = history.Count,
-                History = history,
+                History =
+                [
+                    .. history.Select(r => new HistoryItemDto
+                    {
+                        RedemptionId = r.Id,
+                        CreatedAt = r.CreatedAt.AssumeStoredAsUtc(),
+                    }),
+                ],
             },
             ct
         );

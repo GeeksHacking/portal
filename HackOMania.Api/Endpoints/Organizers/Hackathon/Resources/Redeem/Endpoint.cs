@@ -1,6 +1,7 @@
 using FastEndpoints;
 using HackOMania.Api.Authorization;
 using HackOMania.Api.Entities;
+using HackOMania.Api.Extensions;
 using Jint;
 using SqlSugar;
 
@@ -119,7 +120,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 RedemptionId = redemption.Id,
                 ResourceId = redemption.ResourceId,
                 HackathonId = redemption.HackathonId,
-                CreatedAt = redemption.CreatedAt,
+                CreatedAt = redemption.CreatedAt.AssumeStoredAsUtc(),
             },
             ct
         );

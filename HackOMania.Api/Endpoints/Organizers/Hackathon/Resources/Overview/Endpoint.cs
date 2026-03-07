@@ -1,6 +1,7 @@
 using FastEndpoints;
 using HackOMania.Api.Authorization;
 using HackOMania.Api.Entities;
+using HackOMania.Api.Extensions;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Resources.Overview;
@@ -72,7 +73,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     UserName = userNameByParticipantId[p.Participant.Id],
                     HasRedeemed = participantRedemptions.Count > 0,
                     RedemptionCount = participantRedemptions.Count,
-                    LastRedeemedAt = participantRedemptions.FirstOrDefault()?.CreatedAt,
+                    LastRedeemedAt = participantRedemptions.FirstOrDefault()?.CreatedAt.AssumeStoredAsUtc(),
                 };
             })
             .OrderByDescending(p => p.LastRedeemedAt.HasValue)
@@ -90,7 +91,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     ParticipantId = participantId,
                     UserId = r.RedeemerId,
                     UserName = userNameByParticipantId.GetValueOrDefault(participantId, "Unknown"),
-                    Timestamp = r.CreatedAt,
+                    Timestamp = r.CreatedAt.AssumeStoredAsUtc(),
                 };
             })
             .Take(50)

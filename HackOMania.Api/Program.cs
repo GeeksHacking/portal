@@ -7,7 +7,6 @@ using Google.Cloud.Diagnostics.Common;
 using Google.Cloud.Storage.V1;
 using HackOMania.Api;
 using HackOMania.Api.Authorization;
-using HackOMania.Api.Converters;
 using HackOMania.Api.DataProtection;
 using HackOMania.Api.Options;
 using HackOMania.Api.Services;
@@ -73,16 +72,6 @@ builder.Services.AddSingleton<ISqlSugarClient>(s =>
             ConfigureExternalServices = new ConfigureExternalServices
             {
                 DataInfoCacheService = s.GetRequiredService<ICacheService>(),
-                EntityService = (property, column) =>
-                {
-                    var propertyType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
-                    if (propertyType != typeof(DateTimeOffset))
-                    {
-                        return;
-                    }
-
-                    column.SqlParameterDbType = typeof(DateTimeOffsetUtcConverter);
-                },
             },
             MoreSettings = new ConnMoreSettings { IsAutoRemoveDataCache = true },
         },

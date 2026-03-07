@@ -1,6 +1,7 @@
 using FastEndpoints;
 using HackOMania.Api.Authorization;
 using HackOMania.Api.Entities;
+using HackOMania.Api.Extensions;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Venue.Overview;
@@ -56,8 +57,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     UserId = p.Participant.UserId,
                     UserName = p.User.FirstName + " " + p.User.LastName,
                     IsCurrentlyCheckedIn = lastCheckIn?.IsCheckedIn ?? false,
-                    LastCheckInTime = lastCheckIn?.CheckInTime,
-                    LastCheckOutTime = lastCheckIn?.CheckOutTime,
+                    LastCheckInTime = lastCheckIn?.CheckInTime.AssumeStoredAsUtc(),
+                    LastCheckOutTime = lastCheckIn?.CheckOutTime.AssumeStoredAsUtc(),
                     TotalCheckIns = participantCheckIns.Count,
                 };
             })
@@ -81,7 +82,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                         UserId = userIdByParticipantId.GetValueOrDefault(c.ParticipantId),
                         UserName = userName,
                         Action = "checked in",
-                        Timestamp = c.CheckInTime,
+                        Timestamp = c.CheckInTime.AssumeStoredAsUtc(),
                     },
                 };
 
@@ -94,7 +95,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                             UserId = userIdByParticipantId.GetValueOrDefault(c.ParticipantId),
                             UserName = userName,
                             Action = "checked out",
-                            Timestamp = c.CheckOutTime.Value,
+                            Timestamp = c.CheckOutTime.Value.AssumeStoredAsUtc(),
                         }
                     );
                 }

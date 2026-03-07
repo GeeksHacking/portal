@@ -1,6 +1,7 @@
 using FastEndpoints;
 using HackOMania.Api.Authorization;
 using HackOMania.Api.Entities;
+using HackOMania.Api.Extensions;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Venue.CheckOut;
@@ -53,7 +54,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             new Response
             {
                 Id = checkIn.Id,
-                CheckOutTime = checkIn.CheckOutTime.Value,
+                CheckOutTime = checkIn.CheckOutTime.Value.AssumeStoredAsUtc(),
                 IsCheckedIn = checkIn.IsCheckedIn,
             },
             ct

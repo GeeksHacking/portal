@@ -55,7 +55,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             new Response
             {
                 Id = checkIn.Id,
-                CheckOutTime = checkIn.CheckOutTime.Value,
+                CheckOutTime = checkIn.CheckOutTime.Value.AssumeStoredAsUtc(),
                 IsCheckedIn = checkIn.IsCheckedIn,
             },
             ct

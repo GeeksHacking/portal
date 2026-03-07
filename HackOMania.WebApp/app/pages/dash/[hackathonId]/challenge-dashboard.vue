@@ -59,6 +59,17 @@ const sortedChallenges = computed(() =>
   [...challenges.value].sort((a, b) => (b.teamCount ?? 0) - (a.teamCount ?? 0)),
 )
 
+const gridCols = computed(() => {
+  const n = sortedChallenges.value.length
+  if (n <= 2)
+    return n || 1
+  if (n <= 4)
+    return 2
+  if (n <= 9)
+    return 3
+  return 4
+})
+
 const totalTeams = computed(() =>
   challenges.value.reduce((sum, c) => sum + (c.teamCount ?? 0), 0),
 )
@@ -255,7 +266,7 @@ function hasChart(challengeId: string | null | undefined): boolean {
       <!-- Full-screen light dashboard -->
       <div
         ref="dashboardElement"
-        class="h-full min-h-0 overflow-y-auto bg-gray-50 p-6"
+        class="h-full min-h-0 flex flex-col bg-gray-50 p-6"
       >
         <!-- Loading state -->
         <div
@@ -272,90 +283,95 @@ function hasChart(challengeId: string | null | undefined): boolean {
         </div>
 
         <!-- Challenge grid -->
-        <div
-          v-else
-          class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"
-        >
+        <template v-else>
+          <p class="text-gray-900 font-bold text-7xl uppercase tracking-widest mb-6 text-center">
+            Challenge Distribution
+          </p>
           <div
-            v-for="challenge in sortedChallenges"
-            :key="challenge.id ?? ''"
-            class="relative bg-white border border-gray-200 rounded-2xl p-6 flex flex-col gap-3 overflow-hidden group transition-all duration-300 hover:border-orange-500/40 hover:shadow-[0_0_32px_-4px_rgba(249,115,22,0.15)]"
+            class="flex-1 min-h-0 grid gap-5 [grid-auto-rows:1fr]"
+            :style="{ gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` }"
           >
-            <!-- Subtle gradient accent -->
-            <div class="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-transparent pointer-events-none" />
+            <div
+              v-for="challenge in sortedChallenges"
+              :key="challenge.id ?? ''"
+              class="relative bg-white border border-gray-200 rounded-2xl p-6 flex flex-col gap-3 overflow-hidden group transition-all duration-300 hover:border-orange-500/40 hover:shadow-[0_0_32px_-4px_rgba(249,115,22,0.15)]"
+            >
+              <!-- Subtle gradient accent -->
+              <div class="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-transparent pointer-events-none" />
 
-            <!-- Challenge title -->
-            <p class="text-gray-500 text-xs font-semibold uppercase tracking-widest truncate">
-              {{ challenge.title }}
-            </p>
+              <!-- Challenge title -->
+              <p class="text-gray-500 text-xs font-semibold uppercase tracking-widest">
+                {{ challenge.title }}
+              </p>
 
-            <!-- Team count -->
-            <div class="flex items-end gap-3">
-              <span
-                class="text-gray-900 font-bold tabular-nums leading-none"
-                style="font-size: clamp(3rem, 5vw, 5rem)"
-              >
-                {{ challenge.teamCount ?? 0 }}
-              </span>
-              <span class="text-gray-500 text-base font-medium pb-2">
-                {{ (challenge.teamCount ?? 0) === 1 ? 'team' : 'teams' }}
-              </span>
-            </div>
+              <!-- Team count -->
+              <div class="flex items-end gap-3">
+                <span
+                  class="text-gray-900 font-bold tabular-nums leading-none"
+                  style="font-size: clamp(3rem, 5vw, 5rem)"
+                >
+                  {{ challenge.teamCount ?? 0 }}
+                </span>
+                <span class="text-gray-500 text-base font-medium pb-2">
+                  {{ (challenge.teamCount ?? 0) === 1 ? 'team' : 'teams' }}
+                </span>
+              </div>
 
-            <!-- Sparkline chart -->
-            <div class="mt-1 h-12">
-              <svg
-                v-if="hasChart(challenge.id)"
-                viewBox="0 0 200 48"
-                class="w-full h-full"
-                preserveAspectRatio="none"
-              >
-                <!-- Area fill -->
-                <path
-                  :d="getSparklineFill(challenge.id ?? '')"
-                  fill="url(#sparkGrad)"
-                  opacity="0.3"
-                />
-                <!-- Line -->
-                <path
-                  :d="getSparklinePath(challenge.id ?? '')"
-                  fill="none"
-                  stroke="#f97316"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <!-- Gradient definition -->
-                <defs>
-                  <linearGradient
-                    id="sparkGrad"
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
-                  >
-                    <stop
-                      offset="0%"
-                      stop-color="#f97316"
-                    />
-                    <stop
-                      offset="100%"
-                      stop-color="#f97316"
-                      stop-opacity="0"
-                    />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <!-- Placeholder when history insufficient -->
-              <div
-                v-else
-                class="w-full h-full flex items-center"
-              >
-                <div class="w-full h-px bg-gray-200" />
+              <!-- Sparkline chart -->
+              <div class="mt-1 h-12">
+                <svg
+                  v-if="hasChart(challenge.id)"
+                  viewBox="0 0 200 48"
+                  class="w-full h-full"
+                  preserveAspectRatio="none"
+                >
+                  <!-- Area fill -->
+                  <path
+                    :d="getSparklineFill(challenge.id ?? '')"
+                    fill="url(#sparkGrad)"
+                    opacity="0.3"
+                  />
+                  <!-- Line -->
+                  <path
+                    :d="getSparklinePath(challenge.id ?? '')"
+                    fill="none"
+                    stroke="#f97316"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <!-- Gradient definition -->
+                  <defs>
+                    <linearGradient
+                      id="sparkGrad"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="0%"
+                        stop-color="#f97316"
+                      />
+                      <stop
+                        offset="100%"
+                        stop-color="#f97316"
+                        stop-opacity="0"
+                      />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <!-- Placeholder when history insufficient -->
+                <div
+                  v-else
+                  class="w-full h-full flex items-center"
+                >
+                  <div class="w-full h-px bg-gray-200" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </template>
 
         <!-- Notifications overlay -->
         <div class="fixed bottom-6 right-6 flex flex-col gap-2 z-50 max-w-xs w-full pointer-events-none">

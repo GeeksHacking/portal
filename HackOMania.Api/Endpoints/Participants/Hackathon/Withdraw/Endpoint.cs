@@ -32,7 +32,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             return;
         }
 
-        if (hackathon.EventEndDate < DateTimeOffset.Now)
+        if (hackathon.EventEndDate < DateTimeOffset.UtcNow)
         {
             AddError("You cannot leave a hackathon after the event has ended");
             await Send.ErrorsAsync(cancellation: ct);

@@ -33,6 +33,7 @@
 
         const organizerLinks: NavigationMenuItem[] = [
             { label: 'Check Ins', icon: 'i-lucide-qr-code', to: `/dash/${hackathonId.value}/checkin` },
+            { label: 'Resources', icon: 'i-lucide-gift', to: `/dash/${hackathonId.value}/resources` },
             { label: 'Stats', icon: 'i-lucide-chart-pie', to: `/dash/${hackathonId.value}/stats` },
             { label: 'Participants', icon: 'i-lucide-users', to: `/dash/${hackathonId.value}/participants` },
             { label: 'Teams', icon: 'i-lucide-user-round-plus', to: `/dash/${hackathonId.value}/teams` },

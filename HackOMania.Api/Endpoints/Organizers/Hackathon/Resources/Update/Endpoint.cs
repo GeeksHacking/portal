@@ -48,6 +48,11 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             resource.RedemptionStmt = req.RedemptionStmt;
         }
 
+        if (req.IsPublished.HasValue)
+        {
+            resource.IsPublished = req.IsPublished.Value;
+        }
+
         await sql.Updateable(resource).ExecuteCommandAsync(ct);
 
         await Send.OkAsync(
@@ -58,6 +63,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 Name = resource.Name,
                 Description = resource.Description,
                 RedemptionStmt = resource.RedemptionStmt,
+                IsPublished = resource.IsPublished,
             },
             ct
         );

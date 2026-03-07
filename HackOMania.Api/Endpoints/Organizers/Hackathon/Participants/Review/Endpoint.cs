@@ -57,7 +57,7 @@ public class Endpoint(
         Participant? participant = null;
         ParticipantReview? review = null;
 
-        var reviewedAt = DateTimeOffset.Now;
+        var reviewedAt = DateTimeOffset.UtcNow;
         var transactionResult = await sql.Ado.UseTranAsync(async () =>
         {
             participant = await sql.Queryable<Participant>()

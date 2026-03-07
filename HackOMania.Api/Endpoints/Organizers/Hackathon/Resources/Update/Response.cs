@@ -7,4 +7,5 @@ public class Response
     public string Name { get; set; } = null!;
     public string? Description { get; set; }
     public string RedemptionStmt { get; set; } = "true";
+    public bool IsPublished { get; set; }
 }

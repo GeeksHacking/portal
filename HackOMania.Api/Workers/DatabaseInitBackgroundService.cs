@@ -88,6 +88,7 @@ public class DatabaseInitBackgroundService(
                     Name = "Mentor Office Hours",
                     Description = "Redeem a 30-minute session with a domain mentor.",
                     RedemptionStmt = "true",
+                    IsPublished = true,
                 },
                 new()
                 {
@@ -96,6 +97,7 @@ public class DatabaseInitBackgroundService(
                     Name = "Cloud Credits Pack",
                     Description = "Get starter credits for deployment and testing.",
                     RedemptionStmt = "true",
+                    IsPublished = true,
                 },
                 new()
                 {
@@ -104,6 +106,7 @@ public class DatabaseInitBackgroundService(
                     Name = "Prototype Kit",
                     Description = "Pick up a hardware kit for rapid prototyping.",
                     RedemptionStmt = "true",
+                    IsPublished = true,
                 },
             };
 

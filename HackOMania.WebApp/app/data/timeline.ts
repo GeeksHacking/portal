@@ -1,28 +1,29 @@
 import type { ItineraryItem } from '~/data/preevent'
 
-export const prehackItems: ItineraryItem[] = [
-  { time: '9:30 AM', event: 'Registration & Check-in' },
-  { time: '10:00 AM', event: 'Opening Ceremony' },
-  { time: '10:45 AM', event: 'Sponsor Sharing' },
-  { time: '11:15 AM', event: 'Challenge Statement Release' },
-  { time: '12:30 PM', event: 'Workshops & Networking Lunch' },
-  { time: '4:00 PM', event: 'Pre-hack Wrap-up' },
-]
 
 export const day1Items: ItineraryItem[] = [
-  { time: '8:00 AM', event: 'Arrival & Breakfast' },
-  { time: '9:00 AM', event: 'Hackathon Kickoff' },
-  { time: '12:00 PM', event: 'Lunch' },
-  { time: '2:00 PM', event: 'Mentor Sessions' },
-  { time: '6:00 PM', event: 'Dinner' },
-  { time: '9:00 PM', event: 'Evening Check-in' },
+  { time: '10:00 AM', event: 'Registration & Team Forming' },
+  { time: '11:00 AM', event: 'Introduction' },
+  { time: '11:45 AM', event: 'Safety Briefing' },
+  { time: '12:00 PM', event: 'Title Sponsor Key Note' },
+  { time: '12:15 PM', event: 'Hackathon Briefing (challenges, house rules)' },
+  { time: '12:30 PM', event: 'Lunch' },
+  { time: '01:00 PM', event: 'Hackathon Kick Off' },
+  { time: '02:00 PM', event: 'Challenge Picking' },
+  { time: '04:00 PM', event: 'Challenge Lock-in' },
+  { time: '04:30 PM', event: 'Snackpack Distribution' },
+  { time: '07:30 PM', event: 'Dinner' },
+  { time: '11:00 PM', event: 'Snack Time!' },
 ]
 
 export const day2Items: ItineraryItem[] = [
-  { time: '8:00 AM', event: 'Breakfast' },
-  { time: '9:00 AM', event: 'Final Stretch' },
-  { time: '12:00 PM', event: 'Submission Deadline' },
-  { time: '1:00 PM', event: 'Lunch & Judging' },
-  { time: '3:00 PM', event: 'Presentations' },
-  { time: '5:00 PM', event: 'Awards & Closing' },
+  { time: '08:00 AM', event: 'Breakfast' },
+  { time: '09:00 AM', event: 'Submission' },
+  { time: '11:30 AM', event: 'Submission Close' },
+  { time: '12:00 PM', event: 'Lunch' },
+  { time: '12:30 PM', event: 'Judges Intro' },
+  { time: '01:30 PM', event: 'Judging Period' },
+  { time: '03:30 PM', event: 'Deliberation' },
+  { time: '04:00 PM', event: 'Prize Presentation' },
+  { time: '04:30 PM', event: 'End of HackOMania' },
 ]

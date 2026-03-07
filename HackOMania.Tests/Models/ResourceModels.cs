@@ -7,6 +7,7 @@ public class ResourceResponse
     public string Name { get; set; } = "";
     public string Description { get; set; } = "";
     public string? RedemptionStmt { get; set; }
+    public bool IsPublished { get; set; }
 }
 
 public class ResourcesListResponse
@@ -20,6 +21,7 @@ public class ResourceItem
     public string Name { get; set; } = "";
     public string Description { get; set; } = "";
     public string? RedemptionStmt { get; set; }
+    public bool IsPublished { get; set; }
 }
 
 public class ParticipantResourceItem

@@ -10,3 +10,4 @@ riderModule.iml
 node_modules/
 HackOMania.WebApp/package-lock.json
 .vs
+.dotnet

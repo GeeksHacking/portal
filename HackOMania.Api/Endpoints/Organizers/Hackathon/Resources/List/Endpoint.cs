@@ -31,6 +31,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 Name = r.Name,
                 Description = r.Description,
                 RedemptionStmt = r.RedemptionStmt,
+                IsPublished = r.IsPublished,
             })
             .WithCache()
             .ToListAsync(ct);

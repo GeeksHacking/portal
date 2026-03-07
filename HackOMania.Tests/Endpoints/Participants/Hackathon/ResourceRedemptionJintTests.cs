@@ -56,6 +56,7 @@ public class ResourceRedemptionJintTests
             Name = "Limited Swag",
             Description = "Max 2 per participant",
             RedemptionStmt = "participantRedemptions < 2",
+            IsPublished = true,
         };
 
         var createResourceResponse = await client.HttpClient.PostAsJsonAsync(
@@ -110,6 +111,7 @@ public class ResourceRedemptionJintTests
             Name = "Team Resource",
             Description = "Requires team of 3+",
             RedemptionStmt = "hasTeam && teamSize >= 3",
+            IsPublished = true,
         };
 
         var createResourceResponse = await client.HttpClient.PostAsJsonAsync(
@@ -133,4 +135,5 @@ public class ResourceResponse
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
     public string RedemptionStmt { get; set; } = null!;
+    public bool IsPublished { get; set; }
 }

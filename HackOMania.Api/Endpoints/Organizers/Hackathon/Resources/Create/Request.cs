@@ -12,4 +12,5 @@ public class Request
     /// totalRedemptions, hasTeam.
     /// </summary>
     public string RedemptionStmt { get; set; } = "true";
+    public bool IsPublished { get; set; }
 }

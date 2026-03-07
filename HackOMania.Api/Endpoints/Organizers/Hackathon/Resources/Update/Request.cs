@@ -7,4 +7,5 @@ public class Request
     public string? Name { get; set; }
     public string? Description { get; set; }
     public string? RedemptionStmt { get; set; }
+    public bool? IsPublished { get; set; }
 }

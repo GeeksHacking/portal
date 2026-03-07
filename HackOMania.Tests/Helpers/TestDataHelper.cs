@@ -115,7 +115,8 @@ public static class TestDataHelper
     /// </summary>
     public static async Task<ResourceResponse> CreateResourceAsync(
         HttpClient client,
-        Guid hackathonId
+        Guid hackathonId,
+        bool isPublished = true
     )
     {
         var suffix = Guid.NewGuid().ToString()[..8];
@@ -124,6 +125,7 @@ public static class TestDataHelper
             Name = $"Test Resource {suffix}",
             Description = $"A test resource for integration tests ({suffix})",
             RedemptionStmt = "return true;", // Always allow redemption in tests
+            IsPublished = isPublished,
         };
 
         var response = await client.PostAsJsonAsync(

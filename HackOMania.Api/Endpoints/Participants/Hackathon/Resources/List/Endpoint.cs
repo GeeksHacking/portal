@@ -29,7 +29,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         }
 
         var resources = await sql.Queryable<Resource>()
-            .Where(r => r.HackathonId == hackathon.Id)
+            .Where(r => r.HackathonId == hackathon.Id && r.IsPublished)
             .Select(r => new Response.ResourceItem
             {
                 Id = r.Id,

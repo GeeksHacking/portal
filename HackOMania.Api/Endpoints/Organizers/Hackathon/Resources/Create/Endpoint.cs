@@ -30,6 +30,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             Name = req.Name,
             Description = req.Description ?? string.Empty,
             RedemptionStmt = req.RedemptionStmt,
+            IsPublished = req.IsPublished,
         };
 
         await sql.Insertable(resource).ExecuteCommandAsync(ct);
@@ -42,6 +43,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 Name = resource.Name,
                 Description = resource.Description,
                 RedemptionStmt = resource.RedemptionStmt,
+                IsPublished = resource.IsPublished,
             },
             ct
         );

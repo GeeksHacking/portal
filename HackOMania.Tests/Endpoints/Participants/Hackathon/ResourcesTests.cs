@@ -1,6 +1,7 @@
-using System.Net.Http.Json;
 using HackOMania.Tests.Data;
+using HackOMania.Tests.Helpers;
 using HackOMania.Tests.Models;
+using System.Net.Http.Json;
 
 namespace HackOMania.Tests.Endpoints.Participants.Hackathon;
 
@@ -44,6 +45,7 @@ public class ResourcesTests
             Name = "Test Resource",
             Description = "A test resource",
             RedemptionStmt = "return true;",
+            IsPublished = true,
         };
         var resourceResponse = await client.HttpClient.PostAsJsonAsync(
             $"/organizers/hackathons/{hackathon!.Id}/resources",
@@ -80,6 +82,26 @@ public class ResourcesTests
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
         await Assert.That(result).IsNotNull();
         await Assert.That(result!.Resources).IsNotNull();
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task ListResources_HidesUnpublishedResources(AuthenticatedHttpClientDataClass client)
+    {
+        var hackathon = await TestDataHelper.CreateHackathonAsync(client.HttpClient);
+
+        await client.HttpClient.PostAsync($"/participants/hackathons/{hackathon.Id}/join", null);
+        await TestDataHelper.CreateResourceAsync(client.HttpClient, hackathon.Id, isPublished: true);
+        await TestDataHelper.CreateResourceAsync(client.HttpClient, hackathon.Id, isPublished: false);
+
+        var response = await client.HttpClient.GetAsync(
+            $"/participants/hackathons/{hackathon.Id}/resources"
+        );
+        var result = await response.Content.ReadFromJsonAsync<ParticipantResourcesListResponse>();
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result!.Resources).Count().IsEqualTo(1);
     }
 
     [Test]
@@ -156,6 +178,29 @@ public class ResourcesTests
         );
 
         // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task RedeemResource_WithUnpublishedResource_ReturnsNotFound(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        var hackathon = await TestDataHelper.CreateHackathonAsync(client.HttpClient);
+        await client.HttpClient.PostAsync($"/participants/hackathons/{hackathon.Id}/join", null);
+        var resource = await TestDataHelper.CreateResourceAsync(
+            client.HttpClient,
+            hackathon.Id,
+            isPublished: false
+        );
+        var participantUserId = await GetCurrentUserIdAsync(client.HttpClient);
+
+        var response = await client.HttpClient.PostAsync(
+            $"/organizers/hackathons/{hackathon.Id}/participants/{participantUserId}/resources/{resource.Id}/redemptions",
+            null
+        );
+
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
     }
 

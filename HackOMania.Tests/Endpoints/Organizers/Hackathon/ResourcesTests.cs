@@ -47,6 +47,7 @@ public class ResourcesTests
             Name = "Test Resource",
             Description = "A test resource description",
             RedemptionStmt = "return true;",
+            IsPublished = true,
         };
 
         // Act
@@ -61,6 +62,7 @@ public class ResourcesTests
         await Assert.That(result).IsNotNull();
         await Assert.That(result!.Name).IsEqualTo(request.Name);
         await Assert.That(result.Description).IsEqualTo(request.Description);
+        await Assert.That(result.IsPublished).IsTrue();
     }
 
     [Test]
@@ -78,6 +80,7 @@ public class ResourcesTests
             Name = "List Test Resource",
             Description = "A resource for list test",
             RedemptionStmt = "return true;",
+            IsPublished = false,
         };
         await client.HttpClient.PostAsJsonAsync(
             $"/organizers/hackathons/{hackathonId}/resources",
@@ -94,6 +97,7 @@ public class ResourcesTests
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
         await Assert.That(result).IsNotNull();
         await Assert.That(result!.Resources).IsNotNull();
+        await Assert.That(result.Resources!.Single().IsPublished).IsFalse();
     }
 
     [Test]
@@ -108,6 +112,7 @@ public class ResourcesTests
             Name = "Invalid Hackathon Resource",
             Description = "Should fail",
             RedemptionStmt = "return true;",
+            IsPublished = true,
         };
 
         // Act
@@ -135,6 +140,7 @@ public class ResourcesTests
             Name = "Unauthorized Resource",
             Description = "Should fail",
             RedemptionStmt = "return true;",
+            IsPublished = true,
         };
 
         // Act

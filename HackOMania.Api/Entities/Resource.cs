@@ -16,6 +16,8 @@ public class Resource
     /// </summary>
     public string RedemptionStmt { get; set; } = "true";
 
+    public bool IsPublished { get; set; }
+
     public Guid HackathonId { get; set; }
 
     [Navigate(NavigateType.OneToMany, nameof(ResourceRedemption.ResourceId))]

@@ -10,6 +10,7 @@ public class CreateHackathonRequest
     public required DateTimeOffset EventStartDate { get; set; }
     public required DateTimeOffset EventEndDate { get; set; }
     public required DateTimeOffset SubmissionsStartDate { get; set; }
+    public DateTimeOffset? ChallengeSelectionEndDate { get; set; }
     public required DateTimeOffset SubmissionsEndDate { get; set; }
     public required DateTimeOffset JudgingStartDate { get; set; }
     public required DateTimeOffset JudgingEndDate { get; set; }

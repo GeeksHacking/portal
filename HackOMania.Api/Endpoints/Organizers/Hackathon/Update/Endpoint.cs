@@ -68,6 +68,11 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             hackathon.SubmissionsStartDate = req.SubmissionsStartDate.Value;
         }
 
+        if (req.ChallengeSelectionEndDate.HasValue)
+        {
+            hackathon.ChallengeSelectionEndDate = req.ChallengeSelectionEndDate.Value;
+        }
+
         if (req.SubmissionsEndDate.HasValue)
         {
             hackathon.SubmissionsEndDate = req.SubmissionsEndDate.Value;
@@ -136,6 +141,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 EventStartDate = hackathon.EventStartDate,
                 EventEndDate = hackathon.EventEndDate,
                 SubmissionsStartDate = hackathon.SubmissionsStartDate,
+                ChallengeSelectionEndDate = hackathon.ChallengeSelectionEndDate,
                 SubmissionsEndDate = hackathon.SubmissionsEndDate,
                 JudgingStartDate = hackathon.JudgingStartDate,
                 JudgingEndDate = hackathon.JudgingEndDate,

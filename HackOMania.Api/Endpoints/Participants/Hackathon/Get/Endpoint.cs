@@ -46,6 +46,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 EventStartDate = hackathon.EventStartDate,
                 EventEndDate = hackathon.EventEndDate,
                 SubmissionsStartDate = hackathon.SubmissionsStartDate,
+                ChallengeSelectionEndDate = hackathon.ChallengeSelectionEndDate,
                 SubmissionsEndDate = hackathon.SubmissionsEndDate,
                 JudgingStartDate = hackathon.JudgingStartDate,
                 JudgingEndDate = hackathon.JudgingEndDate,

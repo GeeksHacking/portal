@@ -27,6 +27,12 @@ public class Validator : Validator<Request>
         RuleFor(x => x.SubmissionsStartDate).GreaterThanOrEqualTo(x => x.EventStartDate);
         RuleFor(x => x.SubmissionsEndDate).GreaterThanOrEqualTo(x => x.SubmissionsStartDate);
         RuleFor(x => x.SubmissionsEndDate).LessThanOrEqualTo(x => x.EventEndDate);
+        RuleFor(x => x.ChallengeSelectionEndDate)
+            .Must((request, value) => (value ?? request.SubmissionsEndDate) >= request.SubmissionsStartDate)
+            .WithMessage("'Challenge Selection End Date' must be greater than or equal to 'Submissions Start Date'.");
+        RuleFor(x => x.ChallengeSelectionEndDate)
+            .Must((request, value) => (value ?? request.SubmissionsEndDate) <= request.SubmissionsEndDate)
+            .WithMessage("'Challenge Selection End Date' must be less than or equal to 'Submissions End Date'.");
 
         RuleFor(x => x.JudgingStartDate).GreaterThanOrEqualTo(x => x.SubmissionsEndDate);
         RuleFor(x => x.JudgingEndDate).GreaterThanOrEqualTo(x => x.JudgingStartDate);

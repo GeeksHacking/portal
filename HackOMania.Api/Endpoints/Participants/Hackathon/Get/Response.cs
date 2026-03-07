@@ -22,6 +22,8 @@ public class Response
 
     public DateTimeOffset SubmissionsStartDate { get; set; }
 
+    public DateTimeOffset ChallengeSelectionEndDate { get; set; }
+
     public DateTimeOffset SubmissionsEndDate { get; set; }
 
     public DateTimeOffset JudgingStartDate { get; set; }

@@ -29,6 +29,7 @@ public static class TestDataHelper
             EventStartDate = now.AddDays(7),
             EventEndDate = now.AddDays(9),
             SubmissionsStartDate = now.AddDays(7).AddHours(2),
+            ChallengeSelectionEndDate = now.AddDays(8).AddHours(8),
             SubmissionsEndDate = now.AddDays(8).AddHours(20),
             JudgingStartDate = now.AddDays(8).AddHours(21),
             JudgingEndDate = now.AddDays(9).AddHours(-2),

@@ -22,6 +22,8 @@ public class Response
 
     public required DateTimeOffset SubmissionsStartDate { get; set; }
 
+    public required DateTimeOffset ChallengeSelectionEndDate { get; set; }
+
     public required DateTimeOffset SubmissionsEndDate { get; set; }
 
     public required DateTimeOffset JudgingStartDate { get; set; }

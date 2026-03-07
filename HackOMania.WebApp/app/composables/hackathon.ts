@@ -9,6 +9,7 @@ interface HackathonMutationPayload {
   eventStartDate?: string
   eventEndDate?: string
   submissionsStartDate?: string
+  challengeSelectionEndDate?: string
   submissionsEndDate?: string
   judgingStartDate?: string
   judgingEndDate?: string

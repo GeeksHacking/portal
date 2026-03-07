@@ -76,6 +76,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
                     EventStartDate = h.EventStartDate,
                     EventEndDate = h.EventEndDate,
                     SubmissionsStartDate = h.SubmissionsStartDate,
+                    ChallengeSelectionEndDate = h.ChallengeSelectionEndDate,
                     SubmissionsEndDate = h.SubmissionsEndDate,
                     JudgingStartDate = h.JudgingStartDate,
                     JudgingEndDate = h.JudgingEndDate,

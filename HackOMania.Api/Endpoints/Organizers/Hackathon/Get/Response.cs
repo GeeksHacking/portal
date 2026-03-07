@@ -12,6 +12,7 @@ public class Response
     public required DateTimeOffset EventStartDate { get; init; }
     public required DateTimeOffset EventEndDate { get; init; }
     public required DateTimeOffset SubmissionsStartDate { get; init; }
+    public required DateTimeOffset ChallengeSelectionEndDate { get; init; }
     public required DateTimeOffset SubmissionsEndDate { get; init; }
     public required DateTimeOffset JudgingStartDate { get; init; }
     public required DateTimeOffset JudgingEndDate { get; init; }

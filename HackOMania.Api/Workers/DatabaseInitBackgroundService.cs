@@ -55,6 +55,7 @@ public class DatabaseInitBackgroundService(
                 EventStartDate = eventStart,
                 EventEndDate = eventEnd,
                 SubmissionsStartDate = new DateTimeOffset(2026, 3, 13, 10, 0, 0, TimeSpan.Zero),
+                ChallengeSelectionEndDate = new DateTimeOffset(2026, 3, 14, 12, 0, 0, TimeSpan.Zero),
                 SubmissionsEndDate = new DateTimeOffset(2026, 3, 15, 12, 0, 0, TimeSpan.Zero),
                 JudgingStartDate = new DateTimeOffset(2026, 3, 15, 13, 0, 0, TimeSpan.Zero),
                 JudgingEndDate = new DateTimeOffset(2026, 3, 15, 18, 0, 0, TimeSpan.Zero),

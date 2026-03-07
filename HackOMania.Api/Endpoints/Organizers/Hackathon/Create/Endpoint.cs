@@ -30,6 +30,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         }
 
         var emailTemplates = NormalizeEmailTemplates(req.EmailTemplates);
+        var challengeSelectionEndDate = req.ChallengeSelectionEndDate ?? req.SubmissionsEndDate;
 
         var hackathon = new Entities.Hackathon
         {
@@ -43,6 +44,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             EventStartDate = req.EventStartDate,
             EventEndDate = req.EventEndDate,
             SubmissionsStartDate = req.SubmissionsStartDate,
+            ChallengeSelectionEndDate = challengeSelectionEndDate,
             SubmissionsEndDate = req.SubmissionsEndDate,
             JudgingStartDate = req.JudgingStartDate,
             JudgingEndDate = req.JudgingEndDate,
@@ -82,6 +84,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 EventStartDate = ent.EventStartDate,
                 EventEndDate = ent.EventEndDate,
                 SubmissionsStartDate = ent.SubmissionsStartDate,
+                ChallengeSelectionEndDate = ent.ChallengeSelectionEndDate,
                 SubmissionsEndDate = ent.SubmissionsEndDate,
                 JudgingStartDate = ent.JudgingStartDate,
                 JudgingEndDate = ent.JudgingEndDate,

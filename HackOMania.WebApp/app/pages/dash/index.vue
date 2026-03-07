@@ -35,6 +35,7 @@ const hackathonForm = ref({
   eventStartDate: '',
   eventEndDate: '',
   submissionsStartDate: '',
+  challengeSelectionEndDate: '',
   submissionsEndDate: '',
   judgingStartDate: '',
   judgingEndDate: '',
@@ -51,6 +52,7 @@ function resetHackathonForm() {
     eventStartDate: '',
     eventEndDate: '',
     submissionsStartDate: '',
+    challengeSelectionEndDate: '',
     submissionsEndDate: '',
     judgingStartDate: '',
     judgingEndDate: '',
@@ -75,6 +77,7 @@ function openEditHackathonModal(hackathon: typeof hackathons.value[number]) {
     eventStartDate: formatHackathonDateTimeInput(hackathon.eventStartDate),
     eventEndDate: formatHackathonDateTimeInput(hackathon.eventEndDate),
     submissionsStartDate: formatHackathonDateTimeInput(hackathon.submissionsStartDate),
+    challengeSelectionEndDate: formatHackathonDateTimeInput(hackathon.challengeSelectionEndDate),
     submissionsEndDate: formatHackathonDateTimeInput(hackathon.submissionsEndDate),
     judgingStartDate: formatHackathonDateTimeInput(hackathon.judgingStartDate),
     judgingEndDate: formatHackathonDateTimeInput(hackathon.judgingEndDate),
@@ -95,6 +98,7 @@ async function handleHackathonSubmit() {
     eventStartDate: serializeHackathonDateTimeInput(hackathonForm.value.eventStartDate),
     eventEndDate: serializeHackathonDateTimeInput(hackathonForm.value.eventEndDate),
     submissionsStartDate: serializeHackathonDateTimeInput(hackathonForm.value.submissionsStartDate),
+    challengeSelectionEndDate: serializeHackathonDateTimeInput(hackathonForm.value.challengeSelectionEndDate),
     submissionsEndDate: serializeHackathonDateTimeInput(hackathonForm.value.submissionsEndDate),
     judgingStartDate: serializeHackathonDateTimeInput(hackathonForm.value.judgingStartDate),
     judgingEndDate: serializeHackathonDateTimeInput(hackathonForm.value.judgingEndDate),
@@ -526,7 +530,14 @@ async function joinHackathon(hackathon: { id: string, shortCode: string }) {
                 />
               </UFormField>
 
-              <UFormField label="Submissions End">
+              <UFormField label="Challenge Selection Deadline">
+                <UInput
+                  v-model="hackathonForm.challengeSelectionEndDate"
+                  type="datetime-local"
+                />
+              </UFormField>
+
+              <UFormField label="Project Submissions End">
                 <UInput
                   v-model="hackathonForm.submissionsEndDate"
                   type="datetime-local"

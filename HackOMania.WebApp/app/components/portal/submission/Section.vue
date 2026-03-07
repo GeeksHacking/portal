@@ -253,7 +253,7 @@ function confirmSubmit() {
             class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg"
           >
             <p class="font-['Raleway'] text-base lg:text-xl text-yellow-800">
-              Submission will open when the hackathon starts.
+              Project submissions are not open yet.
             </p>
           </div>
 

@@ -60,7 +60,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         }
 
         // Check if challenge selection deadline has passed
-        if (DateTimeOffset.UtcNow > hackathon.SubmissionsEndDate)
+        if (DateTimeOffset.UtcNow > hackathon.ChallengeSelectionEndDate)
         {
             AddError("Challenge selection deadline has passed");
             await Send.ErrorsAsync(cancellation: ct);

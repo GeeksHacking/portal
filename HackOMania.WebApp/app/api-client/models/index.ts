@@ -25,6 +25,15 @@ export function createFastEndpointsErrorResponseFromDiscriminatorValue(parseNode
 /**
  * Creates a new instance of the appropriate class based on discriminator value
  * @param parseNode The parse node to use to read the discriminator value and create the object
+ * @returns {HackOManiaApiEndpointsAdminCachePurgeResponse}
+ */
+// @ts-ignore
+export function createHackOManiaApiEndpointsAdminCachePurgeResponseFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
+    return deserializeIntoHackOManiaApiEndpointsAdminCachePurgeResponse;
+}
+/**
+ * Creates a new instance of the appropriate class based on discriminator value
+ * @param parseNode The parse node to use to read the discriminator value and create the object
  * @returns {HackOManiaApiEndpointsAuthWhoAmIResponse}
  */
 // @ts-ignore
@@ -363,6 +372,15 @@ export function createHackOManiaApiEndpointsOrganizersHackathonParticipantsRevie
 // @ts-ignore
 export function createHackOManiaApiEndpointsOrganizersHackathonParticipantsReviewResponseFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
     return deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticipantsReviewResponse;
+}
+/**
+ * Creates a new instance of the appropriate class based on discriminator value
+ * @param parseNode The parse node to use to read the discriminator value and create the object
+ * @returns {HackOManiaApiEndpointsOrganizersHackathonParticipantsWithdrawResponse}
+ */
+// @ts-ignore
+export function createHackOManiaApiEndpointsOrganizersHackathonParticipantsWithdrawResponseFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
+    return deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticipantsWithdrawResponse;
 }
 /**
  * Creates a new instance of the appropriate class based on discriminator value
@@ -1262,6 +1280,20 @@ export function deserializeIntoFastEndpointsErrorResponse_errors(fastEndpointsEr
 }
 /**
  * The deserialization information for the current model
+ * @param HackOManiaApiEndpointsAdminCachePurgeResponse The instance to deserialize into.
+ * @returns {Record<string, (node: ParseNode) => void>}
+ */
+// @ts-ignore
+export function deserializeIntoHackOManiaApiEndpointsAdminCachePurgeResponse(hackOManiaApiEndpointsAdminCachePurgeResponse: Partial<HackOManiaApiEndpointsAdminCachePurgeResponse> | undefined = {}) : Record<string, (node: ParseNode) => void> {
+    return {
+        "message": n => { hackOManiaApiEndpointsAdminCachePurgeResponse.message = n.getStringValue(); },
+        "purgedAt": n => { hackOManiaApiEndpointsAdminCachePurgeResponse.purgedAt = n.getDateValue(); },
+        "purgedKeys": n => { hackOManiaApiEndpointsAdminCachePurgeResponse.purgedKeys = n.getNumberValue(); },
+        "remainingKeys": n => { hackOManiaApiEndpointsAdminCachePurgeResponse.remainingKeys = n.getNumberValue(); },
+    }
+}
+/**
+ * The deserialization information for the current model
  * @param HackOManiaApiEndpointsAuthWhoAmIResponse The instance to deserialize into.
  * @returns {Record<string, (node: ParseNode) => void>}
  */
@@ -1746,6 +1778,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticip
         "email": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.email = n.getStringValue(); },
         "emailSentCount": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.emailSentCount = n.getNumberValue(); },
         "id": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.id = n.getStringValue(); },
+        "isWithdrawn": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.isWithdrawn = n.getBooleanValue(); },
         "lastEmailSentAt": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.lastEmailSentAt = n.getDateValue(); },
         "lastEmailStatus": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.lastEmailStatus = n.getStringValue(); },
         "name": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.name = n.getStringValue(); },
@@ -1753,6 +1786,7 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticip
         "reviews": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.reviews = n.getCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem>(createHackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemFromDiscriminatorValue); },
         "teamId": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.teamId = n.getStringValue(); },
         "teamName": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.teamName = n.getStringValue(); },
+        "withdrawnAt": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.withdrawnAt = n.getDateValue(); },
     }
 }
 /**
@@ -1822,6 +1856,17 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticip
         "participantId": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsReviewResponse.participantId = n.getStringValue(); },
         "reviewedAt": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsReviewResponse.reviewedAt = n.getDateValue(); },
         "status": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsReviewResponse.status = n.getStringValue(); },
+    }
+}
+/**
+ * The deserialization information for the current model
+ * @param HackOManiaApiEndpointsOrganizersHackathonParticipantsWithdrawResponse The instance to deserialize into.
+ * @returns {Record<string, (node: ParseNode) => void>}
+ */
+// @ts-ignore
+export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticipantsWithdrawResponse(hackOManiaApiEndpointsOrganizersHackathonParticipantsWithdrawResponse: Partial<HackOManiaApiEndpointsOrganizersHackathonParticipantsWithdrawResponse> | undefined = {}) : Record<string, (node: ParseNode) => void> {
+    return {
+        "message": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsWithdrawResponse.message = n.getStringValue(); },
     }
 }
 /**
@@ -3277,6 +3322,24 @@ export interface FastEndpointsErrorResponse extends ApiError, Parsable {
 }
 export interface FastEndpointsErrorResponse_errors extends AdditionalDataHolder, Parsable {
 }
+export interface HackOManiaApiEndpointsAdminCachePurgeResponse extends Parsable {
+    /**
+     * The message property
+     */
+    message?: string | null;
+    /**
+     * The purgedAt property
+     */
+    purgedAt?: Date | null;
+    /**
+     * The purgedKeys property
+     */
+    purgedKeys?: number | null;
+    /**
+     * The remainingKeys property
+     */
+    remainingKeys?: number | null;
+}
 export interface HackOManiaApiEndpointsAuthWhoAmIResponse extends Parsable {
     /**
      * The email property
@@ -3972,6 +4035,10 @@ export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsListPartic
      */
     id?: string | null;
     /**
+     * The isWithdrawn property
+     */
+    isWithdrawn?: boolean | null;
+    /**
      * The lastEmailSentAt property
      */
     lastEmailSentAt?: Date | null;
@@ -3999,6 +4066,10 @@ export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsListPartic
      * The teamName property
      */
     teamName?: string | null;
+    /**
+     * The withdrawnAt property
+     */
+    withdrawnAt?: Date | null;
 }
 export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem extends Parsable {
     /**
@@ -4086,6 +4157,12 @@ export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsReviewResp
      * The status property
      */
     status?: string | null;
+}
+export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsWithdrawResponse extends Parsable {
+    /**
+     * The message property
+     */
+    message?: string | null;
 }
 export interface HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsCreateCreateOptionDto extends Parsable {
     /**
@@ -6178,6 +6255,20 @@ export function serializeFastEndpointsErrorResponse_errors(writer: Serialization
 }
 /**
  * Serializes information the current object
+ * @param HackOManiaApiEndpointsAdminCachePurgeResponse The instance to serialize from.
+ * @param isSerializingDerivedType A boolean indicating whether the serialization is for a derived type.
+ * @param writer Serialization writer to use to serialize this model
+ */
+// @ts-ignore
+export function serializeHackOManiaApiEndpointsAdminCachePurgeResponse(writer: SerializationWriter, hackOManiaApiEndpointsAdminCachePurgeResponse: Partial<HackOManiaApiEndpointsAdminCachePurgeResponse> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
+    if (!hackOManiaApiEndpointsAdminCachePurgeResponse || isSerializingDerivedType) { return; }
+    writer.writeStringValue("message", hackOManiaApiEndpointsAdminCachePurgeResponse.message);
+    writer.writeDateValue("purgedAt", hackOManiaApiEndpointsAdminCachePurgeResponse.purgedAt);
+    writer.writeNumberValue("purgedKeys", hackOManiaApiEndpointsAdminCachePurgeResponse.purgedKeys);
+    writer.writeNumberValue("remainingKeys", hackOManiaApiEndpointsAdminCachePurgeResponse.remainingKeys);
+}
+/**
+ * Serializes information the current object
  * @param HackOManiaApiEndpointsAuthWhoAmIResponse The instance to serialize from.
  * @param isSerializingDerivedType A boolean indicating whether the serialization is for a derived type.
  * @param writer Serialization writer to use to serialize this model
@@ -6668,6 +6759,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonParticipantsLi
     writer.writeStringValue("email", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.email);
     writer.writeNumberValue("emailSentCount", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.emailSentCount);
     writer.writeStringValue("id", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.id);
+    writer.writeBooleanValue("isWithdrawn", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.isWithdrawn);
     writer.writeDateValue("lastEmailSentAt", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.lastEmailSentAt);
     writer.writeStringValue("lastEmailStatus", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.lastEmailStatus);
     writer.writeStringValue("name", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.name);
@@ -6675,6 +6767,7 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonParticipantsLi
     writer.writeCollectionOfObjectValues<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem>("reviews", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.reviews, serializeHackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem);
     writer.writeStringValue("teamId", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.teamId);
     writer.writeStringValue("teamName", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.teamName);
+    writer.writeDateValue("withdrawnAt", hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.withdrawnAt);
 }
 /**
  * Serializes information the current object
@@ -6744,6 +6837,17 @@ export function serializeHackOManiaApiEndpointsOrganizersHackathonParticipantsRe
     writer.writeStringValue("participantId", hackOManiaApiEndpointsOrganizersHackathonParticipantsReviewResponse.participantId);
     writer.writeDateValue("reviewedAt", hackOManiaApiEndpointsOrganizersHackathonParticipantsReviewResponse.reviewedAt);
     writer.writeStringValue("status", hackOManiaApiEndpointsOrganizersHackathonParticipantsReviewResponse.status);
+}
+/**
+ * Serializes information the current object
+ * @param HackOManiaApiEndpointsOrganizersHackathonParticipantsWithdrawResponse The instance to serialize from.
+ * @param isSerializingDerivedType A boolean indicating whether the serialization is for a derived type.
+ * @param writer Serialization writer to use to serialize this model
+ */
+// @ts-ignore
+export function serializeHackOManiaApiEndpointsOrganizersHackathonParticipantsWithdrawResponse(writer: SerializationWriter, hackOManiaApiEndpointsOrganizersHackathonParticipantsWithdrawResponse: Partial<HackOManiaApiEndpointsOrganizersHackathonParticipantsWithdrawResponse> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
+    if (!hackOManiaApiEndpointsOrganizersHackathonParticipantsWithdrawResponse || isSerializingDerivedType) { return; }
+    writer.writeStringValue("message", hackOManiaApiEndpointsOrganizersHackathonParticipantsWithdrawResponse.message);
 }
 /**
  * Serializes information the current object

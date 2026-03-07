@@ -11,13 +11,13 @@ import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type Requ
  */
 export interface WithUserItemRequestBuilder extends BaseRequestBuilder<WithUserItemRequestBuilder> {
     /**
-     * Allows the team creator to remove another member from the team. Cannot remove yourself (use leave endpoint instead). If no members remain after removal, the team will be deleted.
+     * Allows the team member to remove another member from the team. Cannot remove yourself (use leave endpoint instead). If no members remain after removal, the team will be deleted.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {Promise<HackOManiaApiEndpointsParticipantsHackathonTeamsRemoveMemberResponse>}
      */
      delete(requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<HackOManiaApiEndpointsParticipantsHackathonTeamsRemoveMemberResponse | undefined>;
     /**
-     * Allows the team creator to remove another member from the team. Cannot remove yourself (use leave endpoint instead). If no members remain after removal, the team will be deleted.
+     * Allows the team member to remove another member from the team. Cannot remove yourself (use leave endpoint instead). If no members remain after removal, the team will be deleted.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {RequestInformation}
      */

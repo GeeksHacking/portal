@@ -10,6 +10,8 @@ import { ReviewRequestBuilderRequestsMetadata, type ReviewRequestBuilder } from 
 // @ts-ignore
 import { type VenueRequestBuilder, VenueRequestBuilderNavigationMetadata } from './venue/index.js';
 // @ts-ignore
+import { type WithdrawRequestBuilder, WithdrawRequestBuilderRequestsMetadata } from './withdraw/index.js';
+// @ts-ignore
 import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
@@ -28,6 +30,10 @@ export interface ParticipantUserItemRequestBuilder extends BaseRequestBuilder<Pa
      * The venue property
      */
     get venue(): VenueRequestBuilder;
+    /**
+     * The withdraw property
+     */
+    get withdraw(): WithdrawRequestBuilder;
     /**
      * Retrieves full details for a participant, including registration responses.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
@@ -58,6 +64,9 @@ export const ParticipantUserItemRequestBuilderNavigationMetadata: Record<Exclude
     },
     venue: {
         navigationMetadata: VenueRequestBuilderNavigationMetadata,
+    },
+    withdraw: {
+        requestsMetadata: WithdrawRequestBuilderRequestsMetadata,
     },
 };
 /**

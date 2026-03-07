@@ -46,6 +46,16 @@ const selectChallengeMutation = useSelectChallenge(hackathonIdRef, teamIdRef)
 watch(selectedChallenge, (newVal, oldVal) => {
   if (newVal && newVal !== oldVal && newVal !== props.selectedChallengeId) {
     selectChallengeMutation.mutate(newVal, {
+      onSuccess() {
+        const selectedItem = challengeItems.value.find(item => item.value === newVal)
+        toast.add({
+          title: 'Challenge updated',
+          description: selectedItem?.label
+            ? `Selected ${selectedItem.label}.`
+            : 'Your team challenge statement has been updated.',
+          color: 'success',
+        })
+      },
       onError() {
         toast.add({
           title: 'Failed to update challenge',

@@ -1,5 +1,8 @@
 using HackOMania.Api.Entities;
 using Octokit;
+using Polly;
+using Polly.Retry;
+using System.Runtime.ExceptionServices;
 using System.Text;
 
 namespace HackOMania.Api.Services;
@@ -159,10 +162,7 @@ public class GitHubRepositoryAutomationService(
 
         try
         {
-            await client.Repository.Edit(
-                fork.Id,
-                new RepositoryUpdate { Name = targetName }
-            );
+            await RenameForkAsync(client, fork.Id, targetName, ct);
         }
         catch (AuthorizationException ex)
         {
@@ -174,7 +174,7 @@ public class GitHubRepositoryAutomationService(
         catch (ApiValidationException ex)
         {
             throw new GitHubRepositoryAutomationException(
-                "GitHub could not rename the forked repository with the configured prefix.",
+                "GitHub could not rename the forked repository with the configured name.",
                 ex
             );
         }
@@ -187,7 +187,7 @@ public class GitHubRepositoryAutomationService(
                 targetName
             );
             throw new GitHubRepositoryAutomationException(
-                "GitHub failed to rename the forked repository with the configured prefix.",
+                "GitHub failed to rename the forked repository with the configured name.",
                 ex
             );
         }
@@ -221,6 +221,51 @@ public class GitHubRepositoryAutomationService(
         return string.Join("-", parts);
     }
 
+    private async Task RenameForkAsync(
+        GitHubClient client,
+        long forkId,
+        string targetName,
+        CancellationToken ct
+    )
+    {
+        var retryPipeline = new ResiliencePipelineBuilder()
+            .AddRetry(
+                new RetryStrategyOptions
+                {
+                    MaxRetryAttempts = 4,
+                    Delay = TimeSpan.FromSeconds(1),
+                    BackoffType = DelayBackoffType.Exponential,
+                    UseJitter = false,
+                    ShouldHandle = new PredicateBuilder()
+                        .Handle<NotFoundException>()
+                        .Handle<RetryableForkRenameException>(),
+                    OnRetry = args =>
+                    {
+                        logger.LogInformation(
+                            args.Outcome.Exception,
+                            "GitHub fork rename is not ready yet for fork id {ForkId}; retrying rename to {TargetName}",
+                            forkId,
+                            targetName
+                        );
+                        return default;
+                    },
+                }
+            )
+            .Build();
+
+        try
+        {
+            await retryPipeline.ExecuteAsync(
+                async token => await TryRenameForkAsync(client, forkId, targetName, token),
+                ct
+            );
+        }
+        catch (RetryableForkRenameException ex) when (ex.InnerException is ApiValidationException apiEx)
+        {
+            ExceptionDispatchInfo.Capture(apiEx).Throw();
+        }
+    }
+
     private static string? SanitizeRepositoryNamePart(string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -250,6 +295,48 @@ public class GitHubRepositoryAutomationService(
         }
 
         return builder.ToString().Trim('-', '.', '_');
+    }
+
+    private static async Task<Repository?> TryGetRepositoryAsync(GitHubClient client, long repositoryId)
+    {
+        try
+        {
+            return await client.Repository.Get(repositoryId);
+        }
+        catch (NotFoundException)
+        {
+            return null;
+        }
+    }
+
+    private static async ValueTask TryRenameForkAsync(
+        GitHubClient client,
+        long forkId,
+        string targetName,
+        CancellationToken ct
+    )
+    {
+        try
+        {
+            await client.Repository.Edit(
+                forkId,
+                new RepositoryUpdate { Name = targetName }
+            );
+        }
+        catch (ApiValidationException ex)
+        {
+            var existingRepository = await TryGetRepositoryAsync(client, forkId);
+            if (
+                existingRepository is not null
+                && string.Equals(existingRepository.Name, targetName, StringComparison.Ordinal)
+            )
+            {
+                return;
+            }
+
+            ct.ThrowIfCancellationRequested();
+            throw new RetryableForkRenameException(ex);
+        }
     }
 
     private static (string Owner, string Name) ParseRepositoryCoordinates(Uri repositoryUri)
@@ -289,4 +376,7 @@ public class GitHubRepositoryAutomationService(
 
         return (owner, repositoryName);
     }
+
+    private sealed class RetryableForkRenameException(ApiValidationException innerException)
+        : Exception("The forked repository is not ready to be renamed yet.", innerException);
 }

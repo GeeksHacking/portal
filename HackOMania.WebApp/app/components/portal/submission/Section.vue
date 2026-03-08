@@ -101,6 +101,7 @@ function isValidUrl(url: string): boolean {
 const createSubmissionMutation = useCreateSubmission(hackathonId, teamId)
 
 const isSubmitting = computed(() => createSubmissionMutation.isPending.value)
+const submissionErrorFields = ['repoUri', 'challengeId', 'slidesUri', 'title', 'summary', 'GeneralErrors']
 
 // Validates form and opens confirmation modal
 function openConfirmModal() {
@@ -193,10 +194,10 @@ function confirmSubmit() {
         color: 'success',
       })
     },
-    onError() {
+    onError(error) {
       toast.add({
         title: 'Failed to submit',
-        description: 'Please try again.',
+        description: getFastEndpointsErrorMessage(error, submissionErrorFields) ?? 'Please try again.',
         color: 'error',
       })
     },

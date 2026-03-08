@@ -1,6 +1,7 @@
 using FastEndpoints;
 using HackOMania.Api.Authorization;
 using HackOMania.Api.Entities;
+using HackOMania.Api.Features.Hackathons.GitHubRepositorySettings;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Update;
@@ -27,6 +28,10 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             await Send.NotFoundAsync(ct);
             return;
         }
+
+        var gitHubRepositorySettings = await sql.Queryable<HackathonGitHubRepositorySettings>()
+            .Where(s => s.HackathonId == hackathon.Id)
+            .FirstAsync(ct);
 
         if (!string.IsNullOrWhiteSpace(req.Name))
         {
@@ -93,6 +98,22 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             hackathon.IsPublished = req.IsPublished.Value;
         }
 
+        if (req.GitHubRepositorySettings is not null)
+        {
+            var gitHubRepositorySettingsResult = HackathonGitHubRepositorySettingsMutation.Apply(
+                gitHubRepositorySettings,
+                req.GitHubRepositorySettings
+            );
+            AddGitHubRepositorySettingsErrors(gitHubRepositorySettingsResult.Errors);
+            if (ValidationFailed)
+            {
+                await Send.ErrorsAsync(cancellation: ct);
+                return;
+            }
+
+            gitHubRepositorySettings = gitHubRepositorySettingsResult.Settings;
+        }
+
         var emailTemplates = req.EmailTemplates is null
             ? null
             : NormalizeEmailTemplates(req.EmailTemplates);
@@ -121,6 +142,33 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         await sql.Updateable(hackathon).ExecuteCommandAsync(ct);
 
+        if (req.GitHubRepositorySettings is not null)
+        {
+            if (HackathonGitHubRepositorySettingsMutation.ShouldPersist(gitHubRepositorySettings))
+            {
+                gitHubRepositorySettings!.HackathonId = hackathon.Id;
+                var hasPersistedSettings = await sql.Queryable<HackathonGitHubRepositorySettings>()
+                    .Where(s => s.HackathonId == hackathon.Id)
+                    .AnyAsync(ct);
+
+                if (hasPersistedSettings)
+                {
+                    await sql.Updateable(gitHubRepositorySettings).ExecuteCommandAsync(ct);
+                }
+                else
+                {
+                    await sql.Insertable(gitHubRepositorySettings).ExecuteCommandAsync(ct);
+                }
+            }
+            else
+            {
+                await sql.Deleteable<HackathonGitHubRepositorySettings>()
+                    .Where(s => s.HackathonId == hackathon.Id)
+                    .ExecuteCommandAsync(ct);
+                gitHubRepositorySettings = null;
+            }
+        }
+
         var persistedTemplates = await sql.Queryable<HackathonNotificationTemplate>()
             .Where(t => t.HackathonId == hackathon.Id)
             .ToListAsync(ct);
@@ -146,6 +194,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 JudgingStartDate = hackathon.JudgingStartDate,
                 JudgingEndDate = hackathon.JudgingEndDate,
                 EmailTemplates = emailTemplateMap,
+                GitHubRepositorySettings = HackathonGitHubRepositorySettingsMapper.ToResponse(
+                    gitHubRepositorySettings
+                ),
             },
             ct
         );
@@ -166,5 +217,23 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             )
             .GroupBy(kvp => kvp.Key.Trim().ToLowerInvariant(), StringComparer.OrdinalIgnoreCase)
             .ToDictionary(g => g.Key, g => g.Last().Value.Trim(), StringComparer.OrdinalIgnoreCase);
+    }
+
+    private void AddGitHubRepositorySettingsErrors(
+        IReadOnlyList<HackathonGitHubRepositorySettingsValidationError> errors
+    )
+    {
+        foreach (var error in errors)
+        {
+            switch (error.Field)
+            {
+                case HackathonGitHubRepositorySettingsField.ApiKey:
+                    AddError(r => r.GitHubRepositorySettings!.ApiKey, error.Message);
+                    break;
+                case HackathonGitHubRepositorySettingsField.OrganizationId:
+                    AddError(r => r.GitHubRepositorySettings!.OrganizationId, error.Message);
+                    break;
+            }
+        }
     }
 }

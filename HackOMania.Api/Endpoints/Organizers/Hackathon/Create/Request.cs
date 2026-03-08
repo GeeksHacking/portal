@@ -1,3 +1,5 @@
+using HackOMania.Api.Features.Hackathons.GitHubRepositorySettings;
+
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Create;
 
 public class Request
@@ -16,4 +18,5 @@ public class Request
     public required DateTimeOffset JudgingEndDate { get; set; }
     public bool IsPublished { get; set; } = false;
     public Dictionary<string, string>? EmailTemplates { get; set; }
+    public HackathonGitHubRepositorySettingsRequest? GitHubRepositorySettings { get; set; }
 }

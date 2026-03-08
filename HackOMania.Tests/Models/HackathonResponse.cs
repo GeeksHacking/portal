@@ -17,4 +17,5 @@ public class HackathonResponse
     public DateTimeOffset JudgingStartDate { get; set; }
     public DateTimeOffset JudgingEndDate { get; set; }
     public Dictionary<string, string> EmailTemplates { get; set; } = [];
+    public GitHubRepositorySettingsResponse GitHubRepositorySettings { get; set; } = new();
 }

@@ -1,6 +1,40 @@
 import { queryOptions, useMutation } from '@tanstack/vue-query'
 
-interface HackathonMutationPayload {
+export interface HackathonGitHubRepositorySettingsPayload {
+  isRepositoryCheckingEnabled?: boolean
+  isRepositoryForkingEnabled?: boolean
+  apiKey?: string
+  clearApiKey?: boolean
+  repositoryPrefix?: string
+  organizationId?: number
+}
+
+export interface HackathonOrganizerDetail {
+  id: string
+  name: string
+  description: string
+  venue: string
+  homepageUri: string
+  shortCode: string
+  isPublished: boolean
+  eventStartDate: string
+  eventEndDate: string
+  submissionsStartDate: string
+  challengeSelectionEndDate: string
+  submissionsEndDate: string
+  judgingStartDate: string
+  judgingEndDate: string
+  emailTemplates?: Record<string, string>
+  gitHubRepositorySettings: {
+    isRepositoryCheckingEnabled: boolean
+    isRepositoryForkingEnabled: boolean
+    hasApiKey: boolean
+    repositoryPrefix?: string | null
+    organizationId?: number | null
+  }
+}
+
+export interface HackathonMutationPayload {
   name?: string
   description?: string
   venue?: string
@@ -15,6 +49,7 @@ interface HackathonMutationPayload {
   judgingEndDate?: string
   isPublished?: boolean
   emailTemplates?: Record<string, string>
+  gitHubRepositorySettings?: HackathonGitHubRepositorySettingsPayload
 }
 
 export const hackathonOrganizerQueries = {
@@ -28,7 +63,10 @@ export const hackathonOrganizerQueries = {
     queryOptions({
       queryKey: ['hackathons', hackathonId, 'organizer', 'detail'],
       async queryFn() {
-        return await useNuxtApp().$apiClient.organizers.hackathons.byHackathonId(hackathonId).get()
+        return await $fetch<HackathonOrganizerDetail>(`/organizers/hackathons/${hackathonId}`, {
+          baseURL: useRuntimeConfig().public.api,
+          credentials: 'include',
+        })
       },
     }),
 }

@@ -1,6 +1,7 @@
 using FastEndpoints;
 using HackOMania.Api.Authorization;
 using HackOMania.Api.Entities;
+using HackOMania.Api.Features.Hackathons.GitHubRepositorySettings;
 using SqlSugar;
 using HackathonEntity = HackOMania.Api.Entities.Hackathon;
 
@@ -40,6 +41,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var emailTemplateMap = emailTemplates
             .GroupBy(t => t.EventKey, StringComparer.OrdinalIgnoreCase)
             .ToDictionary(g => g.Key, g => g.Last().TemplateId, StringComparer.OrdinalIgnoreCase);
+        var gitHubRepositorySettings = await sql.Queryable<HackathonGitHubRepositorySettings>()
+            .Where(s => s.HackathonId == hackathon.Id)
+            .FirstAsync(ct);
 
         await Send.OkAsync(
             new Response
@@ -59,6 +63,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 JudgingStartDate = hackathon.JudgingStartDate,
                 JudgingEndDate = hackathon.JudgingEndDate,
                 EmailTemplates = emailTemplateMap,
+                GitHubRepositorySettings = HackathonGitHubRepositorySettingsMapper.ToResponse(
+                    gitHubRepositorySettings
+                ),
             },
             ct
         );

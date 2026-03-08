@@ -206,6 +206,46 @@ public class HackathonCrudTests
 
     [Test]
     [ClassDataSource<AuthenticatedHttpClientDataClass>]
+    public async Task UpdateHackathon_GitHubRepositorySettings_RoundTrips(
+        AuthenticatedHttpClientDataClass client
+    )
+    {
+        var createRequest = CreateValidHackathonRequest(Guid.NewGuid().ToString()[..8]);
+        var createResponse = await client.HttpClient.PostAsJsonAsync(
+            "/organizers/hackathons",
+            createRequest
+        );
+        var createdHackathon = await createResponse.Content.ReadFromJsonAsync<HackathonResponse>();
+
+        var updateRequest = new UpdateHackathonRequest
+        {
+            GitHubRepositorySettings = new GitHubRepositorySettingsRequest
+            {
+                IsRepositoryCheckingEnabled = true,
+                IsRepositoryForkingEnabled = true,
+                ApiKey = "ghp_test_token_1234567890",
+                RepositoryPrefix = "hackomania-",
+                OrganizationId = 123456789,
+            },
+        };
+
+        var response = await client.HttpClient.PatchAsJsonAsync(
+            $"/organizers/hackathons/{createdHackathon!.Id}",
+            updateRequest
+        );
+        var result = await response.Content.ReadFromJsonAsync<HackathonResponse>();
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result!.GitHubRepositorySettings.IsRepositoryCheckingEnabled).IsTrue();
+        await Assert.That(result.GitHubRepositorySettings.IsRepositoryForkingEnabled).IsTrue();
+        await Assert.That(result.GitHubRepositorySettings.HasApiKey).IsTrue();
+        await Assert.That(result.GitHubRepositorySettings.RepositoryPrefix).IsEqualTo("hackomania-");
+        await Assert.That(result.GitHubRepositorySettings.OrganizationId).IsEqualTo(123456789);
+    }
+
+    [Test]
+    [ClassDataSource<AuthenticatedHttpClientDataClass>]
     public async Task UpdateHackathon_WithInvalidId_ReturnsNotFound(
         AuthenticatedHttpClientDataClass client
     )

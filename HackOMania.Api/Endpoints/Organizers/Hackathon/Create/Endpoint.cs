@@ -2,6 +2,7 @@ using FastEndpoints;
 using HackOMania.Api.Authorization;
 using HackOMania.Api.Entities;
 using HackOMania.Api.Extensions;
+using HackOMania.Api.Features.Hackathons.GitHubRepositorySettings;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Organizers.Hackathon.Create;
@@ -31,6 +32,15 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var emailTemplates = NormalizeEmailTemplates(req.EmailTemplates);
         var challengeSelectionEndDate = req.ChallengeSelectionEndDate ?? req.SubmissionsEndDate;
+        var gitHubRepositorySettingsResult = HackathonGitHubRepositorySettingsMutation.BuildForCreate(
+            req.GitHubRepositorySettings
+        );
+        AddGitHubRepositorySettingsErrors(gitHubRepositorySettingsResult.Errors);
+        if (ValidationFailed)
+        {
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
 
         var hackathon = new Entities.Hackathon
         {
@@ -54,6 +64,12 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var ent = await sql.InsertNav(hackathon)
             .Include(h => h.Organizers)
             .ExecuteReturnEntityAsync();
+
+        if (HackathonGitHubRepositorySettingsMutation.ShouldPersist(gitHubRepositorySettingsResult.Settings))
+        {
+            gitHubRepositorySettingsResult.Settings!.HackathonId = ent.Id;
+            await sql.Insertable(gitHubRepositorySettingsResult.Settings).ExecuteCommandAsync(ct);
+        }
 
         if (emailTemplates.Count > 0)
         {
@@ -89,6 +105,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 JudgingStartDate = ent.JudgingStartDate,
                 JudgingEndDate = ent.JudgingEndDate,
                 EmailTemplates = emailTemplates,
+                GitHubRepositorySettings = HackathonGitHubRepositorySettingsMapper.ToResponse(
+                    gitHubRepositorySettingsResult.Settings
+                ),
             },
             cancellation: ct
         );
@@ -109,5 +128,23 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             )
             .GroupBy(kvp => kvp.Key.Trim().ToLowerInvariant(), StringComparer.OrdinalIgnoreCase)
             .ToDictionary(g => g.Key, g => g.Last().Value.Trim(), StringComparer.OrdinalIgnoreCase);
+    }
+
+    private void AddGitHubRepositorySettingsErrors(
+        IReadOnlyList<HackathonGitHubRepositorySettingsValidationError> errors
+    )
+    {
+        foreach (var error in errors)
+        {
+            switch (error.Field)
+            {
+                case HackathonGitHubRepositorySettingsField.ApiKey:
+                    AddError(r => r.GitHubRepositorySettings!.ApiKey, error.Message);
+                    break;
+                case HackathonGitHubRepositorySettingsField.OrganizationId:
+                    AddError(r => r.GitHubRepositorySettings!.OrganizationId, error.Message);
+                    break;
+            }
+        }
     }
 }

@@ -2,12 +2,14 @@ using FastEndpoints;
 using HackOMania.Api.Authorization;
 using HackOMania.Api.Entities;
 using HackOMania.Api.Extensions;
+using HackOMania.Api.Services;
 using Jint;
 using SqlSugar;
 
 namespace HackOMania.Api.Endpoints.Participants.Hackathon.Submissions.Create;
 
-public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
+public class Endpoint(ISqlSugarClient sql, IGitHubRepositoryAutomationService gitHubRepositoryAutomation)
+    : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -109,6 +111,25 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         if (allowed is not bool boolAllowed || !boolAllowed)
         {
             AddError("Team does not meet the challenge selection criteria.");
+            await Send.ErrorsAsync(400, ct);
+            return;
+        }
+
+        var gitHubRepositorySettings = await sql.Queryable<HackathonGitHubRepositorySettings>()
+            .Where(s => s.HackathonId == hackathon.Id)
+            .FirstAsync(ct);
+
+        try
+        {
+            await gitHubRepositoryAutomation.ValidateAndMaybeForkAsync(
+                gitHubRepositorySettings,
+                req.RepoUri!,
+                ct
+            );
+        }
+        catch (GitHubRepositoryAutomationException ex)
+        {
+            AddError(r => r.RepoUri, ex.Message);
             await Send.ErrorsAsync(400, ct);
             return;
         }

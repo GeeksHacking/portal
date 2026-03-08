@@ -259,6 +259,7 @@ builder.Services.SwaggerDocument(options =>
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<MembershipService>();
+builder.Services.AddScoped<IGitHubRepositoryAutomationService, GitHubRepositoryAutomationService>();
 builder.Services.AddScoped<IJintEvaluationService, JintEvaluationService>();
 builder.Services.AddScoped<IEmailService, PostmarkEmailService>();
 builder.Services.AddScoped<INotificationTemplateResolver, NotificationTemplateResolver>();

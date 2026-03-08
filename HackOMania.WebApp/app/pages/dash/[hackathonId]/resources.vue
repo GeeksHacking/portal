@@ -30,6 +30,9 @@ const scannedUserId = ref('')
 const error = ref('')
 const rawQrData = ref('')
 const scanResult = ref<{ success: boolean, message: string } | null>(null)
+const availableCameras = ref<Array<{ id: string, label: string }>>([])
+const currentCameraIndex = ref(0)
+const isScanning = ref(false)
 
 const queryClient = useQueryClient()
 
@@ -181,8 +184,27 @@ async function startScanner() {
   try {
     html5QrCode = new Html5Qrcode('resource-qr-reader')
 
+    if (!availableCameras.value.length) {
+      try {
+        availableCameras.value = await Html5Qrcode.getCameras()
+        const backIndex = availableCameras.value.findIndex(c =>
+          /back|rear|environment/i.test(c.label),
+        )
+        if (backIndex >= 0)
+          currentCameraIndex.value = backIndex
+      }
+      catch {
+        // If camera enumeration fails, fall back to facingMode constraint
+      }
+    }
+
+    const selectedCamera = availableCameras.value[currentCameraIndex.value]
+    const cameraConfig = selectedCamera
+      ? selectedCamera.id
+      : { facingMode: 'environment' }
+
     await html5QrCode.start(
-      { facingMode: 'environment' },
+      cameraConfig,
       {
         fps: 30,
         qrbox: { width: 250, height: 250 },
@@ -212,6 +234,7 @@ async function startScanner() {
       },
       () => {},
     )
+    isScanning.value = true
   }
   catch (err) {
     error.value = 'Failed to start camera. Please allow camera access.'
@@ -219,7 +242,17 @@ async function startScanner() {
   }
 }
 
+async function switchCamera() {
+  if (availableCameras.value.length <= 1)
+    return
+  currentCameraIndex.value = (currentCameraIndex.value + 1) % availableCameras.value.length
+  await stopScanner()
+  await nextTick()
+  await startScanner()
+}
+
 async function stopScanner() {
+  isScanning.value = false
   if (!html5QrCode)
     return
 
@@ -623,6 +656,20 @@ onUnmounted(() => {
                     id="resource-qr-reader"
                     class="w-full overflow-hidden rounded-lg"
                   />
+
+                  <div
+                    v-if="isScanning && availableCameras.length > 1"
+                    class="flex justify-center"
+                  >
+                    <UButton
+                      variant="ghost"
+                      icon="i-lucide-switch-camera"
+                      size="sm"
+                      @click="switchCamera"
+                    >
+                      Switch Camera
+                    </UButton>
+                  </div>
 
                   <div
                     v-if="error"

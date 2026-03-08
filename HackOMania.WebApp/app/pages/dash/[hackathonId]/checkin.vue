@@ -24,6 +24,8 @@ const scanResult = ref<{ success: boolean, message: string } | null>(null)
 const selectedParticipantUserId = ref<string>('')
 const selectedParticipantName = ref<string>('')
 const isHistoryModalOpen = ref(false)
+const availableCameras = ref<Array<{ id: string, label: string }>>([])
+const currentCameraIndex = ref(0)
 
 const checkInMutation = useCheckInMutation(hackathonId)
 const checkOutMutation = useCheckOutMutation(hackathonId)
@@ -137,8 +139,27 @@ async function startScanner() {
   try {
     html5QrCode = new Html5Qrcode('qr-reader')
 
+    if (!availableCameras.value.length) {
+      try {
+        availableCameras.value = await Html5Qrcode.getCameras()
+        const backIndex = availableCameras.value.findIndex(c =>
+          /back|rear|environment/i.test(c.label),
+        )
+        if (backIndex >= 0)
+          currentCameraIndex.value = backIndex
+      }
+      catch {
+        // If camera enumeration fails, fall back to facingMode constraint
+      }
+    }
+
+    const selectedCamera = availableCameras.value[currentCameraIndex.value]
+    const cameraConfig = selectedCamera
+      ? selectedCamera.id
+      : { facingMode: 'environment' }
+
     await html5QrCode.start(
-      { facingMode: 'environment' }, // Use back camera
+      cameraConfig,
       {
         fps: 30,
         qrbox: { width: 250, height: 250 },
@@ -184,6 +205,15 @@ async function startScanner() {
     isScanning.value = false
     console.error(err)
   }
+}
+
+async function switchCamera() {
+  if (availableCameras.value.length <= 1)
+    return
+  currentCameraIndex.value = (currentCameraIndex.value + 1) % availableCameras.value.length
+  await stopScanner()
+  await nextTick()
+  await startScanner()
 }
 
 async function stopScanner() {
@@ -580,6 +610,20 @@ onUnmounted(() => {
                       id="qr-reader"
                       class="w-full rounded-lg overflow-hidden"
                     />
+                  </div>
+
+                  <div
+                    v-if="isScanning && availableCameras.length > 1"
+                    class="flex justify-center"
+                  >
+                    <UButton
+                      variant="ghost"
+                      icon="i-lucide-switch-camera"
+                      size="sm"
+                      @click="switchCamera"
+                    >
+                      Switch Camera
+                    </UButton>
                   </div>
 
                   <div

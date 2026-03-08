@@ -25,7 +25,7 @@ const selectedParticipantUserId = ref<string>('')
 const selectedParticipantName = ref<string>('')
 const isHistoryModalOpen = ref(false)
 const availableCameras = ref<Array<{ id: string, label: string }>>([])
-const currentCameraIndex = ref(0)
+const useFrontCamera = ref(false)
 
 const checkInMutation = useCheckInMutation(hackathonId)
 const checkOutMutation = useCheckOutMutation(hackathonId)
@@ -142,21 +142,13 @@ async function startScanner() {
     if (!availableCameras.value.length) {
       try {
         availableCameras.value = await Html5Qrcode.getCameras()
-        const backIndex = availableCameras.value.findIndex(c =>
-          /back|rear|environment/i.test(c.label),
-        )
-        if (backIndex >= 0)
-          currentCameraIndex.value = backIndex
       }
       catch {
         // If camera enumeration fails, fall back to facingMode constraint
       }
     }
 
-    const selectedCamera = availableCameras.value[currentCameraIndex.value]
-    const cameraConfig = selectedCamera
-      ? selectedCamera.id
-      : { facingMode: 'environment' }
+    const cameraConfig = { facingMode: useFrontCamera.value ? 'user' : 'environment' }
 
     await html5QrCode.start(
       cameraConfig,
@@ -210,7 +202,7 @@ async function startScanner() {
 async function switchCamera() {
   if (availableCameras.value.length <= 1)
     return
-  currentCameraIndex.value = (currentCameraIndex.value + 1) % availableCameras.value.length
+  useFrontCamera.value = !useFrontCamera.value
   await stopScanner()
   await nextTick()
   await startScanner()

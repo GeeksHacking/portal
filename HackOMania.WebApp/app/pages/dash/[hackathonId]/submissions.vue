@@ -5,7 +5,7 @@ import { useVirtualList } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import * as XLSX from 'xlsx'
 import { challengeOrganizerQueries } from '~/composables/challenges'
-import { submissionOrganizerQueries, submissionQueries } from '~/composables/submissions'
+import { submissionOrganizerQueries } from '~/composables/submissions'
 
 const props = withDefaults(defineProps<{
   hackathonId?: string
@@ -33,64 +33,47 @@ const { data: challengesData } = useQuery(
 )
 const challenges = computed(() => challengesData.value?.challenges ?? [])
 
-// Fetch team submission details for each unique team
-const uniqueTeamIds = computed(() => {
-  const ids = new Set<string>()
-  for (const s of submissions.value) {
-    if (s.teamId) ids.add(s.teamId)
-  }
-  return [...ids]
-})
-
-const teamSubmissionQueries = useQueries({
+// Fetch submission details for each submission via organizer endpoint
+const submissionDetailQueries = useQueries({
   queries: computed(() =>
-    uniqueTeamIds.value.map(teamId => ({
-      ...submissionQueries.listForTeam(hackathonId.value, teamId),
-      enabled: !!hackathonId.value,
+    submissions.value.map(s => ({
+      ...submissionOrganizerQueries.detail(hackathonId.value, s.id ?? ''),
+      enabled: !!hackathonId.value && !!s.id,
     })),
   ),
 })
 
-// Build a map of submissionId -> team submission detail
-const teamSubmissionDetailsMap = computed(() => {
+// Build a map of submissionId -> detail
+const submissionDetailsMap = computed(() => {
   const map = new Map<string, {
+    description?: string | null
     demoUri?: string | null
-    devpostUri?: string | null
-    repoUri?: string | null
+    repositoryUri?: string | null
     slidesUri?: string | null
-    location?: string | null
-    summary?: string | null
   }>()
-  for (const result of teamSubmissionQueries.value) {
-    if (!result.data?.submissions) continue
-    for (const sub of result.data.submissions) {
-      if (sub.id) {
-        map.set(sub.id, {
-          demoUri: sub.demoUri,
-          devpostUri: sub.devpostUri,
-          repoUri: sub.repoUri,
-          slidesUri: sub.slidesUri,
-          location: sub.location,
-          summary: sub.summary,
-        })
-      }
-    }
+  for (const result of submissionDetailQueries.value) {
+    const data = result.data
+    if (!data?.id) continue
+    map.set(data.id, {
+      description: data.description,
+      demoUri: data.demoUri,
+      repositoryUri: data.repositoryUri,
+      slidesUri: data.slidesUri,
+    })
   }
   return map
 })
 
 type EnrichedSubmission = HackOManiaApiEndpointsOrganizersHackathonSubmissionsListSubmissionItem & {
+  description?: string | null
   demoUri?: string | null
-  devpostUri?: string | null
-  repoUri?: string | null
+  repositoryUri?: string | null
   slidesUri?: string | null
-  location?: string | null
-  summary?: string | null
 }
 
 const enrichedSubmissions = computed<EnrichedSubmission[]>(() => {
   return submissions.value.map((s) => {
-    const details = s.id ? teamSubmissionDetailsMap.value.get(s.id) : undefined
+    const details = s.id ? submissionDetailsMap.value.get(s.id) : undefined
     return { ...s, ...details }
   })
 })
@@ -128,8 +111,7 @@ const filteredSubmissions = computed(() => {
         submission.title ?? '',
         submission.teamName ?? '',
         submission.challengeTitle ?? '',
-        submission.summary ?? '',
-        submission.location ?? '',
+        submission.description ?? '',
       ].join(' ').toLowerCase()
 
       return searchableText.includes(query)
@@ -183,12 +165,10 @@ function exportToExcel() {
     'Title': s.title ?? '',
     'Team': s.teamName ?? '',
     'Challenge': s.challengeTitle ?? 'No challenge',
-    'Summary': s.summary ?? '',
-    'Location': s.location ?? '',
+    'Description': s.description ?? '',
+    'Repository URL': s.repositoryUri ?? '',
     'Demo URL': s.demoUri ?? '',
-    'Repository URL': s.repoUri ?? '',
     'Slides URL': s.slidesUri ?? '',
-    'Devpost URL': s.devpostUri ?? '',
     'Submitted At': s.submittedAt ? new Date(s.submittedAt).toISOString() : '',
   }))
 
@@ -314,23 +294,23 @@ function exportToExcel() {
                     {{ submission.teamName }} · {{ submission.challengeTitle ?? 'No challenge' }}
                   </p>
                   <p
-                    v-if="submission.summary"
+                    v-if="submission.description"
                     class="text-xs text-(--ui-text-dimmed) truncate max-w-md"
                   >
-                    {{ submission.summary }}
+                    {{ submission.description }}
                   </p>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                   <div
-                    v-if="submission.demoUri || submission.repoUri || submission.slidesUri"
+                    v-if="submission.demoUri || submission.repositoryUri || submission.slidesUri"
                     class="flex gap-1"
                   >
                     <UButton
-                      v-if="submission.repoUri"
+                      v-if="submission.repositoryUri"
                       size="xs"
                       variant="ghost"
                       icon="i-lucide-github"
-                      :to="String(submission.repoUri)"
+                      :to="String(submission.repositoryUri)"
                       target="_blank"
                     />
                     <UButton

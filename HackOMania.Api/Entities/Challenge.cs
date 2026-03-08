@@ -11,6 +11,7 @@ public class Challenge
 
     public string Title { get; set; } = null!;
 
+    [SugarColumn(ColumnDataType = "longtext")]
     public string Description { get; set; } = null!;
 
     public string Sponsor { get; set; } = null!;

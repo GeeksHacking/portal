@@ -11,7 +11,7 @@ public class EventTimelineItem
 
     public string Title { get; set; } = null!;
 
-    [SugarColumn(IsNullable = true)]
+    [SugarColumn(IsNullable = true, ColumnDataType = "longtext")]
     public string? Description { get; set; }
 
     public DateTimeOffset StartTime { get; set; }

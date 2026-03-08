@@ -11,6 +11,7 @@ public class Workshop
 
     public string Title { get; set; } = null!;
 
+    [SugarColumn(ColumnDataType = "longtext")]
     public string Description { get; set; } = null!;
 
     public DateTimeOffset StartTime { get; set; }

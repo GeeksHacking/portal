@@ -9,6 +9,7 @@ public class ChallengeSubmission
     public Guid Id { get; set; }
 
     public string Title { get; set; } = string.Empty;
+    [SugarColumn(ColumnDataType = "longtext")]
     public string Description { get; set; } = string.Empty;
 
     [SugarColumn(ColumnDataType = "nvarchar(64)", SqlParameterDbType = typeof(UriConverter))]

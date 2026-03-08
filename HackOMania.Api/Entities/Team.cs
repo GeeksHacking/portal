@@ -20,6 +20,7 @@ public class Team
     /// <summary>
     /// Team / project description
     /// </summary>
+    [SugarColumn(ColumnDataType = "longtext")]
     public string Description { get; set; } = null!;
 
     /// <summary>

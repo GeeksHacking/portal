@@ -11,6 +11,7 @@ public class Hackathon
 
     public string Name { get; set; } = null!;
 
+    [SugarColumn(ColumnDataType = "longtext")]
     public string Description { get; set; } = null!;
 
     public string Venue { get; set; } = null!;

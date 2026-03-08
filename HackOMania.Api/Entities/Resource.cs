@@ -9,6 +9,7 @@ public class Resource
 
     public string Name { get; set; } = null!;
 
+    [SugarColumn(ColumnDataType = "longtext")]
     public string Description { get; set; } = null!;
 
     /// <summary>

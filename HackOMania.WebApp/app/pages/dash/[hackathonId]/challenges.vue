@@ -124,47 +124,42 @@ const isSubmitting = computed(() => createMutation.isPending.value || updateMuta
 
     <template #body>
       <div class="space-y-3">
-        <UCard>
-          <template #header>
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <h3 class="text-sm font-semibold">
-                Challenges
-              </h3>
-              <div class="flex items-center gap-2">
-                <UBadge
-                  variant="subtle"
-                  size="sm"
-                >
-                  {{ challenges.length }} total
-                </UBadge>
-                <UButton
-                  size="xs"
-                  icon="i-lucide-plus"
-                  @click="openCreateModal"
-                >
-                  Add
-                </UButton>
-              </div>
-            </div>
-          </template>
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <UBadge
+            variant="subtle"
+            size="sm"
+            class="w-fit"
+          >
+            {{ challenges.length }} total
+          </UBadge>
+          <UButton
+            size="xs"
+            icon="i-lucide-plus"
+            class="w-full sm:w-auto"
+            @click="openCreateModal"
+          >
+            Add Challenge
+          </UButton>
+        </div>
 
+        <div class="rounded-xl border border-(--ui-border) bg-(--ui-bg)">
           <div
             v-if="isLoadingChallenges"
-            class="text-(--ui-text-muted) text-sm"
+            class="px-4 py-4 text-sm text-(--ui-text-muted)"
           >
             Loading challenges...
           </div>
 
           <div
             v-else-if="!challenges.length"
-            class="text-(--ui-text-muted) text-sm"
+            class="px-4 py-4 text-sm text-(--ui-text-muted)"
           >
             No challenges yet.
           </div>
 
           <div
             v-else
-            class="divide-y divide-(--ui-border)"
+            class="divide-y divide-(--ui-border) px-4"
           >
             <div
               v-for="challenge in challenges"
@@ -211,7 +206,7 @@ const isSubmitting = computed(() => createMutation.isPending.value || updateMuta
               </div>
             </div>
           </div>
-        </UCard>
+        </div>
 
         <UModal v-model:open="isModalOpen">
           <template #content>

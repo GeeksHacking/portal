@@ -114,52 +114,46 @@ function toggleTeam(teamId: string) {
 
     <template #body>
       <div class="space-y-3">
-        <UCard>
-          <template #header>
-            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
-                <h3 class="text-sm font-semibold">
-                  Teams
-                </h3>
-                <UBadge
-                  variant="subtle"
-                  size="sm"
-                >
-                  <template v-if="teamSearchQuery">
-                    {{ filteredTeams.length }} shown · {{ teams.length }} total
-                  </template>
-                  <template v-else>
-                    {{ teams.length }} total
-                  </template>
-                </UBadge>
-              </div>
-              <UInput
-                v-model="teamSearchQuery"
-                icon="i-lucide-search"
-                placeholder="Search teams or members..."
-                size="sm"
-                class="w-full sm:max-w-xs"
-              />
-            </div>
-          </template>
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <UBadge
+            variant="subtle"
+            size="sm"
+            class="w-fit"
+          >
+            <template v-if="teamSearchQuery">
+              {{ filteredTeams.length }} shown · {{ teams.length }} total
+            </template>
+            <template v-else>
+              {{ teams.length }} total
+            </template>
+          </UBadge>
+          <UInput
+            v-model="teamSearchQuery"
+            icon="i-lucide-search"
+            placeholder="Search teams or members..."
+            size="sm"
+            class="w-full sm:max-w-xs"
+          />
+        </div>
 
+        <div class="rounded-xl border border-(--ui-border) bg-(--ui-bg)">
           <div
             v-if="isLoadingTeams"
-            class="text-(--ui-text-muted) text-sm"
+            class="px-4 py-4 text-sm text-(--ui-text-muted)"
           >
             Loading teams...
           </div>
 
           <div
             v-else-if="!teams.length"
-            class="text-(--ui-text-muted) text-sm"
+            class="px-4 py-4 text-sm text-(--ui-text-muted)"
           >
             No teams yet.
           </div>
 
           <div
             v-else-if="!filteredTeams.length"
-            class="text-(--ui-text-muted) text-sm"
+            class="px-4 py-4 text-sm text-(--ui-text-muted)"
           >
             No teams matching "{{ teamSearchQuery }}".
           </div>
@@ -167,7 +161,7 @@ function toggleTeam(teamId: string) {
           <div
             v-else
             v-bind="teamsContainerProps"
-            class="max-h-[40rem] overflow-y-auto"
+            class="max-h-[40rem] overflow-y-auto px-4"
           >
             <div
               v-bind="teamsWrapperProps"
@@ -206,7 +200,7 @@ function toggleTeam(teamId: string) {
                 <div>
                   <div
                     v-if="expandedTeamId === team.id"
-                    class="mt-3 ml-2 p-4 rounded-lg bg-(--ui-bg-elevated) border border-(--ui-border) max-h-96 overflow-y-auto space-y-3"
+                    class="mt-2 ml-1.5 max-h-96 space-y-3 overflow-y-auto rounded-lg border border-(--ui-border) bg-(--ui-bg-elevated) p-3"
                   >
                     <UFormField label="Challenge">
                       <UInput
@@ -248,7 +242,7 @@ function toggleTeam(teamId: string) {
               </div>
             </div>
           </div>
-        </UCard>
+        </div>
       </div>
     </template>
   </UDashboardPanel>

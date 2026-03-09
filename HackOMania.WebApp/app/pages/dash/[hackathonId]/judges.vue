@@ -108,40 +108,35 @@ const isSubmitting = computed(() => createMutation.isPending.value || updateMuta
 
     <template #body>
       <div class="space-y-3">
-        <UCard>
-          <template #header>
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <h3 class="text-sm font-semibold">
-                Judges
-              </h3>
-              <div class="flex items-center gap-2">
-                <UBadge
-                  variant="subtle"
-                  size="sm"
-                >
-                  {{ judges.length }} total
-                </UBadge>
-                <UButton
-                  size="xs"
-                  icon="i-lucide-plus"
-                  @click="openCreateModal"
-                >
-                  Add
-                </UButton>
-              </div>
-            </div>
-          </template>
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <UBadge
+            variant="subtle"
+            size="sm"
+            class="w-fit"
+          >
+            {{ judges.length }} total
+          </UBadge>
+          <UButton
+            size="xs"
+            icon="i-lucide-plus"
+            class="w-full sm:w-auto"
+            @click="openCreateModal"
+          >
+            Add Judge
+          </UButton>
+        </div>
 
+        <div class="rounded-xl border border-(--ui-border) bg-(--ui-bg)">
           <div
             v-if="isLoadingJudges"
-            class="text-(--ui-text-muted) text-sm"
+            class="px-4 py-4 text-sm text-(--ui-text-muted)"
           >
             Loading judges...
           </div>
 
           <div
             v-else-if="!judges.length"
-            class="text-(--ui-text-muted) text-sm"
+            class="px-4 py-4 text-sm text-(--ui-text-muted)"
           >
             No judges yet.
           </div>
@@ -149,7 +144,7 @@ const isSubmitting = computed(() => createMutation.isPending.value || updateMuta
           <div
             v-else
             v-bind="judgesContainerProps"
-            class="max-h-[36rem] overflow-y-auto"
+            class="max-h-[36rem] overflow-y-auto px-4"
           >
             <div
               v-bind="judgesWrapperProps"
@@ -186,7 +181,7 @@ const isSubmitting = computed(() => createMutation.isPending.value || updateMuta
               </div>
             </div>
           </div>
-        </UCard>
+        </div>
 
         <UModal v-model:open="isModalOpen">
           <template #content>

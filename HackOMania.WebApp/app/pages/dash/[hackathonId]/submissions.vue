@@ -53,7 +53,9 @@ const submissionDetailsMap = computed(() => {
   }>()
   for (const result of submissionDetailQueries.value) {
     const data = result.data
-    if (!data?.id) continue
+    if (!data?.id)
+      continue
+
     map.set(data.id, {
       description: data.description,
       demoUri: data.demoUri,
@@ -159,7 +161,8 @@ function formatDate(date: Date | null | undefined): string {
 
 // Excel export
 function exportToExcel() {
-  if (typeof window === 'undefined') return
+  if (typeof window === 'undefined')
+    return
 
   const rows = filteredSubmissions.value.map(s => ({
     'Title': s.title ?? '',
@@ -196,75 +199,68 @@ function exportToExcel() {
 
     <template #body>
       <div class="space-y-3">
-        <UCard>
-          <template #header>
-            <div class="flex flex-col gap-3">
-              <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
-                  <h3 class="text-sm font-semibold">
-                    Submissions
-                  </h3>
-                  <UBadge
-                    variant="subtle"
-                    size="sm"
-                  >
-                    <template v-if="searchQuery || selectedChallengeId">
-                      {{ filteredSubmissions.length }} shown · {{ enrichedSubmissions.length }} total
-                    </template>
-                    <template v-else>
-                      {{ enrichedSubmissions.length }} total
-                    </template>
-                  </UBadge>
-                </div>
-                <UButton
-                  icon="i-lucide-download"
-                  size="sm"
-                  variant="outline"
-                  :disabled="!filteredSubmissions.length"
-                  @click="exportToExcel"
-                >
-                  Export Excel
-                </UButton>
-              </div>
-              <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
-                <USelect
-                  :model-value="selectedChallengeId ?? undefined"
-                  :items="challengeFilterOptions"
-                  value-key="value"
-                  label-key="label"
-                  placeholder="All challenges"
-                  size="sm"
-                  class="w-full sm:max-w-xs"
-                  @update:model-value="selectedChallengeId = $event ?? null"
-                />
-                <UInput
-                  v-model="searchQuery"
-                  icon="i-lucide-search"
-                  placeholder="Search submissions..."
-                  size="sm"
-                  class="w-full sm:max-w-xs"
-                />
-              </div>
-            </div>
-          </template>
+        <div class="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+          <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+            <UBadge
+              variant="subtle"
+              size="sm"
+              class="w-fit"
+            >
+              <template v-if="searchQuery || selectedChallengeId">
+                {{ filteredSubmissions.length }} shown · {{ enrichedSubmissions.length }} total
+              </template>
+              <template v-else>
+                {{ enrichedSubmissions.length }} total
+              </template>
+            </UBadge>
+            <USelect
+              :model-value="selectedChallengeId ?? undefined"
+              :items="challengeFilterOptions"
+              value-key="value"
+              label-key="label"
+              placeholder="All challenges"
+              size="sm"
+              class="w-full sm:max-w-xs"
+              @update:model-value="selectedChallengeId = $event ?? null"
+            />
+            <UInput
+              v-model="searchQuery"
+              icon="i-lucide-search"
+              placeholder="Search submissions..."
+              size="sm"
+              class="w-full sm:max-w-xs"
+            />
+          </div>
+          <UButton
+            icon="i-lucide-download"
+            size="sm"
+            variant="outline"
+            class="w-full sm:w-auto"
+            :disabled="!filteredSubmissions.length"
+            @click="exportToExcel"
+          >
+            Export Excel
+          </UButton>
+        </div>
 
+        <div class="rounded-xl border border-(--ui-border) bg-(--ui-bg)">
           <div
             v-if="isLoadingSubmissions"
-            class="text-(--ui-text-muted) text-sm"
+            class="px-4 py-4 text-sm text-(--ui-text-muted)"
           >
             Loading submissions...
           </div>
 
           <div
             v-else-if="!enrichedSubmissions.length"
-            class="text-(--ui-text-muted) text-sm"
+            class="px-4 py-4 text-sm text-(--ui-text-muted)"
           >
             No submissions yet.
           </div>
 
           <div
             v-else-if="!filteredSubmissions.length"
-            class="text-(--ui-text-muted) text-sm"
+            class="px-4 py-4 text-sm text-(--ui-text-muted)"
           >
             No submissions matching your filters.
           </div>
@@ -272,7 +268,7 @@ function exportToExcel() {
           <div
             v-else
             v-bind="submissionsContainerProps"
-            class="max-h-[40rem] overflow-y-auto"
+            class="max-h-[40rem] overflow-y-auto px-4"
           >
             <div
               v-bind="submissionsWrapperProps"
@@ -340,7 +336,7 @@ function exportToExcel() {
               </div>
             </div>
           </div>
-        </UCard>
+        </div>
 
         <UModal v-model:open="isDetailOpen">
           <template #content>

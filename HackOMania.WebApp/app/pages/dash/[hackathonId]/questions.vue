@@ -230,46 +230,40 @@ function getTypeName(type: number | null | undefined): string {
 
     <template #body>
       <div class="space-y-3">
-        <UCard>
-          <template #header>
-            <div class="flex items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <h3 class="text-sm font-semibold">
-                  Questions
-                </h3>
-                <UBadge
-                  v-if="questions.length"
-                  variant="subtle"
-                  size="xs"
-                >
-                  {{ questions.length }}
-                </UBadge>
-              </div>
-              <div
-                v-if="questions.length && !isCreating && !editingId"
-                class="flex gap-2"
-              >
-                <UButton
-                  size="xs"
-                  variant="ghost"
-                  color="error"
-                  icon="i-lucide-trash-2"
-                  :loading="deleteMutation.isPending.value"
-                  @click="deleteAllQuestions"
-                >
-                  Delete All
-                </UButton>
-                <UButton
-                  size="xs"
-                  icon="i-lucide-plus"
-                  @click="startCreating"
-                >
-                  Add Question
-                </UButton>
-              </div>
-            </div>
-          </template>
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <UBadge
+            v-if="questions.length"
+            variant="subtle"
+            size="xs"
+            class="w-fit"
+          >
+            {{ questions.length }}
+          </UBadge>
+          <div
+            v-if="questions.length && !isCreating && !editingId"
+            class="flex flex-col gap-2 sm:flex-row"
+          >
+            <UButton
+              size="xs"
+              variant="ghost"
+              color="error"
+              icon="i-lucide-trash-2"
+              :loading="deleteMutation.isPending.value"
+              @click="deleteAllQuestions"
+            >
+              Delete All
+            </UButton>
+            <UButton
+              size="xs"
+              icon="i-lucide-plus"
+              @click="startCreating"
+            >
+              Add Question
+            </UButton>
+          </div>
+        </div>
 
+        <div class="rounded-xl border border-(--ui-border) bg-(--ui-bg) px-4 py-3">
           <div
             v-if="isLoading"
             class="text-(--ui-text-muted) text-sm"
@@ -614,7 +608,7 @@ function getTypeName(type: number | null | undefined): string {
               </form>
             </div>
           </div>
-        </UCard>
+        </div>
       </div>
     </template>
   </UDashboardPanel>

@@ -228,7 +228,7 @@ public class DefaultStack : Stack
                 Location = "asia-southeast1",
                 Description = "HackOMania API Service",
                 Ingress = "INGRESS_TRAFFIC_ALL",
-                Scaling = new ServiceScalingArgs { MinInstanceCount = 1, MaxInstanceCount = 1 },
+                Scaling = new ServiceScalingArgs { MinInstanceCount = 0, MaxInstanceCount = 1 },
                 Template = new ServiceTemplateArgs
                 {
                     ServiceAccount = cloudRunServiceAccount.Email,
@@ -244,7 +244,7 @@ public class DefaultStack : Stack
                             },
                             Resources = new ServiceTemplateContainerResourcesArgs
                             {
-                                Limits = { { "cpu", "0.2" }, { "memory", "256Mi" } },
+                                Limits = { { "cpu", "1" }, { "memory", "256Mi" } },
                             },
                             StartupProbe = new ServiceTemplateContainerStartupProbeArgs
                             {

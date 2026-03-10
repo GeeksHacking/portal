@@ -245,7 +245,7 @@ public class DefaultStack : Stack
                             },
                             Resources = new ServiceTemplateContainerResourcesArgs
                             {
-                                Limits = { { "cpu", "0.08" }, { "memory", "128Mi" } },
+                                Limits = { { "cpu", "0.8" }, { "memory", "512Mi" } },
                                 CpuIdle = true,
                             },
                             StartupProbe = new ServiceTemplateContainerStartupProbeArgs

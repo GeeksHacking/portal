@@ -243,7 +243,14 @@ function formatDateTime(value: Date | null | undefined) {
 }
 
 function matchesSearch(participant: ParticipantItem, query: string) {
-  const base = [participant.name, participant.teamName, participant.id]
+  const participantId = (participant.id ?? '').toLowerCase()
+  const normalizedIdQuery = query.toLowerCase().replace(/[^a-z0-9]/g, '')
+  const normalizedParticipantId = participantId.replace(/[^a-z0-9]/g, '')
+
+  if (participantId.includes(query) || (normalizedIdQuery && normalizedParticipantId.includes(normalizedIdQuery)))
+    return true
+
+  const base = [participant.name, participant.teamName]
     .filter(Boolean)
     .join(' ')
     .toLowerCase()
@@ -665,7 +672,7 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
                     v-model="searchQuery"
                     size="sm"
                     icon="i-lucide-search"
-                    placeholder="Search participants, teams, or answers"
+                    placeholder="Search participants, teams, IDs, or answers"
                     class="w-full sm:w-60"
                   />
                   <USelect

@@ -5,11 +5,12 @@ ENV ASPNETCORE_URLS=http://+:${PORT}
 EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/nightly/sdk:11.0-preview AS subset
+RUN dotnet tool install --global dotnet-subset --version 0.3.2
+ENV PATH="$PATH:/root/.dotnet/tools"
 WORKDIR /src
 COPY . .
-RUN dotnet tool install --tool-path /tools dotnet-subset \
-    && /tools/dotnet-subset restore "HackOMania.Api/HackOMania.Api.csproj" \
-        --root-directory /src --output /src/restore_subset/
+RUN dotnet-subset restore "HackOMania.Api/HackOMania.Api.csproj" \
+    --root-directory /src --output /src/restore_subset/
 
 FROM mcr.microsoft.com/dotnet/nightly/sdk:11.0-preview AS build
 ARG BUILD_CONFIGURATION=Release

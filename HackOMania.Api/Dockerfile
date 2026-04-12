@@ -7,7 +7,9 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/nightly/sdk:11.0-preview AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["HackOMania.Api/HackOMania.Api.csproj", "HackOMania.Api/"]
+COPY global.json ./
+COPY */*.csproj ./
+RUN for file in *.csproj; do mkdir -p "${file%.*}/" && mv "$file" "${file%.*}/"; done
 RUN dotnet restore "HackOMania.Api/HackOMania.Api.csproj"
 COPY . .
 WORKDIR "/src/HackOMania.Api"

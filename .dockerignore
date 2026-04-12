@@ -1,0 +1,7 @@
+**/.git
+**/.vs
+**/.idea
+**/bin
+**/obj
+**/node_modules
+HackOMania.WebApp

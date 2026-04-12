@@ -4,18 +4,12 @@ ENV PORT=8080
 ENV ASPNETCORE_URLS=http://+:${PORT}
 EXPOSE 8080
 
-FROM mcr.microsoft.com/dotnet/nightly/sdk:11.0-preview AS prepare-restore-files
-ENV PATH="${PATH}:/root/.dotnet/tools"
-RUN dotnet tool install --global --no-cache dotnet-subset --version 0.3.2
-WORKDIR /src
-COPY . .
-RUN dotnet subset restore "HackOMania.Api/HackOMania.Api.csproj" \
-    --root-directory /src --output /src/restore_subset/
-
 FROM mcr.microsoft.com/dotnet/nightly/sdk:11.0-preview AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY --from=prepare-restore-files /src/restore_subset/ .
+COPY global.json ./
+COPY */*.csproj ./
+RUN for file in *.csproj; do mkdir -p "${file%.*}/" && mv "$file" "${file%.*}/"; done
 RUN dotnet restore "HackOMania.Api/HackOMania.Api.csproj"
 COPY . .
 WORKDIR "/src/HackOMania.Api"

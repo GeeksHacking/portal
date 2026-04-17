@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.1.2">
+<Project Sdk="Aspire.AppHost.Sdk/13.2.0">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net11.0</TargetFramework>
@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.JavaScript" Version="13.1.2" />
-    <PackageReference Include="Aspire.Hosting.MySql" Version="13.1.2" />
+    <PackageReference Include="Aspire.Hosting.JavaScript" Version="13.2.2" />
+    <PackageReference Include="Aspire.Hosting.MySql" Version="13.2.2" />
   </ItemGroup>
 </Project>

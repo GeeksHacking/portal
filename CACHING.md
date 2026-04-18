@@ -175,6 +175,8 @@ SqlSugar automatically generates cache keys based on:
 - Query parameters
 - Table names
 
+For hot hackathon endpoints, explicitly defined cache keys are used via `.WithCache("...")` (for example `hackathon:details:{id}` and `hackathon:public-list`) to make cache intent easier to understand while preserving table-based invalidation. Public details keys also normalize the route token (`Guid` as `"D"` format, short code lowercased) so equivalent requests map to the same key.
+
 **User-Specific Data**: Queries with `WHERE userId = {userId}` get unique cache keys per user, providing natural isolation.
 
 **Navigation Properties**: Queries using `.Includes()` for navigation properties should **NOT** use `.WithCache()` as SqlSugar's caching doesn't properly serialize/deserialize navigation properties. Load related entities separately or use explicit joins instead.

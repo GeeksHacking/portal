@@ -23,9 +23,10 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        var hackathonCacheKey = $"hackathon:details:{req.HackathonId}";
         var hackathon = await sql.Queryable<HackathonEntity>()
             .Where(h => h.Id == req.HackathonId)
-            .WithCache()
+            .WithCache(hackathonCacheKey)
             .FirstAsync(ct);
 
         if (hackathon is null)
@@ -36,7 +37,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var emailTemplates = await sql.Queryable<HackathonNotificationTemplate>()
             .Where(t => t.HackathonId == hackathon.Id)
-            .WithCache()
+            .WithCache($"hackathon:details:{hackathon.Id}:notification-templates")
             .ToListAsync(ct);
         var emailTemplateMap = emailTemplates
             .GroupBy(t => t.EventKey, StringComparer.OrdinalIgnoreCase)

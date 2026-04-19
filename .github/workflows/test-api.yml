@@ -7,6 +7,12 @@ on:
       - "GeeksHackingPortal.Tests/**"
       - "GeeksHackingPortal.ServiceDefaults/**"
       - ".github/workflows/test-api.yml"
+  push:
+    paths:
+      - "GeeksHackingPortal.Api/**"
+      - "GeeksHackingPortal.Tests/**"
+      - "GeeksHackingPortal.ServiceDefaults/**"
+      - ".github/workflows/test-api.yml"
 
 jobs:
   test:

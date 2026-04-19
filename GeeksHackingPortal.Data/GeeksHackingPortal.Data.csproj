@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SqlSugarCore" Version="5.1.4.214" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\GeeksHackingPortal.Api\Converters\UriConverter.cs" Link="Converters\UriConverter.cs" />
+    <Compile Include="..\GeeksHackingPortal.Api\Entities\**\*.cs" Link="Entities\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

@@ -32,7 +32,7 @@ public class GlobalHooks
         );
         Environment.SetEnvironmentVariable("Parameters__app-frontend-url", "http://localhost:3000");
 
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<GeeksHackingPortal_Api>([
+        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<GeeksHackingPortal_AppHost>([
             "UseVolumes=false", // We do not want DB data to be persisted and conflict with local development data
         ]);
 

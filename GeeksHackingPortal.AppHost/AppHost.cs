@@ -16,12 +16,20 @@ if (builder.Configuration.GetValue("UseVolumes", true))
 
 var db = mysql.AddDatabase("db");
 
+var migrations = builder
+    .AddProject<GeeksHackingPortal_DbMigrator>("db-migrator")
+    .WithArgs("apply", "--seed-development-template")
+    .WithReference(db)
+    .WaitFor(db);
+
 var api = builder
     .AddProject<GeeksHackingPortal_Api>("api")
     .WithReference(db)
+    .WithReference(migrations)
     .WithEnvironment("App:FrontendUrl", appFrontendUrl)
     .WithEnvironment("GitHub:ClientId", githubClientId)
     .WithEnvironment("GitHub:ClientSecret", githubClientSecret)
+    .WaitForCompletion(migrations)
     .WaitFor(db);
 
 builder

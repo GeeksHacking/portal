@@ -4,9 +4,9 @@ using FastEndpoints.Swagger;
 using GeeksHackingPortal.Api;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.DataProtection;
+using GeeksHackingPortal.Api.Entities;
 using GeeksHackingPortal.Api.Options;
 using GeeksHackingPortal.Api.Services;
-using GeeksHackingPortal.Api.Workers;
 using Google.Cloud.Diagnostics.AspNetCore3;
 using Google.Cloud.Diagnostics.Common;
 using Google.Cloud.Storage.V1;
@@ -63,19 +63,23 @@ builder.Services.AddSingleton<ICacheService, InMemoryCacheService>();
 
 builder.Services.AddSingleton<ISqlSugarClient>(s =>
 {
+    var connectionString =
+        builder.Configuration.GetConnectionString("db")
+        ?? throw new InvalidOperationException("ConnectionStrings:db is required.");
+
     return new SqlSugarScope(
         new ConnectionConfig
         {
             DbType = DbType.MySql,
-            ConnectionString = builder.Configuration.GetConnectionString("db"),
+            ConnectionString = connectionString,
             IsAutoCloseConnection = true,
+            MoreSettings = new ConnMoreSettings { IsAutoRemoveDataCache = true },
             ConfigureExternalServices = new ConfigureExternalServices
             {
                 DataInfoCacheService = s.GetRequiredService<ICacheService>(),
             },
-            MoreSettings = new ConnMoreSettings { IsAutoRemoveDataCache = true },
         },
-        db => { }
+        _ => { }
     );
 });
 
@@ -270,10 +274,44 @@ builder.Services.AddScoped<IAuthorizationHandler, ParticipantForHackathonHandler
 builder.Services.AddScoped<IAuthorizationHandler, TeamMemberForHackathonTeamHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, TeamCreatorForHackathonTeamHandler>();
 
-builder.Services.AddSingleton<DatabaseInitBackgroundService>();
-
 var app = builder.Build();
-await app.Services.GetRequiredService<DatabaseInitBackgroundService>().InitializeAsync();
+var sql = app.Services.GetRequiredService<ISqlSugarClient>();
+var entityTypes = GetEntityTypes();
+var schemaDifferenceProvider = sql.CodeFirst.GetDifferenceTables(entityTypes);
+var schemaDifferences = schemaDifferenceProvider.ToDiffList().Where(table => table.IsDiff).ToArray();
+if (schemaDifferences.Length > 0)
+{
+    var diffString = schemaDifferenceProvider.ToDiffString()?.Trim();
+    app.Logger.LogError(
+        "Database schema does not match the current SqlSugar models. Apply the pending changes before starting the API."
+    );
+
+    foreach (var table in schemaDifferences)
+    {
+        app.Logger.LogError(
+            "{TableName}: +{Additions} ~{Updates} -{Deletions} remarks:{Remarks}",
+            table.TableName,
+            table.AddColums.Count,
+            table.UpdateColums.Count,
+            table.DeleteColums.Count,
+            table.UpdateRemark.Count
+        );
+
+        foreach (var message in GetDiffMessages(table))
+        {
+            app.Logger.LogError("{Message}", message);
+        }
+    }
+
+    if (!string.IsNullOrWhiteSpace(diffString))
+    {
+        app.Logger.LogError("{SchemaDiff}", diffString);
+    }
+
+    throw new InvalidOperationException(
+        "Database schema does not match the current SqlSugar models. Review the diff and apply the schema changes before starting the API."
+    );
+}
 
 app.UseForwardedHeaders();
 app.UseCors();
@@ -286,3 +324,23 @@ app.MapScalarApiReference();
 app.MapDefaultEndpoints();
 
 app.Run();
+
+static Type[] GetEntityTypes() =>
+    typeof(User).Assembly.GetTypes()
+        .Where(type =>
+            type.IsClass
+            && !type.IsAbstract
+            && !type.IsGenericTypeDefinition
+            && string.Equals(type.Namespace, "GeeksHackingPortal.Api.Entities", StringComparison.Ordinal)
+        )
+        .OrderBy(type => type.FullName, StringComparer.Ordinal)
+        .ToArray();
+
+static IEnumerable<string> GetDiffMessages(TableDifferenceInfo table) =>
+    table.AddColums
+        .Concat(table.UpdateColums)
+        .Concat(table.DeleteColums)
+        .Concat(table.UpdateRemark)
+        .Select(column => column.Message)
+        .Where(message => !string.IsNullOrWhiteSpace(message))
+        .Select(message => message!);

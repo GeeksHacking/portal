@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "GeeksHackingPortal.Api/**"
+      - "GeeksHackingPortal.DbMigrator/**"
       - ".github/workflows/deploy-api.yml"
     branches: ["main"]
 
@@ -18,7 +19,146 @@ on:
           - production
 
 jobs:
+  # Generate a human-readable schema diff before any deploy work starts.
+  # The later apply job is gated on this result so reviewers can inspect drift first.
+  database-diff:
+    concurrency: deploy
+    runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.diff.outputs.has_changes }}
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_NOLOGO: true
+      NUGET_XMLDOC_MODE: skip
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.202
+          cache: true
+          cache-dependency-path: |
+            global.json
+            **/*.csproj
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          token_format: access_token
+          workload_identity_provider: projects/242247218750/locations/global/workloadIdentityPools/github/providers/github
+          service_account: hackomania-api-deployer@hackomania-event-portal.iam.gserviceaccount.com
+
+      - name: Read database connection string
+        id: secrets
+        uses: google-github-actions/get-secretmanager-secrets@v3
+        with:
+          secrets: |-
+            tidb_connection_string:hackomania-event-portal/tidb-connection-string
+
+      - name: Generate database schema diff
+        id: diff
+        shell: bash
+        run: |
+          # Capture the migrator output into a file so we can both print it and upload it.
+          # The diff command returns 0 when there are no changes and 2 when drift exists.
+          set +e
+          dotnet run --project GeeksHackingPortal.DbMigrator --configuration Release -- diff > db-schema-diff.txt 2>&1
+          status=$?
+          cat db-schema-diff.txt
+
+          # Convert the migrator exit code into a workflow output instead of failing the job.
+          if [ "$status" -eq 0 ]; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          elif [ "$status" -eq 2 ]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            exit "$status"
+          fi
+
+          # Publish the same diff into the workflow summary so approvers can read it in the UI.
+          {
+            echo "## Database Schema Diff"
+            echo ""
+            echo "\`\`\`text"
+            cat db-schema-diff.txt
+            echo "\`\`\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+        env:
+          ConnectionStrings__db: ${{ steps.secrets.outputs.tidb_connection_string }}
+
+      - name: Upload database diff artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-schema-diff
+          path: db-schema-diff.txt
+
+  # This job is intentionally separate so GitHub environment protection can pause here
+  # and require human approval before applying schema changes to the live database.
+  apply-database-changes:
+    needs: database-diff
+    if: needs.database-diff.outputs.has_changes == 'true'
+    concurrency: deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: production-database
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_NOLOGO: true
+      NUGET_XMLDOC_MODE: skip
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.202
+          cache: true
+          cache-dependency-path: |
+            global.json
+            **/*.csproj
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          token_format: access_token
+          workload_identity_provider: projects/242247218750/locations/global/workloadIdentityPools/github/providers/github
+          service_account: hackomania-api-deployer@hackomania-event-portal.iam.gserviceaccount.com
+
+      - name: Read database connection string
+        id: secrets
+        uses: google-github-actions/get-secretmanager-secrets@v3
+        with:
+          secrets: |-
+            tidb_connection_string:hackomania-event-portal/tidb-connection-string
+
+      - name: Apply approved database schema changes
+        run: dotnet run --project GeeksHackingPortal.DbMigrator --configuration Release -- apply
+        env:
+          ConnectionStrings__db: ${{ steps.secrets.outputs.tidb_connection_string }}
+
+  # Only build and deploy once the diff job succeeded and any required schema apply either
+  # completed successfully or was skipped because there was no database drift.
   build-and-deploy:
+    needs:
+      - database-diff
+      - apply-database-changes
+    if: |
+      always() &&
+      needs.database-diff.result == 'success' &&
+      (needs.apply-database-changes.result == 'success' || needs.apply-database-changes.result == 'skipped')
     concurrency: deploy
     runs-on: ubuntu-latest
     env:

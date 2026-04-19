@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GeeksHackingPortal.Api\GeeksHackingPortal.Api.csproj" />
+    <ProjectReference Include="..\GeeksHackingPortal.DbMigrator\GeeksHackingPortal.DbMigrator.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -29,6 +29,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GeeksHackingPortal.Data\GeeksHackingPortal.Data.csproj" />
     <ProjectReference Include="..\GeeksHackingPortal.ServiceDefaults\GeeksHackingPortal.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Converters\UriConverter.cs" />
+    <Compile Remove="Entities\**\*.cs" />
   </ItemGroup>
 </Project>

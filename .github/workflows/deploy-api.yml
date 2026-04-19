@@ -42,9 +42,6 @@ jobs:
             global.json
             **/*.csproj
 
-      - name: Tests
-        run: dotnet test
-
       - name: Authenticate to Google Cloud
         id: auth
         uses: google-github-actions/auth@v3

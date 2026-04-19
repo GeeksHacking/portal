@@ -13,7 +13,7 @@ import {
   HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject,
   HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject,
 } from '~/api-client/models'
-import { participantOrganizerQueries, useBanUserMutation, useReviewParticipantMutation, useUnbanUserMutation } from '~/composables/participants'
+import { participantOrganizerQueries, useReviewParticipantMutation } from '~/composables/participants'
 import { registrationQuestionQueries } from '~/composables/question'
 import { registrationPageConfig } from '~/config/registration-pages'
 
@@ -73,10 +73,6 @@ const activeFilter = ref<FilterStatus>('all')
 
 function isIncomplete(p: ParticipantItem) {
   return !p.registrationSubmissions?.length
-}
-
-function isBannedParticipant(participant: ParticipantItem) {
-  return participant.isBanned === true
 }
 
 function isPendingStatus(status: ParticipantConcludedStatus | null | undefined) {
@@ -467,16 +463,11 @@ function toggleParticipant(participantId: string) {
 
 // Review mutation
 const reviewMutation = useReviewParticipantMutation(hackathonId)
-const banMutation = useBanUserMutation()
-const unbanMutation = useUnbanUserMutation()
 
 // Modal state
 const isReviewModalOpen = ref(false)
 const reviewingParticipantId = ref<string | null>(null)
 const reviewReason = ref('')
-const isBanModalOpen = ref(false)
-const banningParticipantId = ref<string | null>(null)
-const banReason = ref('')
 
 const pendingParticipants = computed(() => participants.value.filter(p => isPendingParticipant(p)))
 const prioritizedPendingParticipants = computed(() => {
@@ -522,14 +513,6 @@ const hasNoExpandedData = computed(() => {
   return !participantDetail.value?.reviews?.length && !sortedSubmissions.value.length
 })
 
-const banningParticipant = computed(() => {
-  if (!banningParticipantId.value)
-    return null
-  return participants.value.find(p => p.id === banningParticipantId.value) ?? null
-})
-
-const banningParticipantName = computed(() => banningParticipant.value?.name ?? banningParticipant.value?.id ?? '')
-
 const reviewModalTitle = computed(() => {
   return isReReview.value ? 'Re-review Participant' : 'Review Participant'
 })
@@ -559,20 +542,6 @@ function closeReviewModal() {
   isReviewModalOpen.value = false
   reviewingParticipantId.value = null
   reviewReason.value = ''
-}
-
-function openBanModal(participantId: string) {
-  if (!participantId)
-    return
-  banningParticipantId.value = participantId
-  banReason.value = ''
-  isBanModalOpen.value = true
-}
-
-function closeBanModal() {
-  isBanModalOpen.value = false
-  banningParticipantId.value = null
-  banReason.value = ''
 }
 
 async function handleReview(decision: 'accept' | 'reject') {
@@ -620,54 +589,6 @@ async function handleReview(decision: 'accept' | 'reject') {
 
     toast.add({
       title: 'Review failed',
-      description: 'Please try again.',
-      color: 'error',
-    })
-  }
-}
-
-async function handleBan() {
-  if (!banningParticipantId.value)
-    return
-
-  try {
-    await banMutation.mutateAsync({
-      userId: banningParticipantId.value,
-      reason: banReason.value.trim() || null,
-    })
-    await queryClient.invalidateQueries({ queryKey: ['hackathons', hackathonId.value, 'participants', 'organizer'] })
-    closeBanModal()
-    toast.add({
-      title: 'User banned',
-      description: 'Future authenticated requests from this account will return not found.',
-      color: 'success',
-    })
-  }
-  catch {
-    toast.add({
-      title: 'Ban failed',
-      description: 'Please try again.',
-      color: 'error',
-    })
-  }
-}
-
-async function handleUnban(participantId: string) {
-  if (!participantId)
-    return
-
-  try {
-    await unbanMutation.mutateAsync(participantId)
-    await queryClient.invalidateQueries({ queryKey: ['hackathons', hackathonId.value, 'participants', 'organizer'] })
-    toast.add({
-      title: 'User unbanned',
-      description: 'The account can access authenticated requests again.',
-      color: 'success',
-    })
-  }
-  catch {
-    toast.add({
-      title: 'Unban failed',
       description: 'Please try again.',
       color: 'error',
     })
@@ -891,12 +812,6 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
                       <p class="text-xs text-(--ui-text-muted)">
                         Applied: {{ formatDateTime(getParticipantApplicationDate(participant)) }}
                       </p>
-                      <p
-                        v-if="isBannedParticipant(participant)"
-                        class="text-xs text-error"
-                      >
-                        Banned{{ participant.banReason ? `: ${participant.banReason}` : '' }}
-                      </p>
                     </div>
                     <div class="flex items-center gap-2 ml-2">
                       <template v-if="!isIncomplete(participant)">
@@ -915,14 +830,6 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
                         >
                           Overdue ({{ REVIEW_OVERDUE_DAYS }}d+)
                         </UBadge>
-                        <UBadge
-                          v-if="isBannedParticipant(participant)"
-                          color="error"
-                          variant="subtle"
-                          size="xs"
-                        >
-                          Banned
-                        </UBadge>
                         <UButton
                           size="xs"
                           :variant="isPendingParticipant(participant) ? 'soft' : 'ghost'"
@@ -933,15 +840,6 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
                           {{ isPendingParticipant(participant) ? 'Review' : 'Re-review' }}
                         </UButton>
                       </template>
-                      <UButton
-                        size="xs"
-                        :color="isBannedParticipant(participant) ? 'success' : 'error'"
-                        variant="ghost"
-                        :loading="unbanMutation.isPending.value || banMutation.isPending.value"
-                        @click="isBannedParticipant(participant) ? handleUnban(participant.id ?? '') : openBanModal(participant.id ?? '')"
-                      >
-                        {{ isBannedParticipant(participant) ? 'Unban' : 'Ban' }}
-                      </UButton>
                       <UBadge
                         v-if="isIncomplete(participant)"
                         color="neutral"
@@ -1003,27 +901,6 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
                             </p>
                           </div>
                         </div>
-                      </div>
-
-                      <div
-                        v-if="participantDetail?.isBanned"
-                        class="mb-4 rounded-lg border border-error/30 bg-error/5 p-3"
-                      >
-                        <h4 class="text-sm font-semibold mb-1">
-                          Ban Status
-                        </h4>
-                        <p class="text-sm">
-                          This account is currently banned.
-                        </p>
-                        <p class="text-xs text-(--ui-text-muted)">
-                          Since: {{ formatDateTime(participantDetail.bannedAt) }}
-                        </p>
-                        <p
-                          v-if="participantDetail.banReason"
-                          class="text-xs text-(--ui-text-muted) mt-1"
-                        >
-                          Reason: {{ participantDetail.banReason }}
-                        </p>
                       </div>
 
                       <div v-if="sortedSubmissions.length">
@@ -1117,15 +994,6 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
                     >
                       Overdue
                     </UBadge>
-                    <UBadge
-                      v-if="isBannedParticipant(row.original)"
-                      color="error"
-                      variant="subtle"
-                      size="xs"
-                      class="ml-1"
-                    >
-                      Banned
-                    </UBadge>
                   </template>
                   <UBadge
                     v-else
@@ -1148,14 +1016,6 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
                       @click="openReviewModal(row.original.id ?? '')"
                     >
                       {{ isPendingParticipant(row.original) ? 'Review' : 'Re-review' }}
-                    </UButton>
-                    <UButton
-                      size="xs"
-                      :color="isBannedParticipant(row.original) ? 'success' : 'error'"
-                      variant="ghost"
-                      @click="isBannedParticipant(row.original) ? handleUnban(row.original.id ?? '') : openBanModal(row.original.id ?? '')"
-                    >
-                      {{ isBannedParticipant(row.original) ? 'Unban' : 'Ban' }}
                     </UButton>
                   </div>
                 </template>
@@ -1306,54 +1166,6 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
                       @click="handleReview('accept')"
                     >
                       Approve
-                    </UButton>
-                  </div>
-                </div>
-              </UCard>
-            </div>
-          </template>
-        </UModal>
-
-        <UModal
-          v-model:open="isBanModalOpen"
-          title="Ban user account"
-          description="The user can still reach the portal, but authenticated API requests will silently fail."
-        >
-          <template #content>
-            <div class="overflow-auto max-h-[80vh]">
-              <UCard>
-                <div class="space-y-4">
-                  <div class="rounded-lg border border-default p-3 text-sm">
-                    <p>
-                      <strong>User:</strong> {{ banningParticipantName || 'Unknown user' }}
-                    </p>
-                    <p class="text-(--ui-text-muted) text-xs mt-1">
-                      This applies globally to the account, not just this hackathon.
-                    </p>
-                  </div>
-
-                  <UFormField label="Reason (optional)">
-                    <UTextarea
-                      v-model="banReason"
-                      :rows="3"
-                      placeholder="Internal note for why the account is being banned..."
-                    />
-                  </UFormField>
-
-                  <div class="flex justify-end gap-2">
-                    <UButton
-                      variant="ghost"
-                      :disabled="banMutation.isPending.value"
-                      @click="closeBanModal"
-                    >
-                      Cancel
-                    </UButton>
-                    <UButton
-                      color="error"
-                      :loading="banMutation.isPending.value"
-                      @click="handleBan"
-                    >
-                      Ban account
                     </UButton>
                   </div>
                 </div>

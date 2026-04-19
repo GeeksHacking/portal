@@ -13,9 +13,6 @@ public class ParticipantItem
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = "";
-    public bool IsBanned { get; set; }
-    public DateTimeOffset? BannedAt { get; set; }
-    public string? BanReason { get; set; }
     public Guid? TeamId { get; set; }
     public string? TeamName { get; set; }
     public string ConcludedStatus { get; set; } = "";
@@ -55,12 +52,4 @@ public class BatchEmailResponse
     public int AcceptedEmailsSent { get; set; }
     public int RejectedEmailsSent { get; set; }
     public List<string> Errors { get; set; } = [];
-}
-
-public class UserBanStateResponse
-{
-    public Guid UserId { get; set; }
-    public bool IsBanned { get; set; }
-    public DateTimeOffset? BannedAt { get; set; }
-    public string? BanReason { get; set; }
 }

@@ -4,7 +4,6 @@ using FastEndpoints.Swagger;
 using GeeksHackingPortal.Api;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.DataProtection;
-using GeeksHackingPortal.Api.Middleware;
 using GeeksHackingPortal.Api.Options;
 using GeeksHackingPortal.Api.Services;
 using GeeksHackingPortal.Api.Workers;
@@ -280,7 +279,6 @@ app.UseForwardedHeaders();
 app.UseCors();
 
 app.UseAuthentication();
-app.UseMiddleware<BannedUserMiddleware>();
 app.UseAuthorization();
 app.UseFastEndpoints(c => c.Serializer.Options.Converters.Add(new JsonStringEnumConverter()));
 app.UseSwaggerGen(options => options.Path = "/openapi/{documentName}.json");

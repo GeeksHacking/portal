@@ -25,17 +25,6 @@ public class MembershipService(ISqlSugarClient sql, IOptions<AppOptions> appOpti
         return user is not null && IsAdmin(user);
     }
 
-    public bool IsBanned(User user)
-    {
-        return user.BannedAt is not null;
-    }
-
-    public async Task<bool> IsBanned(Guid userId, CancellationToken ct = default)
-    {
-        var user = await GetUser(userId, ct);
-        return user is not null && IsBanned(user);
-    }
-
     public bool IsAdmin(User user)
     {
         return _adminEmails.Contains(user.Email) || IsAdminByGitHubLogin(user);

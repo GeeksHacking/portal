@@ -1897,14 +1897,11 @@ export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticip
 // @ts-ignore
 export function deserializeIntoHackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem(hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem: Partial<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "banReason": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.banReason = n.getStringValue(); },
-        "bannedAt": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.bannedAt = n.getDateValue(); },
         "concludedStatus": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.concludedStatus = n.getEnumValue<HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus>(HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject); },
         "createdAt": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.createdAt = n.getDateValue(); },
         "email": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.email = n.getStringValue(); },
         "emailSentCount": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.emailSentCount = n.getNumberValue(); },
         "id": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.id = n.getStringValue(); },
-        "isBanned": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.isBanned = n.getBooleanValue(); },
         "isWithdrawn": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.isWithdrawn = n.getBooleanValue(); },
         "lastEmailSentAt": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.lastEmailSentAt = n.getDateValue(); },
         "lastEmailStatus": n => { hackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem.lastEmailStatus = n.getStringValue(); },
@@ -4403,14 +4400,6 @@ export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsGetRespons
 export type HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus = (typeof HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject)[keyof typeof HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject];
 export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem extends Parsable {
     /**
-     * The banReason property
-     */
-    banReason?: string | null;
-    /**
-     * The bannedAt property
-     */
-    bannedAt?: Date | null;
-    /**
      * The concludedStatus property
      */
     concludedStatus?: HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus | null;
@@ -4434,10 +4423,6 @@ export interface HackOManiaApiEndpointsOrganizersHackathonParticipantsListPartic
      * The isWithdrawn property
      */
     isWithdrawn?: boolean | null;
-    /**
-     * The isBanned property
-     */
-    isBanned?: boolean | null;
     /**
      * The lastEmailSentAt property
      */

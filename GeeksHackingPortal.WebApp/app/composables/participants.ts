@@ -51,40 +51,6 @@ export function useReviewParticipantMutation(hackathonId: MaybeRefOrGetter<strin
   })
 }
 
-export interface OrganizerUserBanStateResponse {
-  userId: string
-  isBanned: boolean
-  bannedAt?: string | null
-  banReason?: string | null
-}
-
-export function useBanUserMutation() {
-  return useMutation({
-    async mutationFn(data: { userId: string, reason?: string | null }) {
-      const config = useRuntimeConfig()
-      return await $fetch<OrganizerUserBanStateResponse>(`/organizers/users/${data.userId}/ban`, {
-        baseURL: config.public.api,
-        method: 'POST',
-        body: { reason: data.reason ?? null },
-        credentials: 'include',
-      })
-    },
-  })
-}
-
-export function useUnbanUserMutation() {
-  return useMutation({
-    async mutationFn(userId: string) {
-      const config = useRuntimeConfig()
-      return await $fetch<OrganizerUserBanStateResponse>(`/organizers/users/${userId}/ban`, {
-        baseURL: config.public.api,
-        method: 'DELETE',
-        credentials: 'include',
-      })
-    },
-  })
-}
-
 export function useWithdrawFromHackathon(hackathonId: MaybeRefOrGetter<string | null>) {
   return useMutation({
     async mutationFn() {

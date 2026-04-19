@@ -36,7 +36,6 @@ public class DatabaseInitBackgroundService(
         sql.CodeFirst.InitTables<WorkshopParticipant>();
         sql.CodeFirst.InitTables<HackathonNotificationTemplate>();
         sql.CodeFirst.InitTables<EventTimelineItem>();
-        await EnsureUserBanColumnsAsync(stoppingToken);
 
         if (env.IsDevelopment() && !await sql.Queryable<Hackathon>().AnyAsync(stoppingToken))
         {
@@ -144,34 +143,6 @@ public class DatabaseInitBackgroundService(
 
             // IF THIS DOES NOT WORK - unfortunately you have to call this api manually in scalar for your local testing lol
             await sql.Insertable(testOrganizer).ExecuteCommandAsync(stoppingToken);
-        }
-    }
-
-    private async Task EnsureUserBanColumnsAsync(CancellationToken stoppingToken)
-    {
-        var commands = new[]
-        {
-            "ALTER TABLE `User` ADD COLUMN `BannedAt` datetime NULL",
-            "ALTER TABLE `User` ADD COLUMN `BanReason` longtext NULL",
-            "ALTER TABLE `User` ADD COLUMN `BannedByUserId` char(36) NULL",
-        };
-
-        foreach (var command in commands)
-        {
-            try
-            {
-                await sql.Ado.ExecuteCommandAsync(command);
-            }
-            catch (Exception ex)
-                when (
-                    ex.Message.Contains("Duplicate column name", StringComparison.OrdinalIgnoreCase)
-                )
-            {
-                logger.LogDebug(
-                    "Skipped user ban schema update because the column already exists: {Command}",
-                    command
-                );
-            }
         }
     }
 }

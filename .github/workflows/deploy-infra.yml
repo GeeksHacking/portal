@@ -36,4 +36,4 @@ jobs:
           refresh: true
           stack-name: production
           cloud-url: gs://hackomania-pulumi-state
-          work-dir: HackOMania.Infra
+          work-dir: GeeksHackingPortal.Infra

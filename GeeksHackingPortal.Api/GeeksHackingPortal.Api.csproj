@@ -24,7 +24,7 @@
     <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="7.4.0" />
     <PackageReference Include="Polly.Core" Version="8.6.6" />
     <PackageReference Include="Postmark" Version="5.3.0" />
-    <PackageReference Include="Scalar.AspNetCore" Version="2.14.0" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.14.1" />
     <PackageReference Include="SqlSugarCore" Version="5.1.4.214" />
   </ItemGroup>
 

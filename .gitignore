@@ -8,6 +8,6 @@ riderModule.iml
 *.DotSettings.user
 *.csproj.user
 node_modules/
-HackOMania.WebApp/package-lock.json
+GeeksHackingPortal.WebApp/package-lock.json
 .vs
 .dotnet

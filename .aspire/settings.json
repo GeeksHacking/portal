@@ -1,6 +1,0 @@
-{
-  "appHostPath": "../HackOMania.AppHost/HackOMania.AppHost.csproj",
-  "features": {
-    "defaultWatchEnabled": "true"
-  }
-}

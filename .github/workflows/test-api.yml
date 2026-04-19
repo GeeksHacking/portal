@@ -3,10 +3,10 @@ name: Test (API)
 on:
   pull_request:
     paths:
-      - 'HackOMania.Api/**'
-      - 'HackOMania.Tests/**'
-      - 'HackOMania.ServiceDefaults/**'
-      - '.github/workflows/test-api.yml'
+      - "GeeksHackingPortal.Api/**"
+      - "GeeksHackingPortal.Tests/**"
+      - "GeeksHackingPortal.ServiceDefaults/**"
+      - ".github/workflows/test-api.yml"
 
 jobs:
   test:
@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 11.0.x

@@ -3,9 +3,9 @@ name: Deploy (Infra)
 on:
   push:
     paths:
-      - 'HackOMania.Infra/**'
-      - '.github/workflows/deploy-infra.yml'
-    branches: [ "main" ]
+      - "GeeksHackingPortal.Infra/**"
+      - ".github/workflows/deploy-infra.yml"
+    branches: ["main"]
 
 jobs:
   build:
@@ -18,16 +18,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        
+
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 11.0.x
-          
+
       - uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: projects/242247218750/locations/global/workloadIdentityPools/github/providers/github
           service_account: pulumi-deployer@hackomania-event-portal.iam.gserviceaccount.com
-          
+
       - uses: pulumi/actions@v6
         env:
           PULUMI_CONFIG_PASSPHRASE: ""

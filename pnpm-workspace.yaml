@@ -1,5 +1,5 @@
 packages:
-  - HackOMania.WebApp
+  - GeeksHackingPortal.WebApp
 
 onlyBuiltDependencies:
   - '@parcel/watcher'

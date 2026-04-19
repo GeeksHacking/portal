@@ -2,11 +2,11 @@ version: 2
 updates:
   - package-ecosystem: "nuget"
     directories:
-      - "/HackOMania.Api"
-      - "/HackOMania.AppHost"
-      - "/HackOMania.Infra"
-      - "/HackOMania.ServiceDefaults"
-      - "/HackOMania.Tests"
+      - "/GeeksHackingPortal.Api"
+      - "/GeeksHackingPortal.AppHost"
+      - "/GeeksHackingPortal.Infra"
+      - "/GeeksHackingPortal.ServiceDefaults"
+      - "/GeeksHackingPortal.Tests"
     schedule:
       interval: "weekly"
     target-branch: "main"

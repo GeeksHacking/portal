@@ -3,16 +3,16 @@ name: Deploy (API)
 on:
   push:
     paths:
-      - 'HackOMania.Api/**'
-      - '.github/workflows/deploy-api.yml'
+      - "GeeksHackingPortal.Api/**"
+      - ".github/workflows/deploy-api.yml"
     branches: ["main"]
-    
+
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to deploy to'
+        description: "Environment to deploy to"
         required: true
-        default: 'production'
+        default: "production"
         type: choice
         options:
           - production
@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 11.0.x
@@ -43,8 +43,8 @@ jobs:
             global.json
             **/*.csproj
 
-#      - name: Tests
-#        run: dotnet test 
+      - name: Tests
+        run: dotnet test
 
       - name: Authenticate to Google Cloud
         id: auth

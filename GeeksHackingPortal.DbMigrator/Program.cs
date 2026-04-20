@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using GeeksHackingPortal.Api.Entities;
 using GeeksHackingPortal.Api.Services;
 using Microsoft.Extensions.Configuration;
@@ -103,9 +104,14 @@ static int RunApply(
 static Type[] GetEntityTypes() =>
     typeof(User).Assembly.GetTypes()
         .Where(type =>
-            type.IsClass
-            && !type.IsAbstract
-            && !type.IsGenericTypeDefinition
+            type is
+            {
+                IsClass: true,
+                IsAbstract: false,
+                IsNested: false,
+                IsGenericTypeDefinition: false,
+            }
+            && !Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), inherit: false)
             && string.Equals(type.Namespace, "GeeksHackingPortal.Api.Entities", StringComparison.Ordinal)
         )
         .OrderBy(type => type.FullName, StringComparer.Ordinal)

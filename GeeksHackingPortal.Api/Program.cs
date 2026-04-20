@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using OpenIddict.Client;
 using Scalar.AspNetCore;
 using SqlSugar;
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -102,10 +103,7 @@ builder.Services.AddDbContext<DbContext>(options =>
 
 builder
     .Services.AddOpenIddict()
-    .AddCore(options =>
-    {
-        options.UseEntityFrameworkCore().UseDbContext<DbContext>();
-    })
+    .AddCore(options => { options.UseEntityFrameworkCore().UseDbContext<DbContext>(); })
     .AddClient(options =>
     {
         options.AllowAuthorizationCodeFlow();
@@ -233,10 +231,7 @@ builder.Services.SwaggerDocument(options =>
 {
     options.EnableJWTBearerAuth = false;
     options.AutoTagPathSegmentIndex = 0; // Disable auto-tagging, we'll use explicit tags
-    options.SerializerSettings = settings =>
-    {
-        settings.Converters.Add(new JsonStringEnumConverter());
-    };
+    options.SerializerSettings = settings => { settings.Converters.Add(new JsonStringEnumConverter()); };
     options.DocumentSettings = settings =>
     {
         settings.Title = "GeeksHacking Portal API";
@@ -325,12 +320,13 @@ app.MapDefaultEndpoints();
 
 app.Run();
 
+return;
+
 static Type[] GetEntityTypes() =>
     typeof(User).Assembly.GetTypes()
         .Where(type =>
-            type.IsClass
-            && !type.IsAbstract
-            && !type.IsGenericTypeDefinition
+            type is { IsClass: true, IsAbstract: false, IsNested: false, IsGenericTypeDefinition: false }
+            && !Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), inherit: false)
             && string.Equals(type.Namespace, "GeeksHackingPortal.Api.Entities", StringComparison.Ordinal)
         )
         .OrderBy(type => type.FullName, StringComparer.Ordinal)

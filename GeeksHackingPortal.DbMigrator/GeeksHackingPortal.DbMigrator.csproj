@@ -15,10 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GeeksHackingPortal.Data\GeeksHackingPortal.Data.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Include="..\GeeksHackingPortal.Api\Services\RegistrationValidationService.cs" Link="Services\RegistrationValidationService.cs" />
     <Compile Include="..\GeeksHackingPortal.Api\Services\RegistrationQuestionTemplateService.cs" Link="Services\RegistrationQuestionTemplateService.cs" />
   </ItemGroup>

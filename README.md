@@ -20,6 +20,23 @@ aspire run -d
 
 And visit the dashboard link with everything setup!
 
+The API now fails fast on startup if the live database schema differs from the current SqlSugar model. The dedicated `GeeksHackingPortal.DbMigrator` service is used to inspect and apply those changes before the API starts.
+
+Typical workflow:
+
+```shell
+dotnet run --project GeeksHackingPortal.DbMigrator -- --help
+dotnet run --project GeeksHackingPortal.DbMigrator -- diff
+dotnet run --project GeeksHackingPortal.DbMigrator -- apply
+dotnet run --project GeeksHackingPortal.DbMigrator -- apply --seed-development-template
+```
+
+The `DbMigrator` CLI uses `ConsoleAppFramework` for its command surface. `diff` uses SqlSugar `GetDifferenceTables(...).ToDiffString()` to show the schema drift. `apply` runs `InitTables(...)` after review. If a change would delete columns, `apply` stops unless you explicitly pass `--allow-destructive`.
+
+`--seed-development-template` seeds the local development template data after `apply`. The Aspire AppHost uses that flag for local orchestration, while CI/deploy does not.
+
+The deploy workflow publishes the schema diff in the job summary and as an artifact. When changes are detected, the `apply-database-changes` job waits on the protected `production-database` GitHub environment, so required reviewers can inspect the diff before approving the schema update.
+
 ## Deployment
 
 The HackOMania API is deployed to Google Cloud Run with **zero-downtime updates** using health probes.

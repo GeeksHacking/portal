@@ -137,6 +137,16 @@ public class DefaultStack : Stack
             }
         );
 
+        _ = new SecretManager.SecretIamMember(
+            "tidb-connection-string-deployer-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = tidbConnectionString.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{deployerServiceAccount.Email}"),
+            }
+        );
+
         var postmarkServerTokenAccessor = new SecretManager.SecretIamMember(
             "postmark-server-token-accessor",
             new SecretManager.SecretIamMemberArgs

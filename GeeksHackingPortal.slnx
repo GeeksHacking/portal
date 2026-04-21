@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="GeeksHackingPortal.Api/GeeksHackingPortal.Api.csproj" />
   <Project Path="GeeksHackingPortal.AppHost/GeeksHackingPortal.AppHost.csproj" />
+  <Project Path="GeeksHackingPortal.DbMigrator/GeeksHackingPortal.DbMigrator.csproj" />
   <Project Path="GeeksHackingPortal.Infra/GeeksHackingPortal.Infra.csproj" />
   <Project Path="GeeksHackingPortal.ServiceDefaults/GeeksHackingPortal.ServiceDefaults.csproj" />
   <Project Path="GeeksHackingPortal.Tests/GeeksHackingPortal.Tests.csproj" />

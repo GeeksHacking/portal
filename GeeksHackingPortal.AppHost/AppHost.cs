@@ -25,7 +25,6 @@ var migrations = builder
 var api = builder
     .AddProject<GeeksHackingPortal_Api>("api")
     .WithReference(db)
-    .WithReference(migrations)
     .WithEnvironment("App:FrontendUrl", appFrontendUrl)
     .WithEnvironment("GitHub:ClientId", githubClientId)
     .WithEnvironment("GitHub:ClientSecret", githubClientSecret)

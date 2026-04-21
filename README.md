@@ -31,7 +31,7 @@ dotnet run --project GeeksHackingPortal.DbMigrator -- apply
 dotnet run --project GeeksHackingPortal.DbMigrator -- apply --seed-development-template
 ```
 
-The `DbMigrator` CLI uses `XenoAtom.CommandLine` for its command surface. `diff` uses SqlSugar `GetDifferenceTables(...).ToDiffString()` to show the schema drift. `apply` runs `InitTables(...)` after review. If a change would delete columns, `apply` stops unless you explicitly pass `--allow-destructive`.
+The `DbMigrator` CLI uses `ConsoleAppFramework` for its command surface. `diff` uses SqlSugar `GetDifferenceTables(...).ToDiffString()` to show the schema drift. `apply` runs `InitTables(...)` after review. If a change would delete columns, `apply` stops unless you explicitly pass `--allow-destructive`.
 
 `--seed-development-template` seeds the local development template data after `apply`. The Aspire AppHost uses that flag for local orchestration, while CI/deploy does not.
 

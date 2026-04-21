@@ -10,8 +10,7 @@ public class Judge
     public string Name { get; set; } = null!;
 
     public Guid Secret { get; set; } = Guid.NewGuid();
-    public Guid SecretTest { get; set; } = Guid.NewGuid();
-
+    
     public bool Active { get; set; }
 
     public Guid HackathonId { get; set; }

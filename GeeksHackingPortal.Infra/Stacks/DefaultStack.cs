@@ -225,7 +225,7 @@ public class DefaultStack : Stack
                 Role = "roles/iam.workloadIdentityUser",
                 Members = new[]
                 {
-                    "principalSet://iam.googleapis.com/projects/242247218750/locations/global/workloadIdentityPools/github/attribute.repository/GeeksHacking/hackomania-event-platform",
+                    "principalSet://iam.googleapis.com/projects/242247218750/locations/global/workloadIdentityPools/github/attribute.repository/GeeksHacking/portal",
                 },
             }
         );

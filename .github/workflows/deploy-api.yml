@@ -145,7 +145,7 @@ jobs:
             tidb_connection_string:hackomania-event-portal/tidb-connection-string
 
       - name: Apply approved database schema changes
-        run: dotnet run --project GeeksHackingPortal.DbMigrator --configuration Release -- apply
+        run: dotnet run --project GeeksHackingPortal.DbMigrator --configuration Release -- apply --allow-destructive
         env:
           ConnectionStrings__db: ${{ steps.secrets.outputs.tidb_connection_string }}
 

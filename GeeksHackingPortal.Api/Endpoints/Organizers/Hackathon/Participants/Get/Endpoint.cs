@@ -23,7 +23,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
+        var hackathon = await sql.Queryable<Entities.Hackathon>().Includes(h => h.Activity).InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
             await Send.NotFoundAsync(ct);
@@ -90,7 +90,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 ],
                 RegistrationSubmissions = await sql.Queryable<ParticipantRegistrationSubmission>()
                     .LeftJoin<RegistrationQuestion>((s, q) => s.QuestionId == q.Id)
-                    .Where((s, q) => s.ParticipantId == participant.Id)
+                    .Where((s, q) => s.ActivityRegistrationId == participant.Id)
                     .Select(
                         (s, q) =>
                             new RegistrationSubmissionItem

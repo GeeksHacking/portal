@@ -24,7 +24,7 @@ public class Participant : HackathonUser
     /// <summary>
     /// Registration submissions for dynamic questions
     /// </summary>
-    [Navigate(NavigateType.OneToMany, nameof(ParticipantRegistrationSubmission.Id))]
+    [Navigate(NavigateType.OneToMany, nameof(ParticipantRegistrationSubmission.ActivityRegistrationId), nameof(Id))]
     public List<ParticipantRegistrationSubmission> RegistrationSubmissions { get; set; } = null!;
 
     [SugarColumn(IsIgnore = true)]

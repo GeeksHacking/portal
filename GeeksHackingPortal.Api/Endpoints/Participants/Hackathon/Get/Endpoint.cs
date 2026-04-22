@@ -24,6 +24,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 h.Id.ToString() == req.HackathonIdOrShortCode
                 || h.ShortCode == req.HackathonIdOrShortCode
             )
+            .Includes(h => h.Activity)
             .WithCache()
             .FirstAsync(ct);
 

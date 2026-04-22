@@ -22,12 +22,15 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
+        var hackathon = await sql.Queryable<Entities.Hackathon>()
+            .Includes(h => h.Activity)
+            .InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
             await Send.NotFoundAsync(ct);
             return;
         }
+        var hasActivity = hackathon.Activity is not null;
 
         var gitHubRepositorySettings = await sql.Queryable<HackathonGitHubRepositorySettings>()
             .Where(s => s.HackathonId == hackathon.Id)
@@ -121,7 +124,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         if (emailTemplates is not null)
         {
             await sql.Deleteable<HackathonNotificationTemplate>()
-                .Where(t => t.HackathonId == hackathon.Id)
+                .Where(t => t.ActivityId == hackathon.Id)
                 .ExecuteCommandAsync(ct);
 
             if (emailTemplates.Count > 0)
@@ -130,7 +133,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     kvp => new HackathonNotificationTemplate
                     {
                         Id = Guid.NewGuid(),
-                        HackathonId = hackathon.Id,
+                        ActivityId = hackathon.Id,
                         EventKey = kvp.Key,
                         TemplateId = kvp.Value,
                     }
@@ -140,6 +143,16 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             }
         }
 
+        var activity = hackathon.EnsureActivity();
+        activity.UpdatedAt = DateTimeOffset.UtcNow;
+        if (hasActivity)
+        {
+            await sql.Updateable(activity).ExecuteCommandAsync(ct);
+        }
+        else
+        {
+            await sql.Insertable(activity).ExecuteCommandAsync(ct);
+        }
         await sql.Updateable(hackathon).ExecuteCommandAsync(ct);
 
         if (req.GitHubRepositorySettings is not null)
@@ -170,7 +183,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         }
 
         var persistedTemplates = await sql.Queryable<HackathonNotificationTemplate>()
-            .Where(t => t.HackathonId == hackathon.Id)
+            .Where(t => t.ActivityId == hackathon.Id)
             .ToListAsync(ct);
         var emailTemplateMap = persistedTemplates
             .GroupBy(t => t.EventKey, StringComparer.OrdinalIgnoreCase)

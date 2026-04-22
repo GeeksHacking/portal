@@ -37,7 +37,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         // See CACHING.md for details. Consider removing .WithCache() or implementing a short TTL (5-30 seconds)
         // if stale data becomes problematic during high-traffic event periods.
         var checkIns = await sql.Queryable<VenueCheckIn>()
-            .Where(v => v.HackathonId == hackathonId)
+            .Where(v => v.ActivityId == hackathonId)
             .WithCache()
             .ToListAsync(ct);
 
@@ -45,7 +45,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .Select(p =>
             {
                 var participantCheckIns = checkIns
-                    .Where(c => c.ParticipantId == p.Participant.Id)
+                    .Where(c => c.ActivityRegistrationId == p.Participant.Id)
                     .ToList();
                 var lastCheckIn = participantCheckIns
                     .OrderByDescending(c => c.CheckInTime)
@@ -73,13 +73,14 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var auditTrail = checkIns
             .SelectMany(c =>
             {
-                var userName = userNameByParticipantId.GetValueOrDefault(c.ParticipantId, "Unknown");
+                var participantId = c.ActivityRegistrationId;
+                var userName = userNameByParticipantId.GetValueOrDefault(participantId, "Unknown");
                 var events = new List<VenueAuditTrailItemDto>
                 {
                     new()
                     {
-                        ParticipantId = c.ParticipantId,
-                        UserId = userIdByParticipantId.GetValueOrDefault(c.ParticipantId),
+                        ParticipantId = participantId,
+                        UserId = userIdByParticipantId.GetValueOrDefault(participantId),
                         UserName = userName,
                         Action = "checked in",
                         Timestamp = c.CheckInTime.AssumeStoredAsUtc(),
@@ -91,8 +92,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     events.Add(
                         new VenueAuditTrailItemDto
                         {
-                            ParticipantId = c.ParticipantId,
-                            UserId = userIdByParticipantId.GetValueOrDefault(c.ParticipantId),
+                            ParticipantId = participantId,
+                            UserId = userIdByParticipantId.GetValueOrDefault(participantId),
                             UserName = userName,
                             Action = "checked out",
                             Timestamp = c.CheckOutTime.Value.AssumeStoredAsUtc(),

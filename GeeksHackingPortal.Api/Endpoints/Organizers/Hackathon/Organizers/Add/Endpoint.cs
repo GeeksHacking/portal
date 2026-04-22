@@ -21,7 +21,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
+        var hackathon = await sql.Queryable<Entities.Hackathon>().Includes(h => h.Activity).InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
             await Send.NotFoundAsync(ct);
@@ -46,15 +46,31 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             return;
         }
 
-        await sql.Insertable(
-                new Organizer
-                {
-                    UserId = req.UserId,
-                    HackathonId = hackathon.Id,
-                    Type = req.Type,
-                }
-            )
-            .ExecuteCommandAsync(ct);
+        var organizer = new Organizer
+        {
+            Id = Guid.NewGuid(),
+            UserId = req.UserId,
+            HackathonId = hackathon.Id,
+            Type = req.Type,
+        };
+        var activityOrganizer = new ActivityOrganizer
+        {
+            Id = organizer.Id,
+            ActivityId = hackathon.ActivityId,
+            UserId = req.UserId,
+            Type = req.Type,
+        };
+
+        var transactionResult = await sql.Ado.UseTranAsync(async () =>
+        {
+            await sql.Insertable(organizer).ExecuteCommandAsync(ct);
+            await sql.Insertable(activityOrganizer).ExecuteCommandAsync(ct);
+        });
+
+        if (!transactionResult.IsSuccess)
+        {
+            throw transactionResult.ErrorException!;
+        }
 
         await Send.OkAsync(new Response { UserId = req.UserId, Type = req.Type }, ct);
     }

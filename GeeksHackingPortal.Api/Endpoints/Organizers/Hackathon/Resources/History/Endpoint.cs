@@ -24,6 +24,16 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        var hackathon = await sql.Queryable<Entities.Hackathon>()
+            .WithCache()
+            .FirstAsync(h => h.Id == req.HackathonId, ct);
+
+        if (hackathon is null)
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
         var participantData = await sql.Queryable<Participant>()
             .LeftJoin<User>((p, u) => p.UserId == u.Id)
             .Where((p, u) => p.UserId == req.ParticipantUserId && p.HackathonId == req.HackathonId)
@@ -37,7 +47,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         }
 
         var resource = await sql.Queryable<Resource>()
-            .Where(r => r.Id == req.ResourceId && r.HackathonId == req.HackathonId)
+            .Where(r => r.Id == req.ResourceId && r.ActivityId == hackathon.ActivityId)
             .FirstAsync(ct);
 
         if (resource is null)
@@ -48,9 +58,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var history = await sql.Queryable<ResourceRedemption>()
             .Where(r =>
-                r.HackathonId == req.HackathonId
+                r.ActivityId == hackathon.ActivityId
                 && r.ResourceId == req.ResourceId
-                && r.RedeemerId == req.ParticipantUserId
+                && r.UserId == req.ParticipantUserId
             )
             .OrderByDescending(r => r.CreatedAt)
             .ToListAsync(ct);

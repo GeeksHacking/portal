@@ -37,7 +37,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         // Check if already checked in (not checked out)
         var existingCheckIn = await sql.Queryable<VenueCheckIn>()
-            .Where(v => v.ParticipantId == participant.Id && v.IsCheckedIn)
+            .Where(v => v.ActivityRegistrationId == participant.Id && v.ActivityId == hackathonId && v.IsCheckedIn)
             .OrderByDescending(v => v.CheckInTime)
             .FirstAsync(ct);
 
@@ -58,8 +58,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var checkIn = new VenueCheckIn
         {
             Id = Guid.NewGuid(),
-            ParticipantId = participant.Id,
-            HackathonId = hackathonId,
+            ActivityRegistrationId = participant.Id,
+            ActivityId = hackathonId,
             CheckInTime = DateTimeOffset.UtcNow,
             IsCheckedIn = true,
         };

@@ -19,7 +19,7 @@ public class NotificationTemplateResolver(ISqlSugarClient sql) : INotificationTe
         var normalizedEventKey = eventKey.Trim().ToLowerInvariant();
 
         var template = await sql.Queryable<HackathonNotificationTemplate>()
-            .Where(t => t.HackathonId == hackathonId && t.EventKey == normalizedEventKey)
+            .Where(t => t.ActivityId == hackathonId && t.EventKey == normalizedEventKey)
             .FirstAsync(ct);
 
         return template?.TemplateId;
@@ -31,7 +31,7 @@ public class NotificationTemplateResolver(ISqlSugarClient sql) : INotificationTe
     )
     {
         var templates = await sql.Queryable<HackathonNotificationTemplate>()
-            .Where(t => t.HackathonId == hackathonId)
+            .Where(t => t.ActivityId == hackathonId)
             .ToListAsync(ct);
 
         return templates
@@ -51,11 +51,11 @@ public class NotificationTemplateResolver(ISqlSugarClient sql) : INotificationTe
         }
 
         var templates = await sql.Queryable<HackathonNotificationTemplate>()
-            .Where(t => ids.Contains(t.HackathonId))
+            .Where(t => ids.Contains(t.ActivityId))
             .ToListAsync(ct);
 
         return templates
-            .GroupBy(t => t.HackathonId)
+            .GroupBy(t => t.ActivityId)
             .ToDictionary(
                 g => g.Key,
                 g =>

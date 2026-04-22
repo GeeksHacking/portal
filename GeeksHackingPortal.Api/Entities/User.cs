@@ -17,4 +17,13 @@ public class User
 
     [Navigate(NavigateType.OneToMany, nameof(HackathonUser.UserId))]
     public List<HackathonUser> Hackathons { get; set; } = null!;
+
+    [Navigate(NavigateType.OneToMany, nameof(ActivityRegistration.UserId))]
+    public List<ActivityRegistration> ActivityRegistrations { get; set; } = null!;
+
+    [Navigate(NavigateType.OneToMany, nameof(ActivityOrganizer.UserId))]
+    public List<ActivityOrganizer> ActivityOrganizers { get; set; } = null!;
+
+    [Navigate(NavigateType.OneToMany, nameof(ResourceRedemption.UserId))]
+    public List<ResourceRedemption> ResourceRedemptions { get; set; } = null!;
 }

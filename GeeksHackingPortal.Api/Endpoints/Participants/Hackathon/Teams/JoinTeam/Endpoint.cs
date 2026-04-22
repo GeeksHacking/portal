@@ -25,6 +25,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var hackathon = await sql.Queryable<Entities.Hackathon>()
+            .Includes(h => h.Activity)
             .WithCache()
             .InSingleAsync(req.HackathonId);
         if (hackathon is null || !hackathon.IsPublished)

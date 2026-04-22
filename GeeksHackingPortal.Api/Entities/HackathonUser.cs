@@ -11,6 +11,6 @@ public abstract class HackathonUser
 
     public Guid UserId { get; set; }
 
-    [Navigate(NavigateType.OneToMany, nameof(ResourceRedemption.RedeemerId))]
+    [Navigate(NavigateType.OneToMany, nameof(ResourceRedemption.UserId), nameof(UserId))]
     public List<ResourceRedemption> Redemptions { get; set; } = null!;
 }

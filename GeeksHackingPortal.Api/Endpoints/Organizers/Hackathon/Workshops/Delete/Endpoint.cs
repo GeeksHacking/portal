@@ -30,12 +30,22 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request>
             return;
         }
 
-        // Delete all participants first
-        await sql.Deleteable<WorkshopParticipant>()
-            .Where(wp => wp.WorkshopId == req.WorkshopId)
-            .ExecuteCommandAsync(ct);
+        var transactionResult = await sql.Ado.UseTranAsync(async () =>
+        {
+            await sql.Deleteable<WorkshopParticipant>()
+                .Where(wp => wp.WorkshopId == req.WorkshopId)
+                .ExecuteCommandAsync(ct);
 
-        await sql.Deleteable(workshop).ExecuteCommandAsync(ct);
+            await sql.Deleteable(workshop).ExecuteCommandAsync(ct);
+            await sql.Deleteable<Activity>()
+                .Where(activity => activity.Id == workshop.ActivityId)
+                .ExecuteCommandAsync(ct);
+        });
+
+        if (!transactionResult.IsSuccess)
+        {
+            throw transactionResult.ErrorException!;
+        }
 
         await Send.NoContentAsync(ct);
     }

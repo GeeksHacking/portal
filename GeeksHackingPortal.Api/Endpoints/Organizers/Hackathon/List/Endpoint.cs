@@ -29,7 +29,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
         }
 
         var isRoot = await membership.IsRoot(userId.Value, ct);
-        var query = sql.Queryable<Entities.Hackathon>();
+        var query = sql.Queryable<Entities.Hackathon>().Includes(h => h.Activity);
 
         if (!isRoot)
         {
@@ -45,11 +45,11 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
         var hackathonIds = hackathons.Select(h => h.Id).ToList();
 
         var templates = await sql.Queryable<HackathonNotificationTemplate>()
-            .Where(t => hackathonIds.Contains(t.HackathonId))
+            .Where(t => hackathonIds.Contains(t.ActivityId))
             .WithCache()
             .ToListAsync(ct);
         var templatesByHackathon = templates
-            .GroupBy(t => t.HackathonId)
+            .GroupBy(t => t.ActivityId)
             .ToDictionary(
                 g => g.Key,
                 g =>

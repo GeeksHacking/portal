@@ -20,7 +20,7 @@ public class Endpoint(ISqlSugarClient sql, IGitHubRepositoryAutomationService gi
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
+        var hackathon = await sql.Queryable<Entities.Hackathon>().Includes(h => h.Activity).InSingleAsync(req.HackathonId);
         if (hackathon is null || !hackathon.IsPublished)
         {
             await Send.NotFoundAsync(ct);

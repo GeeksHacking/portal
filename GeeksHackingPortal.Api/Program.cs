@@ -191,8 +191,16 @@ builder
         policy => policy.Requirements.Add(new OrganizerForHackathonRequirement())
     )
     .AddPolicy(
+        PolicyNames.OrganizerForActivity,
+        policy => policy.Requirements.Add(new OrganizerForActivityRequirement())
+    )
+    .AddPolicy(
         PolicyNames.ParticipantForHackathon,
         policy => policy.Requirements.Add(new ParticipantForHackathonRequirement())
+    )
+    .AddPolicy(
+        PolicyNames.ParticipantForActivity,
+        policy => policy.Requirements.Add(new ParticipantForActivityRequirement())
     )
     .AddPolicy(
         PolicyNames.TeamMemberForHackathonTeam,
@@ -204,6 +212,10 @@ builder
     )
     .AddPolicy(
         PolicyNames.CreateHackathon,
+        policy => policy.Requirements.Add(new CreateHackathonRequirement())
+    )
+    .AddPolicy(
+        PolicyNames.CreateActivity,
         policy => policy.Requirements.Add(new CreateHackathonRequirement())
     );
 
@@ -265,7 +277,9 @@ builder.Services.AddScoped<INotificationTemplateResolver, NotificationTemplateRe
 builder.Services.AddScoped<IAuthorizationHandler, RootHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, CreateHackathonHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, OrganizerForHackathonHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, OrganizerForActivityHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, ParticipantForHackathonHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, ParticipantForActivityHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, TeamMemberForHackathonTeamHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, TeamCreatorForHackathonTeamHandler>();
 

@@ -3,11 +3,11 @@ using SqlSugar;
 namespace GeeksHackingPortal.Api.Entities;
 
 /// <summary>
-/// Stores a participant's submission for a registration question
+/// Stores an activity registration's submission for a registration question.
 /// </summary>
 [SugarIndex(
-    "IX_ParticipantRegistrationSubmission_Participant_Question",
-    nameof(ParticipantId),
+    "IX_ParticipantRegistrationSubmission_Registration_Question",
+    nameof(ActivityRegistrationId),
     OrderByType.Asc,
     nameof(QuestionId),
     OrderByType.Asc,
@@ -18,7 +18,9 @@ public class ParticipantRegistrationSubmission
     [SugarColumn(IsPrimaryKey = true)]
     public Guid Id { get; set; }
 
-    public Guid ParticipantId { get; set; }
+    [SugarColumn(OldColumnName = "ParticipantId")]
+    public Guid ActivityRegistrationId { get; set; }
+
     public Guid QuestionId { get; set; }
 
     /// <summary>
@@ -38,4 +40,7 @@ public class ParticipantRegistrationSubmission
 
     [Navigate(NavigateType.OneToOne, nameof(QuestionId))]
     public RegistrationQuestion Question { get; set; } = null!;
+
+    [Navigate(NavigateType.ManyToOne, nameof(ActivityRegistrationId))]
+    public ActivityRegistration ActivityRegistration { get; set; } = null!;
 }

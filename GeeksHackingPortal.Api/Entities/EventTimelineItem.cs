@@ -7,7 +7,8 @@ public class EventTimelineItem
     [SugarColumn(IsPrimaryKey = true)]
     public Guid Id { get; set; }
 
-    public Guid HackathonId { get; set; }
+    [SugarColumn(OldColumnName = "HackathonId")]
+    public Guid ActivityId { get; set; }
 
     public string Title { get; set; } = null!;
 
@@ -22,6 +23,6 @@ public class EventTimelineItem
 
     public DateTimeOffset UpdatedAt { get; set; }
 
-    [Navigate(NavigateType.ManyToOne, nameof(HackathonId))]
-    public Hackathon Hackathon { get; set; } = null!;
+    [Navigate(NavigateType.ManyToOne, nameof(ActivityId))]
+    public Activity Activity { get; set; } = null!;
 }

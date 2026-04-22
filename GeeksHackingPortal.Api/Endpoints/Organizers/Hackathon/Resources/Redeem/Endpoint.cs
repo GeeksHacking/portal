@@ -26,7 +26,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
+        var hackathon = await sql.Queryable<Entities.Hackathon>().Includes(h => h.Activity).InSingleAsync(req.HackathonId);
         if (hackathon is null || !hackathon.IsPublished)
         {
             await Send.NotFoundAsync(ct);
@@ -35,7 +35,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var resource = await sql.Queryable<Resource>()
             .Includes(r => r.Redemptions)
-            .Where(r => r.Id == req.ResourceId && r.HackathonId == hackathon.Id && r.IsPublished)
+            .Where(r => r.Id == req.ResourceId && r.ActivityId == hackathon.ActivityId && r.IsPublished)
             .FirstAsync(ct);
 
         if (resource is null)
@@ -60,7 +60,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         // Count redemptions by this participant
         var participantRedemptions =
-            resource.Redemptions?.Count(r => r.RedeemerId == req.ParticipantUserId) ?? 0;
+            resource.Redemptions?.Count(r => r.UserId == req.ParticipantUserId) ?? 0;
 
         // Count redemptions by this participant's team (if they have one)
         int teamRedemptions = 0;
@@ -70,7 +70,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             var teamMemberIds =
                 participant.Team.Members?.Select(m => m.UserId).ToList() ?? new List<Guid>();
             teamRedemptions =
-                resource.Redemptions?.Count(r => teamMemberIds.Contains(r.RedeemerId)) ?? 0;
+                resource.Redemptions?.Count(r => teamMemberIds.Contains(r.UserId)) ?? 0;
             teamSize = participant.Team.Members?.Count ?? 0;
         }
 
@@ -107,8 +107,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         {
             Id = Guid.NewGuid(),
             ResourceId = resource.Id,
-            HackathonId = hackathon.Id,
-            RedeemerId = req.ParticipantUserId,
+            ActivityId = hackathon.ActivityId,
+            UserId = req.ParticipantUserId,
             CreatedAt = DateTimeOffset.UtcNow,
         };
 
@@ -119,7 +119,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             {
                 RedemptionId = redemption.Id,
                 ResourceId = redemption.ResourceId,
-                HackathonId = redemption.HackathonId,
+                HackathonId = hackathon.Id,
                 CreatedAt = redemption.CreatedAt.AssumeStoredAsUtc(),
             },
             ct

@@ -25,6 +25,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         var hackathon = await sql.Queryable<HackathonEntity>()
             .Where(h => h.Id == req.HackathonId)
+            .Includes(h => h.Activity)
             .WithCache()
             .FirstAsync(ct);
 
@@ -35,7 +36,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         }
 
         var emailTemplates = await sql.Queryable<HackathonNotificationTemplate>()
-            .Where(t => t.HackathonId == hackathon.Id)
+            .Where(t => t.ActivityId == hackathon.Id)
             .WithCache()
             .ToListAsync(ct);
         var emailTemplateMap = emailTemplates

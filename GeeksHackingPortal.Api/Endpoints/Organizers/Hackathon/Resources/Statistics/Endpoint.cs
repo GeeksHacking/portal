@@ -23,18 +23,18 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathonExists = await sql.Queryable<Entities.Hackathon>()
+        var hackathon = await sql.Queryable<Entities.Hackathon>()
             .WithCache()
-            .AnyAsync(h => h.Id == req.HackathonId, ct);
+            .FirstAsync(h => h.Id == req.HackathonId, ct);
 
-        if (!hackathonExists)
+        if (hackathon is null)
         {
             await Send.NotFoundAsync(ct);
             return;
         }
 
         var resources = await sql.Queryable<Resource>()
-            .Where(r => r.HackathonId == req.HackathonId)
+            .Where(r => r.ActivityId == hackathon.ActivityId)
             .WithCache()
             .ToListAsync(ct);
 
@@ -79,9 +79,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 ? []
                 : await sql.Queryable<ResourceRedemption>()
                     .Where(redemption =>
-                        redemption.HackathonId == req.HackathonId
+                        redemption.ActivityId == hackathon.ActivityId
                         && scopedResourceIds.Contains(redemption.ResourceId)
-                        && participantUserIds.Contains(redemption.RedeemerId)
+                        && participantUserIds.Contains(redemption.UserId)
                     )
                     .OrderByDescending(redemption => redemption.CreatedAt)
                     .ToListAsync(ct);
@@ -99,7 +99,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .ToDictionary(group => group.Key, group => group.OrderByDescending(item => item.CreatedAt).ToList());
 
         var participantBreakdowns = redemptions
-            .GroupBy(redemption => redemption.RedeemerId)
+            .GroupBy(redemption => redemption.UserId)
             .Select(group =>
             {
                 if (!participantByUserId.TryGetValue(group.Key, out var participant))
@@ -156,7 +156,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 var teamName = "No team";
 
                 if (teamId.HasValue && teamById.TryGetValue(teamId.Value, out var knownTeam))
+                {
                     teamName = knownTeam.Name;
+                }
 
                 return new TeamBreakdownItem
                 {
@@ -191,7 +193,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     ResourceName = resource.Name,
                     IsPublished = resource.IsPublished,
                     TotalRedemptions = resourceRedemptions.Count,
-                    UniqueRedeemers = resourceRedemptions.Select(item => item.RedeemerId).Distinct().Count(),
+                    UniqueRedeemers = resourceRedemptions.Select(item => item.UserId).Distinct().Count(),
                     LastRedeemedAt = latestRedemption?.CreatedAt.AssumeStoredAsUtc(),
                 };
             })
@@ -202,7 +204,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var recentActivity = redemptions
             .Select(redemption =>
             {
-                if (!participantByUserId.TryGetValue(redemption.RedeemerId, out var participant))
+                if (!participantByUserId.TryGetValue(redemption.UserId, out var participant))
                     return null;
 
                 var teamId = participant.TeamId;

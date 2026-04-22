@@ -10,7 +10,8 @@ public class RegistrationQuestion
     [SugarColumn(IsPrimaryKey = true)]
     public Guid Id { get; set; }
 
-    public Guid HackathonId { get; set; }
+    [SugarColumn(OldColumnName = "HackathonId")]
+    public Guid ActivityId { get; set; }
 
     /// <summary>
     /// The question text to display
@@ -61,8 +62,8 @@ public class RegistrationQuestion
     [SugarColumn(IsNullable = true, ColumnDataType = "longtext")]
     public string? ValidationRules { get; set; }
 
-    [Navigate(NavigateType.OneToOne, nameof(HackathonId))]
-    public Hackathon Hackathon { get; set; } = null!;
+    [Navigate(NavigateType.OneToOne, nameof(ActivityId))]
+    public Activity Activity { get; set; } = null!;
 
     [Navigate(NavigateType.OneToMany, nameof(RegistrationQuestionOption.QuestionId))]
     public List<RegistrationQuestionOption> Options { get; set; } = null!;

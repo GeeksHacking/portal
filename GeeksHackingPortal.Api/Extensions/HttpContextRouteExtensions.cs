@@ -9,6 +9,13 @@ public static class HttpContextRouteExtensions
             return httpContext.GetGuidFromRoute("HackathonId");
         }
 
+        public Guid? GetActivityIdFromRoute()
+        {
+            return httpContext.GetGuidFromRoute("ActivityId")
+                ?? httpContext.GetGuidFromRoute("StandaloneWorkshopId")
+                ?? httpContext.GetHackathonIdFromRoute();
+        }
+
         public Guid? GetTeamIdFromRoute()
         {
             return httpContext.GetGuidFromRoute("TeamId");

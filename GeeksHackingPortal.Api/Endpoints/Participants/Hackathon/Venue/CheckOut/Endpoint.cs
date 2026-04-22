@@ -35,7 +35,11 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         }
 
         var checkIn = await sql.Queryable<VenueCheckIn>()
-            .Where(v => v.ParticipantId == participant.Id && v.IsCheckedIn)
+            .Where(v =>
+                v.ActivityRegistrationId == participant.Id
+                && v.ActivityId == hackathonId
+                && v.IsCheckedIn
+            )
             .OrderByDescending(v => v.CheckInTime)
             .FirstAsync(ct);
 

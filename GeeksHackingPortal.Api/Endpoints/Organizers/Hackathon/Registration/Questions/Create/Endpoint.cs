@@ -21,7 +21,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
+        var hackathon = await sql.Queryable<Entities.Hackathon>().Includes(h => h.Activity).InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
             await Send.NotFoundAsync(ct);
@@ -29,7 +29,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         }
 
         var existingKey = await sql.Queryable<RegistrationQuestion>()
-            .Where(q => q.HackathonId == req.HackathonId && q.QuestionKey == req.QuestionKey)
+            .Where(q => q.ActivityId == req.HackathonId && q.QuestionKey == req.QuestionKey)
             .AnyAsync(ct);
 
         if (existingKey)
@@ -45,7 +45,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var question = new RegistrationQuestion
         {
             Id = Guid.NewGuid(),
-            HackathonId = req.HackathonId,
+            ActivityId = req.HackathonId,
             QuestionText = req.QuestionText,
             QuestionKey = req.QuestionKey,
             Type = req.Type,

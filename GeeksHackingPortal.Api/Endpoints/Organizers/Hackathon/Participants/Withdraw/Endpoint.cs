@@ -23,6 +23,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var hackathon = await sql.Queryable<Entities.Hackathon>()
+            .Includes(h => h.Activity)
             .WithCache()
             .InSingleAsync(req.HackathonId);
         if (hackathon is null)
@@ -52,9 +53,32 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             return;
         }
 
+        var withdrawnAt = DateTimeOffset.UtcNow;
         participant.TeamId = null;
-        participant.WithdrawnAt = DateTimeOffset.UtcNow;
-        await sql.Updateable(participant).ExecuteCommandAsync(ct);
+        participant.WithdrawnAt = withdrawnAt;
+
+        var registration = await sql.Queryable<ActivityRegistration>()
+            .InSingleAsync(participant.Id);
+
+        if (registration is not null)
+        {
+            registration.Status = ActivityRegistrationStatus.Withdrawn;
+            registration.WithdrawnAt = withdrawnAt;
+        }
+
+        var transactionResult = await sql.Ado.UseTranAsync(async () =>
+        {
+            await sql.Updateable(participant).ExecuteCommandAsync(ct);
+            if (registration is not null)
+            {
+                await sql.Updateable(registration).ExecuteCommandAsync(ct);
+            }
+        });
+
+        if (!transactionResult.IsSuccess)
+        {
+            throw transactionResult.ErrorException!;
+        }
 
         await Send.OkAsync(
             new Response { Message = "Participant has been withdrawn from the hackathon" },

@@ -27,6 +27,12 @@ public static class PolicyNames
     /// </summary>
     public const string OrganizerForHackathon = nameof(OrganizerForHackathon);
 
+    /// <summary>
+    /// Requires the user to be an organizer for the activity specified by {ActivityId},
+    /// {StandaloneWorkshopId}, or {HackathonId} in the route.
+    /// </summary>
+    public const string OrganizerForActivity = nameof(OrganizerForActivity);
+
     public const string AdminOrganizersForHackathon = nameof(AdminOrganizersForHackathon);
     public const string AllOrganizersForHackathon = nameof(AllOrganizersForHackathon);
 
@@ -35,6 +41,12 @@ public static class PolicyNames
     /// The authorization handler will verify the user has joined the hackathon as a participant.
     /// </summary>
     public const string ParticipantForHackathon = nameof(ParticipantForHackathon);
+
+    /// <summary>
+    /// Requires the user to be registered for the activity specified by {ActivityId},
+    /// {StandaloneWorkshopId}, or {HackathonId} in the route. Activity organizers and root users also pass.
+    /// </summary>
+    public const string ParticipantForActivity = nameof(ParticipantForActivity);
 
     /// <summary>
     /// Requires the user to be a team member for the team specified by {TeamId:guid} in the route.
@@ -57,4 +69,9 @@ public static class PolicyNames
     /// Checks the policy for who can create a hackathon based on AppOptions.
     /// </summary>
     public const string CreateHackathon = nameof(CreateHackathon);
+
+    /// <summary>
+    /// Checks the policy for who can create top-level activities based on AppOptions.
+    /// </summary>
+    public const string CreateActivity = nameof(CreateActivity);
 }

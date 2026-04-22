@@ -16,7 +16,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
+        var hackathon = await sql.Queryable<Entities.Hackathon>().Includes(h => h.Activity).InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
             await Send.NotFoundAsync(ct);
@@ -24,7 +24,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request>
         }
 
         var deleted = await sql.Deleteable<Resource>()
-            .Where(r => r.Id.ToString() == req.ResourceId && r.HackathonId == hackathon.Id)
+            .Where(r => r.Id.ToString() == req.ResourceId && r.ActivityId == hackathon.ActivityId)
             .ExecuteCommandAsync(ct);
 
         if (deleted == 0)

@@ -21,7 +21,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
+        var hackathon = await sql.Queryable<Entities.Hackathon>().Includes(h => h.Activity).InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
             await Send.NotFoundAsync(ct);
@@ -39,7 +39,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var timelineItem = new EventTimelineItem
         {
             Id = Guid.NewGuid(),
-            HackathonId = hackathon.Id,
+            ActivityId = hackathon.ActivityId,
             Title = req.Title,
             Description = string.IsNullOrWhiteSpace(req.Description)
                 ? string.Empty
@@ -56,7 +56,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             new Response
             {
                 Id = timelineItem.Id,
-                HackathonId = timelineItem.HackathonId,
+                HackathonId = hackathon.Id,
                 Title = timelineItem.Title,
                 Description = string.IsNullOrWhiteSpace(timelineItem.Description)
                     ? null

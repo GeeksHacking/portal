@@ -98,13 +98,13 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var submissionList = await sql.Queryable<ParticipantRegistrationSubmission>()
             .LeftJoin<RegistrationQuestion>((s, q) => s.QuestionId == q.Id)
-            .Where((s, q) => participantIds.Contains(s.ParticipantId))
+            .Where((s, q) => participantIds.Contains(s.ActivityRegistrationId))
             .WithCache()
             .Select(
                 (s, q) =>
                     new
                     {
-                        s.ParticipantId,
+                        ParticipantId = s.ActivityRegistrationId,
                         Item = new RegistrationSubmissionItem
                         {
                             QuestionId = s.QuestionId,

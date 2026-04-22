@@ -17,7 +17,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var hackathon = await sql.Queryable<Entities.Hackathon>().InSingleAsync(req.HackathonId);
+        var hackathon = await sql.Queryable<Entities.Hackathon>().Includes(h => h.Activity).InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
             await Send.NotFoundAsync(ct);
@@ -37,11 +37,25 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request>
             return;
         }
 
-        var deleted = await sql.Deleteable<Organizer>()
-            .Where(o => o.UserId == req.UserId && o.HackathonId == hackathon.Id)
-            .ExecuteCommandAsync(ct);
+        var transactionResult = await sql.Ado.UseTranAsync(async () =>
+        {
+            var deleted = await sql.Deleteable<Organizer>()
+                .Where(o => o.UserId == req.UserId && o.HackathonId == hackathon.Id)
+                .ExecuteCommandAsync(ct);
 
-        if (deleted == 0)
+            await sql.Deleteable<ActivityOrganizer>()
+                .Where(o => o.UserId == req.UserId && o.ActivityId == hackathon.ActivityId)
+                .ExecuteCommandAsync(ct);
+
+            return deleted;
+        });
+
+        if (!transactionResult.IsSuccess)
+        {
+            throw transactionResult.ErrorException!;
+        }
+
+        if (transactionResult.Data == 0)
         {
             await Send.NotFoundAsync(ct);
             return;

@@ -25,7 +25,7 @@ public class RegistrationQuestionTemplateService
                 new RegistrationQuestion
                 {
                     Id = Guid.NewGuid(),
-                    HackathonId = hackathonId,
+                    ActivityId = hackathonId,
                     QuestionText = "What is your phone number?",
                     QuestionKey = "phone_number",
                     Type = QuestionType.Phone,
@@ -48,7 +48,7 @@ public class RegistrationQuestionTemplateService
                 new RegistrationQuestion
                 {
                     Id = Guid.NewGuid(),
-                    HackathonId = hackathonId,
+                    ActivityId = hackathonId,
                     QuestionText = "What is your Telegram Handle?",
                     QuestionKey = "telegram_handle",
                     Type = QuestionType.Text,
@@ -73,7 +73,7 @@ public class RegistrationQuestionTemplateService
                 new RegistrationQuestion
                 {
                     Id = Guid.NewGuid(),
-                    HackathonId = hackathonId,
+                    ActivityId = hackathonId,
                     QuestionText = "What is your GitHub Handle?",
                     QuestionKey = "github_profile",
                     Type = QuestionType.Url,
@@ -93,7 +93,7 @@ public class RegistrationQuestionTemplateService
                 new RegistrationQuestion
                 {
                     Id = Guid.NewGuid(),
-                    HackathonId = hackathonId,
+                    ActivityId = hackathonId,
                     QuestionText = "Your LinkedIn Profile/Personal website",
                     QuestionKey = "linkedin_website",
                     Type = QuestionType.Url,
@@ -111,7 +111,7 @@ public class RegistrationQuestionTemplateService
                 new RegistrationQuestion
                 {
                     Id = Guid.NewGuid(),
-                    HackathonId = hackathonId,
+                    ActivityId = hackathonId,
                     QuestionText = "What is your age?",
                     QuestionKey = "age",
                     Type = QuestionType.Number,
@@ -128,7 +128,7 @@ public class RegistrationQuestionTemplateService
         var genderQuestion = new RegistrationQuestion
         {
             Id = Guid.NewGuid(),
-            HackathonId = hackathonId,
+            ActivityId = hackathonId,
             QuestionText = "What is your gender?",
             QuestionKey = "gender",
             Type = QuestionType.SingleChoice,
@@ -169,7 +169,7 @@ public class RegistrationQuestionTemplateService
         var nationalityQuestion = new RegistrationQuestion
         {
             Id = Guid.NewGuid(),
-            HackathonId = hackathonId,
+            ActivityId = hackathonId,
             QuestionText = "What is your nationality?",
             QuestionKey = "nationality",
             Type = QuestionType.SingleChoice,
@@ -212,7 +212,7 @@ public class RegistrationQuestionTemplateService
         var dietaryRestrictionsQuestion = new RegistrationQuestion
         {
             Id = Guid.NewGuid(),
-            HackathonId = hackathonId,
+            ActivityId = hackathonId,
             QuestionText = "Do you have any dietary restrictions/allergies?",
             QuestionKey = "dietary_restrictions",
             Type = QuestionType.SingleChoice,
@@ -280,7 +280,7 @@ public class RegistrationQuestionTemplateService
         var needTeamHelpQuestion = new RegistrationQuestion
         {
             Id = Guid.NewGuid(),
-            HackathonId = hackathonId,
+            ActivityId = hackathonId,
             QuestionText = "Do you need help with finding a team?",
             QuestionKey = "need_team_help",
             Type = QuestionType.SingleChoice,
@@ -321,7 +321,7 @@ public class RegistrationQuestionTemplateService
         var hackathonRoleQuestion = new RegistrationQuestion
         {
             Id = Guid.NewGuid(),
-            HackathonId = hackathonId,
+            ActivityId = hackathonId,
             QuestionText =
                 "What would you say you would be doing during the hackathon as a team member?",
             QuestionKey = "hackathon_role",
@@ -364,7 +364,7 @@ public class RegistrationQuestionTemplateService
         var tshirtSizeQuestion = new RegistrationQuestion
         {
             Id = Guid.NewGuid(),
-            HackathonId = hackathonId,
+            ActivityId = hackathonId,
             QuestionText = "What is your T-shirt size?",
             QuestionKey = "tshirt_size",
             Type = QuestionType.SingleChoice,
@@ -437,7 +437,7 @@ public class RegistrationQuestionTemplateService
         var employmentStatusQuestion = new RegistrationQuestion
         {
             Id = Guid.NewGuid(),
-            HackathonId = hackathonId,
+            ActivityId = hackathonId,
             QuestionText = "What are you doing now?",
             QuestionKey = "employment_status",
             Type = QuestionType.SingleChoice,
@@ -488,7 +488,7 @@ public class RegistrationQuestionTemplateService
                 new RegistrationQuestion
                 {
                     Id = Guid.NewGuid(),
-                    HackathonId = hackathonId,
+                    ActivityId = hackathonId,
                     QuestionText = "What is your company name?",
                     QuestionKey = "company_name",
                     Type = QuestionType.Text,
@@ -507,7 +507,7 @@ public class RegistrationQuestionTemplateService
                 new RegistrationQuestion
                 {
                     Id = Guid.NewGuid(),
-                    HackathonId = hackathonId,
+                    ActivityId = hackathonId,
                     QuestionText = "What is your job title?",
                     QuestionKey = "job_title",
                     Type = QuestionType.Text,
@@ -526,7 +526,7 @@ public class RegistrationQuestionTemplateService
                 new RegistrationQuestion
                 {
                     Id = Guid.NewGuid(),
-                    HackathonId = hackathonId,
+                    ActivityId = hackathonId,
                     QuestionText = "How many years of experience do you have?",
                     QuestionKey = "years_of_experience",
                     Type = QuestionType.Number,
@@ -546,7 +546,7 @@ public class RegistrationQuestionTemplateService
                 new RegistrationQuestion
                 {
                     Id = Guid.NewGuid(),
-                    HackathonId = hackathonId,
+                    ActivityId = hackathonId,
                     QuestionText = "What is your highest level of education?",
                     QuestionKey = "education_level",
                     Type = QuestionType.Text,
@@ -565,7 +565,7 @@ public class RegistrationQuestionTemplateService
                 new RegistrationQuestion
                 {
                     Id = Guid.NewGuid(),
-                    HackathonId = hackathonId,
+                    ActivityId = hackathonId,
                     QuestionText = "What is your school name?",
                     QuestionKey = "school_name",
                     Type = QuestionType.Text,
@@ -584,7 +584,7 @@ public class RegistrationQuestionTemplateService
                 new RegistrationQuestion
                 {
                     Id = Guid.NewGuid(),
-                    HackathonId = hackathonId,
+                    ActivityId = hackathonId,
                     QuestionText = "What is your major / course name?",
                     QuestionKey = "major_course",
                     Type = QuestionType.Text,
@@ -601,7 +601,7 @@ public class RegistrationQuestionTemplateService
         var expertiseQuestion = new RegistrationQuestion
         {
             Id = Guid.NewGuid(),
-            HackathonId = hackathonId,
+            ActivityId = hackathonId,
             QuestionText = "What is your area of expertise, focus or interest?",
             QuestionKey = "area_of_interest",
             Type = QuestionType.LongText,
@@ -676,7 +676,7 @@ public class RegistrationQuestionTemplateService
         var lookingForJobQuestion = new RegistrationQuestion
         {
             Id = Guid.NewGuid(),
-            HackathonId = hackathonId,
+            ActivityId = hackathonId,
             QuestionText = "Are you open to job opportunities?",
             QuestionKey = "looking_for_job",
             Type = QuestionType.SingleChoice,
@@ -717,7 +717,7 @@ public class RegistrationQuestionTemplateService
         var hearAboutQuestion = new RegistrationQuestion
         {
             Id = Guid.NewGuid(),
-            HackathonId = hackathonId,
+            ActivityId = hackathonId,
             QuestionText = "How did you find out about this event?",
             QuestionKey = "hear_about_source",
             Type = QuestionType.SingleChoice,
@@ -800,7 +800,7 @@ public class RegistrationQuestionTemplateService
         var mailingListQuestion = new RegistrationQuestion
         {
             Id = Guid.NewGuid(),
-            HackathonId = hackathonId,
+            ActivityId = hackathonId,
             QuestionText =
                 "Would you be open to hear about future GeeksHacking's events and be included in our partners' mailing lists?",
             QuestionKey = "mailing_list_consent",
@@ -834,7 +834,7 @@ public class RegistrationQuestionTemplateService
         var disclaimer = new RegistrationQuestion
         {
             Id = Guid.NewGuid(),
-            HackathonId = hackathonId,
+            ActivityId = hackathonId,
             QuestionText =
                 "Submitting this form does not guarantee you a spot at Hackomania 2026. Registrants will receive an email regarding confirmation or rejection of their registration. Please check your spam folder for this email.",
             QuestionKey = "disclaimer",

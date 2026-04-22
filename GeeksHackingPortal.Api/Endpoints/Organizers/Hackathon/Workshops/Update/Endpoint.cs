@@ -22,6 +22,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var workshop = await sql.Queryable<Workshop>()
+            .Includes(w => w.Activity)
             .FirstAsync(w => w.Id == req.WorkshopId && w.HackathonId == req.HackathonId, ct);
 
         if (workshop is null)
@@ -29,6 +30,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             await Send.NotFoundAsync(ct);
             return;
         }
+        var hasActivity = workshop.Activity is not null;
 
         workshop.Title = req.Title;
         workshop.Description = req.Description;
@@ -39,6 +41,15 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         workshop.IsPublished = req.IsPublished;
         workshop.UpdatedAt = DateTimeOffset.UtcNow;
 
+        var activity = workshop.EnsureActivity();
+        if (hasActivity)
+        {
+            await sql.Updateable(activity).ExecuteCommandAsync(ct);
+        }
+        else
+        {
+            await sql.Insertable(activity).ExecuteCommandAsync(ct);
+        }
         await sql.Updateable(workshop).ExecuteCommandAsync(ct);
 
         await Send.OkAsync(

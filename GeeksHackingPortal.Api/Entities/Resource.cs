@@ -19,7 +19,8 @@ public class Resource
 
     public bool IsPublished { get; set; }
 
-    public Guid HackathonId { get; set; }
+    [SugarColumn(OldColumnName = "HackathonId")]
+    public Guid ActivityId { get; set; }
 
     [Navigate(NavigateType.OneToMany, nameof(ResourceRedemption.ResourceId))]
     public List<ResourceRedemption>? Redemptions { get; set; } = null!;

@@ -11,7 +11,12 @@ public class ResourceRedemption
 
     public Guid ResourceId { get; set; }
 
-    public Guid HackathonId { get; set; }
+    [SugarColumn(OldColumnName = "HackathonId")]
+    public Guid ActivityId { get; set; }
 
-    public Guid RedeemerId { get; set; }
+    [SugarColumn(OldColumnName = "RedeemerId")]
+    public Guid UserId { get; set; }
+
+    [Navigate(NavigateType.ManyToOne, nameof(UserId))]
+    public User User { get; set; } = null!;
 }

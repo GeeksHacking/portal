@@ -22,11 +22,24 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var hackathonId = req.HackathonId;
+        var workshopId = Guid.NewGuid();
+        var activity = new Activity
+        {
+            Id = workshopId,
+            Kind = ActivityKind.HackathonWorkshop,
+            Title = req.Title,
+            Description = req.Description,
+            StartTime = req.StartTime,
+            EndTime = req.EndTime,
+            Location = req.Location,
+            IsPublished = req.IsPublished,
+        };
 
         var workshop = new Workshop
         {
-            Id = Guid.NewGuid(),
+            Id = workshopId,
             HackathonId = hackathonId,
+            Activity = activity,
             Title = req.Title,
             Description = req.Description,
             StartTime = req.StartTime,
@@ -36,7 +49,16 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             IsPublished = req.IsPublished,
         };
 
-        await sql.Insertable(workshop).ExecuteCommandAsync(ct);
+        var transactionResult = await sql.Ado.UseTranAsync(async () =>
+        {
+            await sql.Insertable(activity).ExecuteCommandAsync(ct);
+            await sql.Insertable(workshop).ExecuteCommandAsync(ct);
+        });
+
+        if (!transactionResult.IsSuccess)
+        {
+            throw transactionResult.ErrorException!;
+        }
 
         await Send.OkAsync(
             new Response

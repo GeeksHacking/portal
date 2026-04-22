@@ -52,6 +52,45 @@ public static class TestDataHelper
     }
 
     /// <summary>
+    /// Creates a valid standalone workshop request with unique identifiers
+    /// </summary>
+    public static CreateStandaloneWorkshopRequest CreateValidStandaloneWorkshopRequest(
+        string? suffix = null,
+        bool isPublished = true
+    )
+    {
+        suffix ??= Guid.NewGuid().ToString()[..8];
+        var now = DateTimeOffset.UtcNow;
+
+        return new CreateStandaloneWorkshopRequest
+        {
+            Title = $"Test Standalone Workshop {suffix}",
+            Description = $"A standalone workshop created for integration tests ({suffix})",
+            Location = "Virtual Test Venue",
+            HomepageUri = new Uri($"https://example.com/workshop-{suffix}"),
+            ShortCode = $"WS{suffix}",
+            StartTime = now.AddDays(7),
+            EndTime = now.AddDays(7).AddHours(3),
+            MaxParticipants = 30,
+            IsPublished = isPublished,
+        };
+    }
+
+    /// <summary>
+    /// Creates a standalone workshop and returns its response
+    /// </summary>
+    public static async Task<StandaloneWorkshopResponse> CreateStandaloneWorkshopAsync(
+        HttpClient client,
+        bool isPublished = true
+    )
+    {
+        var request = CreateValidStandaloneWorkshopRequest(isPublished: isPublished);
+        var response = await client.PostAsJsonAsync("/organizers/standalone-workshops", request);
+        response.EnsureSuccessStatusCode();
+        return (await response.Content.ReadFromJsonAsync<StandaloneWorkshopResponse>())!;
+    }
+
+    /// <summary>
     /// Creates a hackathon and joins it as a participant
     /// </summary>
     public static async Task<HackathonResponse> CreateHackathonAndJoinAsync(HttpClient client)

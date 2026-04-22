@@ -23,6 +23,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         var workshops = await sql.Queryable<Workshop>()
             .Where(w => w.HackathonId == req.HackathonId)
+            .Includes(w => w.Activity)
             .Includes(w => w.Participants)
             .WithCache()
             .ToListAsync(ct);

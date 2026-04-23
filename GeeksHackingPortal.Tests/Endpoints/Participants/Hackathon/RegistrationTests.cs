@@ -104,6 +104,69 @@ public class RegistrationTests
     }
 
     [Test]
+    public async Task SubmitRegistration_WhenReplacementInsertFails_RollsBackExistingSubmission()
+    {
+        // Arrange
+        var hackathonId = await CreateHackathonAndJoinAsync(client);
+        var questionKey = $"rollback_submission_{Guid.NewGuid().ToString()[..8]}";
+        var createQuestionResponse = await client.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{hackathonId}/registration/questions",
+            new
+            {
+                QuestionText = "Rollback protected question",
+                QuestionKey = questionKey,
+                Type = "Text",
+                DisplayOrder = 1,
+                IsRequired = false,
+            }
+        );
+        var question =
+            await createQuestionResponse.Content.ReadFromJsonAsync<CreateRegistrationQuestionResponse>();
+        await Assert.That(createQuestionResponse.StatusCode).IsEqualTo(HttpStatusCode.Created);
+        await Assert.That(question).IsNotNull();
+
+        var initialSubmitResponse = await client.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathonId}/registration/submissions",
+            new
+            {
+                Submissions = new[]
+                {
+                    new { QuestionId = question!.Id, Value = "original answer" },
+                },
+            }
+        );
+        await Assert.That(initialSubmitResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+
+        // Act - the duplicate question ID violates the unique submission index after deletion.
+        var failedSubmitResponse = await client.HttpClient.PostAsJsonAsync(
+            $"/participants/hackathons/{hackathonId}/registration/submissions",
+            new
+            {
+                Submissions = new[]
+                {
+                    new { QuestionId = question!.Id, Value = "replacement answer 1" },
+                    new { QuestionId = question.Id, Value = "replacement answer 2" },
+                },
+            }
+        );
+
+        var submissionsResponse = await client.HttpClient.GetAsync(
+            $"/participants/hackathons/{hackathonId}/registration/submissions"
+        );
+        var submissions =
+            await submissionsResponse.Content.ReadFromJsonAsync<RegistrationSubmissionsResponse>();
+
+        // Assert
+        await Assert.That(failedSubmitResponse.IsSuccessStatusCode).IsFalse();
+        await Assert.That(submissionsResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(submissions!.Submissions).IsNotNull();
+
+        var persistedSubmission = submissions.Submissions!.Single(s => s.QuestionId == question!.Id);
+        await Assert.That(persistedSubmission.Value).IsEqualTo("original answer");
+        await Assert.That(submissions.AnsweredQuestions).IsEqualTo(1);
+    }
+
+    [Test]
     public async Task ListRegistrationQuestions_WithInvalidHackathonId_ReturnsNotFound()
     {
         // Arrange - Still need to be a participant somewhere

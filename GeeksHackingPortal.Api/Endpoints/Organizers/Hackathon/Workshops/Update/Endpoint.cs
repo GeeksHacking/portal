@@ -41,6 +41,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         workshop.IsPublished = req.IsPublished;
         workshop.UpdatedAt = DateTimeOffset.UtcNow;
 
+        using var tran = sql.Ado.UseTran();
+
         var activity = workshop.EnsureActivity();
         if (hasActivity)
         {
@@ -51,6 +53,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             await sql.Insertable(activity).ExecuteCommandAsync(ct);
         }
         await sql.Updateable(workshop).ExecuteCommandAsync(ct);
+
+        tran.CommitTran();
 
         await Send.OkAsync(
             new Response

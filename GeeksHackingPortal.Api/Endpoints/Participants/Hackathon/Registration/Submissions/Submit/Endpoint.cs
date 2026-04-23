@@ -111,6 +111,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .Select(q => q.QuestionKey)
             .ToList();
 
+        using var tran = sql.Ado.UseTran();
+
         // Delete existing submissions for the questions being updated
         await sql.Deleteable<ParticipantRegistrationSubmission>()
             .Where(s => s.ActivityRegistrationId == participant.Id && questionIds.Contains(s.QuestionId))
@@ -132,6 +134,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .ToList();
 
         await sql.Insertable(submissions).ExecuteCommandAsync(ct);
+
+        tran.CommitTran();
 
         await Send.OkAsync(
             new Response

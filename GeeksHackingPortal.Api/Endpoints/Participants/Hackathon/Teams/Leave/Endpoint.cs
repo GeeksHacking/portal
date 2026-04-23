@@ -49,6 +49,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var teamId = participant.TeamId.Value;
 
+        using var tran = sql.Ado.UseTran();
+
         var otherMembersCount = await sql.Queryable<Participant>()
             .Where(p => p.TeamId == teamId && p.UserId != currentUserId)
             .WithCache()
@@ -61,6 +63,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         {
             await sql.Deleteable<Team>().Where(t => t.Id == teamId).ExecuteCommandAsync(ct);
 
+            tran.CommitTran();
+
             await Send.OkAsync(
                 new Response
                 {
@@ -70,6 +74,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             );
             return;
         }
+
+        tran.CommitTran();
 
         await Send.OkAsync(new Response { Message = "You have left the team" }, ct);
     }

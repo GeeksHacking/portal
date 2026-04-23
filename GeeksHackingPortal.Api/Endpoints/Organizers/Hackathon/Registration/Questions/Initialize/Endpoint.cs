@@ -52,6 +52,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             req.HackathonId
         );
 
+        using var tran = sql.Ado.UseTran();
+
         foreach (var (question, options) in questionsWithOptions)
         {
             await sql.Insertable(question).ExecuteCommandAsync(ct);
@@ -61,6 +63,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 await sql.Insertable(options).ExecuteCommandAsync(ct);
             }
         }
+
+        tran.CommitTran();
 
         await Send.CreatedAtAsync<List.Endpoint>(
             new { req.HackathonId },

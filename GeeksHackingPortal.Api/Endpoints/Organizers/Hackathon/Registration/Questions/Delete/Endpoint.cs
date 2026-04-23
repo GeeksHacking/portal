@@ -32,6 +32,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request>
             return;
         }
 
+        using var tran = sql.Ado.UseTran();
+
         await sql.Deleteable<ParticipantRegistrationSubmission>()
             .Where(s => s.QuestionId == question.Id)
             .ExecuteCommandAsync(ct);
@@ -41,6 +43,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request>
             .ExecuteCommandAsync(ct);
 
         await sql.Deleteable(question).ExecuteCommandAsync(ct);
+
+        tran.CommitTran();
 
         await Send.NoContentAsync(ct);
     }

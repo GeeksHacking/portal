@@ -66,10 +66,14 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
             CreatedByUserId = userId.Value,
         };
 
+        using var tran = sql.Ado.UseTran();
+
         await sql.Insertable(team).ExecuteCommandAsync(ct);
 
         participant.TeamId = team.Id;
         await sql.Updateable(participant).ExecuteCommandAsync(ct);
+
+        tran.CommitTran();
 
         await Send.OkAsync(
             new Response

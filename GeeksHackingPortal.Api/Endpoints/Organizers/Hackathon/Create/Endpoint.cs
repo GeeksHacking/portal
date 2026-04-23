@@ -89,18 +89,12 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             Organizers = [organizer],
         };
 
-        var transactionResult = await sql.Ado.UseTranAsync(async () =>
-        {
-            await sql.Insertable(activity).ExecuteCommandAsync(ct);
-            await sql.Insertable(hackathon).ExecuteCommandAsync(ct);
-            await sql.Insertable(hackathon.Organizers).ExecuteCommandAsync(ct);
-            await sql.Insertable(activityOrganizer).ExecuteCommandAsync(ct);
-        });
+        using var tran = sql.Ado.UseTran();
 
-        if (!transactionResult.IsSuccess)
-        {
-            throw transactionResult.ErrorException!;
-        }
+        await sql.Insertable(activity).ExecuteCommandAsync(ct);
+        await sql.Insertable(hackathon).ExecuteCommandAsync(ct);
+        await sql.Insertable(hackathon.Organizers).ExecuteCommandAsync(ct);
+        await sql.Insertable(activityOrganizer).ExecuteCommandAsync(ct);
 
         if (HackathonGitHubRepositorySettingsMutation.ShouldPersist(gitHubRepositorySettingsResult.Settings))
         {
@@ -122,6 +116,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
             await sql.Insertable(notificationTemplates.ToList()).ExecuteCommandAsync(ct);
         }
+
+        tran.CommitTran();
 
         await Send.CreatedAtAsync<Get.Endpoint>(
             new { HackathonId = hackathon.Id },

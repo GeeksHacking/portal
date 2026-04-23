@@ -57,6 +57,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             ValidationRules = req.ValidationRules,
         };
 
+        using var tran = sql.Ado.UseTran();
+
         await sql.Insertable(question).ExecuteCommandAsync(ct);
 
         var options = new List<RegistrationQuestionOption>();
@@ -78,6 +80,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
             await sql.Insertable(options).ExecuteCommandAsync(ct);
         }
+
+        tran.CommitTran();
 
         await Send.CreatedAtAsync<Endpoint>(
             new { req.HackathonId, QuestionId = question.Id },

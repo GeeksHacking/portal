@@ -121,6 +121,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             ? null
             : NormalizeEmailTemplates(req.EmailTemplates);
 
+        using var tran = sql.Ado.UseTran();
+
         if (emailTemplates is not null)
         {
             await sql.Deleteable<HackathonNotificationTemplate>()
@@ -181,6 +183,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 gitHubRepositorySettings = null;
             }
         }
+
+        tran.CommitTran();
 
         var persistedTemplates = await sql.Queryable<HackathonNotificationTemplate>()
             .Where(t => t.ActivityId == hackathon.Id)

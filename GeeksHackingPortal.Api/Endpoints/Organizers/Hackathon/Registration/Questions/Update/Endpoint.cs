@@ -49,6 +49,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         if (req.ValidationRules is not null)
             question.ValidationRules = req.ValidationRules;
 
+        using var tran = sql.Ado.UseTran();
+
         await sql.Updateable(question).ExecuteCommandAsync(ct);
 
         if (req.Options is not null)
@@ -80,6 +82,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 question.Options = [];
             }
         }
+
+        tran.CommitTran();
 
         await Send.OkAsync(
             new Response

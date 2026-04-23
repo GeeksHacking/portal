@@ -71,6 +71,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             return;
         }
 
+        using var tran = sql.Ado.UseTran();
+
         // Remove the member from the team
         participantToRemove.TeamId = null;
         await sql.Updateable(participantToRemove).ExecuteCommandAsync(ct);
@@ -86,6 +88,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         {
             await sql.Deleteable<Team>().Where(t => t.Id == team.Id).ExecuteCommandAsync(ct);
 
+            tran.CommitTran();
+
             await Send.OkAsync(
                 new Response
                 {
@@ -96,6 +100,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             );
             return;
         }
+
+        tran.CommitTran();
 
         await Send.OkAsync(new Response { Message = "Member removed successfully" }, ct);
     }

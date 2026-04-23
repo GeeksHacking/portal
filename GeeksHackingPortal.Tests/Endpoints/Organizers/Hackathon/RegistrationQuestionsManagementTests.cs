@@ -133,6 +133,91 @@ public class RegistrationQuestionsManagementTests
     }
 
     [Test]
+    public async Task UpdateRegistrationQuestion_WhenOptionInsertFails_RollsBackQuestionAndOptions()
+    {
+        // Arrange
+        var hackathonId = await CreateHackathonAsync(client);
+        var questionKey = $"rollback_options_{Guid.NewGuid().ToString()[..8]}";
+        var createResponse = await client.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{hackathonId}/registration/questions",
+            new
+            {
+                QuestionText = "Original rollback question",
+                QuestionKey = questionKey,
+                Type = "SingleChoice",
+                DisplayOrder = 1,
+                IsRequired = false,
+                Options = new[]
+                {
+                    new
+                    {
+                        OptionText = "Original option",
+                        OptionValue = "original",
+                        DisplayOrder = 1,
+                        HasFollowUpText = false,
+                    },
+                },
+            }
+        );
+        var createdQuestion =
+            await createResponse.Content.ReadFromJsonAsync<CreateRegistrationQuestionResponse>();
+        await Assert.That(createResponse.StatusCode).IsEqualTo(HttpStatusCode.Created);
+        await Assert.That(createdQuestion).IsNotNull();
+
+        var listResponse = await client.HttpClient.GetAsync(
+            $"/organizers/hackathons/{hackathonId}/registration/questions"
+        );
+        var list = await listResponse.Content.ReadFromJsonAsync<OrganizerRegistrationQuestionsResponse>();
+        await Assert.That(listResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        var originalQuestion = list!.Questions!.Single(q => q.Id == createdQuestion!.Id);
+        var originalOption = originalQuestion.Options!.Single();
+
+        // Act - duplicate option IDs violate the option primary key after the question update/delete.
+        var failedUpdateResponse = await client.HttpClient.PatchAsJsonAsync(
+            $"/organizers/hackathons/{hackathonId}/registration/questions/{createdQuestion!.Id}",
+            new
+            {
+                QuestionText = "Updated text should roll back",
+                Options = new[]
+                {
+                    new
+                    {
+                        Id = originalOption.Id,
+                        OptionText = "Replacement option 1",
+                        OptionValue = "replacement-1",
+                        DisplayOrder = 1,
+                        HasFollowUpText = false,
+                    },
+                    new
+                    {
+                        Id = originalOption.Id,
+                        OptionText = "Replacement option 2",
+                        OptionValue = "replacement-2",
+                        DisplayOrder = 2,
+                        HasFollowUpText = false,
+                    },
+                },
+            }
+        );
+
+        var persistedListResponse = await client.HttpClient.GetAsync(
+            $"/organizers/hackathons/{hackathonId}/registration/questions"
+        );
+        var persistedList =
+            await persistedListResponse.Content.ReadFromJsonAsync<OrganizerRegistrationQuestionsResponse>();
+        var persistedQuestion = persistedList!.Questions!.Single(q => q.Id == createdQuestion.Id);
+        var persistedOption = persistedQuestion.Options!.Single();
+
+        // Assert
+        await Assert.That(failedUpdateResponse.IsSuccessStatusCode).IsFalse();
+        await Assert.That(persistedListResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(persistedQuestion.QuestionText).IsEqualTo("Original rollback question");
+        await Assert.That(persistedOption.Id).IsEqualTo(originalOption.Id);
+        await Assert.That(persistedOption.OptionText).IsEqualTo("Original option");
+        await Assert.That(persistedOption.OptionValue).IsEqualTo("original");
+    }
+
+    [Test]
     public async Task ListRegistrationQuestions_WithInvalidHackathonId_ReturnsNotFound()
     {
         // Act

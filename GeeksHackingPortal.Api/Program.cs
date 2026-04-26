@@ -28,7 +28,6 @@ builder.AddServiceDefaults();
 
 if (builder.Environment.IsProduction())
 {
-    builder.Logging.ClearProviders();
     builder.Logging.AddGoogle(new LoggingServiceOptions { ProjectId = "hackomania-event-portal" }); // Legacy project ID
     builder.Services.AddGoogleTraceForAspNetCore(
         new AspNetCoreTraceOptions
@@ -292,9 +291,7 @@ await using (var scope = app.Services.CreateAsyncScope())
     if (schemaDifferences.Length > 0)
     {
         var diffString = schemaDifferenceProvider.ToDiffString()?.Trim();
-        app.Logger.LogError(
-            "Database schema does not match the current SqlSugar models. Apply the pending changes before starting the API."
-        );
+        Console.WriteLine($"Database schema does not match the current SqlSugar models. Apply the pending changes before starting the API. {schemaDifferenceProvider.ToDiffString().Trim()}");
 
         foreach (var table in schemaDifferences)
         {

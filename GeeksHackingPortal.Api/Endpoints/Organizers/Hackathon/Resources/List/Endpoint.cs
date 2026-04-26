@@ -33,7 +33,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 RedemptionStmt = r.RedemptionStmt,
                 IsPublished = r.IsPublished,
             })
-            .WithCache()
+            
             .ToListAsync(ct);
 
         await Send.OkAsync(new Response { Resources = resources }, ct);

@@ -30,7 +30,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         // Find the team by join code
         var team = await sql.Queryable<Team>()
             .Where(t => t.JoinCode == req.JoinCode)
-            .WithCache()
+            
             .FirstAsync(ct);
 
         if (team is null)
@@ -43,7 +43,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         // Get the hackathon for this team
         var hackathon = await sql.Queryable<Entities.Hackathon>()
             .Includes(h => h.Activity)
-            .WithCache()
+            
             .InSingleAsync(team.HackathonId);
 
         if (hackathon is null || !hackathon.Activity.IsPublished)
@@ -55,7 +55,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         // Check if user is already a participant in this hackathon
         var participant = await sql.Queryable<Participant>()
             .Where(p => p.HackathonId == hackathon.Id && p.UserId == userId.Value)
-            .WithCache()
+            
             .FirstAsync(ct);
 
         var autoJoinedHackathon = false;
@@ -130,7 +130,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             var transactionResult = await sql.Ado.UseTranAsync(async () =>
             {
                 await sql.Updateable(participant).ExecuteCommandAsync(ct);
-                await sql.Storageable(registration).ExecuteCommandAsync();
+                await sql.Storageable(registration).ExecuteCommandAsync(ct);
             });
 
             if (!transactionResult.IsSuccess)

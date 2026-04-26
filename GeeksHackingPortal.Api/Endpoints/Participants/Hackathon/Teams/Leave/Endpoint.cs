@@ -25,7 +25,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         var hackathon = await sql.Queryable<Entities.Hackathon>()
             .Includes(h => h.Activity)
-            .WithCache()
+            
             .InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
@@ -37,7 +37,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var participant = await sql.Queryable<Participant>()
             .Where(p => p.HackathonId == hackathon.Id && p.UserId == currentUserId)
-            .WithCache()
+            
             .FirstAsync(ct);
 
         if (participant?.TeamId is null)
@@ -53,7 +53,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var otherMembersCount = await sql.Queryable<Participant>()
             .Where(p => p.TeamId == teamId && p.UserId != currentUserId)
-            .WithCache()
+            
             .CountAsync(ct);
 
         participant.TeamId = null;

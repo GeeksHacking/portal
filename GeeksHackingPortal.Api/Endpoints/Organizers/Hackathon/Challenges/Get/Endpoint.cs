@@ -23,7 +23,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         var hackathon = await sql.Queryable<Entities.Hackathon>()
             .Includes(h => h.Activity)
-            .WithCache()
+            
             .InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
@@ -31,7 +31,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             return;
         }
 
-        var challenge = await sql.Queryable<Challenge>().WithCache().InSingleAsync(req.ChallengeId);
+        var challenge = await sql.Queryable<Challenge>().InSingleAsync(req.ChallengeId);
         if (challenge is null)
         {
             await Send.NotFoundAsync(ct);

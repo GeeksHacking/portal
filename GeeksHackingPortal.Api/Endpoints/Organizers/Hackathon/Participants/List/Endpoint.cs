@@ -22,7 +22,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var hackathonExists = await sql.Queryable<Entities.Hackathon>()
-            .WithCache()
+            
             .AnyAsync(h => h.Id == req.HackathonId, ct);
         if (!hackathonExists)
         {
@@ -33,7 +33,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var participants = await sql.Queryable<Participant>()
             .Where(p => p.HackathonId == req.HackathonId)
             .OrderByDescending(p => p.JoinedAt)
-            .WithCache()
+            
             .Select(p => new Participant
             {
                 Id = p.Id,
@@ -65,7 +65,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var usersList = await sql.Queryable<User>()
             .Where(u => userIds.Contains(u.Id))
-            .WithCache()
+            
             .ToListAsync(ct);
         var users = usersList.ToDictionary(x => x.Id, x => x);
 
@@ -80,7 +80,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 ? []
                 : await sql.Queryable<Team>()
                     .Where(t => teamIds.Contains(t.Id))
-                    .WithCache()
+                    
                     .ToListAsync(ct);
         var teams = teamsList.ToDictionary(x => x.Id, x => x.Name);
 
@@ -89,7 +89,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var reviewsList = await sql.Queryable<ParticipantReview>()
             .Where(r => participantIds.Contains(r.ParticipantId))
             .OrderByDescending(r => r.CreatedAt)
-            .WithCache()
+            
             .ToListAsync(ct);
 
         var reviewsByParticipant = reviewsList
@@ -99,7 +99,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var submissionList = await sql.Queryable<ParticipantRegistrationSubmission>()
             .LeftJoin<RegistrationQuestion>((s, q) => s.QuestionId == q.Id)
             .Where((s, q) => participantIds.Contains(s.ActivityRegistrationId))
-            .WithCache()
+            
             .Select(
                 (s, q) =>
                     new
@@ -124,7 +124,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var emailDeliveries = await sql.Queryable<ParticipantEmailDelivery>()
             .Where(e => participantIds.Contains(e.ParticipantId))
             .OrderByDescending(e => e.SentAt)
-            .WithCache()
+            
             .ToListAsync(ct);
         var emailDeliveriesByParticipant = emailDeliveries
             .GroupBy(e => e.ParticipantId)

@@ -12,7 +12,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     public override void Configure()
     {
         Post("organizers/hackathons");
-        Policies(PolicyNames.CreateHackathon);
+        Policies(PolicyNames.CreateActivity);
         Description(b => b.WithTags("Organizers", "Hackathons"));
         Summary(s =>
         {

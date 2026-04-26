@@ -37,7 +37,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var timelineItems = await sql.Queryable<EventTimelineItem>()
             .Where(t => t.ActivityId == hackathon.Id)
             .OrderBy(t => t.StartTime)
-            .WithCache()
+            
             .ToListAsync(ct);
 
         await Send.OkAsync(

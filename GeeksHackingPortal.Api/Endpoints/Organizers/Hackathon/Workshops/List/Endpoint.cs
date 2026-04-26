@@ -25,7 +25,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .Where(w => w.HackathonId == req.HackathonId)
             .Includes(w => w.Activity)
             .Includes(w => w.Participants)
-            .WithCache()
+            
             .ToListAsync(ct);
 
         await Send.OkAsync(

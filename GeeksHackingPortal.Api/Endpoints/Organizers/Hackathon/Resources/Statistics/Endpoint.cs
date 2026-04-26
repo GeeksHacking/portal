@@ -24,7 +24,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var hackathon = await sql.Queryable<Entities.Hackathon>()
-            .WithCache()
+            
             .FirstAsync(h => h.Id == req.HackathonId, ct);
 
         if (hackathon is null)
@@ -35,7 +35,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var resources = await sql.Queryable<Resource>()
             .Where(r => r.ActivityId == hackathon.Id)
-            .WithCache()
+            
             .ToListAsync(ct);
 
         var selectedResource =
@@ -67,7 +67,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var teams = await sql.Queryable<Team>()
             .Where(team => team.HackathonId == req.HackathonId)
-            .WithCache()
+            
             .ToListAsync(ct);
 
         var scopedResources = selectedResource is null ? resources : [selectedResource];

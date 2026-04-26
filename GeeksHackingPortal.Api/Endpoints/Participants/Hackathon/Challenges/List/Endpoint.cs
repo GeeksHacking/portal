@@ -53,7 +53,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                         TeamCount = SqlFunc.AggregateCount(t.Id),
                     }
             )
-            .WithCache()
+            
             .ToListAsync(ct);
 
         await Send.OkAsync(new Response { Challenges = challenges }, ct);

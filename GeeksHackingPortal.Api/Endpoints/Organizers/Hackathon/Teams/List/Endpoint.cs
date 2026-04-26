@@ -31,7 +31,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var teams = await sql.Queryable<Team>()
             .Where(t => t.HackathonId == hackathon.Id)
             .OrderByDescending(t => t.CreatedAt)
-            .WithCache()
+            
             .ToListAsync(ct);
 
         var teamIds = teams.Select(t => t.Id).ToList();

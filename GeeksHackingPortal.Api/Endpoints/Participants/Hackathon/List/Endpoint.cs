@@ -22,7 +22,7 @@ public class Endpoint(ISqlSugarClient sql) : EndpointWithoutRequest<Response>
         var hackathons = await sql.Queryable<Entities.Hackathon>()
             .LeftJoin<Entities.Activity>((hackathon, activity) => hackathon.Id == activity.Id)
             .Where((hackathon, activity) => activity.IsPublished)
-            .WithCache()
+            
             .Select((hackathon, activity) => new Response.HackathonItem
             {
                 Id = hackathon.Id,

@@ -10,7 +10,7 @@ public class Hackathon
     public Guid Id { get; set; }
 
     [Navigate(NavigateType.OneToOne, nameof(Id))]
-    public Activity Activity { get; set; } = null!;
+    public Activity? Activity { get; set; } = null!;
 
     [SugarColumn(ColumnName = "Name", IsNullable = true)]
     public string? LegacyName { get; set; }

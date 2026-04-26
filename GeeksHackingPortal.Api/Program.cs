@@ -211,10 +211,6 @@ builder
         policy => policy.Requirements.Add(new TeamCreatorForHackathonTeamRequirement())
     )
     .AddPolicy(
-        PolicyNames.CreateHackathon,
-        policy => policy.Requirements.Add(new CreateHackathonRequirement())
-    )
-    .AddPolicy(
         PolicyNames.CreateActivity,
         policy => policy.Requirements.Add(new CreateActivityRequirement())
     );
@@ -275,7 +271,6 @@ builder.Services.AddScoped<IJintEvaluationService, JintEvaluationService>();
 builder.Services.AddScoped<IEmailService, PostmarkEmailService>();
 builder.Services.AddScoped<INotificationTemplateResolver, NotificationTemplateResolver>();
 builder.Services.AddScoped<IAuthorizationHandler, RootHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, CreateHackathonHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, CreateActivityHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, OrganizerForHackathonHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, OrganizerForActivityHandler>();

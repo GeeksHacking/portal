@@ -25,7 +25,7 @@ public class CreateActivityHandler(MembershipService membership, IOptions<AppOpt
             return;
         }
 
-        if (options.Value.CreationMode == HackathonCreationMode.Anyone)
+        if (options.Value.CreationMode == ActivityCreationMode.Anyone)
         {
             context.Succeed(requirement);
             return;

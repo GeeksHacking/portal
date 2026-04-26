@@ -8,7 +8,7 @@ namespace GeeksHackingPortal.Api.Entities;
 ///
 /// The term "event" is avoided to avoid conflict with language / runtime features.
 /// </summary>
-[SugarIndex("IX_StandaloneWorkshop_ShortCode", nameof(ShortCode), OrderByType.Asc, true)]
+[SugarIndex("IX_StandaloneWorkshop_ShortCode", nameof(ShortCode), OrderByType.Asc, IsUnique = true)]
 public class StandaloneWorkshop
 {
     [SugarColumn(IsPrimaryKey = true)]

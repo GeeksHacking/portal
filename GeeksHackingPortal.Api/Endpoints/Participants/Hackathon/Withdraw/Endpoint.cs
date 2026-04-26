@@ -25,7 +25,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         var hackathon = await sql.Queryable<Entities.Hackathon>()
             .Includes(h => h.Activity)
-            .WithCache()
+            
             .InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
@@ -44,7 +44,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var participant = await sql.Queryable<Participant>()
             .Where(p => p.HackathonId == hackathon.Id && p.UserId == currentUserId && p.WithdrawnAt == null)
-            .WithCache()
+            
             .FirstAsync(ct);
 
         if (participant is null)

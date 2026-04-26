@@ -102,7 +102,7 @@ public class Endpoint(ISqlSugarClient sql, IWebHostEnvironment env) : Endpoint<R
             var transactionResult = await sql.Ado.UseTranAsync(async () =>
             {
                 await sql.Updateable(existing).ExecuteCommandAsync(ct);
-                await sql.Storageable(registration).ExecuteCommandAsync();
+                await sql.Storageable(registration).ExecuteCommandAsync(ct);
             });
 
             if (!transactionResult.IsSuccess)

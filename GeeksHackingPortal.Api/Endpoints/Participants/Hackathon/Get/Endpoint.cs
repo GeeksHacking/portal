@@ -25,7 +25,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 || h.ShortCode == req.HackathonIdOrShortCode
             )
             .Includes(h => h.Activity)
-            .WithCache()
+            
             .FirstAsync(ct);
 
         if (hackathon is null || !hackathon.Activity.IsPublished)

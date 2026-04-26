@@ -28,8 +28,11 @@ public static class PolicyNames
     public const string OrganizerForHackathon = nameof(OrganizerForHackathon);
 
     /// <summary>
-    /// Requires the user to be an organizer for the activity specified by {ActivityId},
-    /// {StandaloneWorkshopId}, or {HackathonId} in the route.
+    /// Requires the user to be an organizer for the activity specified by
+    /// - {ActivityId}
+    /// - {StandaloneWorkshopId}
+    /// - {HackathonId}
+    /// in the route.
     /// </summary>
     public const string OrganizerForActivity = nameof(OrganizerForActivity);
 
@@ -66,12 +69,7 @@ public static class PolicyNames
     public const string Root = nameof(Root);
 
     /// <summary>
-    /// Checks the policy for who can create a hackathon based on AppOptions.
-    /// </summary>
-    public const string CreateHackathon = nameof(CreateHackathon);
-
-    /// <summary>
-    /// Checks the policy for who can create top-level activities based on AppOptions.
+    /// Checks the policy for who can create activities based on AppOptions.
     /// </summary>
     public const string CreateActivity = nameof(CreateActivity);
 }

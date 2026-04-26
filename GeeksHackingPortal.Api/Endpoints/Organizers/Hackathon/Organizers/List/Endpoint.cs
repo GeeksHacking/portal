@@ -18,7 +18,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         var hackathon = await sql.Queryable<Entities.Hackathon>()
             .Includes(h => h.Activity)
-            .WithCache()
+            
             .InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
@@ -29,7 +29,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var organizers = await sql.Queryable<Organizer>()
             .InnerJoin<User>((o, u) => o.UserId == u.Id)
             .Where(o => o.HackathonId == hackathon.Id)
-            .WithCache()
+            
             .Select(
                 (o, u) =>
                     new Response.OrganizerItem

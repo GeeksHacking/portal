@@ -30,7 +30,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var challenge = await sql.Queryable<Challenge>()
             .Where(c => c.Id == req.ChallengeId && c.HackathonId == hackathon.Id)
-            .WithCache()
+            
             .FirstAsync(ct);
 
         if (challenge is null || !challenge.IsPublished)

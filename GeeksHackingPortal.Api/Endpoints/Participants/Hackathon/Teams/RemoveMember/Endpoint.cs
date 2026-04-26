@@ -27,7 +27,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         var hackathon = await sql.Queryable<Entities.Hackathon>()
             .Includes(h => h.Activity)
-            .WithCache()
+            
             .InSingleAsync(req.HackathonId);
         if (hackathon is null)
         {
@@ -47,7 +47,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 
         var team = await sql.Queryable<Team>()
             .Where(t => t.Id == req.TeamId && t.HackathonId == hackathon.Id)
-            .WithCache()
+            
             .FirstAsync(ct);
 
         if (team is null)
@@ -61,7 +61,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .Where(p =>
                 p.HackathonId == hackathon.Id && p.UserId == req.UserId && p.TeamId == team.Id
             )
-            .WithCache()
+            
             .FirstAsync(ct);
 
         if (participantToRemove is null)
@@ -80,7 +80,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         // Check if there are any remaining members
         var remainingMembersCount = await sql.Queryable<Participant>()
             .Where(p => p.TeamId == team.Id)
-            .WithCache()
+            
             .CountAsync(ct);
 
         // If no members remain, delete the team

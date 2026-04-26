@@ -30,6 +30,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             await Send.NotFoundAsync(ct);
             return;
         }
+        
+        using var tran = sql.Ado.UseTran();
+        
         var hasActivity = hackathon.Activity is not null;
         var activity = hackathon.Activity ?? new Activity
         {
@@ -126,7 +129,6 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             ? null
             : NormalizeEmailTemplates(req.EmailTemplates);
 
-        using var tran = sql.Ado.UseTran();
 
         if (emailTemplates is not null)
         {

@@ -27,7 +27,7 @@ public class Endpoint(ISqlSugarClient sql) : EndpointWithoutRequest<Response>
             return;
         }
 
-        var user = await sql.Queryable<User>().WithCache().InSingleAsync(userId.Value);
+        var user = await sql.Queryable<User>().InSingleAsync(userId.Value);
         if (user is null)
         {
             await Send.NotFoundAsync(ct);

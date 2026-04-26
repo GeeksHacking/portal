@@ -190,6 +190,9 @@ jobs:
           workload_identity_provider: projects/242247218750/locations/global/workloadIdentityPools/github/providers/github
           service_account: hackomania-api-deployer@hackomania-event-portal.iam.gserviceaccount.com
 
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -229,3 +232,28 @@ jobs:
           region: asia-southeast1
           image: asia-southeast1-docker.pkg.dev/hackomania-event-portal/hackomania-api/hackomania-api:latest
           tag: latest
+
+      - name: Clean up stale images
+        shell: bash
+        run: |
+          KEEP=10
+          REPO="asia-southeast1-docker.pkg.dev/hackomania-event-portal/hackomania-api/hackomania-api"
+
+          # List all image digests sorted by creation time (newest first), then drop the first $KEEP entries.
+          mapfile -t STALE < <(
+            gcloud artifacts docker images list "$REPO" \
+              --include-tags \
+              --sort-by="~CREATE_TIME" \
+              --format="value(version)" \
+              | tail -n +$((KEEP + 1))
+          )
+
+          if [ "${#STALE[@]}" -eq 0 ]; then
+            echo "No stale images to remove."
+            exit 0
+          fi
+
+          echo "Removing ${#STALE[@]} stale image(s)..."
+          for digest in "${STALE[@]}"; do
+            gcloud artifacts docker images delete "${REPO}@${digest}" --quiet --delete-tags
+          done

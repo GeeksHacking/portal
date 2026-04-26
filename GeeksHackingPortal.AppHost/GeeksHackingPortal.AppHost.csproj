@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.JavaScript" Version="13.2.2" />
-    <PackageReference Include="Aspire.Hosting.MySql" Version="13.2.2" />
+    <PackageReference Include="Aspire.Hosting.JavaScript" Version="13.2.4" />
+    <PackageReference Include="Aspire.Hosting.MySql" Version="13.2.4" />
   </ItemGroup>
 </Project>

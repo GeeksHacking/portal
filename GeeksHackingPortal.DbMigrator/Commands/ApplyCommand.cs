@@ -76,6 +76,54 @@ public class ApplyCommand(
         }
     }
 
+    private static void VerifyActivityBackfillComplete(ISqlSugarClient sql, ILogger logger)
+    {
+        if (!sql.DbMaintenance.IsAnyTable(nameof(Activity), false))
+        {
+            throw new InvalidOperationException(
+                "Activity backfill verification failed because the Activity table does not exist."
+            );
+        }
+
+        var missingHackathonActivities = 0;
+        if (sql.DbMaintenance.IsAnyTable(nameof(Hackathon), false))
+        {
+            missingHackathonActivities = sql.Queryable<Hackathon>()
+                .Where(hackathon =>
+                    !SqlFunc.Subqueryable<Activity>()
+                        .Where(activity =>
+                            activity.Id == hackathon.Id && activity.Kind == ActivityKind.Hackathon
+                        )
+                        .Any()
+                )
+                .Count();
+        }
+
+        var missingWorkshopActivities = 0;
+        if (sql.DbMaintenance.IsAnyTable(nameof(Workshop), false))
+        {
+            missingWorkshopActivities = sql.Queryable<Workshop>()
+                .Where(workshop =>
+                    !SqlFunc.Subqueryable<Activity>()
+                        .Where(activity =>
+                            activity.Id == workshop.Id
+                            && activity.Kind == ActivityKind.HackathonWorkshop
+                        )
+                        .Any()
+                )
+                .Count();
+        }
+
+        if (missingHackathonActivities > 0 || missingWorkshopActivities > 0)
+        {
+            throw new InvalidOperationException(
+                $"Activity backfill verification failed. Missing Activity rows: Hackathon={missingHackathonActivities}, Workshop={missingWorkshopActivities}."
+            );
+        }
+
+        logger.LogInformation("Activity backfill verification passed.");
+    }
+
     private static void BackfillActivities(
         ISqlSugarClient sql,
         ILogger logger,
@@ -100,6 +148,9 @@ public class ApplyCommand(
         cancellationToken.ThrowIfCancellationRequested();
 
         BackfillActivityOrganizers(sql, logger, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        VerifyActivityBackfillComplete(sql, logger);
     }
 
     private static void BackfillHackathonActivities(

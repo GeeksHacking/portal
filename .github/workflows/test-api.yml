@@ -18,6 +18,10 @@ on:
       - "GeeksHackingPortal.ServiceDefaults/**"
       - ".github/workflows/test-api.yml"
 
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
   test:
     runs-on: ubuntu-latest

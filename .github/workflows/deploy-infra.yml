@@ -7,6 +7,10 @@ on:
       - ".github/workflows/deploy-infra.yml"
     branches: ["main"]
 
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
   build:
     concurrency: deploy

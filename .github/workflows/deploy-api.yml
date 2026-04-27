@@ -18,6 +18,10 @@ on:
         options:
           - production
 
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
   # Generate a human-readable schema diff before any deploy work starts.
   # The later apply job is gated on this result so reviewers can inspect drift first.
@@ -64,32 +68,30 @@ jobs:
 
       - name: Generate database schema diff
         id: diff
-        shell: bash
         run: |
+          $ErrorActionPreference = 'Continue'
           # Capture the migrator output into a file so we can both print it and upload it.
           # The diff command returns 0 when there are no changes and 2 when drift exists.
-          set +e
-          dotnet run --project GeeksHackingPortal.DbMigrator --configuration Release -- diff > db-schema-diff.txt 2>&1
-          status=$?
-          cat db-schema-diff.txt
+          $output = dotnet run --project GeeksHackingPortal.DbMigrator --configuration Release -- diff 2>&1
+          $status = $LASTEXITCODE
+          $output | Out-File -FilePath db-schema-diff.txt -Encoding utf8
+          Get-Content db-schema-diff.txt
 
           # Convert the migrator exit code into a workflow output instead of failing the job.
-          if [ "$status" -eq 0 ]; then
-            echo "has_changes=false" >> "$GITHUB_OUTPUT"
-          elif [ "$status" -eq 2 ]; then
-            echo "has_changes=true" >> "$GITHUB_OUTPUT"
-          else
-            exit "$status"
-          fi
+          if ($status -eq 0) {
+            "has_changes=false" | Out-File -Append -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+          } elseif ($status -eq 2) {
+            "has_changes=true" | Out-File -Append -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+          } else {
+            exit $status
+          }
 
           # Publish the same diff into the workflow summary so approvers can read it in the UI.
-          {
-            echo "## Database Schema Diff"
-            echo ""
-            echo "\`\`\`text"
-            cat db-schema-diff.txt
-            echo "\`\`\`"
-          } >> "$GITHUB_STEP_SUMMARY"
+          "## Database Schema Diff" | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8
+          "" | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8
+          '```text' | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8
+          Get-Content db-schema-diff.txt | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8
+          '```' | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8
         env:
           ConnectionStrings__db: ${{ steps.secrets.outputs.tidb_connection_string }}
 
@@ -234,7 +236,6 @@ jobs:
           tag: latest
 
       - name: Clean up stale images
-        shell: pwsh
         run: |
           $keep = 10
           $repo = "asia-southeast1-docker.pkg.dev/hackomania-event-portal/hackomania-api/hackomania-api"

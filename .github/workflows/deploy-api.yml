@@ -69,13 +69,11 @@ jobs:
       - name: Generate database schema diff
         id: diff
         run: |
-          $ErrorActionPreference = 'Continue'
           # Capture the migrator output into a file so we can both print it and upload it.
           # The diff command returns 0 when there are no changes and 2 when drift exists.
-          $output = dotnet run --project GeeksHackingPortal.DbMigrator --configuration Release -- diff 2>&1
+          dotnet run --project GeeksHackingPortal.DbMigrator --configuration Release -- diff 2>&1 |
+            Tee-Object -FilePath db-schema-diff.txt
           $status = $LASTEXITCODE
-          $output | Out-File -FilePath db-schema-diff.txt -Encoding utf8
-          Get-Content db-schema-diff.txt
 
           # Convert the migrator exit code into a workflow output instead of failing the job.
           if ($status -eq 0) {
@@ -241,11 +239,14 @@ jobs:
           $repo = "asia-southeast1-docker.pkg.dev/hackomania-event-portal/hackomania-api/hackomania-api"
 
           # List all image digests sorted by creation time (newest first), then drop the first $keep entries.
-          $stale = gcloud artifacts docker images list $repo `
+          # Wrap in @() to ensure the result is always an array (guards against single-string iteration),
+          # and filter out any empty lines produced by gcloud.
+          $stale = @(gcloud artifacts docker images list $repo `
             --include-tags `
             --sort-by="~CREATE_TIME" `
             --format="value(version)" |
-            Select-Object -Skip $keep
+            Select-Object -Skip $keep |
+            Where-Object { $_ -ne "" })
 
           if (-not $stale) {
             Write-Host "No stale images to remove."

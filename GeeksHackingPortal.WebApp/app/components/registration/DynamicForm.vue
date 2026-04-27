@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListResponse } from '~/api-client/models'
-import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import { useQueryClient } from '@tanstack/vue-query'
+import { useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint } from '@geekshacking/portal-sdk/hooks'
 import { useSubmitRegistrationMutation } from '~/composables/question'
 import { useUpdateUserMutation } from '~/composables/user'
 import { registrationPageConfig } from '~/config/registration-pages'
@@ -18,7 +19,7 @@ const queryClient = useQueryClient()
 const registrationPath = computed(() => hackathon.value ? `/${hackathon.value.shortCode}/registration` : `/${props.hackathonId}/registration`)
 
 // Get authenticated user data for prefilling
-const { data: userData } = useQuery(authQueries.whoAmI)
+const { data: userData } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
 
 const allQuestions = computed(() =>
   props.questions.categories?.flatMap(cat => cat.questions ?? []) ?? [],

@@ -1,0 +1,1 @@
+{"type":"object","additionalProperties":false,"properties":{"name":{"type":"string"},"description":{"type":"string","nullable":true},"redemptionStmt":{"type":"string"},"isPublished":{"type":"boolean"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequest"}

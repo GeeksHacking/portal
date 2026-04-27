@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
+import { useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint } from '@geekshacking/portal-sdk/hooks'
 import QRCode from 'qrcode'
 
 const items = [
@@ -21,7 +22,7 @@ function scrollTo(targetId: string) {
 const config = useRuntimeConfig()
 const loginUrl = `${config.public.api}/auth/login`
 
-const { data: user, isLoading } = useQuery(authQueries.whoAmI)
+const { data: user, isLoading } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
 
 const hackathonId = useResolvedHackathonId()
 const { data: teamData } = useQuery(

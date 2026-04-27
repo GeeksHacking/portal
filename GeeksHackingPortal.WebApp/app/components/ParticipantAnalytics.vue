@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { useQuery } from '@tanstack/vue-query'
+import { useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint } from '@geekshacking/portal-sdk/hooks'
 import { computed } from 'vue'
 import { HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject } from '~/api-client/models'
-import { participantOrganizerQueries } from '~/composables/participants'
 
 const props = defineProps<{
   hackathonId: string
@@ -12,11 +11,13 @@ const props = defineProps<{
 const REVIEW_OVERDUE_DAYS = 5
 const REVIEW_OVERDUE_MS = REVIEW_OVERDUE_DAYS * 24 * 60 * 60 * 1000
 
-const { data: participantsData, isLoading } = useQuery(
-  computed(() => ({
-    ...participantOrganizerQueries.list(props.hackathonId),
-    enabled: !!props.hackathonId && props.isOrganizer,
-  })),
+const { data: participantsData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint(
+  computed(() => props.hackathonId),
+  {
+    query: {
+      enabled: computed(() => !!props.hackathonId && props.isOrganizer),
+    },
+  },
 )
 
 const stats = computed(() => {

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import {
+  useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint,
+  useGeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsListEndpoint,
+} from '@geekshacking/portal-sdk/hooks'
 import { useQuery } from '@tanstack/vue-query'
 import { computed, ref } from 'vue'
 
@@ -7,11 +11,8 @@ const hackathon = useRouteHackathon()
 const toast = useToast()
 
 // Fetch participation status
-const { data: statusData } = useQuery(
-  computed(() => ({
-    ...hackathonQueries.status(hackathonId.value ?? ''),
-    enabled: !!hackathonId.value,
-  })),
+const { data: statusData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint(
+  computed(() => hackathonId.value ?? ''),
 )
 
 // Fetch current user's team
@@ -51,11 +52,9 @@ const submissionStatus = computed(() => {
 })
 
 // Fetch existing submissions for the team
-const { data: submissionsData } = useQuery(
-  computed(() => ({
-    ...submissionQueries.listForTeam(hackathonId.value ?? '', teamId.value ?? ''),
-    enabled: !!hackathonId.value && !!teamId.value,
-  })),
+const { data: submissionsData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsListEndpoint(
+  computed(() => hackathonId.value ?? ''),
+  computed(() => teamId.value ?? ''),
 )
 
 // Check if team has any existing submissions

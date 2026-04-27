@@ -1,0 +1,1 @@
+{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","format":"guid"},"workshopId":{"type":"string","format":"guid"},"workshopTitle":{"type":"string"},"joinedAt":{"type":"string","format":"date-time"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsJoinResponse"}

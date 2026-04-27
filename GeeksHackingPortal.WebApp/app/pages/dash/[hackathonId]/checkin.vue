@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { ParticipantCheckInDto, VenueAuditTrailItem } from '~/composables/venue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import { useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint } from '@geekshacking/portal-sdk/hooks'
 import { Html5Qrcode } from 'html5-qrcode'
 import { computed, nextTick, onUnmounted, ref, watch } from 'vue'
-import { participantOrganizerQueries } from '~/composables/participants'
 import { useCheckInMutation, useCheckOutMutation, venueHistoryQueries, venueOverviewQueries } from '~/composables/venue'
 import { HACKATHON_TIME_ZONE, HACKATHON_TIME_ZONE_LABEL, parseHackathonDateTimeValue } from '~/utils/hackathon-date-time'
 
@@ -32,11 +32,9 @@ const checkOutMutation = useCheckOutMutation(hackathonId)
 const queryClient = useQueryClient()
 
 // Fetch participant details when we have a scanned user ID
-const { data: participantDetail } = useQuery(
-  computed(() => ({
-    ...participantOrganizerQueries.detail(hackathonId.value, scannedUserId.value),
-    enabled: !!scannedUserId.value,
-  })),
+const { data: participantDetail } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint(
+  computed(() => hackathonId.value),
+  computed(() => scannedUserId.value),
 )
 
 const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useQuery(

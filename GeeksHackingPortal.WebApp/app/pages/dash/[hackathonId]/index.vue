@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
+import { useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint } from '@geekshacking/portal-sdk/hooks'
 import { computed, watch } from 'vue'
-import { authQueries } from '~/composables/auth'
 import { hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
 import { organizerQueries } from '~/composables/organizers'
 
@@ -16,7 +16,7 @@ const { data: hackathon } = useQuery(
 )
 
 const resolvedHackathonId = computed(() => hackathon.value?.id ?? null)
-const { data: user, isLoading: isLoadingUser } = useQuery(authQueries.whoAmI)
+const { data: user, isLoading: isLoadingUser } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
 const { data: organizersData, isLoading: isLoadingOrganizers } = useQuery(
   computed(() => ({
     ...organizerQueries.list(resolvedHackathonId.value ?? ''),

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
+import { useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint } from '@geekshacking/portal-sdk/hooks'
+import { useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint } from '@geekshacking/portal-sdk/hooks'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import { authQueries } from '~/composables/auth'
-import { challengeQueries } from '~/composables/challenges'
 import { hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
 import { organizerQueries } from '~/composables/organizers'
 
@@ -18,7 +18,7 @@ const { data: hackathon, isLoading: isLoadingHackathon } = useQuery(
 
 const resolvedHackathonId = computed(() => hackathon.value?.id ?? null)
 
-const { data: user, isLoading: isLoadingUser } = useQuery(authQueries.whoAmI)
+const { data: user, isLoading: isLoadingUser } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
 
 const { data: organizersData, isLoading: isLoadingOrganizers } = useQuery(
   computed(() => ({
@@ -44,12 +44,14 @@ watch([isOrganizer, isLoadingOrganizerCheck], ([org, loading]) => {
 })
 
 // Poll challenges every 10 seconds for live updates
-const { data: challengesData, dataUpdatedAt, isLoading: isLoadingChallenges } = useQuery(
-  computed(() => ({
-    ...challengeQueries.list(resolvedHackathonId.value ?? ''),
-    enabled: !!resolvedHackathonId.value && isOrganizer.value,
-    refetchInterval: 10_000,
-  })),
+const { data: challengesData, dataUpdatedAt, isLoading: isLoadingChallenges } = useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint(
+  computed(() => resolvedHackathonId.value ?? ''),
+  {
+    query: {
+      enabled: computed(() => !!resolvedHackathonId.value && isOrganizer.value),
+      refetchInterval: 10_000,
+    },
+  },
 )
 
 const challenges = computed(() => challengesData.value?.challenges ?? [])

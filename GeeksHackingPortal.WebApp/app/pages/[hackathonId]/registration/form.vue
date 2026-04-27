@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
+import { useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint } from '@geekshacking/portal-sdk/hooks'
 import { hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
 
 definePageMeta({
@@ -16,11 +17,12 @@ const resolvedHackathonId = useResolvedHackathonId()
 const showForm = ref(false)
 
 // Check if user is authenticated
-const { data: user, isLoading: isLoadingUser, isError } = useQuery({
-  ...authQueries.whoAmI,
-  retry: false,
-  staleTime: 0,
-  gcTime: 0,
+const { data: user, isLoading: isLoadingUser, isError } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint({
+  query: {
+    retry: false,
+    staleTime: 0,
+    gcTime: 0,
+  },
 })
 
 // Check participation status

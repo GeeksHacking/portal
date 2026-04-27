@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useQuery } from '@tanstack/vue-query'
+import { useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint } from '@geekshacking/portal-sdk/hooks'
 
 definePageMeta({
   // Explicitly mark as public route
@@ -12,9 +12,10 @@ useHead({
 
 const hasNavigated = ref(false)
 
-const { data: user, isLoading, isError } = useQuery({
-  ...authQueries.whoAmI,
-  retry: false,
+const { data: user, isLoading, isError } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint({
+  query: {
+    retry: false,
+  },
 })
 
 // Watch for authentication status and redirect

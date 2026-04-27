@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
+import { useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint } from '@geekshacking/portal-sdk/hooks'
 
 const route = useRoute()
 const config = useRuntimeConfig()
@@ -8,7 +9,7 @@ const resolvedHackathonId = useResolvedHackathonId()
 
 useHead({ title: 'Team Portal | GeeksHacking Event Portal' })
 
-const { data: user, isLoading: authLoading } = useQuery(authQueries.whoAmI)
+const { data: user, isLoading: authLoading } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
 const { data: status, isLoading: statusLoading } = useQuery(
   computed(() => ({
     ...hackathonQueries.status(resolvedHackathonId.value ?? ''),

@@ -1,26 +1,29 @@
 <script setup lang="ts">
-import { useQueries, useQuery } from '@tanstack/vue-query'
+import {
+  geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryOptions,
+  useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint,
+} from '@geekshacking/portal-sdk/hooks'
+import { useQueries } from '@tanstack/vue-query'
 import { useLocalStorage } from '@vueuse/core'
 import { computed, ref } from 'vue'
 
 const hackathonId = useResolvedHackathonId()
 
 // Fetch challenges list for the hackathon
-const { data: challengesData, isLoading } = useQuery(
-  computed(() => ({
-    ...challengeQueries.list(hackathonId.value ?? ''),
-    enabled: !!hackathonId.value,
-  })),
+const { data: challengesData, isLoading } = useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint(
+  computed(() => hackathonId.value ?? ''),
 )
 const challenges = computed(() => [...(challengesData.value?.challenges ?? [])].reverse())
 
 // Prefetch all challenge details on load for instant display when selected
 const detailsQueries = useQueries({
   queries: computed(() =>
-    challenges.value.map(challenge => ({
-      ...challengeQueries.detail(hackathonId.value ?? '', challenge.id ?? ''),
-      enabled: !!hackathonId.value && !!challenge.id,
-    })),
+    challenges.value.map(challenge =>
+      geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryOptions(
+        hackathonId.value ?? '',
+        challenge.id ?? '',
+      ),
+    ),
   ),
 })
 

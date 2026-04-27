@@ -1,5 +1,6 @@
 packages:
   - GeeksHackingPortal.WebApp
+  - GeeksHackingPortal.WebSdk
 
 onlyBuiltDependencies:
   - '@parcel/watcher'

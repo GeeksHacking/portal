@@ -1,0 +1,1 @@
+{"type":"object","additionalProperties":false,"properties":{"message":{"type":"string"},"purgedKeys":{"type":"integer","format":"int32"},"remainingKeys":{"type":"integer","format":"int32"},"purgedAt":{"type":"string","format":"date-time"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsAdminCachePurgeResponse"}

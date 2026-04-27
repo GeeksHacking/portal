@@ -1,5 +1,5 @@
 {
-  "name": "@geekshacking/hackomania",
+  "name": "@geekshacking/portal",
   "type": "module",
   "private": true,
   "scripts": {
@@ -13,12 +13,6 @@
   },
   "dependencies": {
     "@antfu/eslint-config": "^7.6.1",
-    "@microsoft/kiota-abstractions": "1.0.0-preview.99",
-    "@microsoft/kiota-http-fetchlibrary": "1.0.0-preview.99",
-    "@microsoft/kiota-serialization-form": "1.0.0-preview.99",
-    "@microsoft/kiota-serialization-json": "1.0.0-preview.99",
-    "@microsoft/kiota-serialization-multipart": "1.0.0-preview.99",
-    "@microsoft/kiota-serialization-text": "1.0.0-preview.99",
     "@nuxt/fonts": "^0.13.0",
     "@nuxt/hints": "1.0.0-alpha.6",
     "@nuxt/image": "2.0.0",
@@ -37,7 +31,8 @@
     "typescript": "^5.9.3",
     "vue": "^3.5.28",
     "vue-router": "^5.0.2",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "@geekshacking/portal-sdk": "workspace:*"
   },
   "devDependencies": {
     "@types/qrcode": "^1.5.6",

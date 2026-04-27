@@ -1,0 +1,1 @@
+{"type":"object","additionalProperties":false,"properties":{"name":{"type":"string"},"description":{"type":"string"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateRequest"}

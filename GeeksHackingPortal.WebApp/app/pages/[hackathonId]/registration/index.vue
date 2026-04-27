@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useQuery } from '@tanstack/vue-query'
+import { useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint } from '@geekshacking/portal-sdk/hooks'
 
 definePageMeta({
   // Explicitly mark as public route
@@ -15,11 +15,12 @@ useHead({
 })
 
 // Check if user is authenticated
-const { data: user, isLoading, isSuccess } = useQuery({
-  ...authQueries.whoAmI,
-  retry: false,
-  staleTime: 0,
-  gcTime: 0,
+const { data: user, isLoading, isSuccess } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint({
+  query: {
+    retry: false,
+    staleTime: 0,
+    gcTime: 0,
+  },
 })
 
 // Only redirect to form if query succeeded and we have user data

@@ -3,7 +3,12 @@ import type {
   HackOManiaApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse,
   HackOManiaApiEndpointsParticipantsHackathonStatusResponse,
 } from '~/api-client/models'
-import { useQueries, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { useQueries, useQueryClient } from '@tanstack/vue-query'
+import {
+  useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint,
+  useGeeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint,
+} from '@geekshacking/portal-sdk/hooks'
 import { computed, ref, unref } from 'vue'
 import { HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject } from '~/api-client/models'
 import { useCreateHackathonMutation, useJoinHackathonMutation, useUpdateHackathonMutation } from '~/composables/hackathon'
@@ -133,20 +138,17 @@ async function handleHackathonSubmit() {
 
 const isHackathonSubmitting = computed(() => createMutation.isPending.value || updateMutation.isPending.value)
 
-const { data: user, isLoading: isLoadingUser } = useQuery(authQueries.whoAmI)
+const { data: user, isLoading: isLoadingUser } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
 
 // Fetch participant hackathons (published ones, for everyone)
-const { data: participantHackathonsData, isLoading: isLoadingParticipantHackathons } = useQuery(
-  participantHackathonQueries.list,
-)
+const { data: participantHackathonsData, isLoading: isLoadingParticipantHackathons } = useGeeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint()
 
 // Fetch organizer hackathons (ones user can manage, only for authenticated users)
-const { data: organizerHackathonsData, isLoading: isLoadingOrganizerHackathons } = useQuery(
-  computed(() => ({
-    ...participantHackathonQueries.organizerList,
-    enabled: !!user.value?.id,
-  })),
-)
+const { data: organizerHackathonsData, isLoading: isLoadingOrganizerHackathons } = useGeeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint({
+  query: {
+    enabled: computed(() => !!user.value?.id),
+  },
+})
 
 const isLoadingHackathons = computed(() =>
   isLoadingUser.value || isLoadingParticipantHackathons.value || (!!user.value?.id && isLoadingOrganizerHackathons.value),

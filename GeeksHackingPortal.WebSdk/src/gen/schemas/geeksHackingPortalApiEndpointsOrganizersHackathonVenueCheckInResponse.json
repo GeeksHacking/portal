@@ -1,0 +1,1 @@
+{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","format":"guid"},"checkInTime":{"type":"string","format":"date-time"},"isCheckedIn":{"type":"boolean"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInResponse"}

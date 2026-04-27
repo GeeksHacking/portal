@@ -6,15 +6,19 @@ import type {
   HackOManiaApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem,
   HackOManiaApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto,
 } from '~/api-client/models'
-import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import {
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint,
+  useGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpoint,
+} from '@geekshacking/portal-sdk/hooks'
+import { useQueryClient } from '@tanstack/vue-query'
 import { useVirtualList } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import {
   HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject,
   HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem_ParticipantReviewStatusObject,
 } from '~/api-client/models'
-import { participantOrganizerQueries, useReviewParticipantMutation } from '~/composables/participants'
-import { registrationQuestionQueries } from '~/composables/question'
+import { useReviewParticipantMutation } from '~/composables/participants'
 import { registrationPageConfig } from '~/config/registration-pages'
 
 const props = withDefaults(defineProps<{
@@ -28,11 +32,8 @@ const hackathonId = computed(() => props.hackathonId || (route.params.hackathonI
 const toast = useToast()
 const queryClient = useQueryClient()
 
-const { data: participantsData, isLoading: isLoadingParticipants } = useQuery(
-  computed(() => ({
-    ...participantOrganizerQueries.list(hackathonId.value),
-    enabled: !!hackathonId.value,
-  })),
+const { data: participantsData, isLoading: isLoadingParticipants } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint(
+  computed(() => hackathonId.value),
 )
 
 type ParticipantItem = HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantItem
@@ -284,19 +285,14 @@ function formatSubmissionAnswer(submission: RegistrationSubmission) {
 // Expanded participant detail
 const expandedParticipantId = ref<string | null>(null)
 
-const { data: participantDetail, isLoading: isLoadingDetail } = useQuery(
-  computed(() => ({
-    ...participantOrganizerQueries.detail(hackathonId.value, expandedParticipantId.value ?? ''),
-    enabled: !!expandedParticipantId.value,
-  })),
+const { data: participantDetail, isLoading: isLoadingDetail } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint(
+  computed(() => hackathonId.value),
+  computed(() => expandedParticipantId.value ?? ''),
 )
 
 // Fetch registration questions for ordering
-const { data: questionsData } = useQuery(
-  computed(() => ({
-    ...registrationQuestionQueries.list(hackathonId.value),
-    enabled: !!hackathonId.value,
-  })),
+const { data: questionsData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpoint(
+  computed(() => hackathonId.value),
 )
 
 const orderedQuestions = computed<RegistrationQuestion[]>(() => {

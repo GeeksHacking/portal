@@ -1,0 +1,1 @@
+{"type":"object","additionalProperties":false,"required":["challengeId"],"properties":{"challengeId":{"type":"string","format":"guid","minLength":1,"nullable":false}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeRequest"}

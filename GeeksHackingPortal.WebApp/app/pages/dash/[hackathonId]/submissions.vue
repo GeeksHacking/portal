@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import type { HackOManiaApiEndpointsOrganizersHackathonSubmissionsListSubmissionItem } from '~/api-client/models'
-import { useQueries, useQuery } from '@tanstack/vue-query'
+import {
+  geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointQueryOptions,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpoint,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpoint,
+} from '@geekshacking/portal-sdk/hooks'
+import { useQueries } from '@tanstack/vue-query'
 import { useVirtualList } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import * as XLSX from 'xlsx'
-import { challengeOrganizerQueries } from '~/composables/challenges'
-import { submissionOrganizerQueries } from '~/composables/submissions'
 
 const props = withDefaults(defineProps<{
   hackathonId?: string
@@ -15,31 +19,27 @@ const props = withDefaults(defineProps<{
 const route = useRoute()
 const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
-const { data: submissionsData, isLoading: isLoadingSubmissions } = useQuery(
-  computed(() => ({
-    ...submissionOrganizerQueries.list(hackathonId.value),
-    enabled: !!hackathonId.value,
-  })),
+const { data: submissionsData, isLoading: isLoadingSubmissions } = useGeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpoint(
+  computed(() => hackathonId.value),
 )
 
 const submissions = computed(() => submissionsData.value?.submissions ?? [])
 
 // Fetch challenges for filter
-const { data: challengesData } = useQuery(
-  computed(() => ({
-    ...challengeOrganizerQueries.list(hackathonId.value),
-    enabled: !!hackathonId.value,
-  })),
+const { data: challengesData } = useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint(
+  computed(() => hackathonId.value),
 )
 const challenges = computed(() => challengesData.value?.challenges ?? [])
 
 // Fetch submission details for each submission via organizer endpoint
 const submissionDetailQueries = useQueries({
   queries: computed(() =>
-    submissions.value.map(s => ({
-      ...submissionOrganizerQueries.detail(hackathonId.value, s.id ?? ''),
-      enabled: !!hackathonId.value && !!s.id,
-    })),
+    submissions.value.map(s =>
+      geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointQueryOptions(
+        hackathonId.value,
+        s.id ?? '',
+      ),
+    ),
   ),
 })
 
@@ -136,11 +136,9 @@ const {
 const isDetailOpen = ref(false)
 const selectedSubmissionId = ref<string | null>(null)
 
-const { data: submissionDetail, isLoading: isLoadingDetail } = useQuery(
-  computed(() => ({
-    ...submissionOrganizerQueries.detail(hackathonId.value, selectedSubmissionId.value ?? ''),
-    enabled: !!hackathonId.value && !!selectedSubmissionId.value,
-  })),
+const { data: submissionDetail, isLoading: isLoadingDetail } = useGeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpoint(
+  computed(() => hackathonId.value),
+  computed(() => selectedSubmissionId.value ?? ''),
 )
 
 function openDetail(submissionId: string) {

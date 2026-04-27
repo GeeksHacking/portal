@@ -1,0 +1,1 @@
+{"type":"string","description":"","x-enumNames":["Text","LongText","Number","SingleChoice","MultipleChoice","Boolean","Email","Url","Phone","Date","Dropdown"],"enum":["Text","LongText","Number","SingleChoice","MultipleChoice","Boolean","Email","Url","Phone","Date","Dropdown"],"x-readme-ref-name":"GeeksHackingPortalApiEntitiesQuestionType"}

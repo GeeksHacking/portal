@@ -1,0 +1,1 @@
+{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","format":"guid"},"firstName":{"type":"string"},"lastName":{"type":"string"},"name":{"type":"string"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsUsersProfileUpdateResponse"}

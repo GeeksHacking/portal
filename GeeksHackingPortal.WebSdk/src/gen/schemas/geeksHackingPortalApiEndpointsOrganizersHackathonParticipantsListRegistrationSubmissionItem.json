@@ -1,0 +1,1 @@
+{"type":"object","additionalProperties":false,"properties":{"questionId":{"type":"string","format":"guid"},"questionText":{"type":"string"},"value":{"type":"string"},"followUpValue":{"type":"string","nullable":true},"updatedAt":{"type":"string","format":"date-time"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem"}

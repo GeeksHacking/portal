@@ -6,12 +6,14 @@ import type {
   OrganizerResourceStatisticsResponse,
   OrganizerResourceStatisticsTeamItem,
 } from '~/composables/resources'
+import {
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint,
+} from '@geekshacking/portal-sdk/hooks'
 import { useQuery } from '@tanstack/vue-query'
 import { computed, ref, watch } from 'vue'
 import * as XLSX from 'xlsx'
 import { HackOManiaApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusObject } from '~/api-client/models'
-import { challengeOrganizerQueries } from '~/composables/challenges'
-import { participantOrganizerQueries } from '~/composables/participants'
 import { resourceOrganizerQueries } from '~/composables/resources'
 import { teamOrganizerQueries } from '~/composables/teams'
 import { venueOverviewQueries } from '~/composables/venue'
@@ -70,11 +72,8 @@ const metricValueClass: Record<StatColor, string> = {
 const route = useRoute()
 const hackathonId = computed(() => (route.params.hackathonId as string | undefined) || '')
 
-const { data: participantsData, isLoading: isLoadingParticipants } = useQuery(
-  computed(() => ({
-    ...participantOrganizerQueries.list(hackathonId.value),
-    enabled: !!hackathonId.value,
-  })),
+const { data: participantsData, isLoading: isLoadingParticipants } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint(
+  computed(() => hackathonId.value),
 )
 
 const { data: teamsData, isLoading: isLoadingTeams } = useQuery(
@@ -84,11 +83,8 @@ const { data: teamsData, isLoading: isLoadingTeams } = useQuery(
   })),
 )
 
-const { data: challengesData, isLoading: isLoadingChallenges } = useQuery(
-  computed(() => ({
-    ...challengeOrganizerQueries.list(hackathonId.value),
-    enabled: !!hackathonId.value,
-  })),
+const { data: challengesData, isLoading: isLoadingChallenges } = useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint(
+  computed(() => hackathonId.value),
 )
 
 const { data: venueOverviewData, isLoading: isLoadingVenueOverview } = useQuery(

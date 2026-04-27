@@ -3,9 +3,10 @@ import type {
   HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto,
   HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsUpdateUpdateOptionDto,
 } from '~/api-client/models'
-import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import { useGeeksHackingPortalApiEndpointsOrganizersHackathonRegistrationQuestionsListEndpoint } from '@geekshacking/portal-sdk/hooks'
+import { useQueryClient } from '@tanstack/vue-query'
 import { computed } from 'vue'
-import { registrationQuestionOrganizerQueries, useCreateQuestionMutation, useDeleteQuestionMutation, useInitQuestionMutation, useUpdateQuestionMutation } from '~/composables/question'
+import { useCreateQuestionMutation, useDeleteQuestionMutation, useInitQuestionMutation, useUpdateQuestionMutation } from '~/composables/question'
 
 type Question = HackOManiaApiEndpointsOrganizersHackathonRegistrationQuestionsListQuestionDto
 
@@ -19,11 +20,8 @@ const hackathonId = computed(() => props.hackathonId || (route.params.hackathonI
 
 const queryClient = useQueryClient()
 
-const { data: questionsData, isLoading } = useQuery(
-  computed(() => ({
-    ...registrationQuestionOrganizerQueries.list(hackathonId.value),
-    enabled: !!hackathonId.value,
-  })),
+const { data: questionsData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersHackathonRegistrationQuestionsListEndpoint(
+  computed(() => hackathonId.value),
 )
 
 const questions = computed(() => questionsData.value?.questions ?? [])

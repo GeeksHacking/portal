@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import { useQueryClient } from '@tanstack/vue-query'
+import {
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint,
+  useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint,
+} from '@geekshacking/portal-sdk/hooks'
 import { computed, ref } from 'vue'
-import { challengeOrganizerQueries, challengeQueries, useCreateChallengeMutation, useDeleteChallengeMutation, useUpdateChallengeMutation } from '~/composables/challenges'
+import { useCreateChallengeMutation, useDeleteChallengeMutation, useUpdateChallengeMutation } from '~/composables/challenges'
 
 const props = withDefaults(defineProps<{
   hackathonId?: string
@@ -13,21 +17,15 @@ const hackathonId = computed(() => props.hackathonId || (route.params.hackathonI
 
 const queryClient = useQueryClient()
 
-const { data: challengesData, isLoading: isLoadingChallenges } = useQuery(
-  computed(() => ({
-    ...challengeOrganizerQueries.list(hackathonId.value),
-    enabled: !!hackathonId.value,
-  })),
+const { data: challengesData, isLoading: isLoadingChallenges } = useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint(
+  computed(() => hackathonId.value),
 )
 
 const challenges = computed(() => challengesData.value?.challenges ?? [])
 
 // Fetch participant challenges list for team counts
-const { data: participantChallengesData } = useQuery(
-  computed(() => ({
-    ...challengeQueries.list(hackathonId.value),
-    enabled: !!hackathonId.value,
-  })),
+const { data: participantChallengesData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint(
+  computed(() => hackathonId.value),
 )
 
 const teamCountByChallengeId = computed(() => {

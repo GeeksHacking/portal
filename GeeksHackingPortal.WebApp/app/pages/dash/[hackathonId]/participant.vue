@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import { useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint } from '@geekshacking/portal-sdk/hooks'
 import { computed, ref } from 'vue'
 import { HackOManiaApiEndpointsParticipantsHackathonStatusParticipantStatusObject } from '~/api-client/models'
-import { authQueries } from '~/composables/auth'
 import { useJoinHackathonMutation } from '~/composables/hackathon'
 import { formatParticipantStatus, hackathonQueries as participantHackathonQueries } from '~/composables/hackathons'
 import { organizerQueries } from '~/composables/organizers'
@@ -47,7 +47,7 @@ const withdrawMutation = useWithdrawFromHackathon(resolvedHackathonId)
 const isWithdrawModalOpen = ref(false)
 
 // Organizer check
-const { data: user } = useQuery(authQueries.whoAmI)
+const { data: user } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
 
 const { data: organizersData } = useQuery(
   computed(() => ({

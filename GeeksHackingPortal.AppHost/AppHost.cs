@@ -18,7 +18,7 @@ var db = mysql.AddDatabase("db");
 
 var migrations = builder
     .AddProject<GeeksHackingPortal_DbMigrator>("db-migrator")
-    .WithArgs("apply", "--seed-development-template")
+    .WithArgs("apply", "--seed-development-template", "--allow-destructive")
     .WithReference(db)
     .WaitFor(db);
 
@@ -31,11 +31,18 @@ var api = builder
     .WaitForCompletion(migrations)
     .WaitFor(db);
 
-builder
-    .AddJavaScriptApp("app", "../GeeksHackingPortal.WebApp")
+var sdk = builder
+    .AddJavaScriptApp("sdk", "../GeeksHackingPortal.WebSdk")
     .WithPnpm()
     .WithReference(api)
-    .WithHttpEndpoint(port: 3000, env: "PORT")
     .WaitFor(api);
+
+builder
+    .AddJavaScriptApp("app", "../GeeksHackingPortal.WebApp")
+    .WithPnpm(install: false)
+    .WithReference(api)
+    .WithHttpEndpoint(port: 3000, env: "PORT")
+    .WaitFor(api)
+    .WaitFor(sdk);
 
 builder.Build().Run();

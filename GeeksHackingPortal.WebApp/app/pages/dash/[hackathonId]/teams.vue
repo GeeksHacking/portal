@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
+import {
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint,
+} from '@geekshacking/portal-sdk/hooks'
 import { useVirtualList } from '@vueuse/core'
 import { computed, ref } from 'vue'
-import { challengeOrganizerQueries } from '~/composables/challenges'
-import { participantOrganizerQueries } from '~/composables/participants'
 import { teamOrganizerQueries } from '~/composables/teams'
 
 const props = withDefaults(defineProps<{
@@ -21,18 +23,12 @@ const { data: teamsData, isLoading: isLoadingTeams } = useQuery(
   })),
 )
 
-const { data: participantsData } = useQuery(
-  computed(() => ({
-    ...participantOrganizerQueries.list(hackathonId.value),
-    enabled: !!hackathonId.value,
-  })),
+const { data: participantsData } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint(
+  computed(() => hackathonId.value),
 )
 
-const { data: challengesData } = useQuery(
-  computed(() => ({
-    ...challengeOrganizerQueries.list(hackathonId.value),
-    enabled: !!hackathonId.value,
-  })),
+const { data: challengesData } = useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint(
+  computed(() => hackathonId.value),
 )
 
 const teams = computed(() => teamsData.value?.teams ?? [])

@@ -1,0 +1,1 @@
+{"type":"object","additionalProperties":false,"properties":{"userId":{"type":"string","format":"guid"},"type":{"type":"string","description":"","x-enumNames":["Admin","Volunteer"],"enum":["Admin","Volunteer"],"x-readme-ref-name":"GeeksHackingPortalApiEntitiesOrganizerType"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersAddResponse"}

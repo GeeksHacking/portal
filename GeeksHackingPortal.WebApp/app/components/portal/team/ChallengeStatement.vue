@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useQuery } from '@tanstack/vue-query'
+import { useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint } from '@geekshacking/portal-sdk/hooks'
 import { computed, ref, watch } from 'vue'
 
 const props = defineProps<{
@@ -16,11 +16,8 @@ const teamIdRef = computed(() => props.teamId)
 const hackathon = useRouteHackathon()
 
 // Fetch challenges list for the hackathon
-const { data: challengesData } = useQuery(
-  computed(() => ({
-    ...challengeQueries.list(props.hackathonId),
-    enabled: !!props.hackathonId,
-  })),
+const { data: challengesData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint(
+  computed(() => props.hackathonId),
 )
 
 const challenges = computed(() => [...(challengesData.value?.challenges ?? [])].reverse())

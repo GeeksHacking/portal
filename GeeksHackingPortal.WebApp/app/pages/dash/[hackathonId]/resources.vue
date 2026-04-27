@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { OrganizerResourceAuditTrailItem, OrganizerResourceItem, OrganizerResourceOverviewParticipant } from '~/composables/resources'
+import { useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint } from '@geekshacking/portal-sdk/hooks'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { Html5Qrcode } from 'html5-qrcode'
 import { computed, nextTick, onUnmounted, ref, watch } from 'vue'
-import { participantOrganizerQueries } from '~/composables/participants'
 import {
 
   resourceOrganizerQueries,
@@ -68,11 +68,9 @@ const { data: resourceOverview, isLoading: isLoadingOverview, dataUpdatedAt } = 
   })),
 )
 
-const { data: participantDetail } = useQuery(
-  computed(() => ({
-    ...participantOrganizerQueries.detail(hackathonId.value, scannedUserId.value),
-    enabled: !!scannedUserId.value && !!hackathonId.value,
-  })),
+const { data: participantDetail } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint(
+  computed(() => hackathonId.value),
+  computed(() => scannedUserId.value),
 )
 
 const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useQuery(

@@ -1,0 +1,1 @@
+{"type":"object","additionalProperties":false,"properties":{"questionsCreated":{"type":"integer","format":"int32"},"message":{"type":"string"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsOrganizersHackathonRegistrationQuestionsInitializeResponse"}

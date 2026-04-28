@@ -80,7 +80,11 @@ export const client = (async <TResponseData, _TError = unknown, TRequestData = u
   const resolvedConfig = mergeConfig(getConfig(), requestConfig)
   const url = withQuery([resolvedConfig.baseURL, resolvedConfig.url].filter(Boolean).join(''), resolvedConfig.params)
   const headers = new Headers(resolvedConfig.headers)
-  const body = resolvedConfig.data instanceof FormData ? resolvedConfig.data : JSON.stringify(resolvedConfig.data)
+  const isFormData = resolvedConfig.data instanceof FormData
+  if (!isFormData && resolvedConfig.data !== undefined && !headers.has('content-type'))
+    headers.set('content-type', 'application/json')
+
+  const body = isFormData ? resolvedConfig.data : JSON.stringify(resolvedConfig.data)
 
   const response = await fetch(url, {
     credentials: resolvedConfig.credentials ?? 'same-origin',

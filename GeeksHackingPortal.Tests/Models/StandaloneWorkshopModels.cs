@@ -30,6 +30,24 @@ public class StandaloneWorkshopResponse
     public Dictionary<string, string> EmailTemplates { get; set; } = [];
 }
 
+public class StandaloneWorkshopListResponse
+{
+    public List<StandaloneWorkshopResponse> StandaloneWorkshops { get; set; } = [];
+}
+
+public class StandaloneWorkshopAnalyticsResponse
+{
+    public int RegisteredCount { get; set; }
+    public int WithdrawnCount { get; set; }
+    public int CapacityRemaining { get; set; }
+    public double CapacityUsedPercent { get; set; }
+    public int CheckInCount { get; set; }
+    public int CurrentlyCheckedInCount { get; set; }
+    public int ResourceCount { get; set; }
+    public int ResourceRedemptionCount { get; set; }
+    public int EmailTemplateCount { get; set; }
+}
+
 public class StandaloneWorkshopJoinResponse
 {
     public Guid StandaloneWorkshopId { get; set; }

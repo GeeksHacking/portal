@@ -192,7 +192,7 @@ public class DefaultStack : Stack
             new ProjectIam.IAMMemberArgs
             {
                 Project = projectId,
-                Role = "roles/artifactregistry.writer",
+                Role = "roles/artifactregistry.repoAdmin",
                 Member = Output.Format($"serviceAccount:{deployerServiceAccount.Email}"),
             }
         );

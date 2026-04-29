@@ -10,6 +10,7 @@ import {
   useGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
+import { getApiValidationErrors } from '~/utils/api-errors'
 
 const props = defineProps<{
   standaloneWorkshopId: string
@@ -218,8 +219,7 @@ function shouldSpanFullWidth(question: { isLong: boolean, type?: QuestionType, c
 }
 
 function parseErrorsToFields(error: unknown) {
-  const err = error as { errors?: { additionalData?: Record<string, string[] | string> } }
-  const errorBag = err?.errors?.additionalData ?? {}
+  const errorBag = getApiValidationErrors(error)
   const questionById = new Map(
     allQuestions.value
       .filter(question => question.id)

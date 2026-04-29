@@ -1,8 +1,5 @@
 {
   "appHost": {
     "path": "GeeksHackingPortal.AppHost/GeeksHackingPortal.AppHost.csproj"
-  },
-  "features": {
-    "defaultWatchEnabled": true
   }
 }

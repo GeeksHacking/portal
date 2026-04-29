@@ -1,68 +1,30 @@
+import axios from 'axios'
+
 export type RequestConfig<TData = unknown> = {
   baseURL?: string
   url?: string
   method?: 'GET' | 'PUT' | 'PATCH' | 'POST' | 'DELETE' | 'OPTIONS' | 'HEAD'
-  params?: Record<string, unknown> | URLSearchParams
+  params?: unknown
   data?: TData | FormData
   responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream'
   signal?: AbortSignal
-  headers?: HeadersInit
-  credentials?: RequestCredentials
+  withCredentials?: boolean
+  validateStatus?: (status: number) => boolean
+  headers?: import('axios').AxiosRequestConfig['headers']
 }
 
 export type ResponseConfig<TData = unknown> = {
   data: TData
   status: number
   statusText: string
-  headers: Headers
+  headers: import('axios').AxiosResponse['headers']
 }
 
-export type ResponseErrorConfig<TError = unknown> = TError
+export type ResponseErrorConfig<TError = unknown> = import('axios').AxiosError<TError>
 
-type ErrorResponsePayload = {
-  message?: string
-  reason?: string
-  title?: string
-  errors?: Record<string, string[] | string>
-}
-
-export class ClientResponseError<TError = unknown> extends Error {
-  status: number
-  statusCode: number
-  responseStatusCode: number
-  response: {
-    status: number
-    statusText: string
-    data: TError
-    headers: Headers
-  }
-  data: TError
-
-  constructor(args: {
-    status: number
-    statusText: string
-    data: TError
-    headers: Headers
-    message: string
-  }) {
-    super(args.message)
-    this.name = 'ClientResponseError'
-    this.status = args.status
-    this.statusCode = args.status
-    this.responseStatusCode = args.status
-    this.data = args.data
-    this.response = {
-      status: args.status,
-      statusText: args.statusText,
-      data: args.data,
-      headers: args.headers,
-    }
-  }
-}
-
-export type Client = <TResponseData, _TError = unknown, TRequestData = unknown>(
-  config: RequestConfig<TRequestData>,
-) => Promise<ResponseConfig<TResponseData>>
+export type Client = <TData, _TError = unknown, TVariables = unknown>(
+  config: RequestConfig<TVariables>,
+) => Promise<ResponseConfig<TData>>
 
 type ConfigurableClient = Client & {
   getConfig: typeof getConfig
@@ -73,19 +35,18 @@ let config: Partial<RequestConfig> = {}
 
 export const getConfig = () => config
 
-export const setConfig = (nextConfig: Partial<RequestConfig>) => {
+export const setConfig = (nextConfig: RequestConfig) => {
   config = nextConfig
+  axiosInstance.defaults = {
+    ...axiosInstance.defaults,
+    ...nextConfig,
+    headers: {
+      ...axiosInstance.defaults.headers,
+      ...nextConfig.headers,
+    },
+  }
+
   return getConfig()
-}
-
-function headersToObject(headers?: HeadersInit) {
-  const result: Record<string, string> = {}
-
-  new Headers(headers).forEach((value, key) => {
-    result[key] = value
-  })
-
-  return result
 }
 
 export const mergeConfig = <T extends RequestConfig>(...configs: Array<Partial<T>>): Partial<T> => {
@@ -93,91 +54,25 @@ export const mergeConfig = <T extends RequestConfig>(...configs: Array<Partial<T
     ...merged,
     ...current,
     headers: {
-      ...headersToObject(merged.headers),
-      ...headersToObject(current.headers),
+      ...merged.headers,
+      ...current.headers,
     },
   }), {})
 }
 
-function getErrorMessage(status: number, statusText: string, data: unknown) {
-  if (data && typeof data === 'object') {
-    const errorPayload = data as ErrorResponsePayload
-    if (typeof errorPayload.message === 'string' && errorPayload.message.trim())
-      return errorPayload.message
-    if (typeof errorPayload.reason === 'string' && errorPayload.reason.trim())
-      return errorPayload.reason
-    if (typeof errorPayload.title === 'string' && errorPayload.title.trim())
-      return errorPayload.title
+export const axiosInstance = axios.create(getConfig())
 
-    const firstFieldError = Object.values(errorPayload.errors ?? {}).flatMap(value =>
-      Array.isArray(value) ? value : [value],
-    )[0]
-    if (typeof firstFieldError === 'string' && firstFieldError.trim())
-      return firstFieldError
-  }
-
-  return statusText || `Request failed with status ${status}`
-}
-
-function withQuery(url: string, params?: RequestConfig['params']) {
-  if (!params)
-    return url
-
-  const searchParams = params instanceof URLSearchParams
-    ? params
-    : new URLSearchParams(
-        Object.entries(params)
-          .filter(([, value]) => value !== undefined)
-          .map(([key, value]) => [key, value === null ? 'null' : String(value)]),
-      )
-
-  const query = searchParams.toString()
-  return query ? `${url}${url.includes('?') ? '&' : '?'}${query}` : url
-}
-
-export const client = (async <TResponseData, _TError = unknown, TRequestData = unknown>(
-  requestConfig: RequestConfig<TRequestData>,
-): Promise<ResponseConfig<TResponseData>> => {
-  const resolvedConfig = mergeConfig(getConfig(), requestConfig)
-  const url = withQuery([resolvedConfig.baseURL, resolvedConfig.url].filter(Boolean).join(''), resolvedConfig.params)
-  const headers = new Headers(resolvedConfig.headers)
-  const isFormData = resolvedConfig.data instanceof FormData
-  if (!isFormData && resolvedConfig.data !== undefined && !headers.has('content-type'))
-    headers.set('content-type', 'application/json')
-
-  const body = isFormData ? resolvedConfig.data : JSON.stringify(resolvedConfig.data)
-
-  const response = await fetch(url, {
-    credentials: resolvedConfig.credentials ?? 'same-origin',
-    method: resolvedConfig.method?.toUpperCase(),
-    body: resolvedConfig.method === 'GET' || resolvedConfig.method === 'HEAD' ? undefined : body,
-    signal: resolvedConfig.signal,
-    headers,
+export const fetch = (async <TData, TError = unknown, TVariables = unknown>(
+  requestConfig: RequestConfig<TVariables>,
+): Promise<ResponseConfig<TData>> => {
+  return axiosInstance.request<TData, ResponseConfig<TData>>(mergeConfig(getConfig(), requestConfig)).catch((error: import('axios').AxiosError<TError>) => {
+    throw error
   })
-
-  const data = [204, 205, 304].includes(response.status) || !response.body
-    ? {}
-    : await response.json()
-
-  if (!response.ok) {
-    throw new ClientResponseError({
-      status: response.status,
-      statusText: response.statusText,
-      data,
-      headers: response.headers,
-      message: getErrorMessage(response.status, response.statusText, data),
-    })
-  }
-
-  return {
-    data: data as TResponseData,
-    status: response.status,
-    statusText: response.statusText,
-    headers: response.headers,
-  }
 }) as ConfigurableClient
 
-client.getConfig = getConfig
-client.setConfig = setConfig
+fetch.getConfig = getConfig
+fetch.setConfig = setConfig
 
-export default client
+export const client = fetch
+
+export default fetch

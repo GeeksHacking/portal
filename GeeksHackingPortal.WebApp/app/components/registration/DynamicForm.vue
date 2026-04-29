@@ -8,6 +8,7 @@ import {
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
 import { registrationPageConfig } from '~/config/registration-pages'
+import { getApiValidationErrors } from '~/utils/api-errors'
 
 const props = defineProps<{
   hackathonId: string
@@ -270,8 +271,7 @@ async function onSubmit() {
 }
 
 function parseErrorsToFields(error: unknown) {
-  const err = error as { errors?: { additionalData?: Record<string, string[] | string> } }
-  const errorBag = err?.errors?.additionalData ?? {}
+  const errorBag = getApiValidationErrors(error)
   const questionById = new Map(
     allQuestions.value
       .filter(question => question.id)

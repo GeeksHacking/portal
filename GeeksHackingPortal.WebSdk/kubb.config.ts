@@ -1,4 +1,5 @@
 import { defineConfig } from '@kubb/core'
+import { pluginClient } from '@kubb/plugin-client'
 import { pluginFaker } from '@kubb/plugin-faker'
 import { pluginMsw } from '@kubb/plugin-msw'
 import { pluginOas } from '@kubb/plugin-oas'
@@ -20,11 +21,8 @@ export default defineConfig({
   plugins: [
     pluginOas(),
     pluginTs(),
-    pluginVueQuery({
-      client: {
-        importPath: '../../client/fetch',
-      },
-    }),
+    pluginClient(),
+    pluginVueQuery(),
     pluginMsw(),
     pluginFaker(),
     pluginZod(),

@@ -14,7 +14,7 @@ export default defineNuxtPlugin((nuxt) => {
   const runtimeConfig = useRuntimeConfig()
   setConfig({
     baseURL: runtimeConfig.public.api,
-    credentials: 'include',
+    withCredentials: true,
   })
 
   const vueQueryState = useState<DehydratedState | null>('vue-query')

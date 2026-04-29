@@ -32,6 +32,7 @@ import {
   HACKATHON_TIME_ZONE_LABEL,
   serializeHackathonDateTimeInput,
 } from '~/utils/hackathon-date-time'
+import { getApiErrorMessage } from '~/utils/api-errors'
 
 const toast = useToast()
 const queryClient = useQueryClient()
@@ -272,37 +273,6 @@ function parseEmailTemplatesInput() {
   }
 }
 
-function getErrorMessage(error: unknown, fallback: string) {
-  if (!error || typeof error !== 'object')
-    return fallback
-
-  const candidate = error as {
-    message?: unknown
-    data?: { message?: unknown, reason?: unknown, errors?: Record<string, string[] | string> }
-    response?: { data?: { message?: unknown, reason?: unknown, errors?: Record<string, string[] | string> } }
-  }
-
-  if (typeof candidate.message === 'string' && candidate.message.trim())
-    return candidate.message
-
-  const payload = candidate.response?.data ?? candidate.data
-  if (payload) {
-    if (typeof payload.message === 'string' && payload.message.trim())
-      return payload.message
-    if (typeof payload.reason === 'string' && payload.reason.trim())
-      return payload.reason
-
-    const firstFieldError = Object.values(payload.errors ?? {}).flatMap(value =>
-      Array.isArray(value) ? value : [value],
-    )[0]
-
-    if (typeof firstFieldError === 'string' && firstFieldError.trim())
-      return firstFieldError
-  }
-
-  return fallback
-}
-
 function openEditStandaloneEventModal(event: typeof standaloneEvents.value[number]) {
   standaloneEventForm.value = {
     title: event.title ?? '',
@@ -380,6 +350,7 @@ async function handleStandaloneEventSubmit() {
     toast.add({
       title: 'Failed to save standalone event',
       description: getErrorMessage(error, 'Please try again.'),
+      description: getApiErrorMessage(error, 'Please try again.'),
       color: 'error',
     })
   }

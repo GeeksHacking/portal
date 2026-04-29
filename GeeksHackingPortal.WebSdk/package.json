@@ -63,7 +63,8 @@
   "scripts": {
     "dev": "kubb generate && tsdown",
     "generate": "kubb generate",
-    "build": "tsdown"
+    "build": "tsdown",
+    "postinstall": "tsdown"
   },
   "devDependencies": {
     "@kubb/cli": "^4.37.4",

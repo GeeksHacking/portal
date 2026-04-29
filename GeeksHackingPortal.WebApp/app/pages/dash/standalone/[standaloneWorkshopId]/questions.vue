@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type {
-  GeeksHackingPortalApiEntitiesQuestionType,
   GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsRegistrationQuestionsCreateCreateOptionDto,
+  GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsRegistrationQuestionsCreateRequest,
   GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsRegistrationQuestionsListQuestionDto,
   GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsRegistrationQuestionsUpdateUpdateOptionDto,
+  GeeksHackingPortalApiEntitiesQuestionType,
 } from '@geekshacking/portal-sdk'
 import {
   geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsRegistrationQuestionsListEndpointQueryKey,
@@ -33,6 +34,7 @@ const questionTypeValues = {
 
 const route = useRoute()
 const queryClient = useQueryClient()
+const toast = useToast()
 
 const standaloneWorkshopId = computed(() => (route.params.standaloneWorkshopId as string | undefined) ?? '')
 
@@ -85,12 +87,112 @@ const createMutation = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWork
 const updateMutation = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsRegistrationQuestionsUpdateEndpoint()
 const deleteMutation = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsRegistrationQuestionsDeleteEndpoint()
 
+const defaultQuestions = [
+  {
+    questionText: 'What is your full name?',
+    questionKey: 'full_name',
+    type: questionTypeValues.Text,
+    displayOrder: 0,
+    isRequired: true,
+    category: 'Personal Details',
+  },
+  {
+    questionText: 'What is your email address?',
+    questionKey: 'email',
+    type: questionTypeValues.Email,
+    displayOrder: 1,
+    isRequired: true,
+    category: 'Personal Details',
+  },
+  {
+    questionText: 'Which organization, school, or company are you from?',
+    questionKey: 'organization',
+    type: questionTypeValues.Text,
+    displayOrder: 2,
+    isRequired: false,
+    category: 'Personal Details',
+  },
+  {
+    questionText: 'What is your current role?',
+    questionKey: 'role',
+    type: questionTypeValues.Dropdown,
+    displayOrder: 3,
+    isRequired: true,
+    category: 'Background',
+    options: [
+      { optionText: 'Student', optionValue: 'student', displayOrder: 0 },
+      { optionText: 'Developer / Engineer', optionValue: 'developer_engineer', displayOrder: 1 },
+      { optionText: 'Designer / Product', optionValue: 'designer_product', displayOrder: 2 },
+      { optionText: 'Founder / Business', optionValue: 'founder_business', displayOrder: 3 },
+      { optionText: 'Other', optionValue: 'other', displayOrder: 4, hasFollowUpText: true, followUpPlaceholder: 'Tell us your role' },
+    ],
+  },
+  {
+    questionText: 'How would you describe your experience level with this workshop topic?',
+    questionKey: 'experience_level',
+    type: questionTypeValues.Dropdown,
+    displayOrder: 4,
+    isRequired: true,
+    category: 'Background',
+    options: [
+      { optionText: 'Beginner', optionValue: 'beginner', displayOrder: 0 },
+      { optionText: 'Intermediate', optionValue: 'intermediate', displayOrder: 1 },
+      { optionText: 'Advanced', optionValue: 'advanced', displayOrder: 2 },
+    ],
+  },
+  {
+    questionText: 'What do you hope to learn or build during this workshop?',
+    questionKey: 'learning_goals',
+    type: questionTypeValues.LongText,
+    displayOrder: 5,
+    isRequired: false,
+    category: 'Workshop Goals',
+  },
+  {
+    questionText: 'Do you have any dietary restrictions or accessibility needs?',
+    questionKey: 'dietary_accessibility_needs',
+    type: questionTypeValues.LongText,
+    displayOrder: 6,
+    isRequired: false,
+    category: 'Logistics',
+  },
+] satisfies GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsRegistrationQuestionsCreateRequest[]
+
 async function invalidateQuestions() {
   await queryClient.invalidateQueries({
     queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsRegistrationQuestionsListEndpointQueryKey(
       standaloneWorkshopId.value,
     ),
   })
+}
+
+async function initializeDefaultQuestions() {
+  if (!standaloneWorkshopId.value || questions.value.length)
+    return
+
+  try {
+    for (const question of defaultQuestions) {
+      await createMutation.mutateAsync({
+        standaloneWorkshopId: standaloneWorkshopId.value,
+        data: question,
+      })
+    }
+
+    await invalidateQuestions()
+    toast.add({
+      title: 'Default questions created',
+      description: `${defaultQuestions.length} workshop registration questions were added.`,
+      color: 'success',
+    })
+  }
+  catch (error) {
+    console.error('Failed to initialize default workshop questions', error)
+    toast.add({
+      title: 'Failed to create default questions',
+      description: 'Please try again or add questions manually.',
+      color: 'error',
+    })
+  }
 }
 
 function startCreating() {
@@ -312,16 +414,26 @@ function getTypeLabel(type: QuestionType | null | undefined) {
 
           <div
             v-else-if="!questions.length && !isCreating"
-            class="flex items-center justify-between text-sm text-(--ui-text-muted)"
+            class="flex flex-col gap-3 text-sm text-(--ui-text-muted) sm:flex-row sm:items-center sm:justify-between"
           >
             <span>No registration questions yet.</span>
-            <UButton
-              size="xs"
-              icon="i-lucide-plus"
-              @click="startCreating"
-            >
-              Add Question
-            </UButton>
+            <div class="flex flex-col gap-2 sm:flex-row">
+              <UButton
+                size="xs"
+                :loading="createMutation.isPending.value"
+                :disabled="!standaloneWorkshopId"
+                @click="initializeDefaultQuestions"
+              >
+                Get standard questions
+              </UButton>
+              <UButton
+                size="xs"
+                icon="i-lucide-plus"
+                @click="startCreating"
+              >
+                Add Question
+              </UButton>
+            </div>
           </div>
 
           <div

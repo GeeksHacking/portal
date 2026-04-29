@@ -30,9 +30,12 @@ const links = computed<NavigationMenuItem[][]>(() => {
 
   if (standaloneWorkshopId.value) {
     const standaloneLinks: NavigationMenuItem[] = [
-      { label: 'Participants', icon: 'i-lucide-users', to: `/dash/standalone/${standaloneWorkshopId.value}/participants` },
-      { label: 'Questions', icon: 'i-lucide-circle-help', to: `/dash/standalone/${standaloneWorkshopId.value}/questions` },
+      { label: 'Check Ins', icon: 'i-lucide-qr-code', to: `/dash/standalone/${standaloneWorkshopId.value}/checkin` },
+      { label: 'Resources', icon: 'i-lucide-gift', to: `/dash/standalone/${standaloneWorkshopId.value}/resources` },
       { label: 'Stats', icon: 'i-lucide-chart-pie', to: `/dash/standalone/${standaloneWorkshopId.value}/stats` },
+      { label: 'Participants', icon: 'i-lucide-users', to: `/dash/standalone/${standaloneWorkshopId.value}/participants` },
+      { label: 'Data Export', icon: 'i-lucide-file-down', to: `/dash/standalone/${standaloneWorkshopId.value}/infopack` },
+      { label: 'Questions', icon: 'i-lucide-circle-help', to: `/dash/standalone/${standaloneWorkshopId.value}/questions` },
       { label: 'Settings', icon: 'i-lucide-settings-2', to: `/dash/standalone/${standaloneWorkshopId.value}/settings` },
     ]
 

@@ -1,1 +1,0 @@
-{"type":"string","description":"","x-enumNames":["Pending","Accepted","Rejected"],"enum":["Pending","Accepted","Rejected"],"x-readme-ref-name":"GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus"}

@@ -1,6 +1,7 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
+using GeeksHackingPortal.Api.Endpoints.Organizers.Activities;
 using GeeksHackingPortal.Api.Extensions;
 using GeeksHackingPortal.Api.Features.Hackathons.GitHubRepositorySettings;
 using SqlSugar;
@@ -30,7 +31,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             throw new ArgumentNullException(nameof(userId));
         }
 
-        var emailTemplates = NormalizeEmailTemplates(req.EmailTemplates);
+        var emailTemplates = EmailTemplateNormalizer.Normalize(req.EmailTemplates);
         var challengeSelectionEndDate = req.ChallengeSelectionEndDate ?? req.SubmissionsEndDate;
         var gitHubRepositorySettingsResult = HackathonGitHubRepositorySettingsMutation.BuildForCreate(
             req.GitHubRepositorySettings
@@ -139,24 +140,6 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             cancellation: ct
         );
     }
-
-    private static Dictionary<string, string> NormalizeEmailTemplates(
-        Dictionary<string, string>? templates
-    )
-    {
-        if (templates is null)
-        {
-            return [];
-        }
-
-        return templates
-            .Where(kvp =>
-                !string.IsNullOrWhiteSpace(kvp.Key) && !string.IsNullOrWhiteSpace(kvp.Value)
-            )
-            .GroupBy(kvp => kvp.Key.Trim().ToLowerInvariant(), StringComparer.OrdinalIgnoreCase)
-            .ToDictionary(g => g.Key, g => g.Last().Value.Trim(), StringComparer.OrdinalIgnoreCase);
-    }
-
     private void AddGitHubRepositorySettingsErrors(
         IReadOnlyList<HackathonGitHubRepositorySettingsValidationError> errors
     )

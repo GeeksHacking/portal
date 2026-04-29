@@ -169,7 +169,7 @@ public class HackathonPublicTests
 
         // Act 2 - Publish hackathon
         var publishResponse = await Client.HttpClient.PatchAsJsonAsync(
-            $"/organizers/hackathons/{created.Id}",
+            $"/organizers/activities/{created.Id}",
             new UpdateHackathonRequest { IsPublished = true }
         );
         await Assert.That(publishResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
@@ -200,7 +200,7 @@ public class HackathonPublicTests
 
         // Act 2 - Unpublish hackathon
         var unpublishResponse = await Client.HttpClient.PatchAsJsonAsync(
-            $"/organizers/hackathons/{created.Id}",
+            $"/organizers/activities/{created.Id}",
             new UpdateHackathonRequest { IsPublished = false }
         );
         await Assert.That(unpublishResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);

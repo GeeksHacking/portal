@@ -1,1 +1,0 @@
-{"type":"object","additionalProperties":false,"properties":{"isRegistered":{"type":"boolean"},"isOrganizer":{"type":"boolean"},"registeredAt":{"type":"string","format":"date-time","nullable":true},"withdrawnAt":{"type":"string","format":"date-time","nullable":true}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse"}

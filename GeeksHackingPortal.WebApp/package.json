@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@antfu/eslint-config": "^7.6.1",
+    "@comark/vue": "^0.3.1",
+    "@geekshacking/portal-sdk": "workspace:*",
     "@nuxt/fonts": "^0.13.0",
     "@nuxt/hints": "1.0.0-alpha.6",
     "@nuxt/image": "2.0.0",
@@ -31,8 +33,7 @@
     "typescript": "^5.9.3",
     "vue": "^3.5.28",
     "vue-router": "^5.0.2",
-    "xlsx": "^0.18.5",
-    "@geekshacking/portal-sdk": "workspace:*"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/qrcode": "^1.5.6",

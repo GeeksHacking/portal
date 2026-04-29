@@ -4,8 +4,11 @@ import type {
   GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus,
   GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse,
 } from '@geekshacking/portal-sdk'
-import { useQueries, useQueryClient } from '@tanstack/vue-query'
 import {
+  geeksHackingPortalApiEndpointsOrganizersActivitiesListEndpointQueryKey,
+  useGeeksHackingPortalApiEndpointsOrganizersActivitiesHackathonsEndpoint,
+  useGeeksHackingPortalApiEndpointsOrganizersActivitiesStandaloneWorkshopsEndpoint,
+  useGeeksHackingPortalApiEndpointsOrganizersActivitiesUpdateEndpoint,
   geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryKey,
   geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryOptions,
   geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryKey,
@@ -16,13 +19,12 @@ import {
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
   useGeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint,
   useGeeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonUpdateEndpoint,
   useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint,
   useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
+import { useQueries, useQueryClient } from '@tanstack/vue-query'
 import { computed, ref, unref } from 'vue'
 import {
   formatHackathonDate,
@@ -35,11 +37,13 @@ const toast = useToast()
 const queryClient = useQueryClient()
 const joinMutation = useGeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint()
 const createMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint()
-const updateMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonUpdateEndpoint()
+const updateActivityMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesUpdateEndpoint()
+const updateHackathonMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesHackathonsEndpoint()
 const createStandaloneEventMutation = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint()
-const updateStandaloneEventMutation = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint()
+const updateStandaloneEventActivityMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesUpdateEndpoint()
+const updateStandaloneEventMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesStandaloneWorkshopsEndpoint()
 
-type StandaloneEvent = {
+interface StandaloneEvent {
   id?: string
   title?: string
   description?: string
@@ -54,7 +58,7 @@ type StandaloneEvent = {
   emailTemplates?: Record<string, string>
 }
 
-type StandaloneEventAnalytics = {
+interface StandaloneEventAnalytics {
   registeredCount?: number
   withdrawnCount?: number
   capacityRemaining?: number
@@ -152,10 +156,29 @@ async function handleHackathonSubmit() {
 
   try {
     if (isEditingHackathon.value && editingHackathonId.value) {
-      await updateMutation.mutateAsync({
-        hackathonId: editingHackathonId.value,
-        data: formData,
-      })
+      await Promise.all([
+        updateActivityMutation.mutateAsync({
+          activityId: editingHackathonId.value,
+          data: {
+            title: formData.name,
+            description: formData.description,
+            location: formData.venue,
+            startTime: formData.eventStartDate,
+            endTime: formData.eventEndDate,
+            isPublished: formData.isPublished,
+          },
+        }),
+        updateHackathonMutation.mutateAsync({
+          activityId: editingHackathonId.value,
+          data: {
+            submissionsStartDate: formData.submissionsStartDate,
+            challengeSelectionEndDate: formData.challengeSelectionEndDate,
+            submissionsEndDate: formData.submissionsEndDate,
+            judgingStartDate: formData.judgingStartDate,
+            judgingEndDate: formData.judgingEndDate,
+          },
+        }),
+      ])
       toast.add({ title: 'Hackathon updated', color: 'success' })
     }
     else {
@@ -164,6 +187,7 @@ async function handleHackathonSubmit() {
     }
     await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryKey() })
     await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryKey() })
+    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersActivitiesListEndpointQueryKey() })
     isHackathonModalOpen.value = false
     resetHackathonForm()
   }
@@ -177,7 +201,11 @@ async function handleHackathonSubmit() {
   }
 }
 
-const isHackathonSubmitting = computed(() => createMutation.isPending.value || updateMutation.isPending.value)
+const isHackathonSubmitting = computed(() =>
+  createMutation.isPending.value
+  || updateActivityMutation.isPending.value
+  || updateHackathonMutation.isPending.value,
+)
 
 const isStandaloneEventModalOpen = ref(false)
 const isEditingStandaloneEvent = ref(false)
@@ -282,10 +310,28 @@ async function handleStandaloneEventSubmit() {
 
   try {
     if (isEditingStandaloneEvent.value && editingStandaloneEventId.value) {
-      await updateStandaloneEventMutation.mutateAsync({
-        standaloneWorkshopId: editingStandaloneEventId.value,
-        data: formData,
-      })
+      await Promise.all([
+        updateStandaloneEventActivityMutation.mutateAsync({
+          activityId: editingStandaloneEventId.value,
+          data: {
+            title: formData.title,
+            description: formData.description,
+            startTime: formData.startTime,
+            endTime: formData.endTime,
+            location: formData.location,
+            isPublished: formData.isPublished,
+            emailTemplates,
+          },
+        }),
+        updateStandaloneEventMutation.mutateAsync({
+          activityId: editingStandaloneEventId.value,
+          data: {
+            homepageUri: formData.homepageUri,
+            shortCode: formData.shortCode,
+            maxParticipants: formData.maxParticipants,
+          },
+        }),
+      ])
       toast.add({ title: 'Standalone event updated', color: 'success' })
     }
     else {
@@ -294,6 +340,7 @@ async function handleStandaloneEventSubmit() {
     }
 
     await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryKey() })
+    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersActivitiesListEndpointQueryKey() })
     isStandaloneEventModalOpen.value = false
     resetStandaloneEventForm()
   }
@@ -307,7 +354,11 @@ async function handleStandaloneEventSubmit() {
   }
 }
 
-const isStandaloneEventSubmitting = computed(() => createStandaloneEventMutation.isPending.value || updateStandaloneEventMutation.isPending.value)
+const isStandaloneEventSubmitting = computed(() =>
+  createStandaloneEventMutation.isPending.value
+  || updateStandaloneEventActivityMutation.isPending.value
+  || updateStandaloneEventMutation.isPending.value,
+)
 
 const { data: user, isLoading: isLoadingUser } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
 
@@ -767,11 +818,11 @@ function formatParticipantStatus(status: GeeksHackingPortalApiEndpointsParticipa
 
                   <div class="flex flex-wrap items-center gap-2">
                     <UButton
-                      v-if="user?.isRoot"
+                      v-if="event.id"
+                      :to="`/dash/standalone/${event.id}`"
                       color="neutral"
                       size="sm"
                       class="w-full sm:w-auto"
-                      @click="openEditStandaloneEventModal(event)"
                     >
                       Manage
                     </UButton>

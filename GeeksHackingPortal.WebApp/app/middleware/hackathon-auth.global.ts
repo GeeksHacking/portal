@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   // Define public routes that don't require authentication
   const publicRoutes = ['/', '/login']
-  const isPublicRoute = publicRoutes.includes(to.path)
+  const isPublicRoute = publicRoutes.includes(to.path) || to.path.startsWith('/workshops/')
 
   if (isPublicRoute) {
     return

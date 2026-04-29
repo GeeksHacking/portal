@@ -174,19 +174,43 @@ public class StandaloneWorkshopCrudTests
 
         // Act
         var response = await Client.HttpClient.PatchAsJsonAsync(
-            $"/organizers/standalone-workshops/{workshop.Id}",
-            request
+            $"/organizers/activities/{workshop.Id}",
+            new
+            {
+                Title = request.Title,
+                Description = request.Description,
+                StartTime = request.StartTime,
+                EndTime = request.EndTime,
+                Location = request.Location,
+                IsPublished = request.IsPublished,
+                EmailTemplates = request.EmailTemplates,
+            }
         );
-        var result = await response.Content.ReadFromJsonAsync<StandaloneWorkshopResponse>();
+        var result = await response.Content.ReadFromJsonAsync<ActivityResponse>();
+
+        var metadataResponse = await Client.HttpClient.PatchAsJsonAsync(
+            $"/organizers/activities/{workshop.Id}/standalone-workshop",
+            new
+            {
+                HomepageUri = request.HomepageUri,
+                ShortCode = request.ShortCode,
+                MaxParticipants = request.MaxParticipants,
+            }
+        );
+        var metadataResult =
+            await metadataResponse.Content.ReadFromJsonAsync<StandaloneWorkshopActivityResponse>();
 
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(metadataResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
         await Assert.That(result).IsNotNull();
+        await Assert.That(metadataResult).IsNotNull();
         await Assert.That(result!.Title).IsEqualTo(request.Title);
         await Assert.That(result.Description).IsEqualTo(request.Description);
         await Assert.That(result.Location).IsEqualTo(request.Location);
-        await Assert.That(result.ShortCode).IsEqualTo(request.ShortCode);
-        await Assert.That(result.MaxParticipants).IsEqualTo(request.MaxParticipants);
+        await Assert.That(metadataResult!.ShortCode).IsEqualTo(request.ShortCode);
+        await Assert.That(metadataResult.MaxParticipants).IsEqualTo(request.MaxParticipants);
+        await Assert.That(metadataResult.HomepageUri).IsEqualTo(request.HomepageUri);
         await Assert.That(result.IsPublished).IsFalse();
         await Assert.That(result.EmailTemplates["registration-confirmed"]).IsEqualTo("updated-template");
     }

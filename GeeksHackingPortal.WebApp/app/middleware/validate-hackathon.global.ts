@@ -11,7 +11,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const firstSegment = pathSegments[0]
 
   // Skip known non-hackathon routes
-  if (firstSegment === 'dash' || firstSegment === 'login')
+  if (firstSegment === 'dash' || firstSegment === 'login' || firstSegment === 'workshops')
     return
 
   // Extract hackathon ID from the first path segment

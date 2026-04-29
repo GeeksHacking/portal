@@ -1,1 +1,0 @@
-{"type":"object","additionalProperties":false,"properties":{"value":{"type":"string"},"followUpValue":{"type":"string","nullable":true}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDto"}

@@ -1,1 +1,0 @@
-{"type":"object","additionalProperties":false,"properties":{"hasAttended":{"type":"boolean"},"attendedAt":{"type":"string","format":"date-time"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceResponse"}

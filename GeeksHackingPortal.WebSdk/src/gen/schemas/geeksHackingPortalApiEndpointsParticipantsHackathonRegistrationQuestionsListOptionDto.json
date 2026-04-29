@@ -1,1 +1,0 @@
-{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","format":"guid"},"optionText":{"type":"string"},"optionValue":{"type":"string"},"hasFollowUpText":{"type":"boolean"},"followUpPlaceholder":{"type":"string","nullable":true}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto"}

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useQueryClient } from '@tanstack/vue-query'
 import {
+  useGeeksHackingPortalApiEndpointsOrganizersActivitiesHackathonsEndpoint,
   geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpointQueryKey,
   useGeeksHackingPortalApiEndpointsOrganizersHackathonGetEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonUpdateEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { computed, ref, watch } from 'vue'
 
@@ -17,7 +17,7 @@ const { data: hackathon, isLoading } = useGeeksHackingPortalApiEndpointsOrganize
   { query: { enabled: computed(() => !!hackathonId.value) } },
 )
 
-const updateMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonUpdateEndpoint()
+const updateMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesHackathonsEndpoint()
 
 const form = ref({
   enableRepositoryChecking: false,
@@ -86,7 +86,7 @@ async function handleSubmit() {
 
   try {
     const result = await updateMutation.mutateAsync({
-      hackathonId: hackathonId.value,
+      activityId: hackathonId.value,
       data: {
         gitHubRepositorySettings: {
           isRepositoryCheckingEnabled: form.value.enableRepositoryChecking,

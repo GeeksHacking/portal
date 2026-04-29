@@ -144,21 +144,21 @@ public class HackathonCrudTests
 
         var updateRequest = new UpdateHackathonRequest
         {
-            Name = "Updated Hackathon Name",
+            Title = "Updated Hackathon Name",
             Description = "Updated description",
         };
 
         // Act
         var response = await Client.HttpClient.PatchAsJsonAsync(
-            $"/organizers/hackathons/{createdHackathon!.Id}",
+            $"/organizers/activities/{createdHackathon!.Id}",
             updateRequest
         );
-        var result = await response.Content.ReadFromJsonAsync<HackathonResponse>();
+        var result = await response.Content.ReadFromJsonAsync<ActivityResponse>();
 
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Name).IsEqualTo(updateRequest.Name);
+        await Assert.That(result!.Title).IsEqualTo(updateRequest.Title);
         await Assert.That(result.Description).IsEqualTo(updateRequest.Description);
     }
 
@@ -178,10 +178,10 @@ public class HackathonCrudTests
 
         // Act
         var response = await Client.HttpClient.PatchAsJsonAsync(
-            $"/organizers/hackathons/{createdHackathon!.Id}",
+            $"/organizers/activities/{createdHackathon!.Id}",
             updateRequest
         );
-        var result = await response.Content.ReadFromJsonAsync<HackathonResponse>();
+        var result = await response.Content.ReadFromJsonAsync<ActivityResponse>();
 
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
@@ -212,10 +212,10 @@ public class HackathonCrudTests
         };
 
         var response = await Client.HttpClient.PatchAsJsonAsync(
-            $"/organizers/hackathons/{createdHackathon!.Id}",
+            $"/organizers/activities/{createdHackathon!.Id}/hackathon",
             updateRequest
         );
-        var result = await response.Content.ReadFromJsonAsync<HackathonResponse>();
+        var result = await response.Content.ReadFromJsonAsync<HackathonActivityResponse>();
 
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
         await Assert.That(result).IsNotNull();
@@ -230,11 +230,11 @@ public class HackathonCrudTests
     public async Task UpdateHackathon_WithInvalidId_ReturnsNotFound()
     {
         // Arrange
-        var updateRequest = new UpdateHackathonRequest { Name = "Updated Name" };
+        var updateRequest = new UpdateHackathonRequest { Title = "Updated Name" };
 
         // Act
         var response = await Client.HttpClient.PatchAsJsonAsync(
-            $"/organizers/hackathons/{Guid.NewGuid()}",
+            $"/organizers/activities/{Guid.NewGuid()}",
             updateRequest
         );
 

@@ -1,1 +1,0 @@
-{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","format":"guid"},"checkOutTime":{"type":"string","format":"date-time"},"isCheckedIn":{"type":"boolean"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckOutResponse"}

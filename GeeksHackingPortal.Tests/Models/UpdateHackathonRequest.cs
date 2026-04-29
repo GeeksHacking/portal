@@ -2,13 +2,11 @@ namespace GeeksHackingPortal.Tests.Models;
 
 public class UpdateHackathonRequest
 {
-    public string? Name { get; set; }
+    public string? Title { get; set; }
     public string? Description { get; set; }
-    public string? Venue { get; set; }
-    public Uri? HomepageUri { get; set; }
-    public string? ShortCode { get; set; }
-    public DateTimeOffset? EventStartDate { get; set; }
-    public DateTimeOffset? EventEndDate { get; set; }
+    public DateTimeOffset? StartTime { get; set; }
+    public DateTimeOffset? EndTime { get; set; }
+    public string? Location { get; set; }
     public DateTimeOffset? SubmissionsStartDate { get; set; }
     public DateTimeOffset? ChallengeSelectionEndDate { get; set; }
     public DateTimeOffset? SubmissionsEndDate { get; set; }

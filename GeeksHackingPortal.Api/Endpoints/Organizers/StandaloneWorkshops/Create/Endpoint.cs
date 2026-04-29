@@ -1,6 +1,7 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
+using GeeksHackingPortal.Api.Endpoints.Organizers.Activities;
 using GeeksHackingPortal.Api.Extensions;
 using SqlSugar;
 
@@ -38,7 +39,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             return;
         }
 
-        var emailTemplates = NormalizeEmailTemplates(req.EmailTemplates);
+        var emailTemplates = EmailTemplateNormalizer.Normalize(req.EmailTemplates);
         var workshopId = Guid.NewGuid();
         var now = DateTimeOffset.UtcNow;
         var activity = new Activity
@@ -114,22 +115,5 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             },
             ct
         );
-    }
-
-    private static Dictionary<string, string> NormalizeEmailTemplates(
-        Dictionary<string, string>? templates
-    )
-    {
-        if (templates is null)
-        {
-            return [];
-        }
-
-        return templates
-            .Where(kvp =>
-                !string.IsNullOrWhiteSpace(kvp.Key) && !string.IsNullOrWhiteSpace(kvp.Value)
-            )
-            .GroupBy(kvp => kvp.Key.Trim().ToLowerInvariant(), StringComparer.OrdinalIgnoreCase)
-            .ToDictionary(g => g.Key, g => g.Last().Value.Trim(), StringComparer.OrdinalIgnoreCase);
     }
 }

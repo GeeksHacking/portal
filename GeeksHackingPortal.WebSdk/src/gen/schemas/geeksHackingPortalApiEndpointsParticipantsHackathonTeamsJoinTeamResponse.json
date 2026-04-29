@@ -1,1 +1,0 @@
-{"type":"object","additionalProperties":false,"properties":{"teamId":{"type":"string","format":"guid"},"hackathonId":{"type":"string","format":"guid"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamResponse"}

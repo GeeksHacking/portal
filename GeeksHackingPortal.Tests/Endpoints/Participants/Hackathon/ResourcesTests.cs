@@ -150,7 +150,7 @@ public class ResourcesTests
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
         await Assert.That(result).IsNotNull();
         await Assert.That(result!.ResourceId).IsEqualTo(resourceId);
-        await Assert.That(result.ActivityId).IsEqualTo(hackathonId);
+        await Assert.That(result.HackathonId).IsEqualTo(hackathonId);
     }
 
     [Test]

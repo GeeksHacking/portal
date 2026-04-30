@@ -71,9 +71,18 @@ jobs:
         run: |
           # Capture the migrator output into a file so we can both print it and upload it.
           # The diff command returns 0 when there are no changes and 2 when drift exists.
-          dotnet run --project GeeksHackingPortal.DbMigrator --configuration Release -- diff 2>&1 |
-            Tee-Object -FilePath db-schema-diff.txt
-          $status = $LASTEXITCODE
+          # GitHub's pwsh runner can treat non-zero native process exits as terminating errors.
+          # Drift is an expected diff result, so temporarily disable that behavior and handle
+          # the migrator status explicitly below.
+          $previousNativeCommandPreference = $PSNativeCommandUseErrorActionPreference
+          $PSNativeCommandUseErrorActionPreference = $false
+          try {
+            dotnet run --project GeeksHackingPortal.DbMigrator --configuration Release -- diff 2>&1 |
+              Tee-Object -FilePath db-schema-diff.txt
+            $status = $LASTEXITCODE
+          } finally {
+            $PSNativeCommandUseErrorActionPreference = $previousNativeCommandPreference
+          }
 
           # Convert the migrator exit code into a workflow output instead of failing the job.
           if ($status -eq 0) {

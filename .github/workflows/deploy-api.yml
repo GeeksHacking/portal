@@ -85,10 +85,14 @@ jobs:
           $hasSchemaChanges = ($diffOutput -join "`n") -match "Pending database schema changes detected"
 
           # Convert the migrator exit code into a workflow output instead of failing the job.
+          # GitHub's pwsh wrapper exits with $LASTEXITCODE after the script completes, so
+          # reset it once we have handled expected drift.
           if ($status -eq 0) {
             "has_changes=false" | Out-File -Append -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+            $global:LASTEXITCODE = 0
           } elseif ($status -eq 2 -or ($status -eq 1 -and $hasSchemaChanges)) {
             "has_changes=true" | Out-File -Append -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+            $global:LASTEXITCODE = 0
           } else {
             exit $status
           }

@@ -17,8 +17,8 @@ public class StandaloneWorkshop
     [Navigate(NavigateType.OneToOne, nameof(Id))]
     public Activity Activity { get; set; } = null!;
 
-    [SugarColumn(ColumnDataType = "nvarchar(128)", SqlParameterDbType = typeof(UriConverter))]
-    public Uri HomepageUri { get; set; } = null!;
+    [SugarColumn(ColumnDataType = "nvarchar(128)", SqlParameterDbType = typeof(UriConverter), IsNullable = true)]
+    public Uri? HomepageUri { get; set; }
 
     public string ShortCode { get; set; } = null!;
 

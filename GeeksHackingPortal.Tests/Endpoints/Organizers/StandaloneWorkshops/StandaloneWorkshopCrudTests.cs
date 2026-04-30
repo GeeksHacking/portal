@@ -65,6 +65,29 @@ public class StandaloneWorkshopCrudTests
     }
 
     [Test]
+    public async Task CreateStandaloneWorkshop_WithoutHomepageUri_ReturnsOk()
+    {
+        // Arrange
+        var request = TestDataHelper.CreateValidStandaloneWorkshopRequest(
+            Guid.NewGuid().ToString()[..8]
+        );
+        request.HomepageUri = null;
+
+        // Act
+        var response = await Client.HttpClient.PostAsJsonAsync(
+            "/organizers/standalone-workshops",
+            request
+        );
+        var result = await response.Content.ReadFromJsonAsync<StandaloneWorkshopResponse>();
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result!.HomepageUri).IsNull();
+    }
+
+
+    [Test]
     public async Task CreateStandaloneWorkshop_WithoutAuthentication_ReturnsUnauthorized()
     {
         // Arrange

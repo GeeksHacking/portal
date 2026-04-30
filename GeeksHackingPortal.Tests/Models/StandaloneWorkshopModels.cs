@@ -7,7 +7,7 @@ public class CreateStandaloneWorkshopRequest
     public required DateTimeOffset StartTime { get; set; }
     public required DateTimeOffset EndTime { get; set; }
     public required string Location { get; set; }
-    public required Uri HomepageUri { get; set; }
+    public Uri? HomepageUri { get; set; }
     public required string ShortCode { get; set; }
     public required int MaxParticipants { get; set; }
     public bool IsPublished { get; set; }
@@ -22,7 +22,7 @@ public class StandaloneWorkshopResponse
     public DateTimeOffset StartTime { get; set; }
     public DateTimeOffset EndTime { get; set; }
     public string Location { get; set; } = "";
-    public Uri HomepageUri { get; set; } = new("https://example.com");
+    public Uri? HomepageUri { get; set; }
     public string ShortCode { get; set; } = "";
     public int MaxParticipants { get; set; }
     public bool IsPublished { get; set; }

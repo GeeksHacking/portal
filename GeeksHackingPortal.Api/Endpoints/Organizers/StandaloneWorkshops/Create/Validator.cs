@@ -11,10 +11,12 @@ public class Validator : Validator<Request>
         RuleFor(x => x.Description).Must(value => !string.IsNullOrWhiteSpace(value));
         RuleFor(x => x.Location).Must(value => !string.IsNullOrWhiteSpace(value));
 
-        RuleFor(x => x.HomepageUri)
-            .NotNull()
-            .Must(uri => uri.IsAbsoluteUri)
-            .Must(uri => uri.Scheme is "http" or "https");
+        When(x => x.HomepageUri is not null, () =>
+        {
+            RuleFor(x => x.HomepageUri!)
+                .Must(uri => uri.IsAbsoluteUri)
+                .Must(uri => uri.Scheme is "http" or "https");
+        });
 
         RuleFor(x => x.ShortCode)
             .Must(value => !string.IsNullOrWhiteSpace(value))

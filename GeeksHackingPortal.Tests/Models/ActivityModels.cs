@@ -27,7 +27,7 @@ public class HackathonActivityResponse
 public class StandaloneWorkshopActivityResponse
 {
     public Guid Id { get; set; }
-    public Uri HomepageUri { get; set; } = new("https://example.com");
+    public Uri? HomepageUri { get; set; }
     public string ShortCode { get; set; } = "";
     public int MaxParticipants { get; set; }
 }

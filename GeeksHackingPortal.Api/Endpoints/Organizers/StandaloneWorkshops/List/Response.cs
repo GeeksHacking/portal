@@ -16,7 +16,7 @@ public class Response
 
         public required string Location { get; set; }
 
-        public required Uri HomepageUri { get; set; }
+        public Uri? HomepageUri { get; set; }
 
         public required string ShortCode { get; set; }
 

@@ -11,7 +11,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         Post("organizers/hackathons/{HackathonId:guid}/participants/{UserId:guid}/withdraw");
         Policies(PolicyNames.OrganizerForHackathon);
-        Description(b => b.WithTags("Organizers", "Participants").Accepts<Request>());
+        Description(b => b.WithTags("Activity Participants").Accepts<Request>());
         Summary(s =>
         {
             s.Summary = "Withdraw a participant";

@@ -11,6 +11,38 @@ export type GeeksHackingPortalApiEndpointsOrganizersActivitiesHackathonsResponse
     */
     id?: string;
     /**
+     * @type string | undefined
+    */
+    name?: string;
+    /**
+     * @type string | undefined
+    */
+    description?: string;
+    /**
+     * @type string | undefined
+    */
+    venue?: string;
+    /**
+     * @type string | undefined, uri
+    */
+    homepageUri?: string;
+    /**
+     * @type string | undefined
+    */
+    shortCode?: string;
+    /**
+     * @type boolean | undefined
+    */
+    isPublished?: boolean;
+    /**
+     * @type string | undefined, date-time
+    */
+    eventStartDate?: string;
+    /**
+     * @type string | undefined, date-time
+    */
+    eventEndDate?: string;
+    /**
      * @type string | undefined, date-time
     */
     submissionsStartDate?: string;
@@ -30,6 +62,12 @@ export type GeeksHackingPortalApiEndpointsOrganizersActivitiesHackathonsResponse
      * @type string | undefined, date-time
     */
     judgingEndDate?: string;
+    /**
+     * @type object | undefined
+    */
+    emailTemplates?: {
+        [key: string]: string;
+    };
     /**
      * @type object | undefined
     */

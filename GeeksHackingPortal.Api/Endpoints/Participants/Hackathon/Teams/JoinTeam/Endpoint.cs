@@ -14,7 +14,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
     {
         Post("participants/hackathons/{HackathonId:guid}/teams/{TeamId:guid}/join");
         Policies(PolicyNames.ParticipantForHackathon);
-        Description(b => b.WithTags("Participants", "Teams"));
+        Description(b => b.WithTags("Teams"));
         Summary(s =>
         {
             s.Summary = "Join a team";

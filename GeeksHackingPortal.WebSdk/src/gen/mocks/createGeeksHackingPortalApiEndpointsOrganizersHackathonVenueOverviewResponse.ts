@@ -10,8 +10,5 @@ import { createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVen
 
 export function createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewResponse {
 
-  return {
-    ...{"participants": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto())),"auditTrail": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto()))},
-    ...data || {}
-  }
+  return { ...{get "participants"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto())) },get "auditTrail"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto())) },...(data || {})} }
 }

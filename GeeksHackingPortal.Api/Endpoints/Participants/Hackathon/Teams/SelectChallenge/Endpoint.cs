@@ -11,7 +11,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         Put("participants/hackathons/{HackathonId:guid}/teams/{TeamId:guid}/challenge");
         Policies(PolicyNames.TeamMemberForHackathonTeam);
-        Description(b => b.WithTags("Participants", "Teams"));
+        Description(b => b.WithTags("Teams"));
         Summary(s =>
         {
             s.Summary = "Select a challenge";

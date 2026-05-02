@@ -9,8 +9,5 @@ import { createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsList
 
 export function createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem>): GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem {
 
-  return {
-    ...{"id": faker.string.alpha(),"status": createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatus(),"reason": faker.string.alpha(),"createdAt": faker.date.anytime().toISOString()},
-    ...data || {}
-  }
+  return { ...{"id": faker.string.alpha(),get "status"() { return createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatus() },"reason": faker.string.alpha(),"createdAt": faker.date.anytime().toISOString(),...(data || {})} }
 }

@@ -9,8 +9,5 @@ import { createGeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticip
 
 export function createGeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse>): GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse {
 
-  return {
-    ...{"isParticipant": faker.datatype.boolean(),"isOrganizer": faker.datatype.boolean(),"teamId": faker.string.alpha(),"teamName": faker.string.alpha(),"status": faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus()]),"reviewReason": faker.string.alpha(),"reviewedAt": faker.date.anytime().toISOString()},
-    ...data || {}
-  }
+  return { ...{"isParticipant": faker.datatype.boolean(),"isOrganizer": faker.datatype.boolean(),"teamId": faker.string.alpha(),"teamName": faker.string.alpha(),get "status"() { return faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus()]) },"reviewReason": faker.string.alpha(),"reviewedAt": faker.date.anytime().toISOString(),...(data || {})} }
 }

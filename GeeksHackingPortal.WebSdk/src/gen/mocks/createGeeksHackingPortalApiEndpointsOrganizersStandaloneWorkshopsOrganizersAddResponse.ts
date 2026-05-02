@@ -9,8 +9,5 @@ import { createGeeksHackingPortalApiEntitiesOrganizerType } from "./createGeeksH
 
 export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersAddResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersAddResponse>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersAddResponse {
 
-  return {
-    ...{"userId": faker.string.alpha(),"type": createGeeksHackingPortalApiEntitiesOrganizerType()},
-    ...data || {}
-  }
+  return { ...{"userId": faker.string.alpha(),get "type"() { return createGeeksHackingPortalApiEntitiesOrganizerType() },...(data || {})} }
 }

@@ -52,7 +52,7 @@ public class ListEndpoint(ISqlSugarClient sql) : Endpoint<ListRequest, ListRespo
     {
         Get("organizers/standalone-workshops/{StandaloneWorkshopId:guid}/timeline");
         Policies(PolicyNames.OrganizerForActivity);
-        Description(b => b.WithTags("Organizers", "Standalone Workshops"));
+        Description(b => b.WithTags("Timeline"));
     }
 
     public override async Task HandleAsync(ListRequest req, CancellationToken ct)
@@ -96,7 +96,7 @@ public class CreateEndpoint(ISqlSugarClient sql) : Endpoint<CreateRequest, Timel
     {
         Post("organizers/standalone-workshops/{StandaloneWorkshopId:guid}/timeline");
         Policies(PolicyNames.OrganizerForActivity);
-        Description(b => b.WithTags("Organizers", "Standalone Workshops"));
+        Description(b => b.WithTags("Timeline"));
     }
 
     public override async Task HandleAsync(CreateRequest req, CancellationToken ct)
@@ -153,7 +153,7 @@ public class UpdateEndpoint(ISqlSugarClient sql) : Endpoint<MutateRequest, Timel
     {
         Patch("organizers/standalone-workshops/{StandaloneWorkshopId:guid}/timeline/{TimelineItemId:guid}");
         Policies(PolicyNames.OrganizerForActivity);
-        Description(b => b.WithTags("Organizers", "Standalone Workshops"));
+        Description(b => b.WithTags("Timeline"));
     }
 
     public override async Task HandleAsync(MutateRequest req, CancellationToken ct)
@@ -208,7 +208,7 @@ public class DeleteEndpoint(ISqlSugarClient sql) : Endpoint<MutateRequest>
     {
         Delete("organizers/standalone-workshops/{StandaloneWorkshopId:guid}/timeline/{TimelineItemId:guid}");
         Policies(PolicyNames.OrganizerForActivity);
-        Description(b => b.WithTags("Organizers", "Standalone Workshops"));
+        Description(b => b.WithTags("Timeline"));
     }
 
     public override async Task HandleAsync(MutateRequest req, CancellationToken ct)

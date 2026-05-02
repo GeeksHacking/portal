@@ -9,9 +9,12 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Get("organizers/activities/{ActivityId:guid}/resources");
+        Get(
+            "organizers/hackathons/{ActivityId:guid}/resources",
+            "organizers/standalone-workshops/{ActivityId:guid}/resources"
+        );
         Policies(PolicyNames.OrganizerForActivity);
-        Description(b => b.WithTags("Organizers", "Resources"));
+        Description(b => b.WithTags("Resources"));
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

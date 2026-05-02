@@ -9,10 +9,10 @@ import type {
 import {
   useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint,
   useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1,
   useGeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint1,
 } from '@geekshacking/portal-sdk/hooks'
 import { computed, ref, watch } from 'vue'
 import * as XLSX from 'xlsx'
@@ -84,12 +84,12 @@ const { data: challengesData, isLoading: isLoadingChallenges } = useGeeksHacking
   computed(() => hackathonId.value),
 )
 
-const { data: venueOverviewData, isLoading: isLoadingVenueOverview } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint(
+const { data: venueOverviewData, isLoading: isLoadingVenueOverview } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint1(
   hackathonId,
   { query: { enabled: computed(() => !!hackathonId.value) } },
 )
 
-const { data: resourcesData, isLoading: isLoadingResources } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint(
+const { data: resourcesData, isLoading: isLoadingResources } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1(
   hackathonId,
   { query: { enabled: computed(() => !!hackathonId.value) } },
 )
@@ -121,7 +121,7 @@ const {
   isLoading: isLoadingResourceStatistics,
   refetch: refetchResourceStatistics,
   dataUpdatedAt: resourceStatisticsUpdatedAt,
-} = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint(
+} = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1(
   hackathonId,
   computed(() => selectedResourceStatsResourceId.value ? { resourceId: selectedResourceStatsResourceId.value } : {}),
   { query: { enabled: computed(() => !!hackathonId.value) } },

@@ -12,7 +12,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         Post("participants/hackathons/{HackathonId:guid}/workshops/{WorkshopId:guid}/attendance");
         Policies(PolicyNames.ParticipantForHackathon);
-        Description(b => b.WithTags("Participants", "Workshops"));
+        Description(b => b.WithTags("Workshops"));
         Summary(s =>
         {
             s.Summary = "Mark attendance";

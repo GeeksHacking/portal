@@ -6,10 +6,10 @@ import type {
 } from '@geekshacking/portal-sdk'
 import {
   useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
 import { Html5Qrcode } from 'html5-qrcode'
@@ -41,7 +41,7 @@ const isScanning = ref(false)
 
 const queryClient = useQueryClient()
 
-const { data: resourcesData, isLoading: isLoadingResources } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint(
+const { data: resourcesData, isLoading: isLoadingResources } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1(
   hackathonId,
   { query: { enabled: computed(() => !!hackathonId.value) } },
 )
@@ -64,7 +64,7 @@ const selectedResource = computed(() =>
   resources.value.find(resource => resource.id === selectedResourceId.value) ?? null,
 )
 
-const { data: resourceOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint(
+const { data: resourceOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1(
   hackathonId,
   selectedResourceId,
   { query: { enabled: computed(() => !!hackathonId.value && !!selectedResourceId.value) } },
@@ -75,14 +75,14 @@ const { data: participantDetail } = useGeeksHackingPortalApiEndpointsOrganizersH
   computed(() => scannedUserId.value),
 )
 
-const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint(
+const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1(
   hackathonId,
   selectedParticipantUserId,
   selectedResourceId,
   { query: { enabled: computed(() => !!hackathonId.value && !!selectedParticipantUserId.value && !!selectedResourceId.value) } },
 )
 
-const redeemMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint()
+const redeemMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1()
 
 const participants = computed<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewParticipantResourceRedemptionDto[]>(() => resourceOverview.value?.participants ?? [])
 const auditTrail = computed<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDto[]>(() => resourceOverview.value?.auditTrail ?? [])

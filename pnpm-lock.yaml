@@ -34,7 +34,7 @@ importers:
         version: 4.0.3(magicast@0.5.2)(typescript@6.0.3)(vite@7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.4))
       '@nuxt/ui':
         specifier: 4.7.1
-        version: 4.7.1(@internationalized/date@3.10.1)(@internationalized/number@3.6.5)(@tiptap/extensions@3.22.5(@tiptap/core@3.22.5(@tiptap/pm@3.22.5))(@tiptap/pm@3.22.5))(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.6)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29))(axios@1.15.2)(change-case@5.4.4)(db0@0.3.4)(embla-carousel@8.6.0)(ioredis@5.10.1)(magicast@0.5.2)(qrcode@1.5.4)(tailwindcss@4.2.4)(typescript@6.0.3)(valibot@1.3.1(typescript@6.0.3))(vite@7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.4))(vue-router@5.0.6(@vue/compiler-sfc@3.5.33)(vue@3.5.33(typescript@6.0.3)))(vue@3.5.33(typescript@6.0.3))(yjs@13.6.29)(zod@4.3.6)
+        version: 4.7.1(@internationalized/date@3.10.1)(@internationalized/number@3.6.5)(@tiptap/extensions@3.22.5(@tiptap/core@3.22.5(@tiptap/pm@3.22.5))(@tiptap/pm@3.22.5))(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.6)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29))(axios@1.16.0)(change-case@5.4.4)(db0@0.3.4)(embla-carousel@8.6.0)(ioredis@5.10.1)(magicast@0.5.2)(qrcode@1.5.4)(tailwindcss@4.2.4)(typescript@6.0.3)(valibot@1.3.1(typescript@6.0.3))(vite@7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.4))(vue-router@5.0.6(@vue/compiler-sfc@3.5.33)(vue@3.5.33(typescript@6.0.3)))(vue@3.5.33(typescript@6.0.3))(yjs@13.6.29)(zod@4.3.6)
       '@tanstack/vue-query':
         specifier: ^5.100.8
         version: 5.100.8(vue@3.5.33(typescript@6.0.3))
@@ -88,54 +88,54 @@ importers:
         specifier: ^10.4.0
         version: 10.4.0
       '@kubb/plugin-client':
-        specifier: ^4.37.4
-        version: 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)(axios@1.15.2)
+        specifier: ^4.37.5
+        version: 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)(axios@1.16.0)
       '@tanstack/vue-query':
         specifier: ^5.92.9
-        version: 5.92.9(vue@3.5.28(typescript@5.9.3))
+        version: 5.92.9(vue@3.5.28(typescript@6.0.3))
       axios:
-        specifier: ^1.15.2
-        version: 1.15.2
+        specifier: ^1.16.0
+        version: 1.16.0
       msw:
         specifier: ^2.13.6
-        version: 2.13.6(@types/node@25.6.0)(typescript@5.9.3)
+        version: 2.13.6(@types/node@25.6.0)(typescript@6.0.3)
       vue:
         specifier: ^3.5.28
-        version: 3.5.28(typescript@5.9.3)
+        version: 3.5.28(typescript@6.0.3)
       zod:
         specifier: ^4.3.6
         version: 4.3.6
     devDependencies:
       '@kubb/cli':
-        specifier: ^4.37.4
-        version: 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)(typescript@5.9.3)
+        specifier: ^4.37.5
+        version: 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)(typescript@6.0.3)
       '@kubb/core':
-        specifier: ^4.37.4
-        version: 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+        specifier: ^4.37.5
+        version: 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/plugin-faker':
-        specifier: ^4.37.4
-        version: 4.37.4(@kubb/fabric-core@0.14.0)
+        specifier: ^4.37.5
+        version: 4.37.5(@kubb/fabric-core@0.14.0)
       '@kubb/plugin-msw':
-        specifier: ^4.37.4
-        version: 4.37.4(@kubb/fabric-core@0.14.0)
+        specifier: ^4.37.5
+        version: 4.37.5(@kubb/fabric-core@0.14.0)
       '@kubb/plugin-oas':
-        specifier: ^4.37.4
-        version: 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+        specifier: ^4.37.5
+        version: 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/plugin-ts':
-        specifier: ^4.37.4
-        version: 4.37.4(@kubb/react-fabric@0.14.0)
+        specifier: ^4.37.5
+        version: 4.37.5(@kubb/react-fabric@0.14.0)
       '@kubb/plugin-vue-query':
-        specifier: ^4.37.4
-        version: 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)(axios@1.15.2)
+        specifier: ^4.37.5
+        version: 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)(axios@1.16.0)
       '@kubb/plugin-zod':
-        specifier: ^4.37.4
-        version: 4.37.4(@kubb/fabric-core@0.14.0)
+        specifier: ^4.37.5
+        version: 4.37.5(@kubb/fabric-core@0.14.0)
       tsdown:
         specifier: ^0.21.10
-        version: 0.21.10(@typescript/native-preview@7.0.0-dev.20260426.1)(synckit@0.11.12)(typescript@5.9.3)
+        version: 0.21.10(@typescript/native-preview@7.0.0-dev.20260426.1)(synckit@0.11.12)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
+        specifier: ^6.0.3
+        version: 6.0.3
 
 packages:
 
@@ -1145,17 +1145,17 @@ packages:
     peerDependencies:
       jsep: ^0.4.0||^1.0.0
 
-  '@kubb/ast@4.37.4':
-    resolution: {integrity: sha512-ZDWliO49PXSLx4l2vpxZjeyU4dkM2haKyxVzzT5eKpWjZOTLRR5YBQSFMHZ9Huikz5gRA0r54d4rqoF9mOqMNA==}
+  '@kubb/ast@4.37.5':
+    resolution: {integrity: sha512-qJmf4ZnQQIxOF3TdfIfSPtAxcoOx4ubZwbNicc9qpkYIjvn6wWY3iTUCKrT4v2GyzZ4FiQaSGiqDzb9Dz0gOlw==}
     engines: {node: '>=20'}
 
-  '@kubb/cli@4.37.4':
-    resolution: {integrity: sha512-og790FjAerbGmazZy3E12cobJNMUZLshXKsx5y9YnM/n6I110yTMV3ricSlqbUy6t5dYpDiW8GLaA7TGCuoj7A==}
+  '@kubb/cli@4.37.5':
+    resolution: {integrity: sha512-o9gOwljLtdk6ax6j/C/UopyBFD7FW+VilT6ZSgqq3rtWERfMv+1VPrxfA8ipumXmyQ7ym5ocPaRWegYmjqhYXA==}
     engines: {node: '>=20'}
     hasBin: true
 
-  '@kubb/core@4.37.4':
-    resolution: {integrity: sha512-qgrAOqWM9m/RDTOjnolJtPDBezJHKJv8NYYzLZhk8clsST2EFecn3FHzYk+Emc9u6i7Ry47I684YKWTQc8QOSw==}
+  '@kubb/core@4.37.5':
+    resolution: {integrity: sha512-aT3uZFR9xcntq9didIDB+nSK7w5mc7WYNmb2mjMbnZe4/2x4aDEB6CeHRoYTqN5xNpz7mZAVoiMYEwlrykRaCA==}
     engines: {node: '>=20'}
     peerDependencies:
       '@kubb/fabric-core': 0.14.0
@@ -1165,14 +1165,14 @@ packages:
     resolution: {integrity: sha512-j4bG8RlOIkKLENHsTuD1oKuyjzAgBBOprXsBkpQ2l2XVzc84hQzMShP6CE6D4VSM+5jF2g3FhCz7YjAc6DQnqg==}
     engines: {node: '>=20'}
 
-  '@kubb/oas@4.37.4':
-    resolution: {integrity: sha512-6WeDZBXMuBOfkJ8MXxtkm8w3sk35/fttUNFdG9OBwazn7sdgPIXHazmhoZp2pAx/rTT35aL7w7hsdfQCR4khag==}
+  '@kubb/oas@4.37.5':
+    resolution: {integrity: sha512-kOjQOERs6B/BjgewBM9cTuBGAuQIB0mdYOVasv3J+wLEkvLM13HWiqu7lX/3d+P0M3zD8XbdrXFjn2JaYcG1Ig==}
     engines: {node: '>=20'}
     peerDependencies:
       '@kubb/fabric-core': 0.14.0
 
-  '@kubb/plugin-client@4.37.4':
-    resolution: {integrity: sha512-LGjWhnTd2PReI98cOyNCprAXGseSNpMqFmPE3qBaTOP55YnVwO90U04TUFrwXGPUxz937fKptIT06xBx0Z0Sdg==}
+  '@kubb/plugin-client@4.37.5':
+    resolution: {integrity: sha512-xKyLxtSmIssQVuFV+uzuN1djEt/kpvDleZ6E+G6wr4thmCKGGs9emSzbHYBJhxX1bkvvWYhLSkLNLAAQBwXyKA==}
     engines: {node: '>=20'}
     peerDependencies:
       '@kubb/fabric-core': 0.14.0
@@ -1182,36 +1182,36 @@ packages:
       axios:
         optional: true
 
-  '@kubb/plugin-faker@4.37.4':
-    resolution: {integrity: sha512-Gkc3GvQZQQA7SBbZNmhsSL7aZqHMWHSvbmzZ5llW7wOOqd2wO1oX+c3PtjW5Wxfb58wNLj0Da12kCm8NCy9sSA==}
+  '@kubb/plugin-faker@4.37.5':
+    resolution: {integrity: sha512-TpuxenlOAmOZ82VtIeC7rxYYfVP2C+cenKUXbLMmSfqjqfTIWYnbYpmsHOZ4jbqOnE27+3OdXGavAB31vF1PWA==}
     engines: {node: '>=20'}
 
-  '@kubb/plugin-msw@4.37.4':
-    resolution: {integrity: sha512-OIzNX/kywqGMDd7ulSRmt88LeyvrdULfV+HM4e9Uc4jHOFs3Sffr9LFXNpPtiCmz2KH2pOiJuFwxAiYHrm2IFQ==}
+  '@kubb/plugin-msw@4.37.5':
+    resolution: {integrity: sha512-/iEhD19BSkR+HHOvfU7y9QHMLvABs25wZRXFTIN2g7DbN7ryVkyya0sdcHHM9UcrRU7XZ/J1OUAEBzVF5hKBJA==}
     engines: {node: '>=20'}
 
-  '@kubb/plugin-oas@4.37.4':
-    resolution: {integrity: sha512-upLlLdFlTvZP5JXbhAz8cMypDwLO8CDdzx6iuXz60nnpql0u0MbOoY3pC7NKYsfbPFbP4+8xigIXKNheoWAPDw==}
-    engines: {node: '>=20'}
-    peerDependencies:
-      '@kubb/fabric-core': 0.14.0
-      '@kubb/react-fabric': 0.14.0
-
-  '@kubb/plugin-ts@4.37.4':
-    resolution: {integrity: sha512-Pg3Tz4X6E7fB6rygs3ODHsfHRg/pxW/LtCrr7/4ypZxojfaK60GKWhWg6K+JZTZVknlzbHeZgCdql/JomatfRg==}
-    engines: {node: '>=20'}
-    peerDependencies:
-      '@kubb/react-fabric': 0.14.0
-
-  '@kubb/plugin-vue-query@4.37.4':
-    resolution: {integrity: sha512-HDdXhzWAm0YcSZctbOOpRlqB0dt2g22JvZ9vQx8ueTfXreyGI0NcxSY7zAEYfeP53ON9GLTwQvCx28ovO0kfYA==}
+  '@kubb/plugin-oas@4.37.5':
+    resolution: {integrity: sha512-1Pcpme1IcNC/0yGSAUGIKPNGM6U0j547cvnIZDFFAkODVh5gT4vbjeEz1sXh+QZpT23T0MY36hiDaZPFx9kneg==}
     engines: {node: '>=20'}
     peerDependencies:
       '@kubb/fabric-core': 0.14.0
       '@kubb/react-fabric': 0.14.0
 
-  '@kubb/plugin-zod@4.37.4':
-    resolution: {integrity: sha512-iqvtf8TQRi26W181RFuxtzx9X384/wYajbznh1jBFF31UGv2wICd75tEbfIovmXNvxW5PYnY3mmxCnQZ5SwxCQ==}
+  '@kubb/plugin-ts@4.37.5':
+    resolution: {integrity: sha512-bYsHbUhR15Tr+apkI3RvVnNO6pTEx5iMx6COsqdcHXmIv7VKVQkzDKAjrzOIiFwq4ykRw1jYUf2esnX4n3De2A==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@kubb/react-fabric': 0.14.0
+
+  '@kubb/plugin-vue-query@4.37.5':
+    resolution: {integrity: sha512-CDS/lBQZzH0ubouuyHgKoKcg63glIQwOEXPSx7sW12dNuAScCmzYlxTJ+jk6bGgE/KUAzb8t1CCcAMLbc4MA/w==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@kubb/fabric-core': 0.14.0
+      '@kubb/react-fabric': 0.14.0
+
+  '@kubb/plugin-zod@4.37.5':
+    resolution: {integrity: sha512-KddBjwSmqGwXuANyq22Ofaknc9oMjdWBWt/NgwL7P6PEyWkDezVmrUbB1rPOIw/Xr4/cmq6+VBfo0VjxX6hp0Q==}
     engines: {node: '>=20'}
 
   '@kubb/react-fabric@0.14.0':
@@ -3750,9 +3750,6 @@ packages:
       ajv:
         optional: true
 
-  ajv@6.12.6:
-    resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
-
   ajv@6.15.0:
     resolution: {integrity: sha512-fgFx7Hfoq60ytK2c7DhnF8jIvzYgOMxfugjLOSMHjLIPgenqa7S7oaagATUq99mV6IYvN2tRmC0wnTYX6iPbMw==}
 
@@ -3830,8 +3827,8 @@ packages:
     peerDependencies:
       postcss: ^8.1.0
 
-  axios@1.15.2:
-    resolution: {integrity: sha512-wLrXxPtcrPTsNlJmKjkPnNPK2Ihe0hn0wGSaTEiHRPxwjvJwT3hKmXF4dpqxmPO9SoNb2FsYXj/xEo0gHN+D5A==}
+  axios@1.16.0:
+    resolution: {integrity: sha512-6hp5CwvTPlN2A31g5dxnwAX0orzM7pmCRDLnZSX772mv8WDqICwFjowHuPs04Mc8deIld1+ejhtaMn5vp6b+1w==}
 
   b4a@1.7.3:
     resolution: {integrity: sha512-5Q2mfq2WfGuFp3uS//0s6baOJLMoVduPYVeNmDYxu5OUA1/cBfvr2RIS7vi62LdNj/urk1hfmj867I3qt6uZ7Q==}
@@ -7090,12 +7087,6 @@ packages:
   ts-algebra@1.2.2:
     resolution: {integrity: sha512-kloPhf1hq3JbCPOTYoOWDKxebWjNb2o/LKnNfkWhxVVisFFmMJPPdJeGoGmM+iRLyoXAR61e08Pb+vUXINg8aA==}
 
-  ts-api-utils@2.4.0:
-    resolution: {integrity: sha512-3TaVTaAv2gTiMB35i3FiGJaRfwb3Pyn/j3m/bfAvGe8FB7CF6u+LMYqYlDh7reQf7UNvoTvdfAqHGmPGOSsPmA==}
-    engines: {node: '>=18.12'}
-    peerDependencies:
-      typescript: '>=4.8.4'
-
   ts-api-utils@2.5.0:
     resolution: {integrity: sha512-OJ/ibxhPlqrMM0UiNHJ/0CKQkoKF243/AEmplt3qpRgkW8VG7IfOS41h7V8TjITqdByHzrjcS/2si+y4lIh8NA==}
     engines: {node: '>=18.12'}
@@ -8719,14 +8710,14 @@ snapshots:
     dependencies:
       jsep: 1.4.0
 
-  '@kubb/ast@4.37.4': {}
+  '@kubb/ast@4.37.5': {}
 
-  '@kubb/cli@4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)(typescript@5.9.3)':
+  '@kubb/cli@4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)(typescript@6.0.3)':
     dependencies:
       '@clack/prompts': 1.2.0
-      '@kubb/core': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/core': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       chokidar: 5.0.0
-      cosmiconfig: 9.0.1(typescript@5.9.3)
+      cosmiconfig: 9.0.1(typescript@6.0.3)
       jiti: 2.5.1
       tinyexec: 1.1.1
     transitivePeerDependencies:
@@ -8734,9 +8725,9 @@ snapshots:
       - '@kubb/react-fabric'
       - typescript
 
-  '@kubb/core@4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)':
+  '@kubb/core@4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)':
     dependencies:
-      '@kubb/ast': 4.37.4
+      '@kubb/ast': 4.37.5
       '@kubb/fabric-core': 0.14.0
       '@kubb/react-fabric': 0.14.0
       empathic: 2.0.0
@@ -8752,10 +8743,10 @@ snapshots:
       remeda: 2.33.7
       typescript: 5.9.3
 
-  '@kubb/oas@4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)':
+  '@kubb/oas@4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)':
     dependencies:
-      '@kubb/ast': 4.37.4
-      '@kubb/core': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/ast': 4.37.5
+      '@kubb/core': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/fabric-core': 0.14.0
       '@redocly/openapi-core': 2.30.0
       '@stoplight/yaml': 4.3.0
@@ -8769,28 +8760,28 @@ snapshots:
       - '@kubb/react-fabric'
       - encoding
 
-  '@kubb/plugin-client@4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)(axios@1.15.2)':
+  '@kubb/plugin-client@4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)(axios@1.16.0)':
     dependencies:
-      '@kubb/core': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/core': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/fabric-core': 0.14.0
-      '@kubb/oas': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/plugin-oas': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/plugin-ts': 4.37.4(@kubb/react-fabric@0.14.0)
-      '@kubb/plugin-zod': 4.37.4(@kubb/fabric-core@0.14.0)
+      '@kubb/oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/plugin-oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/plugin-ts': 4.37.5(@kubb/react-fabric@0.14.0)
+      '@kubb/plugin-zod': 4.37.5(@kubb/fabric-core@0.14.0)
       '@kubb/react-fabric': 0.14.0
     optionalDependencies:
-      axios: 1.15.2
+      axios: 1.16.0
     transitivePeerDependencies:
       - bufferutil
       - encoding
       - utf-8-validate
 
-  '@kubb/plugin-faker@4.37.4(@kubb/fabric-core@0.14.0)':
+  '@kubb/plugin-faker@4.37.5(@kubb/fabric-core@0.14.0)':
     dependencies:
-      '@kubb/core': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/oas': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/plugin-oas': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/plugin-ts': 4.37.4(@kubb/react-fabric@0.14.0)
+      '@kubb/core': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/plugin-oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/plugin-ts': 4.37.5(@kubb/react-fabric@0.14.0)
       '@kubb/react-fabric': 0.14.0
     transitivePeerDependencies:
       - '@kubb/fabric-core'
@@ -8798,13 +8789,13 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@kubb/plugin-msw@4.37.4(@kubb/fabric-core@0.14.0)':
+  '@kubb/plugin-msw@4.37.5(@kubb/fabric-core@0.14.0)':
     dependencies:
-      '@kubb/core': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/oas': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/plugin-faker': 4.37.4(@kubb/fabric-core@0.14.0)
-      '@kubb/plugin-oas': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/plugin-ts': 4.37.4(@kubb/react-fabric@0.14.0)
+      '@kubb/core': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/plugin-faker': 4.37.5(@kubb/fabric-core@0.14.0)
+      '@kubb/plugin-oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/plugin-ts': 4.37.5(@kubb/react-fabric@0.14.0)
       '@kubb/react-fabric': 0.14.0
     transitivePeerDependencies:
       - '@kubb/fabric-core'
@@ -8812,38 +8803,38 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@kubb/plugin-oas@4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)':
+  '@kubb/plugin-oas@4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)':
     dependencies:
-      '@kubb/core': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/core': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/fabric-core': 0.14.0
-      '@kubb/oas': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/react-fabric': 0.14.0
       remeda: 2.33.7
     transitivePeerDependencies:
       - encoding
 
-  '@kubb/plugin-ts@4.37.4(@kubb/react-fabric@0.14.0)':
+  '@kubb/plugin-ts@4.37.5(@kubb/react-fabric@0.14.0)':
     dependencies:
-      '@kubb/ast': 4.37.4
-      '@kubb/core': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/ast': 4.37.5
+      '@kubb/core': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/fabric-core': 0.14.0
-      '@kubb/oas': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/plugin-oas': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/plugin-oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/react-fabric': 0.14.0
       remeda: 2.33.7
       typescript: 5.9.3
     transitivePeerDependencies:
       - encoding
 
-  '@kubb/plugin-vue-query@4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)(axios@1.15.2)':
+  '@kubb/plugin-vue-query@4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)(axios@1.16.0)':
     dependencies:
-      '@kubb/core': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/core': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
       '@kubb/fabric-core': 0.14.0
-      '@kubb/oas': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/plugin-client': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)(axios@1.15.2)
-      '@kubb/plugin-oas': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/plugin-ts': 4.37.4(@kubb/react-fabric@0.14.0)
-      '@kubb/plugin-zod': 4.37.4(@kubb/fabric-core@0.14.0)
+      '@kubb/oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/plugin-client': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)(axios@1.16.0)
+      '@kubb/plugin-oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/plugin-ts': 4.37.5(@kubb/react-fabric@0.14.0)
+      '@kubb/plugin-zod': 4.37.5(@kubb/fabric-core@0.14.0)
       '@kubb/react-fabric': 0.14.0
       remeda: 2.33.7
     transitivePeerDependencies:
@@ -8852,12 +8843,12 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@kubb/plugin-zod@4.37.4(@kubb/fabric-core@0.14.0)':
+  '@kubb/plugin-zod@4.37.5(@kubb/fabric-core@0.14.0)':
     dependencies:
-      '@kubb/core': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/oas': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/plugin-oas': 4.37.4(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
-      '@kubb/plugin-ts': 4.37.4(@kubb/react-fabric@0.14.0)
+      '@kubb/core': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/plugin-oas': 4.37.5(@kubb/fabric-core@0.14.0)(@kubb/react-fabric@0.14.0)
+      '@kubb/plugin-ts': 4.37.5(@kubb/react-fabric@0.14.0)
       '@kubb/react-fabric': 0.14.0
       remeda: 2.33.7
     transitivePeerDependencies:
@@ -9474,7 +9465,7 @@ snapshots:
       - typescript
       - vite
 
-  '@nuxt/ui@4.7.1(@internationalized/date@3.10.1)(@internationalized/number@3.6.5)(@tiptap/extensions@3.22.5(@tiptap/core@3.22.5(@tiptap/pm@3.22.5))(@tiptap/pm@3.22.5))(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.6)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29))(axios@1.15.2)(change-case@5.4.4)(db0@0.3.4)(embla-carousel@8.6.0)(ioredis@5.10.1)(magicast@0.5.2)(qrcode@1.5.4)(tailwindcss@4.2.4)(typescript@6.0.3)(valibot@1.3.1(typescript@6.0.3))(vite@7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.4))(vue-router@5.0.6(@vue/compiler-sfc@3.5.33)(vue@3.5.33(typescript@6.0.3)))(vue@3.5.33(typescript@6.0.3))(yjs@13.6.29)(zod@4.3.6)':
+  '@nuxt/ui@4.7.1(@internationalized/date@3.10.1)(@internationalized/number@3.6.5)(@tiptap/extensions@3.22.5(@tiptap/core@3.22.5(@tiptap/pm@3.22.5))(@tiptap/pm@3.22.5))(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.6)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29))(axios@1.16.0)(change-case@5.4.4)(db0@0.3.4)(embla-carousel@8.6.0)(ioredis@5.10.1)(magicast@0.5.2)(qrcode@1.5.4)(tailwindcss@4.2.4)(typescript@6.0.3)(valibot@1.3.1(typescript@6.0.3))(vite@7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.4))(vue-router@5.0.6(@vue/compiler-sfc@3.5.33)(vue@3.5.33(typescript@6.0.3)))(vue@3.5.33(typescript@6.0.3))(yjs@13.6.29)(zod@4.3.6)':
     dependencies:
       '@floating-ui/dom': 1.7.6
       '@iconify/vue': 5.0.0(vue@3.5.33(typescript@6.0.3))
@@ -9507,7 +9498,7 @@ snapshots:
       '@tiptap/vue-3': 3.22.5(@floating-ui/dom@1.7.6)(@tiptap/core@3.22.5(@tiptap/pm@3.22.5))(@tiptap/pm@3.22.5)(vue@3.5.33(typescript@6.0.3))
       '@unhead/vue': 2.1.13(vue@3.5.33(typescript@6.0.3))
       '@vueuse/core': 14.3.0(vue@3.5.33(typescript@6.0.3))
-      '@vueuse/integrations': 14.3.0(axios@1.15.2)(change-case@5.4.4)(fuse.js@7.3.0)(qrcode@1.5.4)(vue@3.5.33(typescript@6.0.3))
+      '@vueuse/integrations': 14.3.0(axios@1.16.0)(change-case@5.4.4)(fuse.js@7.3.0)(qrcode@1.5.4)(vue@3.5.33(typescript@6.0.3))
       '@vueuse/shared': 14.3.0(vue@3.5.33(typescript@6.0.3))
       colortranslator: 5.0.0
       consola: 3.4.2
@@ -10621,13 +10612,13 @@ snapshots:
       vue: 3.5.33(typescript@6.0.3)
       vue-demi: 0.14.10(vue@3.5.33(typescript@6.0.3))
 
-  '@tanstack/vue-query@5.92.9(vue@3.5.28(typescript@5.9.3))':
+  '@tanstack/vue-query@5.92.9(vue@3.5.28(typescript@6.0.3))':
     dependencies:
       '@tanstack/match-sorter-utils': 8.19.4
       '@tanstack/query-core': 5.90.20
       '@vue/devtools-api': 6.6.4
-      vue: 3.5.28(typescript@5.9.3)
-      vue-demi: 0.14.10(vue@3.5.28(typescript@5.9.3))
+      vue: 3.5.28(typescript@6.0.3)
+      vue-demi: 0.14.10(vue@3.5.28(typescript@6.0.3))
 
   '@tanstack/vue-table@8.21.3(vue@3.5.33(typescript@6.0.3))':
     dependencies:
@@ -10965,8 +10956,8 @@ snapshots:
 
   '@typescript-eslint/project-service@8.56.1(typescript@6.0.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.56.1(typescript@6.0.3)
-      '@typescript-eslint/types': 8.56.1
+      '@typescript-eslint/tsconfig-utils': 8.59.1(typescript@6.0.3)
+      '@typescript-eslint/types': 8.59.1
       debug: 4.4.3
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -10986,7 +10977,7 @@ snapshots:
       '@typescript-eslint/parser': 8.56.1(eslint@10.3.0(jiti@2.6.1))(typescript@6.0.3)
       '@typescript-eslint/typescript-estree': 8.56.1(typescript@6.0.3)
       '@typescript-eslint/utils': 8.56.1(eslint@10.3.0(jiti@2.6.1))(typescript@6.0.3)
-      ajv: 6.12.6
+      ajv: 6.15.0
       eslint: 10.3.0(jiti@2.6.1)
       json-stable-stringify-without-jsonify: 1.0.1
       lodash.merge: 4.6.2
@@ -11039,7 +11030,7 @@ snapshots:
       minimatch: 10.2.4
       semver: 7.7.4
       tinyglobby: 0.2.16
-      ts-api-utils: 2.4.0(typescript@6.0.3)
+      ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
@@ -11084,7 +11075,7 @@ snapshots:
   '@typescript-eslint/visitor-keys@8.56.1':
     dependencies:
       '@typescript-eslint/types': 8.56.1
-      eslint-visitor-keys: 5.0.0
+      eslint-visitor-keys: 5.0.1
 
   '@typescript-eslint/visitor-keys@8.59.1':
     dependencies:
@@ -11391,11 +11382,11 @@ snapshots:
       '@vue/shared': 3.5.33
       csstype: 3.2.3
 
-  '@vue/server-renderer@3.5.28(vue@3.5.28(typescript@5.9.3))':
+  '@vue/server-renderer@3.5.28(vue@3.5.28(typescript@6.0.3))':
     dependencies:
       '@vue/compiler-ssr': 3.5.28
       '@vue/shared': 3.5.28
-      vue: 3.5.28(typescript@5.9.3)
+      vue: 3.5.28(typescript@6.0.3)
 
   '@vue/server-renderer@3.5.33(vue@3.5.33(typescript@6.0.3))':
     dependencies:
@@ -11424,13 +11415,13 @@ snapshots:
       '@vueuse/shared': 14.3.0(vue@3.5.33(typescript@6.0.3))
       vue: 3.5.33(typescript@6.0.3)
 
-  '@vueuse/integrations@14.3.0(axios@1.15.2)(change-case@5.4.4)(fuse.js@7.3.0)(qrcode@1.5.4)(vue@3.5.33(typescript@6.0.3))':
+  '@vueuse/integrations@14.3.0(axios@1.16.0)(change-case@5.4.4)(fuse.js@7.3.0)(qrcode@1.5.4)(vue@3.5.33(typescript@6.0.3))':
     dependencies:
       '@vueuse/core': 14.3.0(vue@3.5.33(typescript@6.0.3))
       '@vueuse/shared': 14.3.0(vue@3.5.33(typescript@6.0.3))
       vue: 3.5.33(typescript@6.0.3)
     optionalDependencies:
-      axios: 1.15.2
+      axios: 1.16.0
       change-case: 5.4.4
       fuse.js: 7.3.0
       qrcode: 1.5.4
@@ -11479,13 +11470,6 @@ snapshots:
   ajv-formats@3.0.1(@redocly/ajv@8.18.0):
     optionalDependencies:
       ajv: '@redocly/ajv@8.18.0'
-
-  ajv@6.12.6:
-    dependencies:
-      fast-deep-equal: 3.1.3
-      fast-json-stable-stringify: 2.1.0
-      json-schema-traverse: 0.4.1
-      uri-js: 4.4.1
 
   ajv@6.15.0:
     dependencies:
@@ -11580,7 +11564,7 @@ snapshots:
       postcss: 8.5.13
       postcss-value-parser: 4.2.0
 
-  axios@1.15.2:
+  axios@1.16.0:
     dependencies:
       follow-redirects: 1.16.0
       form-data: 4.0.5
@@ -11853,14 +11837,14 @@ snapshots:
 
   core-util-is@1.0.3: {}
 
-  cosmiconfig@9.0.1(typescript@5.9.3):
+  cosmiconfig@9.0.1(typescript@6.0.3):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
       js-yaml: 4.1.1
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
 
   crc-32@1.2.2: {}
 
@@ -13948,7 +13932,7 @@ snapshots:
 
   ms@2.1.3: {}
 
-  msw@2.13.6(@types/node@25.6.0)(typescript@5.9.3):
+  msw@2.13.6(@types/node@25.6.0)(typescript@6.0.3):
     dependencies:
       '@inquirer/confirm': 6.0.12(@types/node@25.6.0)
       '@mswjs/interceptors': 0.41.6
@@ -13969,7 +13953,7 @@ snapshots:
       until-async: 3.0.2
       yargs: 17.7.2
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - '@types/node'
 
@@ -15165,7 +15149,7 @@ snapshots:
 
   reusify@1.1.0: {}
 
-  rolldown-plugin-dts@0.23.2(@typescript/native-preview@7.0.0-dev.20260426.1)(rolldown@1.0.0-rc.17)(typescript@5.9.3):
+  rolldown-plugin-dts@0.23.2(@typescript/native-preview@7.0.0-dev.20260426.1)(rolldown@1.0.0-rc.17)(typescript@6.0.3):
     dependencies:
       '@babel/generator': 8.0.0-rc.3
       '@babel/helper-validator-identifier': 8.0.0-rc.3
@@ -15180,7 +15164,7 @@ snapshots:
       rolldown: 1.0.0-rc.17
     optionalDependencies:
       '@typescript/native-preview': 7.0.0-dev.20260426.1
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - oxc-resolver
 
@@ -15664,10 +15648,6 @@ snapshots:
 
   ts-algebra@1.2.2: {}
 
-  ts-api-utils@2.4.0(typescript@6.0.3):
-    dependencies:
-      typescript: 6.0.3
-
   ts-api-utils@2.5.0(typescript@6.0.3):
     dependencies:
       typescript: 6.0.3
@@ -15677,7 +15657,7 @@ snapshots:
       picomatch: 4.0.4
       typescript: 6.0.3
 
-  tsdown@0.21.10(@typescript/native-preview@7.0.0-dev.20260426.1)(synckit@0.11.12)(typescript@5.9.3):
+  tsdown@0.21.10(@typescript/native-preview@7.0.0-dev.20260426.1)(synckit@0.11.12)(typescript@6.0.3):
     dependencies:
       ansis: 4.2.0
       cac: 7.0.0
@@ -15688,7 +15668,7 @@ snapshots:
       obug: 2.1.1
       picomatch: 4.0.4
       rolldown: 1.0.0-rc.17
-      rolldown-plugin-dts: 0.23.2(@typescript/native-preview@7.0.0-dev.20260426.1)(rolldown@1.0.0-rc.17)(typescript@5.9.3)
+      rolldown-plugin-dts: 0.23.2(@typescript/native-preview@7.0.0-dev.20260426.1)(rolldown@1.0.0-rc.17)(typescript@6.0.3)
       semver: 7.7.4
       tinyexec: 1.1.1
       tinyglobby: 0.2.16
@@ -15696,7 +15676,7 @@ snapshots:
       unconfig-core: 7.5.0
       unrun: 0.2.37(synckit@0.11.12)
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - '@ts-macro/tsc'
       - '@typescript/native-preview'
@@ -16131,9 +16111,9 @@ snapshots:
 
   vue-component-type-helpers@3.2.7: {}
 
-  vue-demi@0.14.10(vue@3.5.28(typescript@5.9.3)):
+  vue-demi@0.14.10(vue@3.5.28(typescript@6.0.3)):
     dependencies:
-      vue: 3.5.28(typescript@5.9.3)
+      vue: 3.5.28(typescript@6.0.3)
 
   vue-demi@0.14.10(vue@3.5.33(typescript@6.0.3)):
     dependencies:
@@ -16176,15 +16156,15 @@ snapshots:
     optionalDependencies:
       '@vue/compiler-sfc': 3.5.33
 
-  vue@3.5.28(typescript@5.9.3):
+  vue@3.5.28(typescript@6.0.3):
     dependencies:
       '@vue/compiler-dom': 3.5.28
       '@vue/compiler-sfc': 3.5.28
       '@vue/runtime-dom': 3.5.28
-      '@vue/server-renderer': 3.5.28(vue@3.5.28(typescript@5.9.3))
+      '@vue/server-renderer': 3.5.28(vue@3.5.28(typescript@6.0.3))
       '@vue/shared': 3.5.28
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
 
   vue@3.5.33(typescript@6.0.3):
     dependencies:

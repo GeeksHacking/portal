@@ -9,8 +9,5 @@ import { createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegi
 
 export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListCategoryDto(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListCategoryDto>): GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListCategoryDto {
 
-  return {
-    ...{"name": faker.string.alpha(),"questions": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto()))},
-    ...data || {}
-  }
+  return { ...{"name": faker.string.alpha(),get "questions"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto())) },...(data || {})} }
 }

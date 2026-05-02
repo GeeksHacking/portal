@@ -11,7 +11,7 @@ import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsPartic
 export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantResponse>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantResponse {
 
   return {
-    ...{...createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantItem(), ...{"venueCheckIns": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsVenueCheckInItem()))}},
+    ...{...createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantItem(), ...{get "venueCheckIns"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsVenueCheckInItem())) }}},
     ...data || {}
   }
 }

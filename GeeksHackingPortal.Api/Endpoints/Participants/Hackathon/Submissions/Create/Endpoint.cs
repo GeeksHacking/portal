@@ -15,7 +15,7 @@ public class Endpoint(ISqlSugarClient sql, IGitHubRepositoryAutomationService gi
     {
         Post("participants/hackathons/{HackathonId:guid}/teams/{TeamId:guid}/submissions");
         Policies(PolicyNames.TeamMemberForHackathonTeam);
-        Description(b => b.WithTags("Participants", "Submissions"));
+        Description(b => b.WithTags("Submissions"));
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

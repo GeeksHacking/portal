@@ -9,8 +9,5 @@ import { createGeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListTeamIte
 
 export function createGeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListResponse {
 
-  return {
-    ...{"teams": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListTeamItem()))},
-    ...data || {}
-  }
+  return { ...{get "teams"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListTeamItem())) },...(data || {})} }
 }

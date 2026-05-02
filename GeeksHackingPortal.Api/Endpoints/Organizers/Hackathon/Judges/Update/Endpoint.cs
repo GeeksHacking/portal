@@ -11,7 +11,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         Patch("organizers/hackathons/{HackathonId:guid}/judges/{JudgeId}");
         Policies(PolicyNames.OrganizerForHackathon);
-        Description(b => b.WithTags("Organizers", "Judges"));
+        Description(b => b.WithTags("Judges"));
         Summary(s =>
         {
             s.Summary = "Update a judge";

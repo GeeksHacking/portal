@@ -9,8 +9,5 @@ import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimeli
 
 export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListResponse>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListResponse {
 
-  return {
-    ...{"timelineItems": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDto()))},
-    ...data || {}
-  }
+  return { ...{get "timelineItems"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDto())) },...(data || {})} }
 }

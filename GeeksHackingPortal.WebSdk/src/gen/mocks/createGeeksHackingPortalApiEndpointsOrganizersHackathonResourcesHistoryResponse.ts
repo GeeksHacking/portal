@@ -9,8 +9,5 @@ import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistory
 
 export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryResponse {
 
-  return {
-    ...{"participantId": faker.string.alpha(),"userId": faker.string.alpha(),"userName": faker.string.alpha(),"resourceId": faker.string.alpha(),"resourceName": faker.string.alpha(),"resourceIsPublished": faker.datatype.boolean(),"hasRedeemed": faker.datatype.boolean(),"redemptionCount": faker.number.int(),"history": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto()))},
-    ...data || {}
-  }
+  return { ...{"participantId": faker.string.alpha(),"userId": faker.string.alpha(),"userName": faker.string.alpha(),"resourceId": faker.string.alpha(),"resourceName": faker.string.alpha(),"resourceIsPublished": faker.datatype.boolean(),"hasRedeemed": faker.datatype.boolean(),"redemptionCount": faker.number.int(),get "history"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto())) },...(data || {})} }
 }

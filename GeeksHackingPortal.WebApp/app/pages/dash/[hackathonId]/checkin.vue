@@ -2,10 +2,10 @@
 import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto, GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto } from '@geekshacking/portal-sdk'
 import {
   useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckOutEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint1,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckOutEndpoint1,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint1,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint1,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
 import { Html5Qrcode } from 'html5-qrcode'
@@ -32,8 +32,8 @@ const isHistoryModalOpen = ref(false)
 const availableCameras = ref<Array<{ id: string, label: string }>>([])
 const useFrontCamera = ref(false)
 
-const checkInMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint()
-const checkOutMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckOutEndpoint()
+const checkInMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint1()
+const checkOutMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckOutEndpoint1()
 const queryClient = useQueryClient()
 
 // Fetch participant details when we have a scanned user ID
@@ -42,14 +42,14 @@ const { data: participantDetail } = useGeeksHackingPortalApiEndpointsOrganizersH
   computed(() => scannedUserId.value),
 )
 
-const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint(
+const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint1(
   hackathonId,
   selectedParticipantUserId,
   { query: { enabled: computed(() => !!selectedParticipantUserId.value && !!hackathonId.value) } },
 )
 
 // Live check-in history
-const { data: venueOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint(
+const { data: venueOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint1(
   hackathonId,
   { query: { enabled: computed(() => !!hackathonId.value) } },
 )

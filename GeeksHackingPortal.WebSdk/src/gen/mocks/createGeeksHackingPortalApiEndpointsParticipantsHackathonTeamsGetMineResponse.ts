@@ -9,8 +9,5 @@ import { createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineRe
 
 export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponse(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponse>): GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponse {
 
-  return {
-    ...{"id": faker.string.alpha(),"hackathonId": faker.string.alpha(),"name": faker.string.alpha(),"description": faker.string.alpha(),"challengeId": faker.string.alpha(),"joinCode": faker.string.alpha(),"members": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem()))},
-    ...data || {}
-  }
+  return { ...{"id": faker.string.alpha(),"hackathonId": faker.string.alpha(),"name": faker.string.alpha(),"description": faker.string.alpha(),"challengeId": faker.string.alpha(),"joinCode": faker.string.alpha(),get "members"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem())) },...(data || {})} }
 }

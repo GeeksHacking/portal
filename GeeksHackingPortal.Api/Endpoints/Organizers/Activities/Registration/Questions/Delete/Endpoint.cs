@@ -9,9 +9,12 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request>
 {
     public override void Configure()
     {
-        Delete("organizers/activities/{ActivityId:guid}/registration/questions/{QuestionId:guid}");
+        Delete(
+            "organizers/hackathons/{ActivityId:guid}/registration/questions/{QuestionId:guid}",
+            "organizers/standalone-workshops/{ActivityId:guid}/registration/questions/{QuestionId:guid}"
+        );
         Policies(PolicyNames.OrganizerForActivity);
-        Description(b => b.WithTags("Organizers", "Registration", "Activities"));
+        Description(b => b.WithTags("Registration"));
         Summary(s =>
         {
             s.Summary = "Delete an activity registration question";

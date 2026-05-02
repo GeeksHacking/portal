@@ -9,8 +9,5 @@ import { createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHa
 
 export function createGeeksHackingPortalApiEndpointsOrganizersActivitiesHackathonsResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersActivitiesHackathonsResponse>): GeeksHackingPortalApiEndpointsOrganizersActivitiesHackathonsResponse {
 
-  return {
-    ...{"id": faker.string.alpha(),"submissionsStartDate": faker.date.anytime().toISOString(),"challengeSelectionEndDate": faker.date.anytime().toISOString(),"submissionsEndDate": faker.date.anytime().toISOString(),"judgingStartDate": faker.date.anytime().toISOString(),"judgingEndDate": faker.date.anytime().toISOString(),"gitHubRepositorySettings": createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse()},
-    ...data || {}
-  }
+  return { ...{"id": faker.string.alpha(),"name": faker.string.alpha(),"description": faker.string.alpha(),"venue": faker.string.alpha(),"homepageUri": faker.internet.url(),"shortCode": faker.string.alpha(),"isPublished": faker.datatype.boolean(),"eventStartDate": faker.date.anytime().toISOString(),"eventEndDate": faker.date.anytime().toISOString(),"submissionsStartDate": faker.date.anytime().toISOString(),"challengeSelectionEndDate": faker.date.anytime().toISOString(),"submissionsEndDate": faker.date.anytime().toISOString(),"judgingStartDate": faker.date.anytime().toISOString(),"judgingEndDate": faker.date.anytime().toISOString(),"emailTemplates": {},get "gitHubRepositorySettings"() { return createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse() },...(data || {})} }
 }

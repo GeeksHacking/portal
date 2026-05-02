@@ -5,16 +5,16 @@ import type {
   GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDto,
 } from '@geekshacking/portal-sdk'
 import {
-  geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpointQueryKey,
-  geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpointQueryKey,
-  geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpointQueryKey,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint,
+  geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint2QueryKey,
+  geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2QueryKey,
+  geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryKey,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint2,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2,
   useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
@@ -50,7 +50,7 @@ const resourceForm = ref({
 const queryClient = useQueryClient()
 const toast = useToast()
 
-const { data: resourcesData, isLoading: isLoadingResources } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint(
+const { data: resourcesData, isLoading: isLoadingResources } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2(
   standaloneWorkshopId,
   { query: { enabled: computed(() => !!standaloneWorkshopId.value) } },
 )
@@ -73,7 +73,7 @@ const selectedResource = computed(() =>
   resources.value.find(resource => resource.id === selectedResourceId.value) ?? null,
 )
 
-const { data: resourceOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint(
+const { data: resourceOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2(
   standaloneWorkshopId,
   selectedResourceId,
   { query: { enabled: computed(() => !!standaloneWorkshopId.value && !!selectedResourceId.value) } },
@@ -85,17 +85,17 @@ const { data: participantDetail } = useGeeksHackingPortalApiEndpointsOrganizersS
   { query: { enabled: computed(() => !!standaloneWorkshopId.value && !!scannedUserId.value) } },
 )
 
-const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint(
+const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint2(
   standaloneWorkshopId,
   selectedParticipantUserId,
   selectedResourceId,
   { query: { enabled: computed(() => !!standaloneWorkshopId.value && !!selectedParticipantUserId.value && !!selectedResourceId.value) } },
 )
 
-const redeemMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint()
-const createResourceMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint()
-const updateResourceMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint()
-const deleteResourceMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint()
+const redeemMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2()
+const createResourceMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2()
+const updateResourceMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2()
+const deleteResourceMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2()
 
 const participants = computed<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewParticipantResourceRedemptionDto[]>(() => resourceOverview.value?.participants ?? [])
 const auditTrail = computed<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDto[]>(() => resourceOverview.value?.auditTrail ?? [])
@@ -173,7 +173,7 @@ function refreshOverview() {
     return
 
   queryClient.invalidateQueries({
-    queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpointQueryKey(
+    queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryKey(
       standaloneWorkshopId.value,
       selectedResourceId.value,
     ),
@@ -181,7 +181,7 @@ function refreshOverview() {
 
   if (selectedParticipantUserId.value) {
     queryClient.invalidateQueries({
-      queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpointQueryKey(
+      queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint2QueryKey(
         standaloneWorkshopId.value,
         selectedParticipantUserId.value,
         selectedResourceId.value,
@@ -192,7 +192,7 @@ function refreshOverview() {
 
 async function refreshResources() {
   await queryClient.invalidateQueries({
-    queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpointQueryKey(standaloneWorkshopId.value),
+    queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2QueryKey(standaloneWorkshopId.value),
   })
   refreshOverview()
 }

@@ -10,7 +10,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     public override void Configure()
     {
         Get("participants/hackathons/{HackathonId:guid}/status");
-        Description(b => b.WithTags("Participants"));
+        Description(b => b.WithTags("Hackathons"));
         Summary(s =>
         {
             s.Summary = "Get my participation status";

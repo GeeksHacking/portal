@@ -12,7 +12,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request>
     {
         Delete("organizers/standalone-workshops/{StandaloneWorkshopId:guid}/organizers/{UserId:guid}");
         Policies(PolicyNames.OrganizerForActivity);
-        Description(b => b.WithTags("Organizers", "Standalone Workshops"));
+        Description(b => b.WithTags("Activity Organizers"));
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

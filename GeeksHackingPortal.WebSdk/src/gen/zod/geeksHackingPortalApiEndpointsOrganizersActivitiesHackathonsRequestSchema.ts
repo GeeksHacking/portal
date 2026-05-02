@@ -7,11 +7,26 @@ import { geeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackatho
 import { z } from "zod/v4";
 
 export const geeksHackingPortalApiEndpointsOrganizersActivitiesHackathonsRequestSchema = z.object({
-    "submissionsStartDate": z.iso.datetime().nullish(),
+    "name": z.string().nullish(),
+"title": z.string().nullish(),
+"description": z.string().nullish(),
+"venue": z.string().nullish(),
+"location": z.string().nullish(),
+"homepageUri": z.url().nullish(),
+"shortCode": z.string().nullish(),
+"isPublished": z.boolean().nullish(),
+"eventStartDate": z.iso.datetime().nullish(),
+"startTime": z.iso.datetime().nullish(),
+"eventEndDate": z.iso.datetime().nullish(),
+"endTime": z.iso.datetime().nullish(),
+"submissionsStartDate": z.iso.datetime().nullish(),
 "challengeSelectionEndDate": z.iso.datetime().nullish(),
 "submissionsEndDate": z.iso.datetime().nullish(),
 "judgingStartDate": z.iso.datetime().nullish(),
 "judgingEndDate": z.iso.datetime().nullish(),
+"emailTemplates": z.object({
+    
+    }).catchall(z.string()).nullish(),
 get "gitHubRepositorySettings"(){
                 return geeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequestSchema.nullish()
               }

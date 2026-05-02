@@ -12,7 +12,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         Post("participants/standalone-workshops/{StandaloneWorkshopId:guid}/withdraw");
         Policies(PolicyNames.ParticipantForActivity);
-        Description(b => b.WithTags("Participants", "Standalone Workshops").Accepts<Request>());
+        Description(b => b.WithTags("Standalone Workshops").Accepts<Request>());
         Summary(s =>
         {
             s.Summary = "Withdraw from a standalone workshop";

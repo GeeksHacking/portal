@@ -12,7 +12,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
     public override void Configure()
     {
         Get("organizers/hackathons");
-        Description(b => b.WithTags("Organizers", "Hackathons"));
+        Description(b => b.WithTags("Hackathons"));
         Summary(s =>
         {
             s.Summary = "List organizer hackathons";

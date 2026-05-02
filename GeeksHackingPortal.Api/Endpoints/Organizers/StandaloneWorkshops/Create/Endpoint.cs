@@ -1,8 +1,8 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
-using GeeksHackingPortal.Api.Endpoints.Organizers.Activities;
 using GeeksHackingPortal.Api.Extensions;
+using GeeksHackingPortal.Api.Services;
 using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Organizers.StandaloneWorkshops.Create;
@@ -13,7 +13,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         Post("organizers/standalone-workshops");
         Policies(PolicyNames.CreateActivity);
-        Description(b => b.WithTags("Organizers", "Standalone Workshops"));
+        Description(b => b.WithTags("Standalone Workshops"));
         Summary(s =>
         {
             s.Summary = "Create a standalone workshop";

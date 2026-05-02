@@ -12,7 +12,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         Post("organizers/hackathons/{HackathonId:guid}/organizers");
         Policies(PolicyNames.OrganizerForHackathon);
         Description(b =>
-            b.WithTags("Organizers")
+            b.WithTags("Activity Organizers")
                 .WithDescription(
                     "It might be better to shift this to using an invite code instead, since having organizers know each others user ID prior to adding is not very user friendly."
                 )

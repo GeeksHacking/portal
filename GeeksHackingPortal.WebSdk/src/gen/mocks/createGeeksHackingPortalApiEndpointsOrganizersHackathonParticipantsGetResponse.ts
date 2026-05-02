@@ -11,7 +11,7 @@ import { createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsList
 export function createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse {
 
   return {
-    ...{...createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem(), ...{"emailDeliveries": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItem()))}},
+    ...{...createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem(), ...{get "emailDeliveries"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItem())) }}},
     ...data || {}
   }
 }

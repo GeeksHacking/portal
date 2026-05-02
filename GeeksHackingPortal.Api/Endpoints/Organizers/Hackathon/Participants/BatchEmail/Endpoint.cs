@@ -17,7 +17,7 @@ public class Endpoint(
     {
         Post("organizers/hackathons/{HackathonId:guid}/participants/batch-email");
         Policies(PolicyNames.OrganizerForHackathon);
-        Description(b => b.WithTags("Organizers", "Participants"));
+        Description(b => b.WithTags("Activity Participants"));
         Summary(s =>
         {
             s.Summary = "Send batch emails to participants";

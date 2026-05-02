@@ -6,12 +6,12 @@ import type {
   GeeksHackingPortalApiEntitiesQuestionType,
 } from '@geekshacking/portal-sdk'
 import {
-  geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpointQueryKey,
-  useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint,
+  geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint2QueryKey,
+  useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2,
+  useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2,
+  useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint2,
+  useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint2,
+  useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
 
@@ -38,7 +38,7 @@ const toast = useToast()
 
 const standaloneWorkshopId = computed(() => (route.params.standaloneWorkshopId as string | undefined) ?? '')
 
-const { data: questionsData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint(
+const { data: questionsData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint2(
   standaloneWorkshopId,
 )
 
@@ -83,14 +83,14 @@ const editForm = ref({
 
 const showOptions = computed(() => choiceTypes.includes(editForm.value.type))
 
-const createMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint()
-const updateMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint()
-const deleteMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint()
-const initMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint()
+const createMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2()
+const updateMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2()
+const deleteMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2()
+const initMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint2()
 
 async function invalidateQuestions() {
   await queryClient.invalidateQueries({
-    queryKey: geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpointQueryKey(
+    queryKey: geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint2QueryKey(
       standaloneWorkshopId.value,
     ),
   })

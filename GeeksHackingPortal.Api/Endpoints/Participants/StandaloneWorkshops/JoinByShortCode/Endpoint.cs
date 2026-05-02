@@ -10,7 +10,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     public override void Configure()
     {
         Post("participants/standalone-workshops/join");
-        Description(b => b.WithTags("Participants", "Standalone Workshops"));
+        Description(b => b.WithTags("Standalone Workshops"));
         Summary(s =>
         {
             s.Summary = "Join a standalone workshop by short code";

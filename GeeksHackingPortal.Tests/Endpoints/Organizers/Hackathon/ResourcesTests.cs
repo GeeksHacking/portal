@@ -55,7 +55,7 @@ public class ResourcesTests
 
         // Act
         var response = await Client.HttpClient.PostAsJsonAsync(
-            $"/organizers/activities/{hackathonId}/resources",
+            $"/organizers/hackathons/{hackathonId}/resources",
             request
         );
         var result = await response.Content.ReadFromJsonAsync<ResourceResponse>();
@@ -83,13 +83,13 @@ public class ResourcesTests
             IsPublished = false,
         };
         await Client.HttpClient.PostAsJsonAsync(
-            $"/organizers/activities/{hackathonId}/resources",
+            $"/organizers/hackathons/{hackathonId}/resources",
             createRequest
         );
 
         // Act
         var response = await Client.HttpClient.GetAsync(
-            $"/organizers/activities/{hackathonId}/resources"
+            $"/organizers/hackathons/{hackathonId}/resources"
         );
         var result = await response.Content.ReadFromJsonAsync<ResourcesListResponse>();
 
@@ -114,7 +114,7 @@ public class ResourcesTests
 
         // Act
         var response = await Client.HttpClient.PostAsJsonAsync(
-            $"/organizers/activities/{Guid.NewGuid()}/resources",
+            $"/organizers/hackathons/{Guid.NewGuid()}/resources",
             request
         );
 
@@ -139,7 +139,7 @@ public class ResourcesTests
 
         // Act
         var response = await AnonymousClient.HttpClient.PostAsJsonAsync(
-            $"/organizers/activities/{Guid.NewGuid()}/resources",
+            $"/organizers/hackathons/{Guid.NewGuid()}/resources",
             request
         );
 

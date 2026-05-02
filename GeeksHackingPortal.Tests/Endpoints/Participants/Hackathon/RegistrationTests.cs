@@ -110,7 +110,7 @@ public class RegistrationTests
         var hackathonId = await CreateHackathonAndJoinAsync(Client);
         var questionKey = $"rollback_submission_{Guid.NewGuid().ToString()[..8]}";
         var createQuestionResponse = await Client.HttpClient.PostAsJsonAsync(
-            $"/organizers/activities/{hackathonId}/registration/questions",
+            $"/organizers/hackathons/{hackathonId}/registration/questions",
             new
             {
                 QuestionText = "Rollback protected question",

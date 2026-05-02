@@ -10,8 +10,5 @@ import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOvervie
 
 export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResponse {
 
-  return {
-    ...{"resourceId": faker.string.alpha(),"resourceName": faker.string.alpha(),"isPublished": faker.datatype.boolean(),"totalRedemptions": faker.number.int(),"uniqueRedeemers": faker.number.int(),"participants": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewParticipantResourceRedemptionDto())),"auditTrail": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDto()))},
-    ...data || {}
-  }
+  return { ...{"resourceId": faker.string.alpha(),"resourceName": faker.string.alpha(),"isPublished": faker.datatype.boolean(),"totalRedemptions": faker.number.int(),"uniqueRedeemers": faker.number.int(),get "participants"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewParticipantResourceRedemptionDto())) },get "auditTrail"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDto())) },...(data || {})} }
 }

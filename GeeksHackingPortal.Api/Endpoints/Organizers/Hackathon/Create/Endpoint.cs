@@ -1,9 +1,9 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
-using GeeksHackingPortal.Api.Endpoints.Organizers.Activities;
 using GeeksHackingPortal.Api.Extensions;
 using GeeksHackingPortal.Api.Features.Hackathons.GitHubRepositorySettings;
+using GeeksHackingPortal.Api.Services;
 using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Organizers.Hackathon.Create;
@@ -14,7 +14,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         Post("organizers/hackathons");
         Policies(PolicyNames.CreateActivity);
-        Description(b => b.WithTags("Organizers", "Hackathons"));
+        Description(b => b.WithTags("Hackathons"));
         Summary(s =>
         {
             s.Summary = "Create a new hackathon";

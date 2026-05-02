@@ -9,7 +9,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         Get("participants/standalone-workshops/{StandaloneWorkshopIdOrShortCode}");
         AllowAnonymous();
-        Description(b => b.WithTags("Participants", "Standalone Workshops"));
+        Description(b => b.WithTags("Standalone Workshops"));
         Summary(s =>
         {
             s.Summary = "Get standalone workshop details";

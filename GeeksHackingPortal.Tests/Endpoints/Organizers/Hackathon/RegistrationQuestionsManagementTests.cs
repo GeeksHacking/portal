@@ -48,7 +48,7 @@ public class RegistrationQuestionsManagementTests
 
         // Act
         var response = await Client.HttpClient.GetAsync(
-            $"/organizers/activities/{hackathonId}/registration/questions"
+            $"/organizers/hackathons/{hackathonId}/registration/questions"
         );
         var result =
             await response.Content.ReadFromJsonAsync<OrganizerRegistrationQuestionsResponse>();
@@ -78,7 +78,7 @@ public class RegistrationQuestionsManagementTests
 
         // Act
         var response = await Client.HttpClient.PostAsJsonAsync(
-            $"/organizers/activities/{hackathonId}/registration/questions",
+            $"/organizers/hackathons/{hackathonId}/registration/questions",
             request
         );
 
@@ -109,7 +109,7 @@ public class RegistrationQuestionsManagementTests
 
         // Create first question
         await Client.HttpClient.PostAsJsonAsync(
-            $"/organizers/activities/{hackathonId}/registration/questions",
+            $"/organizers/hackathons/{hackathonId}/registration/questions",
             request1
         );
 
@@ -124,7 +124,7 @@ public class RegistrationQuestionsManagementTests
 
         // Act - Try to create second question with same key
         var response = await Client.HttpClient.PostAsJsonAsync(
-            $"/organizers/activities/{hackathonId}/registration/questions",
+            $"/organizers/hackathons/{hackathonId}/registration/questions",
             request2
         );
 
@@ -139,7 +139,7 @@ public class RegistrationQuestionsManagementTests
         var hackathonId = await CreateHackathonAsync(Client);
         var questionKey = $"rollback_options_{Guid.NewGuid().ToString()[..8]}";
         var createResponse = await Client.HttpClient.PostAsJsonAsync(
-            $"/organizers/activities/{hackathonId}/registration/questions",
+            $"/organizers/hackathons/{hackathonId}/registration/questions",
             new
             {
                 QuestionText = "Original rollback question",
@@ -165,7 +165,7 @@ public class RegistrationQuestionsManagementTests
         await Assert.That(createdQuestion).IsNotNull();
 
         var listResponse = await Client.HttpClient.GetAsync(
-            $"/organizers/activities/{hackathonId}/registration/questions"
+            $"/organizers/hackathons/{hackathonId}/registration/questions"
         );
         var list = await listResponse.Content.ReadFromJsonAsync<OrganizerRegistrationQuestionsResponse>();
         await Assert.That(listResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
@@ -174,7 +174,7 @@ public class RegistrationQuestionsManagementTests
 
         // Act - duplicate option IDs violate the option primary key after the question update/delete.
         var failedUpdateResponse = await Client.HttpClient.PatchAsJsonAsync(
-            $"/organizers/activities/{hackathonId}/registration/questions/{createdQuestion!.Id}",
+            $"/organizers/hackathons/{hackathonId}/registration/questions/{createdQuestion!.Id}",
             new
             {
                 QuestionText = "Updated text should roll back",
@@ -201,7 +201,7 @@ public class RegistrationQuestionsManagementTests
         );
 
         var persistedListResponse = await Client.HttpClient.GetAsync(
-            $"/organizers/activities/{hackathonId}/registration/questions"
+            $"/organizers/hackathons/{hackathonId}/registration/questions"
         );
         var persistedList =
             await persistedListResponse.Content.ReadFromJsonAsync<OrganizerRegistrationQuestionsResponse>();
@@ -222,7 +222,7 @@ public class RegistrationQuestionsManagementTests
     {
         // Act
         var response = await Client.HttpClient.GetAsync(
-            $"/organizers/activities/{Guid.NewGuid()}/registration/questions"
+            $"/organizers/hackathons/{Guid.NewGuid()}/registration/questions"
         );
 
         // Assert
@@ -237,7 +237,7 @@ public class RegistrationQuestionsManagementTests
     {
         // Act
         var response = await AnonymousClient.HttpClient.GetAsync(
-            $"/organizers/activities/{Guid.NewGuid()}/registration/questions"
+            $"/organizers/hackathons/{Guid.NewGuid()}/registration/questions"
         );
 
         // Assert
@@ -259,7 +259,7 @@ public class RegistrationQuestionsManagementTests
 
         // Act
         var response = await AnonymousClient.HttpClient.PostAsJsonAsync(
-            $"/organizers/activities/{Guid.NewGuid()}/registration/questions",
+            $"/organizers/hackathons/{Guid.NewGuid()}/registration/questions",
             request
         );
 

@@ -11,7 +11,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         Get("participants/hackathons/{HackathonId:guid}/submissions/{SubmissionId}");
         Policies(PolicyNames.ParticipantForHackathon);
-        Description(b => b.WithTags("Participants", "Submissions"));
+        Description(b => b.WithTags("Submissions"));
         Summary(s =>
         {
             s.Summary = "Get submission details";

@@ -9,8 +9,5 @@ import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsPartic
 
 export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantItem(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantItem>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantItem {
 
-  return {
-    ...{"registrationId": faker.string.alpha(),"userId": faker.string.alpha(),"name": faker.string.alpha(),"email": faker.string.alpha(),"status": faker.string.alpha(),"registeredAt": faker.date.anytime().toISOString(),"withdrawnAt": faker.date.anytime().toISOString(),"registrationSubmissions": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsRegistrationSubmissionItem()))},
-    ...data || {}
-  }
+  return { ...{"registrationId": faker.string.alpha(),"userId": faker.string.alpha(),"name": faker.string.alpha(),"email": faker.string.alpha(),"status": faker.string.alpha(),"registeredAt": faker.date.anytime().toISOString(),"withdrawnAt": faker.date.anytime().toISOString(),get "registrationSubmissions"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsRegistrationSubmissionItem())) },...(data || {})} }
 }

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto, GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto } from '@geekshacking/portal-sdk'
 import {
-  geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpointQueryKey,
-  geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpointQueryKey,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckOutEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint,
+  geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryKey,
+  geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint2QueryKey,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckOutEndpoint2,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint2,
   useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
@@ -29,8 +29,8 @@ const isHistoryModalOpen = ref(false)
 const availableCameras = ref<Array<{ id: string, label: string }>>([])
 const useFrontCamera = ref(false)
 
-const checkInMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint()
-const checkOutMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckOutEndpoint()
+const checkInMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2()
+const checkOutMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckOutEndpoint2()
 const queryClient = useQueryClient()
 
 // Fetch participant details when we have a scanned user ID
@@ -40,14 +40,14 @@ const { data: participantDetail } = useGeeksHackingPortalApiEndpointsOrganizersS
   { query: { enabled: computed(() => !!standaloneWorkshopId.value && !!scannedUserId.value) } },
 )
 
-const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint(
+const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2(
   standaloneWorkshopId,
   selectedParticipantUserId,
   { query: { enabled: computed(() => !!selectedParticipantUserId.value && !!standaloneWorkshopId.value) } },
 )
 
 // Live check-in history
-const { data: venueOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint(
+const { data: venueOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint2(
   standaloneWorkshopId,
   { query: { enabled: computed(() => !!standaloneWorkshopId.value) } },
 )
@@ -122,11 +122,11 @@ function formatEventTime(timestamp: Date | string | null | undefined) {
 
 function refreshOverview() {
   queryClient.invalidateQueries({
-    queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpointQueryKey(standaloneWorkshopId.value),
+    queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint2QueryKey(standaloneWorkshopId.value),
   })
   if (selectedParticipantUserId.value) {
     queryClient.invalidateQueries({
-      queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpointQueryKey(
+      queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryKey(
         standaloneWorkshopId.value,
         selectedParticipantUserId.value,
       ),

@@ -10,7 +10,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         Get("participants/hackathons/{HackathonIdOrShortCode}/timeline");
         AllowAnonymous();
-        Description(b => b.WithTags("Participants", "Hackathons"));
+        Description(b => b.WithTags("Timeline"));
         Summary(s =>
         {
             s.Summary = "Get event timeline for a hackathon";

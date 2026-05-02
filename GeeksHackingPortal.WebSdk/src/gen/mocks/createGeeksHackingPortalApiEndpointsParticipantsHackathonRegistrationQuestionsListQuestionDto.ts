@@ -11,8 +11,5 @@ import { createGeeksHackingPortalApiEntitiesQuestionType } from "./createGeeksHa
 
 export function createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto>): GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto {
 
-  return {
-    ...{"id": faker.string.alpha(),"questionText": faker.string.alpha(),"questionKey": faker.string.alpha(),"type": createGeeksHackingPortalApiEntitiesQuestionType(),"isRequired": faker.datatype.boolean(),"helpText": faker.string.alpha(),"conditionalLogic": faker.string.alpha(),"validationRules": faker.string.alpha(),"options": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto())),"currentSubmission": faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDto()])},
-    ...data || {}
-  }
+  return { ...{"id": faker.string.alpha(),"questionText": faker.string.alpha(),"questionKey": faker.string.alpha(),get "type"() { return createGeeksHackingPortalApiEntitiesQuestionType() },"isRequired": faker.datatype.boolean(),"helpText": faker.string.alpha(),"conditionalLogic": faker.string.alpha(),"validationRules": faker.string.alpha(),get "options"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto())) },get "currentSubmission"() { return faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDto()]) },...(data || {})} }
 }

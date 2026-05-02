@@ -11,7 +11,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         Get("organizers/hackathons/{HackathonId:guid}/challenges");
         Policies(PolicyNames.OrganizerForHackathon);
-        Description(b => b.WithTags("Organizers", "Challenges"));
+        Description(b => b.WithTags("Challenges"));
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {
-  useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint,
+  useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1,
   geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpointQueryOptions,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint,
@@ -23,7 +23,7 @@ const lastSetupHackathonId = ref<string | null>(null)
 const canJoinFromHere = ref(false)
 
 // Initialize mutations at component level (must be in setup)
-const initQuestionMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint()
+const initQuestionMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1()
 const joinMutation = useGeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint()
 const queryClient = useQueryClient()
 

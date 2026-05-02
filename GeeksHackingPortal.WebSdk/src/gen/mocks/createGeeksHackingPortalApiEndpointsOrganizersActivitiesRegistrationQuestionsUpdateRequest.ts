@@ -10,8 +10,5 @@ import { createGeeksHackingPortalApiEntitiesQuestionType } from "./createGeeksHa
 
 export function createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateRequest(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateRequest>): GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateRequest {
 
-  return {
-    ...{"questionText": faker.string.alpha(),"type": faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEntitiesQuestionType()]),"displayOrder": faker.number.int(),"isRequired": faker.datatype.boolean(),"helpText": faker.string.alpha(),"conditionalLogic": faker.string.alpha(),"category": faker.string.alpha(),"validationRules": faker.string.alpha(),"options": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDto()))},
-    ...data || {}
-  }
+  return { ...{"questionText": faker.string.alpha(),get "type"() { return faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEntitiesQuestionType()]) },"displayOrder": faker.number.int(),"isRequired": faker.datatype.boolean(),"helpText": faker.string.alpha(),"conditionalLogic": faker.string.alpha(),"category": faker.string.alpha(),"validationRules": faker.string.alpha(),get "options"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDto())) },...(data || {})} }
 }

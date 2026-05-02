@@ -11,7 +11,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request>
     {
         Delete("organizers/hackathons/{HackathonId:guid}/timeline/{TimelineItemId:guid}");
         Policies(PolicyNames.OrganizerForHackathon);
-        Description(b => b.WithTags("Organizers", "Hackathons"));
+        Description(b => b.WithTags("Timeline"));
         Summary(s =>
         {
             s.Summary = "Delete timeline item";

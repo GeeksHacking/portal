@@ -9,8 +9,5 @@ import { createGeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListTi
 
 export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListResponse(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListResponse>): GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListResponse {
 
-  return {
-    ...{"timelineItems": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListTimelineItemDto()))},
-    ...data || {}
-  }
+  return { ...{get "timelineItems"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListTimelineItemDto())) },...(data || {})} }
 }

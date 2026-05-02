@@ -9,9 +9,12 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Patch("organizers/activities/{ActivityId:guid}/registration/questions/{QuestionId:guid}");
+        Patch(
+            "organizers/hackathons/{ActivityId:guid}/registration/questions/{QuestionId:guid}",
+            "organizers/standalone-workshops/{ActivityId:guid}/registration/questions/{QuestionId:guid}"
+        );
         Policies(PolicyNames.OrganizerForActivity);
-        Description(b => b.WithTags("Organizers", "Registration", "Activities"));
+        Description(b => b.WithTags("Registration"));
         Summary(s =>
         {
             s.Summary = "Update an activity registration question";

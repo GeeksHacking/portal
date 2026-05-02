@@ -60,7 +60,7 @@ public class ResourceRedemptionJintTests
         };
 
         var createResourceResponse = await Client.HttpClient.PostAsJsonAsync(
-            $"/organizers/activities/{hackathon.Id}/resources",
+            $"/organizers/hackathons/{hackathon.Id}/resources",
             resourceRequest
         );
         var resource =
@@ -68,21 +68,21 @@ public class ResourceRedemptionJintTests
 
         // First redemption - should succeed
         var redemption1 = await Client.HttpClient.PostAsync(
-            $"/organizers/activities/{hackathon.Id}/participants/{participantUserId}/resources/{resource!.Id}/redemptions",
+            $"/organizers/hackathons/{hackathon.Id}/participants/{participantUserId}/resources/{resource!.Id}/redemptions",
             null
         );
         await Assert.That(redemption1.IsSuccessStatusCode).IsTrue();
 
         // Second redemption - should succeed
         var redemption2 = await Client.HttpClient.PostAsync(
-            $"/organizers/activities/{hackathon.Id}/participants/{participantUserId}/resources/{resource.Id}/redemptions",
+            $"/organizers/hackathons/{hackathon.Id}/participants/{participantUserId}/resources/{resource.Id}/redemptions",
             null
         );
         await Assert.That(redemption2.IsSuccessStatusCode).IsTrue();
 
         // Third redemption - should fail
         var redemption3 = await Client.HttpClient.PostAsync(
-            $"/organizers/activities/{hackathon.Id}/participants/{participantUserId}/resources/{resource.Id}/redemptions",
+            $"/organizers/hackathons/{hackathon.Id}/participants/{participantUserId}/resources/{resource.Id}/redemptions",
             null
         );
         await Assert.That(redemption3.IsSuccessStatusCode).IsFalse();
@@ -113,7 +113,7 @@ public class ResourceRedemptionJintTests
         };
 
         var createResourceResponse = await Client.HttpClient.PostAsJsonAsync(
-            $"/organizers/activities/{hackathon.Id}/resources",
+            $"/organizers/hackathons/{hackathon.Id}/resources",
             resourceRequest
         );
         var resource =
@@ -121,7 +121,7 @@ public class ResourceRedemptionJintTests
 
         // Try to redeem without team - should fail
         var redemption = await Client.HttpClient.PostAsync(
-            $"/organizers/activities/{hackathon.Id}/participants/{participantUserId}/resources/{resource!.Id}/redemptions",
+            $"/organizers/hackathons/{hackathon.Id}/participants/{participantUserId}/resources/{resource!.Id}/redemptions",
             null
         );
         await Assert.That(redemption.IsSuccessStatusCode).IsFalse();

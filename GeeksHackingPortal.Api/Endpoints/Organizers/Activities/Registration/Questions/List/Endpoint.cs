@@ -9,9 +9,12 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Get("organizers/activities/{ActivityId:guid}/registration/questions");
+        Get(
+            "organizers/hackathons/{ActivityId:guid}/registration/questions",
+            "organizers/standalone-workshops/{ActivityId:guid}/registration/questions"
+        );
         Policies(PolicyNames.OrganizerForActivity);
-        Description(b => b.WithTags("Organizers", "Registration", "Activities"));
+        Description(b => b.WithTags("Registration"));
         Summary(s =>
         {
             s.Summary = "List activity registration questions";

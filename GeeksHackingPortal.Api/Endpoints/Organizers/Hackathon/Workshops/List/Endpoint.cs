@@ -11,7 +11,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         Get("organizers/hackathons/{HackathonId:guid}/workshops");
         Policies(PolicyNames.OrganizerForHackathon);
-        Description(b => b.WithTags("Organizers", "Workshops"));
+        Description(b => b.WithTags("Workshops"));
         Summary(s =>
         {
             s.Summary = "List workshops";

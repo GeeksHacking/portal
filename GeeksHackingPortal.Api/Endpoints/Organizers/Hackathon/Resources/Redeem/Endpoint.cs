@@ -12,10 +12,11 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     public override void Configure()
     {
         Post(
-            "organizers/activities/{ActivityId:guid}/participants/{ParticipantUserId:guid}/resources/{ResourceId}/redemptions"
+            "organizers/hackathons/{ActivityId:guid}/participants/{ParticipantUserId:guid}/resources/{ResourceId:guid}/redemptions",
+            "organizers/standalone-workshops/{ActivityId:guid}/participants/{ParticipantUserId:guid}/resources/{ResourceId:guid}/redemptions"
         );
         Policies(PolicyNames.OrganizerForActivity);
-        Description(b => b.WithTags("Organizers", "Resources").Accepts<Request>());
+        Description(b => b.WithTags("Resources").Accepts<Request>());
         Summary(s =>
         {
             s.Summary = "Redeem a resource for a participant";

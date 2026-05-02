@@ -1,7 +1,7 @@
 using FastEndpoints;
 using FluentValidation;
 
-namespace GeeksHackingPortal.Api.Endpoints.Organizers.Activities.StandaloneWorkshops;
+namespace GeeksHackingPortal.Api.Endpoints.Organizers.StandaloneWorkshops.Update;
 
 public class Validator : Validator<Request>
 {

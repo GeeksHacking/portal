@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import {
-  geeksHackingPortalApiEndpointsOrganizersActivitiesListEndpointQueryKey,
-  useGeeksHackingPortalApiEndpointsOrganizersActivitiesStandaloneWorkshopsEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersActivitiesUpdateEndpoint,
   geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryKey,
   useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint,
+  useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
 import {
@@ -19,8 +17,7 @@ const queryClient = useQueryClient()
 const standaloneWorkshopId = computed(() => (route.params.standaloneWorkshopId as string | undefined) ?? '')
 
 const { data: eventsData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint()
-const updateActivityMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesUpdateEndpoint()
-const updateMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesStandaloneWorkshopsEndpoint()
+const updateMutation = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint()
 
 const event = computed(() => eventsData.value?.standaloneWorkshops?.find(item => item.id === standaloneWorkshopId.value))
 
@@ -59,7 +56,7 @@ watch(
   { immediate: true },
 )
 
-const isSubmitting = computed(() => updateActivityMutation.isPending.value || updateMutation.isPending.value)
+const isSubmitting = computed(() => updateMutation.isPending.value)
 
 function parseEmailTemplates() {
   try {
@@ -94,37 +91,26 @@ async function handleSubmit() {
     return
 
   try {
-    await Promise.all([
-      updateActivityMutation.mutateAsync({
-        activityId: standaloneWorkshopId.value,
-        data: {
-          title: form.value.title || undefined,
-          description: form.value.description || undefined,
-          startTime: serializeHackathonDateTimeInput(form.value.startTime),
-          endTime: serializeHackathonDateTimeInput(form.value.endTime),
-          location: form.value.location || undefined,
-          isPublished: form.value.isPublished,
-          emailTemplates,
-        },
-      }),
-      updateMutation.mutateAsync({
-        standaloneWorkshopId: standaloneWorkshopId.value,
-        data: {
-          // Keep the key present when clearing; null means "remove homepage URL".
-          homepageUri: normalizeOptionalUrl(form.value.homepageUri),
-          shortCode: form.value.shortCode || undefined,
-          maxParticipants: Number(form.value.maxParticipants) || undefined,
-        },
-      }),
-    ])
+    await updateMutation.mutateAsync({
+      standaloneWorkshopId: standaloneWorkshopId.value,
+      data: {
+        title: form.value.title || undefined,
+        description: form.value.description || undefined,
+        startTime: serializeHackathonDateTimeInput(form.value.startTime),
+        endTime: serializeHackathonDateTimeInput(form.value.endTime),
+        location: form.value.location || undefined,
+        isPublished: form.value.isPublished,
+        emailTemplates,
+        // Keep the key present when clearing; null means "remove homepage URL".
+        homepageUri: normalizeOptionalUrl(form.value.homepageUri),
+        shortCode: form.value.shortCode || undefined,
+        maxParticipants: Number(form.value.maxParticipants) || undefined,
+      },
+    })
 
     await queryClient.invalidateQueries({
       queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryKey(),
     })
-    await queryClient.invalidateQueries({
-      queryKey: geeksHackingPortalApiEndpointsOrganizersActivitiesListEndpointQueryKey(),
-    })
-
     toast.add({ title: 'Standalone event settings updated', color: 'success' })
   }
   catch (error) {

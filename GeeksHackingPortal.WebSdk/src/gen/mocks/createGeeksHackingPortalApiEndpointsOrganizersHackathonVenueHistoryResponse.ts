@@ -9,8 +9,5 @@ import { createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHist
 
 export function createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryResponse {
 
-  return {
-    ...{"participantId": faker.string.alpha(),"userId": faker.string.alpha(),"userName": faker.string.alpha(),"isCurrentlyCheckedIn": faker.datatype.boolean(),"history": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto()))},
-    ...data || {}
-  }
+  return { ...{"participantId": faker.string.alpha(),"userId": faker.string.alpha(),"userName": faker.string.alpha(),"isCurrentlyCheckedIn": faker.datatype.boolean(),get "history"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto())) },...(data || {})} }
 }

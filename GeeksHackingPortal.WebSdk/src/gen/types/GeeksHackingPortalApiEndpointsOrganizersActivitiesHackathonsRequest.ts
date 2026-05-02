@@ -7,6 +7,54 @@ import type { GeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHac
 
 export type GeeksHackingPortalApiEndpointsOrganizersActivitiesHackathonsRequest = {
     /**
+     * @type string
+    */
+    name?: string | null;
+    /**
+     * @type string
+    */
+    title?: string | null;
+    /**
+     * @type string
+    */
+    description?: string | null;
+    /**
+     * @type string
+    */
+    venue?: string | null;
+    /**
+     * @type string
+    */
+    location?: string | null;
+    /**
+     * @type string, uri
+    */
+    homepageUri?: string | null;
+    /**
+     * @type string
+    */
+    shortCode?: string | null;
+    /**
+     * @type boolean
+    */
+    isPublished?: boolean | null;
+    /**
+     * @type string, date-time
+    */
+    eventStartDate?: string | null;
+    /**
+     * @type string, date-time
+    */
+    startTime?: string | null;
+    /**
+     * @type string, date-time
+    */
+    eventEndDate?: string | null;
+    /**
+     * @type string, date-time
+    */
+    endTime?: string | null;
+    /**
      * @type string, date-time
     */
     submissionsStartDate?: string | null;
@@ -26,5 +74,11 @@ export type GeeksHackingPortalApiEndpointsOrganizersActivitiesHackathonsRequest 
      * @type string, date-time
     */
     judgingEndDate?: string | null;
+    /**
+     * @type object
+    */
+    emailTemplates?: {
+        [key: string]: string;
+    } | null;
     gitHubRepositorySettings?: GeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequest | null;
 };

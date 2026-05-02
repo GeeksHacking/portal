@@ -67,22 +67,22 @@
     "postinstall": "tsdown"
   },
   "dependencies": {
-    "@kubb/plugin-client": "^4.37.4",
-    "axios": "^1.15.2"
+    "@kubb/plugin-client": "^4.37.5",
+    "axios": "^1.16.0"
   },
   "devDependencies": {
-    "@kubb/cli": "^4.37.4",
-    "@kubb/core": "^4.37.4",
-    "@kubb/plugin-faker": "^4.37.4",
-    "@kubb/plugin-msw": "^4.37.4",
-    "@kubb/plugin-oas": "^4.37.4",
-    "@kubb/plugin-ts": "^4.37.4",
-    "@kubb/plugin-vue-query": "^4.37.4",
-    "@kubb/plugin-zod": "^4.37.4",
+    "@kubb/cli": "^4.37.5",
+    "@kubb/core": "^4.37.5",
+    "@kubb/plugin-faker": "^4.37.5",
+    "@kubb/plugin-msw": "^4.37.5",
+    "@kubb/plugin-oas": "^4.37.5",
+    "@kubb/plugin-ts": "^4.37.5",
+    "@kubb/plugin-vue-query": "^4.37.5",
+    "@kubb/plugin-zod": "^4.37.5",
     "tsdown": "^0.21.10",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
-  "packageManager": "pnpm@10.31.0",
+  "packageManager": "pnpm@10.33.2",
   "peerDependencies": {
     "@faker-js/faker": "^10.4.0",
     "@tanstack/vue-query": "^5.92.9",

@@ -9,9 +9,12 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Patch("organizers/activities/{ActivityId:guid}/resources/{ResourceId}");
+        Patch(
+            "organizers/hackathons/{ActivityId:guid}/resources/{ResourceId:guid}",
+            "organizers/standalone-workshops/{ActivityId:guid}/resources/{ResourceId:guid}"
+        );
         Policies(PolicyNames.OrganizerForActivity);
-        Description(b => b.WithTags("Organizers", "Resources"));
+        Description(b => b.WithTags("Resources"));
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -24,7 +27,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         }
 
         var resource = await sql.Queryable<Resource>()
-            .Where(r => r.Id.ToString() == req.ResourceId && r.ActivityId == req.ActivityId)
+            .Where(r => r.Id == req.ResourceId && r.ActivityId == req.ActivityId)
             .FirstAsync(ct);
 
         if (resource is null)

@@ -69,7 +69,7 @@ public class ListEndpoint(ISqlSugarClient sql) : Endpoint<ListRequest, ListRespo
     {
         Get("organizers/standalone-workshops/{StandaloneWorkshopId:guid}/participants");
         Policies(PolicyNames.OrganizerForActivity);
-        Description(b => b.WithTags("Organizers", "Participants", "Standalone Workshops"));
+        Description(b => b.WithTags("Activity Participants"));
     }
 
     public override async Task HandleAsync(ListRequest req, CancellationToken ct)
@@ -164,7 +164,7 @@ public class GetEndpoint(ISqlSugarClient sql) : Endpoint<ParticipantRequest, Par
     {
         Get("organizers/standalone-workshops/{StandaloneWorkshopId:guid}/participants/{UserId:guid}");
         Policies(PolicyNames.OrganizerForActivity);
-        Description(b => b.WithTags("Organizers", "Participants", "Standalone Workshops"));
+        Description(b => b.WithTags("Activity Participants"));
     }
 
     public override async Task HandleAsync(ParticipantRequest req, CancellationToken ct)
@@ -232,7 +232,7 @@ public class WithdrawEndpoint(ISqlSugarClient sql) : Endpoint<ParticipantRequest
     {
         Post("organizers/standalone-workshops/{StandaloneWorkshopId:guid}/participants/{UserId:guid}/withdraw");
         Policies(PolicyNames.OrganizerForActivity);
-        Description(b => b.WithTags("Organizers", "Participants", "Standalone Workshops"));
+        Description(b => b.WithTags("Activity Participants"));
     }
 
     public override async Task HandleAsync(ParticipantRequest req, CancellationToken ct)

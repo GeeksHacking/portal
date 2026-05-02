@@ -10,9 +10,12 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Post("organizers/activities/{ActivityId:guid}/registration/questions/initialize");
+        Post(
+            "organizers/hackathons/{ActivityId:guid}/registration/questions/initialize",
+            "organizers/standalone-workshops/{ActivityId:guid}/registration/questions/initialize"
+        );
         Policies(PolicyNames.OrganizerForActivity);
-        Description(b => b.WithTags("Organizers", "Registration", "Activities").Accepts<Request>());
+        Description(b => b.WithTags("Registration").Accepts<Request>());
         Summary(s =>
         {
             s.Summary = "Initialize standard activity registration questions";

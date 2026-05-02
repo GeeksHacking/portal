@@ -150,15 +150,15 @@ public class HackathonCrudTests
 
         // Act
         var response = await Client.HttpClient.PatchAsJsonAsync(
-            $"/organizers/activities/{createdHackathon!.Id}",
+            $"/organizers/hackathons/{createdHackathon!.Id}",
             updateRequest
         );
-        var result = await response.Content.ReadFromJsonAsync<ActivityResponse>();
+        var result = await response.Content.ReadFromJsonAsync<HackathonResponse>();
 
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Title).IsEqualTo(updateRequest.Title);
+        await Assert.That(result!.Name).IsEqualTo(updateRequest.Title);
         await Assert.That(result.Description).IsEqualTo(updateRequest.Description);
     }
 
@@ -178,10 +178,10 @@ public class HackathonCrudTests
 
         // Act
         var response = await Client.HttpClient.PatchAsJsonAsync(
-            $"/organizers/activities/{createdHackathon!.Id}",
+            $"/organizers/hackathons/{createdHackathon!.Id}",
             updateRequest
         );
-        var result = await response.Content.ReadFromJsonAsync<ActivityResponse>();
+        var result = await response.Content.ReadFromJsonAsync<HackathonResponse>();
 
         // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
@@ -234,7 +234,7 @@ public class HackathonCrudTests
 
         // Act
         var response = await Client.HttpClient.PatchAsJsonAsync(
-            $"/organizers/activities/{Guid.NewGuid()}",
+            $"/organizers/hackathons/{Guid.NewGuid()}",
             updateRequest
         );
 

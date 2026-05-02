@@ -14,7 +14,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     {
         Post("participants/standalone-workshops/{StandaloneWorkshopId:guid}/registration/submissions");
         Policies(PolicyNames.ParticipantForActivity);
-        Description(b => b.WithTags("Participants", "Standalone Workshops", "Registration").ProducesProblemFE());
+        Description(b => b.WithTags("Submissions").ProducesProblemFE());
         Summary(s =>
         {
             s.Summary = "Submit standalone workshop registration responses";

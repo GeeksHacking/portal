@@ -11,7 +11,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request>
     {
         Delete("organizers/hackathons/{HackathonId:guid}/workshops/{WorkshopId:guid}");
         Policies(PolicyNames.OrganizerForHackathon);
-        Description(b => b.WithTags("Organizers", "Workshops"));
+        Description(b => b.WithTags("Workshops"));
         Summary(s =>
         {
             s.Summary = "Delete a workshop";

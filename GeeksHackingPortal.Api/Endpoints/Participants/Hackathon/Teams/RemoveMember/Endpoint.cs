@@ -14,7 +14,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             "participants/hackathons/{HackathonId:guid}/teams/{TeamId:guid}/members/{UserId:guid}"
         );
         Policies(PolicyNames.TeamMemberForHackathonTeam);
-        Description(b => b.WithTags("Participants", "Teams"));
+        Description(b => b.WithTags("Teams"));
         Summary(s =>
         {
             s.Summary = "Remove a member from the team";

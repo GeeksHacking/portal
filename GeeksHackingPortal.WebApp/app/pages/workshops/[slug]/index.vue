@@ -459,7 +459,7 @@ function goToRegisteredPage() {
                       leave-to-class="opacity-0"
                     >
                       <div class="rounded-[1.5rem] bg-transparent">
-                        <WorkshopsRegistrationForm
+                        <LazyWorkshopsRegistrationForm
                           :standalone-workshop-id="workshopId"
                           :workshop-title="workshop.title"
                           :questions="questionsData"

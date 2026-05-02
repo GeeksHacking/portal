@@ -9,8 +9,5 @@ import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatist
 
 export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem {
 
-  return {
-    ...{"teamId": faker.string.alpha(),"teamName": faker.string.alpha(),"memberCount": faker.number.int(),"redeemerCount": faker.number.int(),"totalRedemptions": faker.number.int(),"distinctResourcesRedeemed": faker.number.int(),"lastRedeemedAt": faker.date.anytime().toISOString(),"participants": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem()))},
-    ...data || {}
-  }
+  return { ...{"teamId": faker.string.alpha(),"teamName": faker.string.alpha(),"memberCount": faker.number.int(),"redeemerCount": faker.number.int(),"totalRedemptions": faker.number.int(),"distinctResourcesRedeemed": faker.number.int(),"lastRedeemedAt": faker.date.anytime().toISOString(),get "participants"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem())) },...(data || {})} }
 }

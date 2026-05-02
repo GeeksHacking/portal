@@ -9,8 +9,5 @@ import { createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsList
 
 export function createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListResponse {
 
-  return {
-    ...{"totalCount": faker.number.int(),"pendingCount": faker.number.int(),"acceptedCount": faker.number.int(),"rejectedCount": faker.number.int(),"participants": faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem()))},
-    ...data || {}
-  }
+  return { ...{"totalCount": faker.number.int(),"pendingCount": faker.number.int(),"acceptedCount": faker.number.int(),"rejectedCount": faker.number.int(),get "participants"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem())) },...(data || {})} }
 }

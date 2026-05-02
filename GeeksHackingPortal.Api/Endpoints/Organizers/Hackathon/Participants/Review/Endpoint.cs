@@ -17,7 +17,7 @@ public class Endpoint(
     {
         Post("organizers/hackathons/{HackathonId:guid}/participants/{ParticipantUserId}/review");
         Policies(PolicyNames.OrganizerForHackathon);
-        Description(b => b.WithTags("Organizers", "Participants"));
+        Description(b => b.WithTags("Activity Participants"));
         Summary(s =>
         {
             s.Summary = "Review a participant";

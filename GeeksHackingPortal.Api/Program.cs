@@ -372,9 +372,6 @@ static void LogStartupPhase(string phase, Stopwatch startupStopwatch, ref long p
     previousTimestamp = currentTimestamp;
 
     Console.WriteLine(
-        "[startup] {Phase} phase={PhaseElapsedMilliseconds}ms total={TotalElapsedMilliseconds}ms",
-        phase,
-        phaseElapsed.TotalMilliseconds.ToString("F0"),
-        startupStopwatch.ElapsedMilliseconds
+        $"[startup] {phase} phase={phaseElapsed.TotalMilliseconds:F0}ms total={startupStopwatch.ElapsedMilliseconds}ms"
     );
 }

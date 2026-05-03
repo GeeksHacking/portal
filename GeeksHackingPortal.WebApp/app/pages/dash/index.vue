@@ -445,8 +445,7 @@ function formatParticipantStatus(status: GeeksHackingPortalApiEndpointsParticipa
 </script>
 
 <template>
-  <div>
-    <UDashboardPanel id="dashboard">
+  <UDashboardPanel id="dashboard">
       <template #header>
         <UDashboardNavbar title="Dashboard">
           <template #leading>
@@ -1084,5 +1083,4 @@ function formatParticipantStatus(status: GeeksHackingPortalApiEndpointsParticipa
         </UCard>
       </template>
     </UModal>
-  </div>
 </template>

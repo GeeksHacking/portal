@@ -54,6 +54,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                         WithdrawnAt: null,
                     },
                 IsOrganizer = isOrganizer,
+                RegistrationId = registration?.Id,
                 RegisteredAt = registration?.RegisteredAt,
                 WithdrawnAt = registration?.WithdrawnAt,
             },

@@ -14,6 +14,10 @@ export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusR
     */
     isOrganizer?: boolean;
     /**
+     * @type string, uuid
+    */
+    registrationId?: string | null;
+    /**
      * @type string, date-time
     */
     registeredAt?: string | null;

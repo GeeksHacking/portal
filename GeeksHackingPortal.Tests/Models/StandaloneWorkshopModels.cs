@@ -59,6 +59,7 @@ public class StandaloneWorkshopStatusResponse
 {
     public bool IsRegistered { get; set; }
     public bool IsOrganizer { get; set; }
+    public Guid? RegistrationId { get; set; }
     public DateTimeOffset? RegisteredAt { get; set; }
     public DateTimeOffset? WithdrawnAt { get; set; }
 }

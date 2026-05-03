@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import type {
+  GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto,
+  GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto,
+} from '@geekshacking/portal-sdk'
 import { Comark } from '@comark/vue'
 import {
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
@@ -162,11 +166,169 @@ const loginUrl = computed(() =>
   `${config.public.api}/auth/login?redirect_uri=${encodeURIComponent(route.fullPath)}`,
 )
 
-const registeredPath = computed(() => `/workshops/${slug.value}/registered`)
+const isParticipantIdOpen = ref(false)
 
-function goToRegisteredPage() {
-  navigateTo(registeredPath.value, { replace: true })
+const participantId = computed(() => statusData.value?.registrationId ?? '')
+
+async function copyParticipantId() {
+  if (!participantId.value || !import.meta.client)
+    return
+
+  await navigator.clipboard.writeText(participantId.value)
+  toast.add({
+    title: 'Participant ID copied',
+    color: 'success',
+  })
 }
+
+const registeredAtLabel = computed(() => {
+  if (!statusData.value?.registeredAt)
+    return 'Registration date unavailable'
+
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZone: 'Asia/Singapore',
+  }).format(new Date(statusData.value.registeredAt))
+})
+
+const questionById = computed(() => {
+  const questions = questionsData.value?.categories?.flatMap(category => category.questions ?? []) ?? []
+  return new Map(questions.filter(question => question.id).map(question => [question.id as string, question]))
+})
+
+const allQuestions = computed(() =>
+  questionsData.value?.categories?.flatMap(category => category.questions ?? []) ?? [],
+)
+
+function parseJsonValue(value: string | null | undefined) {
+  if (!value)
+    return null
+
+  try {
+    return JSON.parse(value) as unknown
+  }
+  catch {
+    return null
+  }
+}
+
+function optionLabel(question: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto | undefined, value: string) {
+  const option = question?.options?.find(item => item.optionValue === value)
+  return option?.optionText ?? value
+}
+
+function formatAnswerValue(
+  value: string | null | undefined,
+  question: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto | undefined,
+) {
+  const rawValue = value ?? ''
+  const parsed = parseJsonValue(rawValue)
+
+  if (Array.isArray(parsed))
+    return parsed.map(item => optionLabel(question, String(item)))
+
+  if (rawValue === 'true')
+    return ['Yes']
+  if (rawValue === 'false')
+    return ['No']
+
+  return [optionLabel(question, rawValue)]
+}
+
+function formatAnswers(submission: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto) {
+  const question = submission.questionId ? questionById.value.get(submission.questionId) : undefined
+  return formatAnswerValue(submission.value, question)
+}
+
+function formatFollowUpValue(
+  followUpValue: string | null | undefined,
+  question: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto | undefined,
+) {
+  if (!followUpValue)
+    return []
+
+  const parsed = parseJsonValue(followUpValue)
+  if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+    return Object.entries(parsed as Record<string, string>)
+      .filter(([, value]) => Boolean(value))
+      .map(([optionValue, value]) => ({
+        label: optionLabel(question, optionValue),
+        value,
+      }))
+  }
+
+  return [{ label: 'Additional details', value: followUpValue }]
+}
+
+function formatFollowUps(submission: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto) {
+  const question = submission.questionId ? questionById.value.get(submission.questionId) : undefined
+  return formatFollowUpValue(submission.followUpValue, question)
+}
+
+interface AnswerDetail {
+  key: string
+  question: string
+  answers: string[]
+  followUps: { label: string, value: string }[]
+}
+
+interface AnswerGroup {
+  name: string
+  details: AnswerDetail[]
+}
+
+function addAnswerDetail(groups: Map<string, AnswerDetail[]>, category: string, detail: AnswerDetail) {
+  const details = groups.get(category) ?? []
+  details.push(detail)
+  groups.set(category, details)
+}
+
+const answerGroups = computed<AnswerGroup[]>(() => {
+  const groups = new Map<string, AnswerDetail[]>()
+  const submissions = submissionsData.value?.submissions ?? []
+
+  if (submissions.length > 0) {
+    for (const submission of submissions) {
+      const category = submission.category || 'Registration details'
+      addAnswerDetail(groups, category, {
+        key: submission.questionId ?? `${category}-${groups.get(category)?.length ?? 0}`,
+        question: submission.questionText ?? submission.questionKey ?? 'Question',
+        answers: formatAnswers(submission),
+        followUps: formatFollowUps(submission),
+      })
+    }
+  }
+  else {
+    for (const category of questionsData.value?.categories ?? []) {
+      for (const question of category.questions ?? []) {
+        const submission = question.currentSubmission
+        if (!submission?.value)
+          continue
+
+        addAnswerDetail(groups, category.name ?? 'Registration details', {
+          key: question.id ?? question.questionKey ?? `${category.name}-${groups.get(category.name ?? '')?.length ?? 0}`,
+          question: question.questionText ?? question.questionKey ?? 'Question',
+          answers: formatAnswerValue(submission.value, question),
+          followUps: formatFollowUpValue(submission.followUpValue, question),
+        })
+      }
+    }
+  }
+
+  return Array.from(groups.entries()).map(([name, details]) => ({ name, details }))
+})
+
+const savedAnswersCount = computed(() => {
+  const fallbackCount = answerGroups.value.reduce((count, group) => count + group.details.length, 0)
+  const apiCount = submissionsData.value?.answeredQuestions ?? 0
+  return apiCount > 0 ? apiCount : fallbackCount
+})
+
+const totalQuestionsCount = computed(() => {
+  const apiCount = submissionsData.value?.totalQuestions ?? 0
+  return apiCount > 0 ? apiCount : allQuestions.value.length
+})
 </script>
 
 <template>
@@ -283,7 +445,10 @@ function goToRegisteredPage() {
             </div>
           </section>
 
-          <div class="grid gap-6 lg:grid-cols-[minmax(0,0.82fr)_minmax(22rem,0.64fr)] lg:gap-8">
+          <div
+            class="grid gap-6 lg:gap-8"
+            :class="registrationState === 'registered' ? 'lg:grid-cols-1' : 'lg:grid-cols-[minmax(0,0.82fr)_minmax(22rem,0.64fr)]'"
+          >
             <div class="space-y-5 lg:space-y-6">
               <div class="grid gap-3 sm:grid-cols-2">
                 <UCard
@@ -327,36 +492,142 @@ function goToRegisteredPage() {
                 >
                   Visit event site
                 </UButton>
-                <div class="rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) px-4 py-3 text-sm leading-6 text-(--ui-text-muted)">
+                <div
+                  v-if="registrationState !== 'registered'"
+                  class="rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) px-4 py-3 text-sm leading-6 text-(--ui-text-muted)"
+                >
                   Sign in with GitHub to complete registration. Details are locked after signup.
                 </div>
               </div>
 
               <section
-                v-if="registrationState === 'registered' || registrationState === 'incomplete'"
-                class="reveal-up reveal-delay-3 rounded-[1.75rem] border border-(--ui-border) bg-(--ui-bg-elevated) px-5 py-4 shadow-sm transition-transform duration-300 ease-out hover:-translate-y-0.5"
+                v-if="registrationState === 'registered'"
+                class="reveal-up reveal-delay-3 space-y-5"
               >
-                <UAlert
-                  v-if="registrationState === 'registered'"
-                  color="success"
-                  variant="subtle"
-                  icon="i-lucide-check-circle-2"
-                  title="Registration complete"
-                  description="Your registration is complete. Your details are now locked."
-                />
+                <div class="grid gap-3 sm:grid-cols-3">
+                  <div class="rounded-md border border-(--ui-border) bg-(--ui-bg-elevated) p-4">
+                    <p class="text-xs font-medium tracking-[0.14em] text-(--ui-text-muted) uppercase">
+                      Registration status
+                    </p>
+                    <div class="mt-2 flex items-center gap-2 text-sm font-semibold text-(--ui-text-highlighted)">
+                      <UIcon
+                        name="i-lucide-check-circle-2"
+                        class="size-4 text-success"
+                      />
+                      <span>Complete</span>
+                    </div>
+                  </div>
+
+                  <div class="rounded-md border border-(--ui-border) bg-(--ui-bg-elevated) p-4">
+                    <p class="text-xs font-medium tracking-[0.14em] text-(--ui-text-muted) uppercase">
+                      Registered
+                    </p>
+                    <p class="mt-2 text-sm font-semibold leading-6 text-(--ui-text-highlighted)">
+                      {{ registeredAtLabel }}
+                    </p>
+                  </div>
+
+                  <div class="rounded-md border border-(--ui-border) bg-(--ui-bg-elevated) p-4">
+                    <p class="text-xs font-medium tracking-[0.14em] text-(--ui-text-muted) uppercase">
+                      Answers saved
+                    </p>
+                    <p class="mt-2 text-sm font-semibold text-(--ui-text-highlighted)">
+                      {{ savedAnswersCount }} of {{ totalQuestionsCount }}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3 rounded-md border border-(--ui-border) bg-(--ui-bg-elevated) p-4">
+                  <div class="min-w-0 flex-1">
+                    <p class="text-sm font-semibold text-(--ui-text-highlighted)">
+                      Participant ID
+                    </p>
+                    <p class="text-sm leading-6 text-(--ui-text-muted)">
+                      Show this ID when an organizer needs to scan or verify your registration.
+                    </p>
+                  </div>
+                  <UButton
+                    icon="i-lucide-qr-code"
+                    color="neutral"
+                    variant="outline"
+                    :disabled="!participantId"
+                    @click="isParticipantIdOpen = true"
+                  >
+                    Show participant ID
+                  </UButton>
+                </div>
+
+                <div
+                  v-if="answerGroups.length"
+                  class="space-y-4"
+                >
+                  <UCard
+                    v-for="group in answerGroups"
+                    :key="group.name"
+                    :ui="{ body: 'p-5 sm:p-6' }"
+                    class="border-(--ui-border) bg-(--ui-bg-elevated)"
+                  >
+                    <div class="space-y-4">
+                      <h2 class="text-base font-semibold text-(--ui-text-highlighted)">
+                        {{ group.name }}
+                      </h2>
+
+                      <div class="divide-y divide-(--ui-border)">
+                        <div
+                          v-for="detail in group.details"
+                          :key="detail.key"
+                          class="grid gap-3 py-4 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] sm:gap-6"
+                        >
+                          <p class="text-sm font-medium leading-6 text-(--ui-text-highlighted)">
+                            {{ detail.question }}
+                          </p>
+                          <div class="space-y-2">
+                            <div class="flex flex-wrap gap-2">
+                              <UBadge
+                                v-for="answer in detail.answers"
+                                :key="answer"
+                                color="neutral"
+                                variant="soft"
+                                class="max-w-full whitespace-normal text-left"
+                              >
+                                {{ answer }}
+                              </UBadge>
+                            </div>
+
+                            <div
+                              v-for="followUp in detail.followUps"
+                              :key="`${detail.key}-${followUp.label}`"
+                              class="rounded-md border border-(--ui-border) bg-(--ui-bg) p-3"
+                            >
+                              <p class="text-xs font-medium text-(--ui-text-muted)">
+                                {{ followUp.label }}
+                              </p>
+                              <p class="mt-1 text-sm leading-6 text-(--ui-text-highlighted)">
+                                {{ followUp.value }}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </UCard>
+                </div>
 
                 <UAlert
                   v-else
-                  color="warning"
-                  variant="subtle"
-                  icon="i-lucide-circle-alert"
-                  title="Registration in progress"
-                  description="Complete the required questions below to finish your workshop signup."
+                  color="neutral"
+                  variant="soft"
+                  icon="i-lucide-info"
+                  title="No question responses"
+                  description="This workshop did not require any registration questions."
                 />
               </section>
             </div>
 
-            <aside class="reveal-up reveal-delay-3 lg:sticky lg:top-6 lg:self-start">
+            <aside
+              v-if="registrationState !== 'registered'"
+              class="reveal-up reveal-delay-3 lg:sticky lg:top-6 lg:self-start"
+            >
               <UCard
                 :ui="{ body: 'p-5 sm:p-6 lg:p-7' }"
                 class="border-(--ui-border) bg-(--ui-bg) shadow-2xl shadow-black/10 ring-1 ring-(--ui-border) transition-transform duration-300 ease-out hover:-translate-y-0.5 hover:shadow-black/15"
@@ -424,49 +695,19 @@ function goToRegisteredPage() {
                   </div>
 
                   <div
-                    v-else-if="registrationState === 'registered'"
-                    class="space-y-4 rounded-2xl border border-success/30 bg-success/10 p-5 shadow-lg shadow-success/5"
-                  >
-                    <UAlert
-                      color="success"
-                      variant="subtle"
-                      icon="i-lucide-lock-keyhole"
-                      title="Registration complete"
-                      description="Your signup is complete and your details are locked. Redirecting to your read-only confirmation page."
-                    />
-                    <UButton
-                      block
-                      size="lg"
-                      color="success"
-                      icon="i-lucide-check-circle-2"
-                      @click="goToRegisteredPage"
-                    >
-                      View confirmation
-                    </UButton>
-                  </div>
-
-                  <div
                     v-else
                     class="space-y-5"
                   >
-                    <Transition
+                    <div
                       v-if="questionsData?.categories?.length"
-                      enter-active-class="transition duration-400 ease-out"
-                      enter-from-class="translate-y-2 opacity-0"
-                      enter-to-class="translate-y-0 opacity-100"
-                      leave-active-class="transition duration-200 ease-in"
-                      leave-from-class="opacity-100"
-                      leave-to-class="opacity-0"
+                      class="rounded-[1.5rem] bg-transparent"
                     >
-                      <div class="rounded-[1.5rem] bg-transparent">
-                        <LazyWorkshopsRegistrationForm
-                          :standalone-workshop-id="workshopId"
-                          :workshop-title="workshop.title"
-                          :questions="questionsData"
-                          @submitted="goToRegisteredPage"
-                        />
-                      </div>
-                    </Transition>
+                      <LazyWorkshopsRegistrationForm
+                        :standalone-workshop-id="workshopId"
+                        :workshop-title="workshop.title"
+                        :questions="questionsData"
+                      />
+                    </div>
 
                     <div
                       v-else
@@ -482,6 +723,35 @@ function goToRegisteredPage() {
         </div>
       </div>
     </div>
+
+    <UModal
+      v-model:open="isParticipantIdOpen"
+      title="Participant ID"
+      description="Show this to an organizer when they need to verify your workshop registration."
+    >
+      <template #body>
+        <div class="space-y-4">
+          <div class="rounded-md border border-(--ui-border) bg-(--ui-bg-elevated) p-4 text-center">
+            <p class="text-xs font-medium tracking-[0.14em] text-(--ui-text-muted) uppercase">
+              {{ workshop?.title }}
+            </p>
+            <p class="mt-3 break-all font-mono text-xl font-semibold text-(--ui-text-highlighted) sm:text-2xl">
+              {{ participantId || 'Unavailable' }}
+            </p>
+          </div>
+          <UButton
+            block
+            color="neutral"
+            variant="outline"
+            icon="i-lucide-copy"
+            :disabled="!participantId"
+            @click="copyParticipantId"
+          >
+            Copy participant ID
+          </UButton>
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>
 

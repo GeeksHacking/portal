@@ -110,6 +110,7 @@ public class StandaloneWorkshopJoinAndStatusTests
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
         await Assert.That(status).IsNotNull();
         await Assert.That(status!.IsRegistered).IsTrue();
+        await Assert.That(status.RegistrationId).IsNotNull();
         await Assert.That(status.RegisteredAt).IsNotNull();
         await Assert.That(status.WithdrawnAt).IsNull();
     }

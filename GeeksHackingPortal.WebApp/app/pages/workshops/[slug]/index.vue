@@ -13,6 +13,7 @@ import {
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
+import QRCode from 'qrcode'
 
 definePageMeta({
   auth: false,
@@ -167,18 +168,33 @@ const loginUrl = computed(() =>
 )
 
 const isParticipantIdOpen = ref(false)
+const participantQrCodeDataUrl = ref('')
 
 const participantId = computed(() => statusData.value?.registrationId ?? '')
 
-async function copyParticipantId() {
+async function showParticipantIdQrCode() {
   if (!participantId.value || !import.meta.client)
     return
 
-  await navigator.clipboard.writeText(participantId.value)
-  toast.add({
-    title: 'Participant ID copied',
-    color: 'success',
-  })
+  try {
+    participantQrCodeDataUrl.value = await QRCode.toDataURL(participantId.value, {
+      width: 320,
+      margin: 2,
+      color: {
+        dark: '#000000',
+        light: '#FFFFFF',
+      },
+    })
+    isParticipantIdOpen.value = true
+  }
+  catch (error) {
+    console.error('Failed to generate participant QR code', error)
+    toast.add({
+      title: 'Unable to show QR code',
+      description: 'Please try again.',
+      color: 'error',
+    })
+  }
 }
 
 const registeredAtLabel = computed(() => {
@@ -551,9 +567,9 @@ const totalQuestionsCount = computed(() => {
                     color="neutral"
                     variant="outline"
                     :disabled="!participantId"
-                    @click="isParticipantIdOpen = true"
+                    @click="showParticipantIdQrCode"
                   >
-                    Show participant ID
+                    Show QR code
                   </UButton>
                 </div>
 
@@ -726,8 +742,8 @@ const totalQuestionsCount = computed(() => {
 
     <UModal
       v-model:open="isParticipantIdOpen"
-      title="Participant ID"
-      description="Show this to an organizer when they need to verify your workshop registration."
+      title="Participant QR Code"
+      description="Show this to an organizer when they need to scan your workshop registration."
     >
       <template #body>
         <div class="space-y-4">
@@ -735,20 +751,21 @@ const totalQuestionsCount = computed(() => {
             <p class="text-xs font-medium tracking-[0.14em] text-(--ui-text-muted) uppercase">
               {{ workshop?.title }}
             </p>
-            <p class="mt-3 break-all font-mono text-xl font-semibold text-(--ui-text-highlighted) sm:text-2xl">
-              {{ participantId || 'Unavailable' }}
-            </p>
+            <div class="mt-4 flex justify-center">
+              <img
+                v-if="participantQrCodeDataUrl"
+                :src="participantQrCodeDataUrl"
+                alt="Participant registration QR code"
+                class="size-72 max-w-full rounded-md bg-white p-3"
+              >
+              <div
+                v-else
+                class="flex size-72 max-w-full items-center justify-center rounded-md border border-dashed border-(--ui-border) text-sm text-(--ui-text-muted)"
+              >
+                QR code unavailable
+              </div>
+            </div>
           </div>
-          <UButton
-            block
-            color="neutral"
-            variant="outline"
-            icon="i-lucide-copy"
-            :disabled="!participantId"
-            @click="copyParticipantId"
-          >
-            Copy participant ID
-          </UButton>
         </div>
       </template>
     </UModal>

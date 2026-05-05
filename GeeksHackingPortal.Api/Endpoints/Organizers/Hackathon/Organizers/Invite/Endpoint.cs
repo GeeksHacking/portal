@@ -3,7 +3,6 @@ using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
 using GeeksHackingPortal.Api.Extensions;
 using SqlSugar;
-using System.Security.Cryptography;
 
 namespace GeeksHackingPortal.Api.Endpoints.Organizers.Hackathon.Organizers.Invite;
 
@@ -30,22 +29,21 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             throw new ArgumentNullException(nameof(userId));
         }
 
-        var hackathon = await sql.Queryable<Entities.Hackathon>()
-            .Includes(h => h.Activity)
-            .InSingleAsync(req.HackathonId);
-        if (hackathon is null)
+        var exists = await sql.Queryable<Entities.Hackathon>()
+            .AnyAsync(h => h.Id == req.HackathonId, ct);
+        if (!exists)
         {
             await Send.NotFoundAsync(ct);
             return;
         }
 
         var expiresAt = req.ExpiresAt ?? DateTimeOffset.UtcNow.AddDays(7);
-        var code = GenerateCode();
+        var code = OrganizerInviteCodeGenerator.Generate();
 
         var invite = new ActivityOrganizerInvite
         {
             Id = Guid.NewGuid(),
-            ActivityId = hackathon.Id,
+            ActivityId = req.HackathonId,
             Code = code,
             Type = req.Type,
             CreatedByUserId = userId.Value,
@@ -56,13 +54,5 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         await sql.Insertable(invite).ExecuteCommandAsync(ct);
 
         await Send.OkAsync(new Response { Code = code, Type = req.Type, ExpiresAt = expiresAt }, ct);
-    }
-
-    private static string GenerateCode()
-    {
-        const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-        return new string(
-            RandomNumberGenerator.GetItems<char>(chars, 8)
-        );
     }
 }

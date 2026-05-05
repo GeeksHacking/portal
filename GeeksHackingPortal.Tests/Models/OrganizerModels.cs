@@ -13,8 +13,15 @@ public class OrganizerItem
     public string Type { get; set; } = "";
 }
 
-public class AddOrganizerResponse
+public class OrganizerInviteResponse
 {
-    public Guid UserId { get; set; }
+    public string Code { get; set; } = "";
+    public string Type { get; set; } = "";
+    public DateTimeOffset ExpiresAt { get; set; }
+}
+
+public class AcceptInviteResponse
+{
+    public Guid ActivityId { get; set; }
     public string Type { get; set; } = "";
 }

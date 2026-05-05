@@ -88,33 +88,75 @@ public class OrganizersManagementTests
     }
 
     [Test]
-    public async Task AddOrganizer_WithNonExistentUser_ReturnsError()
+    public async Task CreateInvite_WithValidHackathon_ReturnsInviteCode()
     {
         // Arrange
         var hackathonId = await CreateHackathonAsync(Client);
-        var request = new { UserId = Guid.NewGuid(), Type = "Admin" };
 
         // Act
         var response = await Client.HttpClient.PostAsJsonAsync(
-            $"/organizers/hackathons/{hackathonId}/organizers",
-            request
+            $"/organizers/hackathons/{hackathonId}/organizers/invites",
+            new { Type = "Volunteer" }
+        );
+        var result = await response.Content.ReadFromJsonAsync<OrganizerInviteResponse>();
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result!.Code).IsNotNull();
+        await Assert.That(result.Code.Length).IsEqualTo(8);
+        await Assert.That(result.ExpiresAt).IsGreaterThan(DateTimeOffset.UtcNow);
+    }
+
+    [Test]
+    public async Task CreateInvite_WithInvalidHackathonId_ReturnsNotFound()
+    {
+        // Act
+        var response = await Client.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{Guid.NewGuid()}/organizers/invites",
+            new { Type = "Volunteer" }
         );
 
         // Assert
-        // Should return error because user doesn't exist
+        await Assert
+            .That(response.StatusCode)
+            .IsEqualTo(HttpStatusCode.NotFound)
+            .Or.IsEqualTo(HttpStatusCode.Forbidden);
+    }
+
+    [Test]
+    public async Task CreateInvite_WithoutAuthentication_ReturnsUnauthorized()
+    {
+        // Act
+        var response = await AnonymousClient.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{Guid.NewGuid()}/organizers/invites",
+            new { Type = "Volunteer" }
+        );
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
+    }
+
+    [Test]
+    public async Task AcceptInvite_WithInvalidCode_ReturnsError()
+    {
+        // Act
+        var response = await Client.HttpClient.PostAsJsonAsync(
+            "/organizers/accept-invite",
+            new { Code = "INVALID1" }
+        );
+
+        // Assert
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
     }
 
     [Test]
-    public async Task AddOrganizer_WithoutAuthentication_ReturnsUnauthorized()
+    public async Task AcceptInvite_WithoutAuthentication_ReturnsUnauthorized()
     {
-        // Arrange
-        var request = new { UserId = Guid.NewGuid(), Type = "Admin" };
-
         // Act
         var response = await AnonymousClient.HttpClient.PostAsJsonAsync(
-            $"/organizers/hackathons/{Guid.NewGuid()}/organizers",
-            request
+            "/organizers/accept-invite",
+            new { Code = "SOMECODE" }
         );
 
         // Assert

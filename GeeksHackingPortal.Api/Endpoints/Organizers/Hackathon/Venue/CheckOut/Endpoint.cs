@@ -28,7 +28,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var participant = await sql.Queryable<ActivityRegistration>()
             .FirstAsync(
                 p =>
-                    p.UserId == req.ParticipantUserId
+                    (p.UserId == req.ParticipantUserId || p.Id == req.ParticipantUserId)
                     && p.ActivityId == req.ActivityId
                     && p.Status == ActivityRegistrationStatus.Registered
                     && p.WithdrawnAt == null,

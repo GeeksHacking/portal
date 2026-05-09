@@ -170,14 +170,20 @@ const loginUrl = computed(() =>
 const isParticipantIdOpen = ref(false)
 const participantQrCodeDataUrl = ref('')
 
-const participantId = computed(() => statusData.value?.registrationId ?? '')
+const participantId = computed(() => user.value?.id ?? '')
+const registrationId = computed(() => statusData.value?.registrationId ?? '')
 
 async function showParticipantIdQrCode() {
   if (!participantId.value || !import.meta.client)
     return
 
   try {
-    participantQrCodeDataUrl.value = await QRCode.toDataURL(participantId.value, {
+    participantQrCodeDataUrl.value = await QRCode.toDataURL(JSON.stringify({
+      kind: 'standalone-workshop-check-in',
+      workshopId: workshopId.value,
+      userId: participantId.value,
+      registrationId: registrationId.value,
+    }), {
       width: 320,
       margin: 2,
       color: {

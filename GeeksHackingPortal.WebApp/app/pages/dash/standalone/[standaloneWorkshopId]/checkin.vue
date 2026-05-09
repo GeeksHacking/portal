@@ -136,6 +136,37 @@ function refreshOverview() {
 
 let html5QrCode: Html5Qrcode | null = null
 
+function resolveParticipantFromQrData(decodedText: string) {
+  const trimmedText = decodedText.trim()
+  let candidateId = trimmedText
+
+  try {
+    const data = JSON.parse(trimmedText) as {
+      userId?: unknown
+      participantUserId?: unknown
+      registrationId?: unknown
+      participantId?: unknown
+    }
+
+    candidateId = String(data.userId ?? data.participantUserId ?? data.registrationId ?? data.participantId ?? '').trim()
+  }
+  catch {
+    candidateId = trimmedText
+  }
+
+  if (!candidateId)
+    throw new Error('QR code does not contain a participant identifier')
+
+  const matchedParticipant = allParticipants.value.find(participant =>
+    participant.userId === candidateId || participant.participantId === candidateId,
+  )
+
+  return {
+    userId: matchedParticipant?.userId ?? candidateId,
+    name: matchedParticipant?.userName ?? '',
+  }
+}
+
 async function startScanner() {
   error.value = ''
   scannedUserId.value = ''
@@ -168,25 +199,17 @@ async function startScanner() {
         rawQrData.value = decodedText
 
         try {
-          const trimmedText = decodedText.trim()
-          const data = JSON.parse(trimmedText)
+          const participant = resolveParticipantFromQrData(decodedText)
 
-          const userId = data.userId
-
-          if (!userId) {
-            throw new Error('QR code does not contain a userId')
-          }
-
-          scannedUserId.value = userId
-          selectedParticipantUserId.value = userId
-          const matchedParticipant = allParticipants.value.find(p => p.userId === userId)
-          selectedParticipantName.value = matchedParticipant?.userName ?? ''
+          scannedUserId.value = participant.userId
+          selectedParticipantUserId.value = participant.userId
+          selectedParticipantName.value = participant.name
           await stopScanner()
         }
         catch (parseError) {
           console.error('QR code parse error:', parseError)
           console.error('Failed to parse:', decodedText)
-          error.value = `Invalid QR code format. Raw data: ${decodedText.substring(0, 100)}`
+          error.value = `${(parseError as Error).message}. Raw data: ${decodedText.substring(0, 100)}`
           await stopScanner()
         }
       },
@@ -315,6 +338,9 @@ function openHistory(userId: string, name: string) {
 }
 
 async function handleCheckInFromList(userId: string) {
+  if (!userId)
+    return
+
   try {
     await checkInMutation.mutateAsync({ activityId: standaloneWorkshopId.value, participantUserId: userId })
     refreshOverview()
@@ -325,6 +351,9 @@ async function handleCheckInFromList(userId: string) {
 }
 
 async function handleCheckOutFromList(userId: string) {
+  if (!userId)
+    return
+
   try {
     await checkOutMutation.mutateAsync({ activityId: standaloneWorkshopId.value, participantUserId: userId })
     refreshOverview()

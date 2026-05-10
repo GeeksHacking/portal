@@ -434,6 +434,28 @@ public class DefaultStack : Stack
                 ReplaceOnChanges = ["spec", "name", "location"],
             }
         );
+        
+        _ = new CloudRunV1.DomainMapping(
+            "portal-api-domain",
+            new CloudRunV1.DomainMappingArgs
+            {
+                Name = "portal-api.geekshacking.com",
+                Location = "asia-southeast1",
+                Metadata = new DomainMappingMetadataArgs { Namespace = cloudRunService.Project },
+                Spec = new DomainMappingSpecArgs
+                {
+                    RouteName = cloudRunService.Name,
+                    CertificateMode = "AUTOMATIC",
+                },
+            },
+            new CustomResourceOptions
+            {
+                DeleteBeforeReplace = true,
+                IgnoreChanges = ["metadata"],
+                ReplaceOnChanges = ["spec", "name", "location"],
+            }
+        );
+
 
         CloudRunServiceUrl = cloudRunService.Uri;
         CloudRunServiceAccountEmail = cloudRunServiceAccount.Email;

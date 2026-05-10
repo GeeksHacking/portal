@@ -41,7 +41,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      api: process.env.services__api__http__0 || process.env.SERVICES__API_HTTP_0 || 'https://hackomania-api.geekshacking.com',
+      api: process.env.services__api__http__0 || process.env.SERVICES__API_HTTP_0 || 'https://portal-api.geekshacking.com',
     },
   },
 

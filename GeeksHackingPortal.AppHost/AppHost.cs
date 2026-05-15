@@ -15,6 +15,7 @@ if (builder.Configuration.GetValue("UseVolumes", true))
 }
 
 var db = mysql.AddDatabase("db");
+var openIddictDb = mysql.AddDatabase("openiddict");
 
 var migrations = builder
     .AddProject<GeeksHackingPortal_DbMigrator>("db-migrator")
@@ -25,11 +26,15 @@ var migrations = builder
 var api = builder
     .AddProject<GeeksHackingPortal_Api>("api")
     .WithReference(db)
+    .WithReference(openIddictDb)
     .WithEnvironment("App:FrontendUrl", appFrontendUrl)
     .WithEnvironment("GitHub:ClientId", githubClientId)
     .WithEnvironment("GitHub:ClientSecret", githubClientSecret)
     .WaitForCompletion(migrations)
     .WaitFor(db);
+
+var openIddictDbMigrations =
+    api.AddEFMigrations("openiddict-migrations", "GeeksHackingPortal.Api.Data.OpenIddictDbContext");
 
 builder
     .AddJavaScriptApp("sdk", "../GeeksHackingPortal.WebSdk")

@@ -158,9 +158,12 @@ jobs:
             tidb_connection_string:hackomania-event-portal/tidb-connection-string
 
       - name: Apply approved database schema changes
-        run: dotnet run --project GeeksHackingPortal.DbMigrator --configuration Release -- apply --allow-destructive
+        run: |
+          dotnet run --project GeeksHackingPortal.DbMigrator --configuration Release -- apply --allow-destructive
+          dotnet run --project GeeksHackingPortal.DbMigrator --configuration Release -- openiddict apply --allow-destructive
         env:
           ConnectionStrings__db: ${{ steps.secrets.outputs.tidb_connection_string }}
+          ConnectionStrings__openiddict: ${{ steps.secrets.outputs.tidb_connection_string }}
 
   # Only build and deploy once the diff job succeeded and any required schema apply either
   # completed successfully or was skipped because there was no database drift.

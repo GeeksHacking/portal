@@ -3,6 +3,7 @@ using FastEndpoints.Security;
 using FastEndpoints.Swagger;
 using GeeksHackingPortal.Api;
 using GeeksHackingPortal.Api.Authorization;
+using GeeksHackingPortal.Api.Data;
 using GeeksHackingPortal.Api.DataProtection;
 using GeeksHackingPortal.Api.Options;
 using GeeksHackingPortal.Api.Services;
@@ -29,6 +30,7 @@ var builder = WebApplication.CreateBuilder(args);
 LogStartupPhase("builder-created", startupStopwatch, ref startupPhaseTimestamp);
 
 builder.AddServiceDefaults();
+
 LogStartupPhase("service-defaults-registered", startupStopwatch, ref startupPhaseTimestamp);
 
 if (builder.Environment.IsProduction())
@@ -41,6 +43,7 @@ if (builder.Environment.IsProduction())
         }
     );
 }
+
 LogStartupPhase("cloud-diagnostics-configured", startupStopwatch, ref startupPhaseTimestamp);
 
 var dataProtectionBuilder = builder
@@ -60,6 +63,7 @@ if (!string.IsNullOrWhiteSpace(dataProtectionBucketName))
         );
     });
 }
+
 LogStartupPhase("data-protection-configured", startupStopwatch, ref startupPhaseTimestamp);
 
 builder.Services.AddOptions<AppOptions>().Bind(builder.Configuration.GetSection("App"));
@@ -89,6 +93,15 @@ builder.Services.AddSingleton<ISqlSugarClient>(s =>
         _ => { }
     );
 });
+
+var serverVersion = new MySqlServerVersion(new Version(8, 4, 6));
+
+builder.Services.AddDbContext<OpenIddictDbContext>(options =>
+    options
+        .UseMySql(builder.Configuration.GetConnectionString("openiddict"), serverVersion)
+        .UseOpenIddict()
+);
+
 LogStartupPhase("database-client-registered", startupStopwatch, ref startupPhaseTimestamp);
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
@@ -102,15 +115,9 @@ builder.Services.Configure<JsonOptions>(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
-builder.Services.AddDbContext<DbContext>(options =>
-{
-    options.UseInMemoryDatabase("openiddict");
-    options.UseOpenIddict();
-});
-
 builder
     .Services.AddOpenIddict()
-    .AddCore(options => { options.UseEntityFrameworkCore().UseDbContext<DbContext>(); })
+    .AddCore(options => { options.UseEntityFrameworkCore().UseDbContext<OpenIddictDbContext>(); })
     .AddClient(options =>
     {
         options.AllowAuthorizationCodeFlow();
@@ -156,20 +163,21 @@ builder
             });
         });
 
-        options
-            .UseWebProviders()
-            .AddGitHub(github =>
-            {
-                var githubOptions = builder
-                    .Configuration.GetSection("GitHub")
-                    .Get<GitHubOptions>()!;
-
-                github
-                    .AddScopes("user:email")
-                    .SetClientId(githubOptions.ClientId)
-                    .SetClientSecret(githubOptions.ClientSecret)
-                    .SetRedirectUri("/callback/login/github");
-            });
+        var githubOptions = builder.Configuration.GetSection("GitHub").Get<GitHubOptions>();
+        if (!string.IsNullOrWhiteSpace(githubOptions?.ClientId)
+            && !string.IsNullOrWhiteSpace(githubOptions.ClientSecret))
+        {
+            options
+                .UseWebProviders()
+                .AddGitHub(github =>
+                {
+                    github
+                        .AddScopes("user:email")
+                        .SetClientId(githubOptions.ClientId)
+                        .SetClientSecret(githubOptions.ClientSecret)
+                        .SetRedirectUri("/callback/login/github");
+                });
+        }
     });
 
 builder
@@ -329,6 +337,19 @@ if (validateDatabaseSchema)
             "Database schema validation passed for {EntityCount} entities.",
             schemaReport.EntityTypes.Count
         );
+
+        var openIddictDbContext = scope.ServiceProvider.GetRequiredService<OpenIddictDbContext>();
+        var pendingMigrations = await openIddictDbContext.Database.GetPendingMigrationsAsync();
+        if (pendingMigrations.Any())
+        {
+            app.Logger.LogCritical(
+                "Database schema validation failed during startup. Run the database migrator workflow before deployment to detect or apply schema changes."
+            );
+            
+            throw new InvalidOperationException(
+                "Database schema validation failed during startup. Run the database migrator workflow before deployment to detect or apply schema changes."
+            );
+        }
     }
     catch (Exception exception) when (!schemaMismatchLogged)
     {

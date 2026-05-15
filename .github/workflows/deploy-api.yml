@@ -65,6 +65,7 @@ jobs:
         with:
           secrets: |-
             tidb_connection_string:hackomania-event-portal/tidb-connection-string
+            openiddict_tidb_connection_string:hackomania-event-portal/openiddict-tidb-connection-string
 
       - name: Generate database schema diff
         id: diff
@@ -105,6 +106,7 @@ jobs:
           '```' | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8
         env:
           ConnectionStrings__db: ${{ steps.secrets.outputs.tidb_connection_string }}
+          ConnectionStrings__openiddict: ${{ steps.secrets.outputs.openiddict_tidb_connection_string }}
 
       - name: Upload database diff artifact
         uses: actions/upload-artifact@v4
@@ -156,6 +158,7 @@ jobs:
         with:
           secrets: |-
             tidb_connection_string:hackomania-event-portal/tidb-connection-string
+            openiddict_tidb_connection_string:hackomania-event-portal/openiddict-tidb-connection-string
 
       - name: Apply approved database schema changes
         run: |
@@ -163,7 +166,7 @@ jobs:
           dotnet run --project GeeksHackingPortal.DbMigrator --configuration Release -- openiddict apply --allow-destructive
         env:
           ConnectionStrings__db: ${{ steps.secrets.outputs.tidb_connection_string }}
-          ConnectionStrings__openiddict: ${{ steps.secrets.outputs.tidb_connection_string }}
+          ConnectionStrings__openiddict: ${{ steps.secrets.outputs.openiddict_tidb_connection_string }}
 
   # Only build and deploy once the diff job succeeded and any required schema apply either
   # completed successfully or was skipped because there was no database drift.

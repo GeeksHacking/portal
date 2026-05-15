@@ -98,6 +98,15 @@ public class DefaultStack : Stack
             }
         );
 
+        var openIddictTidbConnectionString = new SecretManager.Secret(
+            "openiddict-tidb-connection-string",
+            new SecretManager.SecretArgs
+            {
+                SecretId = "openiddict-tidb-connection-string",
+                Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
+            }
+        );
+
         var postmarkServerToken = new SecretManager.Secret(
             "postmark-server-token",
             new SecretManager.SecretArgs
@@ -142,6 +151,26 @@ public class DefaultStack : Stack
             new SecretManager.SecretIamMemberArgs
             {
                 SecretId = tidbConnectionString.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{deployerServiceAccount.Email}"),
+            }
+        );
+
+        var openIddictTidbConnectionStringAccessor = new SecretManager.SecretIamMember(
+            "openiddict-tidb-connection-string-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = openIddictTidbConnectionString.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
+        _ = new SecretManager.SecretIamMember(
+            "openiddict-tidb-connection-string-deployer-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = openIddictTidbConnectionString.SecretId,
                 Role = "roles/secretmanager.secretAccessor",
                 Member = Output.Format($"serviceAccount:{deployerServiceAccount.Email}"),
             }
@@ -354,6 +383,19 @@ public class DefaultStack : Stack
                                             new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
                                             {
                                                 Secret = tidbConnectionString.SecretId,
+                                                Version = "latest",
+                                            },
+                                    },
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "ConnectionStrings__openiddict",
+                                    ValueSource = new ServiceTemplateContainerEnvValueSourceArgs
+                                    {
+                                        SecretKeyRef =
+                                            new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
+                                            {
+                                                Secret = openIddictTidbConnectionString.SecretId,
                                                 Version = "latest",
                                             },
                                     },

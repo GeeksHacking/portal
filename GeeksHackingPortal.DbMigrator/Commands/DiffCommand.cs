@@ -7,10 +7,10 @@ using SqlSugar;
 
 namespace GeeksHackingPortal.DbMigrator.Commands;
 
-public class DiffCommand(ILogger<DiffCommand> logger, ISqlSugarClient sql, OpenIddictDbContext dbContext)
+public class DiffCommand(ILogger<DiffCommand> logger, ISqlSugarClient sql)
 {
     /// <summary>
-    /// Inspect pending SqlSugar and OpenIddict schema differences without applying changes.
+    /// Inspect pending SqlSugar schema differences without applying changes.
     /// </summary>
     [Command("diff")]
     public Task<int> Diff(CancellationToken cancellationToken)
@@ -26,9 +26,6 @@ public class DiffCommand(ILogger<DiffCommand> logger, ISqlSugarClient sql, OpenI
 
         SchemaDifferenceLogger.Write(logger, report);
 
-        var diff = dbContext.Database.GetPendingMigrations();
-        var hasPendingMigrations = diff.Any();
-        
-        return Task.FromResult(report.HasDifferences || hasPendingMigrations ? 2 : 0);
+        return Task.FromResult(report.HasDifferences ? 2 : 0);
     }
 }

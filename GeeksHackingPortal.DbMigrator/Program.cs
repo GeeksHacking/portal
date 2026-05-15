@@ -46,6 +46,7 @@ var app = ConsoleApp.Create()
 app.Add<DiffCommand>();
 app.Add<ApplyCommand>();
 
+app.Add<OpenIddictDiffCommand>();
 app.Add<OpenIddictApplyCommand>();
 
 await app.RunAsync(args);

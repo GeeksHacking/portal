@@ -21,6 +21,7 @@ var migrations = builder
     .AddProject<GeeksHackingPortal_DbMigrator>("db-migrator")
     .WithArgs("apply", "--seed-development-template", "--allow-destructive")
     .WithReference(db)
+    .WithReference(openIddictDb)
     .WaitFor(db);
 
 var api = builder

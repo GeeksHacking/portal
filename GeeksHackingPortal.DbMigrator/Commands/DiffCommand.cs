@@ -1,14 +1,16 @@
 using ConsoleAppFramework;
+using GeeksHackingPortal.Api.Data;
 using GeeksHackingPortal.Api.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SqlSugar;
 
 namespace GeeksHackingPortal.DbMigrator.Commands;
 
-public class DiffCommand(ILogger<DiffCommand> logger, ISqlSugarClient sql)
+public class DiffCommand(ILogger<DiffCommand> logger, ISqlSugarClient sql, OpenIddictDbContext dbContext)
 {
     /// <summary>
-    /// Inspect pending SqlSugar schema differences without applying changes.
+    /// Inspect pending SqlSugar and OpenIddict schema differences without applying changes.
     /// </summary>
     [Command("diff")]
     public Task<int> Diff(CancellationToken cancellationToken)
@@ -24,6 +26,9 @@ public class DiffCommand(ILogger<DiffCommand> logger, ISqlSugarClient sql)
 
         SchemaDifferenceLogger.Write(logger, report);
 
-        return Task.FromResult(report.HasDifferences ? 2 : 0);
+        var diff = dbContext.Database.GetPendingMigrations();
+        var hasPendingMigrations = diff.Any();
+        
+        return Task.FromResult(report.HasDifferences || hasPendingMigrations ? 2 : 0);
     }
 }

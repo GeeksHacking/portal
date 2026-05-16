@@ -183,8 +183,7 @@ namespace GeeksHackingPortal.Api.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_OpenIddictTokens_ApplicationId_Status_Subject_Type",
                 table: "OpenIddictTokens",
-                columns: new[] { "ApplicationId", "Status", "Subject", "Type" })
-                .Annotation("MySql:IndexPrefixLength", new[] { 255, 50, 191, 150 });
+                columns: new[] { "ApplicationId", "Status", "Subject", "Type" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_OpenIddictTokens_AuthorizationId",

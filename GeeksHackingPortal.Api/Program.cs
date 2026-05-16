@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using OpenIddict.Client;
 using Scalar.AspNetCore;
 using SqlSugar;
@@ -99,6 +100,7 @@ var serverVersion = new MySqlServerVersion(new Version(8, 4, 6));
 builder.Services.AddDbContext<OpenIddictDbContext>(options =>
     options
         .UseMySql(builder.Configuration.GetConnectionString("openiddict"), serverVersion)
+        .ReplaceService<IMigrationsSqlGenerator, OpenIddictTiDbMigrationsSqlGenerator>()
         .UseOpenIddict()
 );
 

@@ -228,8 +228,7 @@ namespace GeeksHackingPortal.Api.Migrations
                     b.HasIndex("ReferenceId")
                         .IsUnique();
 
-                    b.HasIndex("ApplicationId", "Status", "Subject", "Type")
-                        .HasAnnotation("MySql:IndexPrefixLength", new[] { 255, 50, 191, 150 });
+                    b.HasIndex("ApplicationId", "Status", "Subject", "Type");
 
                     b.ToTable("OpenIddictTokens", (string)null);
                 });

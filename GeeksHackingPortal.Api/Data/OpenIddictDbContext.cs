@@ -24,8 +24,11 @@ public class OpenIddictDbContext : DbContext
                     x.Subject,
                     x.Type,
                 })
-                .HasDatabaseName("IX_OpenIddictTokens_ApplicationId_Status_Subject_Type")
-                .HasAnnotation("MySql:IndexPrefixLength", new[] { 255, 50, 191, 150 });
+                .HasDatabaseName(OpenIddictMySqlIndexConfiguration.TokenAppStatusSubjectTypeIndexName)
+                .HasAnnotation(
+                    "MySql:IndexPrefixLength",
+                    OpenIddictMySqlIndexConfiguration.TokenAppStatusSubjectTypePrefixLengths
+                );
         });
     }
 }

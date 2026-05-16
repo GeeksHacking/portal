@@ -23,11 +23,12 @@ public class OpenIddictTiDbMigrationsSqlGenerator(
     {
         if (
             operation.Table == "OpenIddictTokens"
-            && operation.Name == "IX_OpenIddictTokens_ApplicationId_Status_Subject_Type"
+            && operation.Name == OpenIddictMySqlIndexConfiguration.TokenAppStatusSubjectTypeIndexName
             && operation["MySql:IndexPrefixLength"] is null
         )
         {
-            operation["MySql:IndexPrefixLength"] = new[] { 255, 50, 191, 150 };
+            operation["MySql:IndexPrefixLength"] =
+                OpenIddictMySqlIndexConfiguration.TokenAppStatusSubjectTypePrefixLengths;
         }
 
         base.Generate(operation, model, builder, terminate);

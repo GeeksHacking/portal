@@ -215,8 +215,8 @@ namespace GeeksHackingPortal.Api.Migrations
                         .HasColumnType("varchar(400)");
 
                     b.Property<string>("Type")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
 
                     b.HasKey("Id");
 
@@ -225,7 +225,8 @@ namespace GeeksHackingPortal.Api.Migrations
                     b.HasIndex("ReferenceId")
                         .IsUnique();
 
-                    b.HasIndex("ApplicationId", "Status", "Subject", "Type");
+                    b.HasIndex("ApplicationId", "Status", "Subject", "Type")
+                        .HasAnnotation("MySql:IndexPrefixLength", new[] { 255, 50, 191, 150 });
 
                     b.ToTable("OpenIddictTokens", (string)null);
                 });

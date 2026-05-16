@@ -35,7 +35,9 @@ var app = ConsoleApp.Create()
         });
 
         services.AddDbContext<OpenIddictDbContext>(options =>
-            options.UseMySql(openIddictConnectionString, new MySqlServerVersion(new Version(8, 4, 6))));
+            options
+                .UseMySql(openIddictConnectionString, new MySqlServerVersion(new Version(8, 4, 6)))
+                .UseOpenIddict());
     })
     .ConfigureLogging(logging =>
     {

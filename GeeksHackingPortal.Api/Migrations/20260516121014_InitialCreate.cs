@@ -180,10 +180,7 @@ namespace GeeksHackingPortal.Api.Migrations
                 column: "Name",
                 unique: true);
 
-            migrationBuilder.CreateIndex(
-                name: "IX_OpenIddictTokens_ApplicationId_Status_Subject_Type",
-                table: "OpenIddictTokens",
-                columns: new[] { "ApplicationId", "Status", "Subject", "Type" });
+            migrationBuilder.Sql("CREATE INDEX `IX_OpenIddictTokens_ApplicationId_Status_Subject_Type` ON `OpenIddictTokens` (`ApplicationId`(255), `Status`(50), `Subject`(191), `Type`(150));");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OpenIddictTokens_AuthorizationId",

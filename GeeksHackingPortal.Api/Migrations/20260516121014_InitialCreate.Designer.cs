@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GeeksHackingPortal.Api.Migrations
 {
     [DbContext(typeof(OpenIddictDbContext))]
-    [Migration("20260515142350_InitialCreate")]
+    [Migration("20260516121014_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

@@ -22,7 +22,8 @@ var migrations = builder
     .WithArgs("apply", "--seed-development-template", "--allow-destructive")
     .WithReference(db)
     .WithReference(openIddictDb)
-    .WaitFor(db);
+    .WaitFor(db)
+    .WaitFor(openIddictDb);
 
 var api = builder
     .AddProject<GeeksHackingPortal_Api>("api")
@@ -32,10 +33,8 @@ var api = builder
     .WithEnvironment("GitHub:ClientId", githubClientId)
     .WithEnvironment("GitHub:ClientSecret", githubClientSecret)
     .WaitForCompletion(migrations)
-    .WaitFor(db);
-
-var openIddictDbMigrations =
-    api.AddEFMigrations("openiddict-migrations", "GeeksHackingPortal.Api.Data.OpenIddictDbContext");
+    .WaitFor(db)
+    .WaitFor(openIddictDb);
 
 builder
     .AddJavaScriptApp("sdk", "../GeeksHackingPortal.WebSdk")

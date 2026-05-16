@@ -1,12 +1,18 @@
 using ConsoleAppFramework;
+using GeeksHackingPortal.Api.Data;
 using GeeksHackingPortal.Api.Entities;
 using GeeksHackingPortal.Api.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SqlSugar;
 
 namespace GeeksHackingPortal.DbMigrator.Commands;
 
-public class ApplyCommand(ILogger<ApplyCommand> logger, ISqlSugarClient sql)
+public class ApplyCommand(
+    ILogger<ApplyCommand> logger,
+    ISqlSugarClient sql,
+    OpenIddictDbContext openIddictDbContext
+)
 {
     /// <summary>
     /// Apply pending SqlSugar schema changes after diff review.
@@ -15,7 +21,7 @@ public class ApplyCommand(ILogger<ApplyCommand> logger, ISqlSugarClient sql)
     /// <param name="seedDevelopmentTemplate">Seed the development template data after applying schema changes.</param>
     /// <param name="cancellationToken"></param>
     [Command("apply")]
-    public void Apply(
+    public async Task Apply(
         bool allowDestructive = false,
         bool seedDevelopmentTemplate = false,
         CancellationToken cancellationToken = default
@@ -26,6 +32,10 @@ public class ApplyCommand(ILogger<ApplyCommand> logger, ISqlSugarClient sql)
             allowDestructive,
             seedDevelopmentTemplate
         );
+
+        logger.LogInformation("Applying pending OpenIddict database migrations.");
+        await openIddictDbContext.Database.MigrateAsync(cancellationToken);
+        logger.LogInformation("OpenIddict database migrations were applied.");
 
         cancellationToken.ThrowIfCancellationRequested();
         var report = SchemaDifferenceInspector.Inspect(sql);

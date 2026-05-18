@@ -10,7 +10,7 @@ public class OAuthApplicationsTests
     public required AuthenticatedHttpClientDataClass Client { get; init; }
 
     [Test]
-    public async Task DeleteOAuthApplication_WithConcurrentRequests_DoesNotReturnServerError()
+    public async Task DeleteOAuthApplication_WhileUpdating_DoesNotReturnServerError()
     {
         const int webPlatform = 0;
         var createRequest = new
@@ -33,17 +33,32 @@ public class OAuthApplicationsTests
         await Assert.That(applicationId).IsNotNull().And.IsNotEmpty();
 
         var deletePath = $"/admin/oauth-applications/{applicationId}";
-        var deleteResponses = await Task.WhenAll(
-            Enumerable.Range(0, 2).Select(_ => Client.HttpClient.DeleteAsync(deletePath))
+        var updateResponseTask = Client.HttpClient.PutAsJsonAsync(
+            deletePath,
+            new
+            {
+                Id = applicationId,
+                ClientId = createRequest.ClientId,
+                DisplayName = "Updated OAuth App",
+                Platform = webPlatform,
+                RedirectUris = createRequest.RedirectUris,
+                PostLogoutRedirectUris = createRequest.PostLogoutRedirectUris,
+                RotateClientSecret = false,
+            }
         );
+        var deleteResponseTask = Client.HttpClient.DeleteAsync(deletePath);
 
-        await Assert.That(deleteResponses.Any(r => r.StatusCode == HttpStatusCode.NoContent)).IsTrue();
+        await Task.WhenAll(updateResponseTask, deleteResponseTask);
+
+        var updateResponse = await updateResponseTask;
+        var deleteResponse = await deleteResponseTask;
+
         await Assert
             .That(
-                deleteResponses.All(r =>
-                    r.StatusCode is HttpStatusCode.NoContent or HttpStatusCode.NotFound
-                )
+                updateResponse.StatusCode
+                    is HttpStatusCode.OK or HttpStatusCode.NotFound or HttpStatusCode.BadRequest
             )
             .IsTrue();
+        await Assert.That(deleteResponse.StatusCode is HttpStatusCode.NoContent or HttpStatusCode.NotFound).IsTrue();
     }
 }

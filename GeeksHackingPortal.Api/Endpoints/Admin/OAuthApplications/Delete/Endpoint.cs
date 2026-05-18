@@ -6,7 +6,10 @@ using OpenIddict.Abstractions;
 
 namespace GeeksHackingPortal.Api.Endpoints.Admin.OAuthApplications.Delete;
 
-public class Endpoint(IOpenIddictApplicationManager applicationManager) : Endpoint<Request>
+public class Endpoint(
+    IOpenIddictApplicationManager applicationManager,
+    ILogger<Endpoint> logger
+) : Endpoint<Request>
 {
     public override void Configure()
     {
@@ -25,7 +28,7 @@ public class Endpoint(IOpenIddictApplicationManager applicationManager) : Endpoi
         var ownerUserId =
             User.GetUserId() ?? throw new InvalidOperationException("The current user id is required.");
 
-        for (var attempt = 0; attempt < 2; attempt++)
+        for (var retryAttempt = 0; retryAttempt < 2; retryAttempt++)
         {
             var application = await applicationManager.FindByIdAsync(req.Id, ct);
 
@@ -49,8 +52,12 @@ public class Endpoint(IOpenIddictApplicationManager applicationManager) : Endpoi
                 await Send.NoContentAsync(ct);
                 return;
             }
-            catch (OpenIddictExceptions.ConcurrencyException) when (attempt is 0)
+            catch (OpenIddictExceptions.ConcurrencyException) when (retryAttempt is 0)
             {
+                logger.LogWarning(
+                    "OAuth application delete hit a concurrency conflict for application id {ApplicationId}; retrying once.",
+                    req.Id
+                );
             }
         }
     }

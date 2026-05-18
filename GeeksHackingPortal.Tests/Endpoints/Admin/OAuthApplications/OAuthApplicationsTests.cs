@@ -12,11 +12,12 @@ public class OAuthApplicationsTests
     [Test]
     public async Task DeleteOAuthApplication_WithConcurrentRequests_DoesNotReturnServerError()
     {
+        const int webPlatform = 0;
         var createRequest = new
         {
             ClientId = $"test-client-{Guid.NewGuid():N}",
             DisplayName = "Test OAuth App",
-            Platform = 0,
+            Platform = webPlatform,
             RedirectUris = new[] { new Uri("https://example.com/callback") },
             PostLogoutRedirectUris = Array.Empty<Uri>(),
         };

@@ -24,23 +24,34 @@ public class Endpoint(IOpenIddictApplicationManager applicationManager) : Endpoi
     {
         var ownerUserId =
             User.GetUserId() ?? throw new InvalidOperationException("The current user id is required.");
-        var application = await applicationManager.FindByIdAsync(req.Id, ct);
 
-        if (
-            application is null
-            || !await OAuthApplicationMapper.IsOwnedByAsync(
-                applicationManager,
-                application,
-                ownerUserId,
-                ct
-            )
-        )
+        for (var attempt = 0; attempt < 2; attempt++)
         {
-            await Send.NotFoundAsync(ct);
-            return;
-        }
+            var application = await applicationManager.FindByIdAsync(req.Id, ct);
 
-        await applicationManager.DeleteAsync(application, ct);
-        await Send.NoContentAsync(ct);
+            if (
+                application is null
+                || !await OAuthApplicationMapper.IsOwnedByAsync(
+                    applicationManager,
+                    application,
+                    ownerUserId,
+                    ct
+                )
+            )
+            {
+                await Send.NotFoundAsync(ct);
+                return;
+            }
+
+            try
+            {
+                await applicationManager.DeleteAsync(application, ct);
+                await Send.NoContentAsync(ct);
+                return;
+            }
+            catch (OpenIddictExceptions.ConcurrencyException) when (attempt is 0)
+            {
+            }
+        }
     }
 }

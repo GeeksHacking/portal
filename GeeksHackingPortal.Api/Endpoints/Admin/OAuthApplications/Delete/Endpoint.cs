@@ -55,17 +55,27 @@ public class Endpoint(
 
         await using var transaction = await db.Database.BeginTransactionAsync(ct);
 
-        var authorizationIds = await db
-            .Set<OpenIddictEntityFrameworkCoreAuthorization>()
-            .Where(authorization => authorization.ApplicationId == applicationId)
-            .Select(authorization => authorization.Id)
-            .ToListAsync(ct);
+        var applicationStillExists = await db
+            .Set<OpenIddictEntityFrameworkCoreApplication>()
+            .AnyAsync(app => app.Id == applicationId, ct);
+
+        if (!applicationStillExists)
+        {
+            await transaction.RollbackAsync(ct);
+            await Send.NotFoundAsync(ct);
+            return;
+        }
 
         await db
             .Set<OpenIddictEntityFrameworkCoreToken>()
             .Where(token =>
                 token.ApplicationId == applicationId
-                || (token.AuthorizationId != null && authorizationIds.Contains(token.AuthorizationId))
+                || db
+                    .Set<OpenIddictEntityFrameworkCoreAuthorization>()
+                    .Any(authorization =>
+                        authorization.Id == token.AuthorizationId
+                        && authorization.ApplicationId == applicationId
+                    )
             )
             .ExecuteDeleteAsync(ct);
 
@@ -79,14 +89,14 @@ public class Endpoint(
             .Where(app => app.Id == applicationId)
             .ExecuteDeleteAsync(ct);
 
-        await transaction.CommitAsync(ct);
-
         if (deletedApplications is 0)
         {
+            await transaction.RollbackAsync(ct);
             await Send.NotFoundAsync(ct);
             return;
         }
 
+        await transaction.CommitAsync(ct);
         await Send.NoContentAsync(ct);
     }
 }

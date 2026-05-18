@@ -1,12 +1,18 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
+using GeeksHackingPortal.Api.Data;
 using GeeksHackingPortal.Api.Endpoints.Admin.OAuthApplications.Shared;
 using GeeksHackingPortal.Api.Extensions;
+using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
+using OpenIddict.EntityFrameworkCore.Models;
 
 namespace GeeksHackingPortal.Api.Endpoints.Admin.OAuthApplications.Delete;
 
-public class Endpoint(IOpenIddictApplicationManager applicationManager) : Endpoint<Request>
+public class Endpoint(
+    IOpenIddictApplicationManager applicationManager,
+    OpenIddictDbContext openIddictDbContext
+) : Endpoint<Request>
 {
     public override void Configure()
     {
@@ -40,7 +46,41 @@ public class Endpoint(IOpenIddictApplicationManager applicationManager) : Endpoi
             return;
         }
 
-        await applicationManager.DeleteAsync(application, ct);
+        await using var transaction = await openIddictDbContext.Database.BeginTransactionAsync(ct);
+
+        var authorizationIds = await openIddictDbContext
+            .Set<OpenIddictEntityFrameworkCoreAuthorization>()
+            .Where(authorization => EF.Property<string?>(authorization, "ApplicationId") == req.Id)
+            .Select(authorization => authorization.Id)
+            .ToListAsync(ct);
+
+        await openIddictDbContext
+            .Set<OpenIddictEntityFrameworkCoreToken>()
+            .Where(token => EF.Property<string?>(token, "ApplicationId") == req.Id)
+            .ExecuteDeleteAsync(ct);
+
+        if (authorizationIds.Count > 0)
+        {
+            await openIddictDbContext
+                .Set<OpenIddictEntityFrameworkCoreToken>()
+                .Where(token =>
+                    authorizationIds.Contains(EF.Property<string>(token, "AuthorizationId"))
+                )
+                .ExecuteDeleteAsync(ct);
+        }
+
+        await openIddictDbContext
+            .Set<OpenIddictEntityFrameworkCoreAuthorization>()
+            .Where(authorization => EF.Property<string?>(authorization, "ApplicationId") == req.Id)
+            .ExecuteDeleteAsync(ct);
+
+        await openIddictDbContext
+            .Set<OpenIddictEntityFrameworkCoreApplication>()
+            .Where(currentApplication => currentApplication.Id == req.Id)
+            .ExecuteDeleteAsync(ct);
+
+        await transaction.CommitAsync(ct);
+
         await Send.NoContentAsync(ct);
     }
 }

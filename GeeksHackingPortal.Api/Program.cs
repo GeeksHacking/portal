@@ -20,7 +20,12 @@ using OpenIddict.Client;
 using Scalar.AspNetCore;
 using SqlSugar;
 using System.Diagnostics;
+using System.Security.Claims;
 using System.Text.Json.Serialization;
+using Microsoft.IdentityModel.Tokens;
+using OpenIddict.Abstractions;
+using OpenIddict.Server.AspNetCore;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 var startupStopwatch = Stopwatch.StartNew();
 var startupPhaseTimestamp = Stopwatch.GetTimestamp();
@@ -178,6 +183,21 @@ builder
                         .SetRedirectUri("/callback/login/github");
                 });
         }
+    })
+    .AddServer(options =>
+    {
+        options.SetTokenEndpointUris("connect/token");
+
+        // Enable the client credentials flow.
+        options.AllowClientCredentialsFlow();
+
+        // Register the signing and encryption credentials.
+        options.AddDevelopmentEncryptionCertificate()
+            .AddDevelopmentSigningCertificate();
+
+        // Register the ASP.NET Core host and configure the ASP.NET Core options.
+        options.UseAspNetCore()
+            .EnableTokenEndpointPassthrough();
     });
 
 builder
@@ -372,6 +392,69 @@ app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapPost(
+        "~/connect/token",
+        async (HttpContext httpContext, IOpenIddictApplicationManager applicationManager) =>
+        {
+            var request =
+                Microsoft.AspNetCore.OpenIddictServerAspNetCoreHelpers.GetOpenIddictServerRequest(
+                    httpContext
+                )
+                ?? throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
+
+            if (request.IsClientCredentialsGrantType())
+            {
+                var clientId =
+                    request.ClientId
+                    ?? throw new InvalidOperationException("The client identifier cannot be retrieved.");
+
+                var application =
+                    await applicationManager.FindByClientIdAsync(clientId)
+                    ?? throw new InvalidOperationException("The application cannot be found.");
+
+                var identity = new ClaimsIdentity(
+                    TokenValidationParameters.DefaultAuthenticationType,
+                    Claims.Name,
+                    Claims.Role
+                );
+
+                identity.SetClaim(
+                    Claims.Subject,
+                    await applicationManager.GetClientIdAsync(application)
+                );
+                identity.SetClaim(
+                    Claims.Name,
+                    await applicationManager.GetDisplayNameAsync(application)
+                );
+
+                identity.SetDestinations(
+                    static claim =>
+                        claim.Type switch
+                        {
+                            Claims.Name
+                                when claim.Subject is not null
+                                    && claim.Subject.HasScope(Scopes.Profile) =>
+                                [Destinations.AccessToken, Destinations.IdentityToken],
+                            _ => [Destinations.AccessToken],
+                        }
+                );
+
+                var principal = new ClaimsPrincipal(identity);
+                principal.SetScopes(request.GetScopes());
+
+                return Results.SignIn(
+                    principal,
+                    authenticationScheme: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme
+                );
+            }
+
+            throw new NotImplementedException("The specified grant is not implemented.");
+        }
+    )
+    .AllowAnonymous()
+    .ExcludeFromDescription();
+
 app.UseFastEndpoints(c =>
 {
     c.Serializer.Options.Converters.Add(new JsonStringEnumConverter());

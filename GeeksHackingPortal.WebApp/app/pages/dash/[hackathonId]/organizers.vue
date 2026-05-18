@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {
   geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListEndpointQueryKey,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersAddEndpoint,
   useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpoint,
   useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint,
   useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListEndpoint,
@@ -35,16 +34,10 @@ const { data: organizersData, isLoading } = useGeeksHackingPortalApiEndpointsOrg
 
 const organizers = computed(() => organizersData.value?.organizers ?? [])
 
-const addMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersAddEndpoint()
 const deleteMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpoint()
 const inviteMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint()
 
-const isAddModalOpen = ref(false)
 const isInviteModalOpen = ref(false)
-const form = ref({
-  userId: '',
-  type: 'Volunteer' as 'Admin' | 'Volunteer',
-})
 const inviteForm = ref({
   type: 'Volunteer' as 'Admin' | 'Volunteer',
   maxUses: null as number | null,
@@ -64,10 +57,6 @@ const generatedInviteLink = computed(() => {
 const activeInvites = computed(() => invites.value.filter(invite => !invite.isExpired && !invite.isExhausted))
 const inactiveInvites = computed(() => invites.value.filter(invite => invite.isExpired || invite.isExhausted))
 
-function resetForm() {
-  form.value = { userId: '', type: 'Volunteer' }
-}
-
 function resetInviteForm() {
   inviteForm.value = { type: 'Volunteer', maxUses: null }
   generatedInviteCode.value = null
@@ -75,37 +64,9 @@ function resetInviteForm() {
   generatedInviteMaxUses.value = null
 }
 
-function openAddModal() {
-  resetForm()
-  isAddModalOpen.value = true
-}
-
 function openInviteModal() {
   resetInviteForm()
   isInviteModalOpen.value = true
-}
-
-async function handleAdd() {
-  if (!form.value.userId.trim()) {
-    toast.add({ title: 'User ID is required', color: 'error' })
-    return
-  }
-
-  try {
-    await addMutation.mutateAsync({
-      hackathonId: hackathonId.value,
-      data: { userId: form.value.userId.trim(), type: form.value.type },
-    })
-    await queryClient.invalidateQueries({
-      queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListEndpointQueryKey(hackathonId.value),
-    })
-    isAddModalOpen.value = false
-    resetForm()
-    toast.add({ title: 'Organizer added', color: 'success' })
-  }
-  catch {
-    toast.add({ title: 'Failed to add organizer', description: 'Please check the user ID and try again.', color: 'error' })
-  }
 }
 
 async function handleGenerateInvite() {
@@ -190,7 +151,6 @@ async function handleDelete(userId: string) {
   }
 }
 
-const isSubmitting = computed(() => addMutation.isPending.value)
 const isGeneratingInvite = computed(() => inviteMutation.isPending.value)
 
 onMounted(fetchInvites)
@@ -217,25 +177,15 @@ watch(hackathonId, fetchInvites)
           >
             {{ organizers.length }} total
           </UBadge>
-          <div class="flex flex-col gap-2 sm:flex-row">
-            <UButton
-              size="xs"
-              icon="i-lucide-link"
-              variant="outline"
-              class="w-full sm:w-auto"
-              @click="openInviteModal"
-            >
-              Create Invite Link
-            </UButton>
-            <UButton
-              size="xs"
-              icon="i-lucide-plus"
-              class="w-full sm:w-auto"
-              @click="openAddModal"
-            >
-              Add Organizer
-            </UButton>
-          </div>
+          <UButton
+            size="xs"
+            icon="i-lucide-link"
+            variant="outline"
+            class="w-full sm:w-auto"
+            @click="openInviteModal"
+          >
+            Create Invite Link
+          </UButton>
         </div>
 
         <div class="rounded-xl border border-(--ui-border) bg-(--ui-bg)">
@@ -378,61 +328,6 @@ watch(hackathonId, fetchInvites)
             </div>
           </div>
         </div>
-
-        <!-- Add Organizer Modal -->
-        <UModal v-model:open="isAddModalOpen">
-          <template #content>
-            <UCard>
-              <template #header>
-                <div class="flex items-center justify-between">
-                  <h3 class="text-base font-semibold">
-                    Add Organizer
-                  </h3>
-                  <UButton
-                    variant="ghost"
-                    icon="i-lucide-x"
-                    size="xs"
-                    @click="isAddModalOpen = false"
-                  />
-                </div>
-              </template>
-
-              <form
-                class="space-y-4"
-                @submit.prevent="handleAdd"
-              >
-                <UFormField label="User ID">
-                  <UInput
-                    v-model="form.userId"
-                    placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                  />
-                </UFormField>
-
-                <UFormField label="Role">
-                  <USelect
-                    v-model="form.type"
-                    :items="[{ label: 'Volunteer', value: 'Volunteer' }, { label: 'Admin', value: 'Admin' }]"
-                  />
-                </UFormField>
-
-                <div class="flex justify-end gap-2">
-                  <UButton
-                    variant="ghost"
-                    @click="isAddModalOpen = false"
-                  >
-                    Cancel
-                  </UButton>
-                  <UButton
-                    type="submit"
-                    :loading="isSubmitting"
-                  >
-                    Add
-                  </UButton>
-                </div>
-              </form>
-            </UCard>
-          </template>
-        </UModal>
 
         <!-- Create Invite Link Modal -->
         <UModal v-model:open="isInviteModalOpen">

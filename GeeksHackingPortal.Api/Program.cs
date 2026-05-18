@@ -402,7 +402,6 @@ else
 }
 
 app.UseForwardedHeaders();
-app.UseCors();
 
 app.Use(
     async (context, next) =>
@@ -429,6 +428,8 @@ app.Use(
         await next();
     }
 );
+
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();

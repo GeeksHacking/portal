@@ -4,7 +4,7 @@
 */
 
 import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateRequest } from "./GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateRequest.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDto } from "./GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDto.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateResponse } from "./GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateResponse.ts";
 
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateEndpointPathParams = {
     /**
@@ -16,7 +16,7 @@ export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineC
 /**
  * @description Success
 */
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDto;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateResponse;
 
 /**
  * @description Unauthorized

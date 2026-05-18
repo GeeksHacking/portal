@@ -3,7 +3,7 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantResponseSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantResponseSchema.ts";
+import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponseSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponseSchema.ts";
 import { z } from "zod/v4";
 
 export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpointPathParamsSchema = z.object({
@@ -14,7 +14,7 @@ export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticip
 /**
  * @description Success
  */
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantResponseSchema)
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponseSchema)
 
 /**
  * @description Unauthorized

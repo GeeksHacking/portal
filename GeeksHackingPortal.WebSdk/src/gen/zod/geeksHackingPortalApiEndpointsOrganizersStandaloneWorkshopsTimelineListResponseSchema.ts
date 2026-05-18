@@ -3,11 +3,11 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDtoSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDtoSchema.ts";
+import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListTimelineItemDtoSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListTimelineItemDtoSchema.ts";
 import { z } from "zod/v4";
 
 export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListResponseSchema = z.object({
     get "timelineItems"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDtoSchema).optional()
+                return z.array(geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListTimelineItemDtoSchema).optional()
               }
     })

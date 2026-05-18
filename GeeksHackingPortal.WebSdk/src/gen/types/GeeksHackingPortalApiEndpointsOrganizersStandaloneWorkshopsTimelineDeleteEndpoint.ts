@@ -3,7 +3,6 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineMutateRequest } from "./GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineMutateRequest.ts";
 
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams = {
     /**
@@ -31,13 +30,10 @@ export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineD
 */
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint403 = any;
 
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationRequest = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineMutateRequest;
-
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationResponse = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint204;
 
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutation = {
     Response: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint204;
-    Request: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationRequest;
     PathParams: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams;
     Errors: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint403;
 };

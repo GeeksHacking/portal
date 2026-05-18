@@ -8,7 +8,7 @@ import { z } from "zod/v4";
 export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponseSchema = z.object({
     "isRegistered": z.optional(z.boolean()),
 "isOrganizer": z.optional(z.boolean()),
-"registrationId": z.uuid().nullish(),
+"registrationId": z.string().nullish(),
 "registeredAt": z.iso.datetime().nullish(),
 "withdrawnAt": z.iso.datetime().nullish()
     })

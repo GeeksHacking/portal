@@ -3,7 +3,7 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantItemSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantItemSchema.ts";
+import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItemSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItemSchema.ts";
 import { z } from "zod/v4";
 
 export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponseSchema = z.object({
@@ -11,6 +11,6 @@ export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticip
 "registeredCount": z.optional(z.int()),
 "withdrawnCount": z.optional(z.int()),
 get "participants"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantItemSchema).optional()
+                return z.array(geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItemSchema).optional()
               }
     })

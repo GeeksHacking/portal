@@ -5,9 +5,9 @@
 
 import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListResponse.ts";
 import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDto } from "./createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDto.ts";
+import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListTimelineItemDto } from "./createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListTimelineItemDto.ts";
 
 export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListResponse>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListResponse {
 
-  return { ...{get "timelineItems"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDto())) },...(data || {})} }
+  return { ...{get "timelineItems"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListTimelineItemDto())) },...(data || {})} }
 }

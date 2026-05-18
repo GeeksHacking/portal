@@ -3,7 +3,7 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantResponse } from "./GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse } from "./GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse.ts";
 
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpointPathParams = {
     /**
@@ -19,7 +19,7 @@ export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipa
 /**
  * @description Success
 */
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse;
 
 /**
  * @description Unauthorized

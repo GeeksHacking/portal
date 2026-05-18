@@ -3,7 +3,6 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineMutateRequestSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineMutateRequestSchema.ts";
 import { z } from "zod/v4";
 
 export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParamsSchema = z.object({
@@ -25,7 +24,5 @@ export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimeline
  * @description Forbidden
  */
 export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint403Schema = z.any()
-
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationRequestSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineMutateRequestSchema)
 
 export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint204Schema)

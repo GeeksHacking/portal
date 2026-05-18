@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineMutateRequestSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineMutateRequestSchema.ts";
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDtoSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDtoSchema.ts";
+import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateRequestSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateRequestSchema.ts";
+import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateResponseSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateResponseSchema.ts";
 import { z } from "zod/v4";
 
 export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointPathParamsSchema = z.object({
@@ -15,7 +15,7 @@ export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimeline
 /**
  * @description Success
  */
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDtoSchema)
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateResponseSchema)
 
 /**
  * @description Unauthorized
@@ -27,6 +27,6 @@ export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimeline
  */
 export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint403Schema = z.any()
 
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationRequestSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineMutateRequestSchema)
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationRequestSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateRequestSchema)
 
 export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint200Schema)

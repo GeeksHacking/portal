@@ -3,7 +3,7 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantItem } from "./GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem } from "./GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem.ts";
 
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponse = {
     /**
@@ -21,5 +21,5 @@ export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipa
     /**
      * @type array | undefined
     */
-    participants?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantItem[];
+    participants?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem[];
 };

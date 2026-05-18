@@ -5,9 +5,9 @@
 
 import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponse.ts";
 import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantItem } from "./createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantItem.ts";
+import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem } from "./createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem.ts";
 
 export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponse>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponse {
 
-  return { ...{"totalCount": faker.number.int(),"registeredCount": faker.number.int(),"withdrawnCount": faker.number.int(),get "participants"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantItem())) },...(data || {})} }
+  return { ...{"totalCount": faker.number.int(),"registeredCount": faker.number.int(),"withdrawnCount": faker.number.int(),get "participants"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem())) },...(data || {})} }
 }

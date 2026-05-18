@@ -4,7 +4,7 @@
 */
 
 import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateRequestSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateRequestSchema.ts";
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDtoSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDtoSchema.ts";
+import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateResponseSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateResponseSchema.ts";
 import { z } from "zod/v4";
 
 export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateEndpointPathParamsSchema = z.object({
@@ -14,7 +14,7 @@ export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimeline
 /**
  * @description Success
  */
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineTimelineItemDtoSchema)
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateResponseSchema)
 
 /**
  * @description Unauthorized

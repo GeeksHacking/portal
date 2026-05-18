@@ -3,13 +3,16 @@ using FastEndpoints.Security;
 using FastEndpoints.Swagger;
 using GeeksHackingPortal.Api;
 using GeeksHackingPortal.Api.Authorization;
+using GeeksHackingPortal.Api.Constants;
 using GeeksHackingPortal.Api.Data;
 using GeeksHackingPortal.Api.DataProtection;
+using GeeksHackingPortal.Api.Entities;
 using GeeksHackingPortal.Api.Options;
 using GeeksHackingPortal.Api.Services;
 using Google.Cloud.Diagnostics.AspNetCore3;
 using Google.Cloud.Diagnostics.Common;
 using Google.Cloud.Storage.V1;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
@@ -186,10 +189,18 @@ builder
     })
     .AddServer(options =>
     {
+        options.SetAuthorizationEndpointUris("connect/authorize");
+        options.SetEndSessionEndpointUris("connect/logout");
+        options.SetIntrospectionEndpointUris("connect/introspect");
+        options.SetRevocationEndpointUris("connect/revoke");
         options.SetTokenEndpointUris("connect/token");
+        options.SetUserInfoEndpointUris("connect/userinfo");
 
-        // Enable the client credentials flow.
+        options.AllowAuthorizationCodeFlow();
         options.AllowClientCredentialsFlow();
+        options.AllowRefreshTokenFlow();
+
+        options.RegisterScopes(Scopes.Email, Scopes.Profile, Scopes.Roles);
 
         // Register the signing and encryption credentials.
         options.AddDevelopmentEncryptionCertificate()
@@ -197,7 +208,10 @@ builder
 
         // Register the ASP.NET Core host and configure the ASP.NET Core options.
         options.UseAspNetCore()
-            .EnableTokenEndpointPassthrough();
+            .EnableAuthorizationEndpointPassthrough()
+            .EnableEndSessionEndpointPassthrough()
+            .EnableTokenEndpointPassthrough()
+            .EnableUserInfoEndpointPassthrough();
     });
 
 builder
@@ -393,6 +407,61 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapMethods(
+        "~/connect/authorize",
+        [HttpMethods.Get, HttpMethods.Post],
+        async (HttpContext httpContext, ISqlSugarClient sql) =>
+        {
+            var request =
+                Microsoft.AspNetCore.OpenIddictServerAspNetCoreHelpers.GetOpenIddictServerRequest(
+                    httpContext
+                )
+                ?? throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
+
+            var userId = httpContext.User.FindFirst(CustomClaimTypes.UserId)?.Value;
+            if (string.IsNullOrWhiteSpace(userId) || !Guid.TryParse(userId, out var parsedUserId))
+            {
+                var returnUrl = httpContext.Request.PathBase
+                    + httpContext.Request.Path
+                    + httpContext.Request.QueryString;
+
+                return Results.Redirect(
+                    $"/auth/login?redirect_uri={Uri.EscapeDataString(returnUrl)}"
+                );
+            }
+
+            var user = await sql.Queryable<User>().Where(u => u.Id == parsedUserId).FirstAsync();
+            if (user is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            var identity = new ClaimsIdentity(
+                TokenValidationParameters.DefaultAuthenticationType,
+                Claims.Name,
+                Claims.Role
+            );
+
+            identity.SetClaim(Claims.Subject, user.Id.ToString());
+            identity.SetClaim(Claims.Name, user.Name);
+            identity.SetClaim(Claims.GivenName, user.FirstName);
+            identity.SetClaim(Claims.FamilyName, user.LastName);
+            identity.SetClaim(Claims.Email, user.Email);
+
+            identity.SetDestinations(GetClaimDestinations);
+
+            var principal = new ClaimsPrincipal(identity);
+            principal.SetScopes(request.GetScopes());
+
+            return Results.SignIn(
+                principal,
+                authenticationScheme: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme
+            );
+        }
+    )
+    .AllowAnonymous()
+    .ExcludeFromDescription();
+
 app.MapPost(
         "~/connect/token",
         async (HttpContext httpContext, IOpenIddictApplicationManager applicationManager) =>
@@ -455,6 +524,74 @@ app.MapPost(
     .AllowAnonymous()
     .ExcludeFromDescription();
 
+app.MapMethods(
+        "~/connect/userinfo",
+        [HttpMethods.Get, HttpMethods.Post],
+        async (HttpContext httpContext, ISqlSugarClient sql) =>
+        {
+            var result = await httpContext.AuthenticateAsync(
+                OpenIddictServerAspNetCoreDefaults.AuthenticationScheme
+            );
+            if (!result.Succeeded || result.Principal is null)
+            {
+                return Results.Challenge(
+                    authenticationSchemes: [OpenIddictServerAspNetCoreDefaults.AuthenticationScheme]
+                );
+            }
+
+            var subject = result.Principal.GetClaim(Claims.Subject);
+            if (string.IsNullOrWhiteSpace(subject))
+            {
+                return Results.Unauthorized();
+            }
+
+            var claims = new Dictionary<string, object?> { [Claims.Subject] = subject };
+
+            if (Guid.TryParse(subject, out var userId))
+            {
+                var user = await sql.Queryable<User>().Where(u => u.Id == userId).FirstAsync();
+                if (user is not null)
+                {
+                    if (result.Principal.HasScope(Scopes.Profile))
+                    {
+                        claims[Claims.Name] = user.Name;
+                        claims[Claims.GivenName] = user.FirstName;
+                        claims[Claims.FamilyName] = user.LastName;
+                    }
+
+                    if (result.Principal.HasScope(Scopes.Email))
+                    {
+                        claims[Claims.Email] = user.Email;
+                        claims[Claims.EmailVerified] = true;
+                    }
+                }
+            }
+            else if (result.Principal.HasScope(Scopes.Profile))
+            {
+                claims[Claims.Name] = result.Principal.GetClaim(Claims.Name);
+            }
+
+            return Results.Ok(claims);
+        }
+    )
+    .AllowAnonymous()
+    .ExcludeFromDescription();
+
+app.MapMethods(
+        "~/connect/logout",
+        [HttpMethods.Get, HttpMethods.Post],
+        () =>
+            Results.SignOut(
+                authenticationSchemes:
+                [
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
+                ]
+            )
+    )
+    .AllowAnonymous()
+    .ExcludeFromDescription();
+
 app.UseFastEndpoints(c =>
 {
     c.Serializer.Options.Converters.Add(new JsonStringEnumConverter());
@@ -473,6 +610,19 @@ app.Lifetime.ApplicationStarted.Register(() =>
 );
 
 await app.RunAsync();
+
+static IEnumerable<string> GetClaimDestinations(Claim claim) =>
+    claim.Type switch
+    {
+        Claims.Subject => [Destinations.AccessToken, Destinations.IdentityToken],
+        Claims.Name or Claims.GivenName or Claims.FamilyName
+            when claim.Subject is not null && claim.Subject.HasScope(Scopes.Profile) =>
+            [Destinations.AccessToken, Destinations.IdentityToken],
+        Claims.Email or Claims.EmailVerified
+            when claim.Subject is not null && claim.Subject.HasScope(Scopes.Email) =>
+            [Destinations.AccessToken, Destinations.IdentityToken],
+        _ => [Destinations.AccessToken],
+    };
 
 static void LogStartupPhase(string phase, Stopwatch startupStopwatch, ref long previousTimestamp)
 {

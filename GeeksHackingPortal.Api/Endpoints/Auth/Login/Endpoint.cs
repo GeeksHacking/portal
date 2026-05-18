@@ -20,11 +20,12 @@ public class Endpoint : EndpointWithoutRequest
         var properties = new AuthenticationProperties { RedirectUri = "/" };
 
         // Validate redirect_uri to prevent open redirect attacks
-        // Must start with "/" and not contain "://" (prevents //evil.com or http://evil.com)
+        // Must be a local path. Query strings may contain absolute OAuth callback URIs.
         if (
             !string.IsNullOrEmpty(redirectUri)
             && redirectUri.StartsWith('/')
-            && !redirectUri.Contains("://")
+            && !redirectUri.StartsWith("//")
+            && Uri.TryCreate(redirectUri, UriKind.Relative, out _)
         )
         {
             properties.Items["redirect_uri"] = redirectUri;

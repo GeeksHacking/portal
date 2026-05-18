@@ -187,7 +187,8 @@ public class Endpoint(
             result.Properties?.Items.TryGetValue("redirect_uri", out var storedRedirectUri) == true
             && !string.IsNullOrEmpty(storedRedirectUri)
             && storedRedirectUri.StartsWith('/')
-            && !storedRedirectUri.Contains("://")
+            && !storedRedirectUri.StartsWith("//")
+            && Uri.TryCreate(storedRedirectUri, UriKind.Relative, out _)
         )
         {
             redirectPath = storedRedirectUri;
@@ -197,7 +198,8 @@ public class Endpoint(
             HttpContext.Request.Cookies.TryGetValue("auth_redirect_uri", out var cookieRedirectUri)
             && !string.IsNullOrEmpty(cookieRedirectUri)
             && cookieRedirectUri.StartsWith('/')
-            && !cookieRedirectUri.Contains("://")
+            && !cookieRedirectUri.StartsWith("//")
+            && Uri.TryCreate(cookieRedirectUri, UriKind.Relative, out _)
         )
         {
             redirectPath = cookieRedirectUri;

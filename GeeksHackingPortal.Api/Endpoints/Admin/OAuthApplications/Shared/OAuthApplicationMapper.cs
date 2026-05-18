@@ -48,6 +48,8 @@ public static class OAuthApplicationMapper
         descriptor.Permissions.UnionWith(
             [
                 Permissions.Endpoints.Authorization,
+                Permissions.Endpoints.EndSession,
+                Permissions.Endpoints.Revocation,
                 Permissions.Endpoints.Token,
                 Permissions.GrantTypes.AuthorizationCode,
                 Permissions.GrantTypes.RefreshToken,

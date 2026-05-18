@@ -407,13 +407,14 @@ app.UseCors();
 app.Use(
     async (context, next) =>
     {
-        if (context.Request.Path.Equals("/.well-known/openid-configuration"))
+        if (IsOpenIdConnectCorsEndpoint(context.Request.Path))
         {
             context.Response.OnStarting(() =>
             {
                 context.Response.Headers.AccessControlAllowOrigin = "*";
-                context.Response.Headers.AccessControlAllowMethods = "GET, OPTIONS";
-                context.Response.Headers.AccessControlAllowHeaders = "Accept, Content-Type";
+                context.Response.Headers.AccessControlAllowMethods = "GET, POST, OPTIONS";
+                context.Response.Headers.AccessControlAllowHeaders =
+                    "Accept, Authorization, Content-Type";
 
                 return Task.CompletedTask;
             });
@@ -543,7 +544,37 @@ app.MapPost(
                 );
             }
 
-            throw new NotImplementedException("The specified grant is not implemented.");
+            if (!request.IsAuthorizationCodeGrantType() && !request.IsRefreshTokenGrantType())
+                return Results.Forbid(
+                    authenticationSchemes: [OpenIddictServerAspNetCoreDefaults.AuthenticationScheme]
+                );
+            {
+                var result = await httpContext.AuthenticateAsync(
+                    OpenIddictServerAspNetCoreDefaults.AuthenticationScheme
+                );
+                if (!result.Succeeded || result.Principal is null)
+                {
+                    return Results.Forbid(
+                        authenticationSchemes:
+                        [
+                            OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
+                        ]
+                    );
+                }
+
+                result.Principal.SetScopes(request.GetScopes());
+
+                foreach (var identity in result.Principal.Identities)
+                {
+                    identity.SetDestinations(GetClaimDestinations);
+                }
+
+                return Results.SignIn(
+                    result.Principal,
+                    authenticationScheme: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme
+                );
+            }
+
         }
     )
     .AllowAnonymous()
@@ -635,6 +666,14 @@ app.Lifetime.ApplicationStarted.Register(() =>
 );
 
 await app.RunAsync();
+return;
+
+static bool IsOpenIdConnectCorsEndpoint(PathString path) =>
+    path.Equals("/.well-known/openid-configuration")
+    || path.Equals("/connect/token")
+    || path.Equals("/connect/userinfo")
+    || path.Equals("/connect/revoke")
+    || path.Equals("/connect/introspect");
 
 static IEnumerable<string> GetClaimDestinations(Claim claim) =>
     claim.Type switch

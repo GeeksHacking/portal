@@ -26,6 +26,17 @@ const links = computed<NavigationMenuItem[][]>(() => {
     },
   ]
 
+  if (user.value?.isRoot) {
+    defaultLinks.push({
+      label: 'OAuth Apps',
+      icon: 'i-lucide-key-round',
+      to: '/dash/oauth-applications',
+      onSelect: () => {
+        open.value = false
+      },
+    })
+  }
+
   const isParticipantView = (route.path.includes('/participant/') || route.path.endsWith('/participant')) || route.path.includes('/registration')
 
   if (standaloneWorkshopId.value) {

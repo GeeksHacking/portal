@@ -5,7 +5,7 @@
 
 import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
 import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint.ts";
 import type { MaybeRefOrGetter } from "vue";
 import { useMutation } from "@tanstack/vue-query";
 import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint } from "../clients/geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint.ts";
@@ -19,8 +19,8 @@ export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineD
  */
 export function useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint<TContext>(options: 
 {
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint403>, {standaloneWorkshopId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams["standaloneWorkshopId"]>, timelineItemId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams["timelineItemId"]>, data: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationRequest>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationRequest>> & { client?: Client },
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint403>, {standaloneWorkshopId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams["standaloneWorkshopId"]>, timelineItemId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams["timelineItemId"]>}, TContext> & { client?: QueryClient },
+  client?: Partial<RequestConfig> & { client?: Client },
 }
  = {}) {
 
@@ -28,9 +28,9 @@ export function useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTi
           const { client: queryClient, ...mutationOptions } = mutation;
           const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationKey()
 
-          return useMutation<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint403>, {standaloneWorkshopId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams["standaloneWorkshopId"], timelineItemId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams["timelineItemId"], data: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationRequest}, TContext>({
-            mutationFn: async({ standaloneWorkshopId, timelineItemId, data }) => {
-              return geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint(standaloneWorkshopId, timelineItemId, data, config)
+          return useMutation<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint403>, {standaloneWorkshopId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams["standaloneWorkshopId"], timelineItemId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams["timelineItemId"]}, TContext>({
+            mutationFn: async({ standaloneWorkshopId, timelineItemId }) => {
+              return geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint(standaloneWorkshopId, timelineItemId, config)
             },
             mutationKey,
             ...mutationOptions

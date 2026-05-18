@@ -4,6 +4,6 @@ namespace GeeksHackingPortal.Api.Endpoints.Admin.OAuthApplications.Update;
 
 public class Request : OAuthApplicationMutationRequest
 {
-    public required string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
     public bool RotateClientSecret { get; set; }
 }

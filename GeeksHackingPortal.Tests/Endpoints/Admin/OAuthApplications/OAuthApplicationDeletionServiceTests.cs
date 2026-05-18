@@ -84,6 +84,11 @@ public class OAuthApplicationDeletionServiceTests
 
         public Task<object?> FindByIdAsync(string applicationId, CancellationToken ct)
         {
+            if (FindResults.Count is 0)
+            {
+                throw new InvalidOperationException("FindResults must contain at least one result.");
+            }
+
             var index = Math.Min(FindByIdCalls, FindResults.Count - 1);
             FindByIdCalls++;
             return Task.FromResult(FindResults[index]);
@@ -91,6 +96,13 @@ public class OAuthApplicationDeletionServiceTests
 
         public ValueTask<bool> IsOwnedByAsync(object application, Guid ownerUserId, CancellationToken ct)
         {
+            if (OwnershipResults.Count is 0)
+            {
+                throw new InvalidOperationException(
+                    "OwnershipResults must contain at least one result."
+                );
+            }
+
             var index = Math.Min(FindByIdCalls - 1, OwnershipResults.Count - 1);
             return ValueTask.FromResult(OwnershipResults[index]);
         }

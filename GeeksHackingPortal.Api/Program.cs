@@ -404,6 +404,31 @@ else
 app.UseForwardedHeaders();
 app.UseCors();
 
+app.Use(
+    async (context, next) =>
+    {
+        if (context.Request.Path.Equals("/.well-known/openid-configuration"))
+        {
+            context.Response.OnStarting(() =>
+            {
+                context.Response.Headers.AccessControlAllowOrigin = "*";
+                context.Response.Headers.AccessControlAllowMethods = "GET, OPTIONS";
+                context.Response.Headers.AccessControlAllowHeaders = "Accept, Content-Type";
+
+                return Task.CompletedTask;
+            });
+
+            if (HttpMethods.IsOptions(context.Request.Method))
+            {
+                context.Response.StatusCode = StatusCodes.Status204NoContent;
+                return;
+            }
+        }
+
+        await next();
+    }
+);
+
 app.UseAuthentication();
 app.UseAuthorization();
 

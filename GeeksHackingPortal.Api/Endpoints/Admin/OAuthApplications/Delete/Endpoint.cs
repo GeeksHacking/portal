@@ -1,12 +1,10 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
-using GeeksHackingPortal.Api.Endpoints.Admin.OAuthApplications.Shared;
 using GeeksHackingPortal.Api.Extensions;
-using OpenIddict.Abstractions;
 
 namespace GeeksHackingPortal.Api.Endpoints.Admin.OAuthApplications.Delete;
 
-public class Endpoint(IOpenIddictApplicationManager applicationManager) : Endpoint<Request>
+public class Endpoint(OAuthApplicationDeletionService deletionService) : Endpoint<Request>
 {
     public override void Configure()
     {
@@ -24,23 +22,15 @@ public class Endpoint(IOpenIddictApplicationManager applicationManager) : Endpoi
     {
         var ownerUserId =
             User.GetUserId() ?? throw new InvalidOperationException("The current user id is required.");
-        var application = await applicationManager.FindByIdAsync(req.Id, ct);
 
-        if (
-            application is null
-            || !await OAuthApplicationMapper.IsOwnedByAsync(
-                applicationManager,
-                application,
-                ownerUserId,
-                ct
-            )
-        )
+        var result = await deletionService.DeleteOwnedAsync(req.Id, ownerUserId, ct);
+
+        if (result is OAuthApplicationDeletionResult.NotFound)
         {
             await Send.NotFoundAsync(ct);
             return;
         }
 
-        await applicationManager.DeleteAsync(application, ct);
         await Send.NoContentAsync(ct);
     }
 }

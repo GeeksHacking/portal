@@ -6,6 +6,7 @@ using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Constants;
 using GeeksHackingPortal.Api.Data;
 using GeeksHackingPortal.Api.DataProtection;
+using GeeksHackingPortal.Api.Endpoints.Admin.OAuthApplications.Delete;
 using GeeksHackingPortal.Api.Entities;
 using GeeksHackingPortal.Api.Options;
 using GeeksHackingPortal.Api.Services;
@@ -322,6 +323,9 @@ builder.Services.SwaggerDocument(options =>
 LogStartupPhase("fastendpoints-and-openapi-registered", startupStopwatch, ref startupPhaseTimestamp);
 
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<IOAuthApplicationDeletionOperations, OpenIddictOAuthApplicationDeletionOperations>();
+builder.Services.AddScoped<OAuthApplicationDeletionService>();
 
 builder.Services.AddScoped<MembershipService>();
 builder.Services.AddScoped<IGitHubRepositoryAutomationService, GitHubRepositoryAutomationService>();

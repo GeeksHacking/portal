@@ -24,6 +24,7 @@ using Scalar.AspNetCore;
 using SqlSugar;
 using System.Diagnostics;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
@@ -76,6 +77,7 @@ LogStartupPhase("data-protection-configured", startupStopwatch, ref startupPhase
 
 builder.Services.AddOptions<AppOptions>().Bind(builder.Configuration.GetSection("App"));
 builder.Services.AddOptions<GitHubOptions>().Bind(builder.Configuration.GetSection("GitHub"));
+builder.Services.AddOptions<OpenIddictOptions>().Bind(builder.Configuration.GetSection("OpenIddict"));
 builder.Services.AddOptions<PostmarkOptions>().Bind(builder.Configuration.GetSection("Postmark"));
 
 builder.Services.AddSingleton<ICacheService, InMemoryCacheService>();
@@ -129,7 +131,22 @@ builder
     .AddClient(options =>
     {
         options.AllowAuthorizationCodeFlow();
-        options.AddDevelopmentEncryptionCertificate().AddDevelopmentSigningCertificate();
+        if (builder.Environment.IsProduction())
+        {
+            var openIddictOptions = GetOpenIddictOptions(builder.Configuration);
+            options
+                .AddEncryptionCertificate(
+                    LoadOpenIddictCertificate(openIddictOptions.EncryptionCertificate)
+                )
+                .AddSigningCertificate(
+                    LoadOpenIddictCertificate(openIddictOptions.SigningCertificate)
+                );
+        }
+        else
+        {
+            options.AddDevelopmentEncryptionCertificate().AddDevelopmentSigningCertificate();
+        }
+
         var aspNetOptions = options
             .UseAspNetCore()
             .EnableRedirectionEndpointPassthrough()
@@ -202,9 +219,23 @@ builder
 
         options.RegisterScopes(Scopes.Email, Scopes.Profile, Scopes.Roles);
 
-        // Register the signing and encryption credentials.
-        options.AddDevelopmentEncryptionCertificate()
-            .AddDevelopmentSigningCertificate();
+        // Register stable signing and encryption credentials in production so
+        // authorization codes can be redeemed across Cloud Run instances.
+        if (builder.Environment.IsProduction())
+        {
+            var openIddictOptions = GetOpenIddictOptions(builder.Configuration);
+            options.AddEncryptionCertificate(
+                    LoadOpenIddictCertificate(openIddictOptions.EncryptionCertificate)
+                )
+                .AddSigningCertificate(
+                    LoadOpenIddictCertificate(openIddictOptions.SigningCertificate)
+                );
+        }
+        else
+        {
+            options.AddDevelopmentEncryptionCertificate()
+                .AddDevelopmentSigningCertificate();
+        }
 
         // Register the ASP.NET Core host and configure the ASP.NET Core options.
         options.UseAspNetCore()
@@ -379,7 +410,7 @@ if (validateDatabaseSchema)
             app.Logger.LogCritical(
                 "Database schema validation failed during startup. Run the database migrator workflow before deployment to detect or apply schema changes."
             );
-            
+
             throw new InvalidOperationException(
                 "Database schema validation failed during startup. Run the database migrator workflow before deployment to detect or apply schema changes."
             );
@@ -403,8 +434,7 @@ else
 
 app.UseForwardedHeaders();
 
-app.Use(
-    async (context, next) =>
+app.Use(async (context, next) =>
     {
         if (IsOpenIdConnectCorsEndpoint(context.Request.Path))
         {
@@ -449,8 +479,8 @@ app.MapMethods(
             if (string.IsNullOrWhiteSpace(userId) || !Guid.TryParse(userId, out var parsedUserId))
             {
                 var returnUrl = httpContext.Request.PathBase
-                    + httpContext.Request.Path
-                    + httpContext.Request.QueryString;
+                                + httpContext.Request.Path
+                                + httpContext.Request.QueryString;
 
                 return Results.Redirect(
                     $"/auth/login?redirect_uri={Uri.EscapeDataString(returnUrl)}"
@@ -525,16 +555,15 @@ app.MapPost(
                     await applicationManager.GetDisplayNameAsync(application)
                 );
 
-                identity.SetDestinations(
-                    static claim =>
-                        claim.Type switch
-                        {
-                            Claims.Name
-                                when claim.Subject is not null
-                                    && claim.Subject.HasScope(Scopes.Profile) =>
-                                [Destinations.AccessToken, Destinations.IdentityToken],
-                            _ => [Destinations.AccessToken],
-                        }
+                identity.SetDestinations(static claim =>
+                    claim.Type switch
+                    {
+                        Claims.Name
+                            when claim.Subject is not null
+                                 && claim.Subject.HasScope(Scopes.Profile) =>
+                            [Destinations.AccessToken, Destinations.IdentityToken],
+                        _ => [Destinations.AccessToken],
+                    }
                 );
 
                 var principal = new ClaimsPrincipal(identity);
@@ -576,7 +605,6 @@ app.MapPost(
                     authenticationScheme: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme
                 );
             }
-
         }
     )
     .AllowAnonymous()
@@ -689,6 +717,52 @@ static IEnumerable<string> GetClaimDestinations(Claim claim) =>
             [Destinations.AccessToken, Destinations.IdentityToken],
         _ => [Destinations.AccessToken],
     };
+
+static OpenIddictOptions GetOpenIddictOptions(IConfiguration configuration)
+{
+    var options =
+        configuration.GetSection("OpenIddict").Get<OpenIddictOptions>()
+        ?? throw new InvalidOperationException(
+            "The 'OpenIddict' configuration section is required in production."
+        );
+
+    ValidateOpenIddictCertificateOptions(
+        options.SigningCertificate
+        ?? throw new InvalidOperationException(
+            "The 'OpenIddict:SigningCertificate' configuration section is required in production."
+        ),
+        "OpenIddict:SigningCertificate"
+    );
+    ValidateOpenIddictCertificateOptions(
+        options.EncryptionCertificate
+        ?? throw new InvalidOperationException(
+            "The 'OpenIddict:EncryptionCertificate' configuration section is required in production."
+        ),
+        "OpenIddict:EncryptionCertificate"
+    );
+
+    return options;
+}
+
+static X509Certificate2 LoadOpenIddictCertificate(OpenIddictCertificateOptions options) =>
+    X509CertificateLoader.LoadPkcs12(
+        Convert.FromBase64String(options.Base64Pfx),
+        options.Password,
+        X509KeyStorageFlags.EphemeralKeySet
+    );
+
+static void ValidateOpenIddictCertificateOptions(
+    OpenIddictCertificateOptions options,
+    string sectionName
+)
+{
+    if (string.IsNullOrWhiteSpace(options.Base64Pfx))
+    {
+        throw new InvalidOperationException(
+            $"The '{sectionName}:Base64Pfx' configuration value is required in production."
+        );
+    }
+}
 
 static void LogStartupPhase(string phase, Stopwatch startupStopwatch, ref long previousTimestamp)
 {

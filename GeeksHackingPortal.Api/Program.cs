@@ -593,8 +593,6 @@ app.MapPost(
                     );
                 }
 
-                result.Principal.SetScopes(request.GetScopes());
-
                 foreach (var identity in result.Principal.Identities)
                 {
                     identity.SetDestinations(GetClaimDestinations);

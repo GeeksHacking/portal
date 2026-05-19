@@ -5,7 +5,7 @@ import {
   getAuth,
   getRedirectResult,
   OAuthProvider,
-  signInWithRedirect,
+  signInWithPopup,
 } from 'firebase/auth'
 
 const user = ref<User | null>(null)
@@ -31,7 +31,7 @@ provider.addScope('email')
 async function startSignIn() {
   error.value = null
   sessionStorage.setItem('oidc.portal.redirectStarted', 'true')
-  await signInWithRedirect(auth, provider)
+  await signInWithPopup(auth, provider)
 }
 
 function readRedirectDiagnostics() {

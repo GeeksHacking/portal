@@ -107,6 +107,33 @@ public class DefaultStack : Stack
             }
         );
 
+        var openIddictSigningCertificate = new SecretManager.Secret(
+            "openiddict-signing-certificate-pfx",
+            new SecretManager.SecretArgs
+            {
+                SecretId = "openiddict-signing-certificate-pfx",
+                Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
+            }
+        );
+
+        var openIddictEncryptionCertificate = new SecretManager.Secret(
+            "openiddict-encryption-certificate-pfx",
+            new SecretManager.SecretArgs
+            {
+                SecretId = "openiddict-encryption-certificate-pfx",
+                Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
+            }
+        );
+
+        var openIddictCertificatePassword = new SecretManager.Secret(
+            "openiddict-certificate-password",
+            new SecretManager.SecretArgs
+            {
+                SecretId = "openiddict-certificate-password",
+                Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
+            }
+        );
+
         var postmarkServerToken = new SecretManager.Secret(
             "postmark-server-token",
             new SecretManager.SecretArgs
@@ -163,6 +190,66 @@ public class DefaultStack : Stack
                 SecretId = openIddictTidbConnectionString.SecretId,
                 Role = "roles/secretmanager.secretAccessor",
                 Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
+        var openIddictSigningCertificateAccessor = new SecretManager.SecretIamMember(
+            "openiddict-signing-certificate-pfx-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = openIddictSigningCertificate.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
+        var openIddictEncryptionCertificateAccessor = new SecretManager.SecretIamMember(
+            "openiddict-encryption-certificate-pfx-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = openIddictEncryptionCertificate.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
+        var openIddictCertificatePasswordAccessor = new SecretManager.SecretIamMember(
+            "openiddict-certificate-password-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = openIddictCertificatePassword.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
+        _ = new SecretManager.SecretIamMember(
+            "openiddict-signing-certificate-pfx-deployer-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = openIddictSigningCertificate.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{deployerServiceAccount.Email}"),
+            }
+        );
+
+        _ = new SecretManager.SecretIamMember(
+            "openiddict-encryption-certificate-pfx-deployer-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = openIddictEncryptionCertificate.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{deployerServiceAccount.Email}"),
+            }
+        );
+
+        _ = new SecretManager.SecretIamMember(
+            "openiddict-certificate-password-deployer-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = openIddictCertificatePassword.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{deployerServiceAccount.Email}"),
             }
         );
 
@@ -396,6 +483,58 @@ public class DefaultStack : Stack
                                             new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
                                             {
                                                 Secret = openIddictTidbConnectionString.SecretId,
+                                                Version = "latest",
+                                            },
+                                    },
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "OpenIddict__SigningCertificate__Base64Pfx",
+                                    ValueSource = new ServiceTemplateContainerEnvValueSourceArgs
+                                    {
+                                        SecretKeyRef =
+                                            new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
+                                            {
+                                                Secret = openIddictSigningCertificate.SecretId,
+                                                Version = "latest",
+                                            },
+                                    },
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "OpenIddict__SigningCertificate__Password",
+                                    ValueSource = new ServiceTemplateContainerEnvValueSourceArgs
+                                    {
+                                        SecretKeyRef =
+                                            new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
+                                            {
+                                                Secret = openIddictCertificatePassword.SecretId,
+                                                Version = "latest",
+                                            },
+                                    },
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "OpenIddict__EncryptionCertificate__Base64Pfx",
+                                    ValueSource = new ServiceTemplateContainerEnvValueSourceArgs
+                                    {
+                                        SecretKeyRef =
+                                            new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
+                                            {
+                                                Secret = openIddictEncryptionCertificate.SecretId,
+                                                Version = "latest",
+                                            },
+                                    },
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "OpenIddict__EncryptionCertificate__Password",
+                                    ValueSource = new ServiceTemplateContainerEnvValueSourceArgs
+                                    {
+                                        SecretKeyRef =
+                                            new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
+                                            {
+                                                Secret = openIddictCertificatePassword.SecretId,
                                                 Version = "latest",
                                             },
                                     },

@@ -49,4 +49,10 @@ builder
     .WithHttpEndpoint(port: 3000, env: "PORT")
     .WaitFor(api);
 
+builder
+    .AddJavaScriptApp("oidc-app-playground", "../GeeksHackingPortal.OidcWebPlayground")
+    .WithPnpm(install: false)
+    .WithHttpEndpoint(port: 3001, env: "PORT");
+
+
 builder.Build().Run();

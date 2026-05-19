@@ -474,11 +474,12 @@ app.MapMethods(
             identity.SetClaim(Claims.GivenName, user.FirstName);
             identity.SetClaim(Claims.FamilyName, user.LastName);
             identity.SetClaim(Claims.Email, user.Email);
-
-            identity.SetDestinations(GetClaimDestinations);
+            identity.SetClaim(Claims.EmailVerified, "true");
 
             var principal = new ClaimsPrincipal(identity);
             principal.SetScopes(request.GetScopes());
+
+            identity.SetDestinations(GetClaimDestinations);
 
             return Results.SignIn(
                 principal,

@@ -27,7 +27,7 @@
     "@vueuse/core": "14.3.0",
     "eslint": "^10.3.0",
     "html5-qrcode": "^2.3.8",
-    "nuxt": "^4.4.4",
+    "nuxt": "^4.4.6",
     "qrcode": "^1.5.4",
     "tailwindcss": "^4.2.4",
     "typescript": "^6.0.3",

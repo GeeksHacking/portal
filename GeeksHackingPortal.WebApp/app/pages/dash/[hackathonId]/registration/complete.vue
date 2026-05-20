@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 
 useHead({
-  titleTemplate: title => (title ? `${title} - HackOMania` : 'HackOMania'),
+  titleTemplate: title => (title ? `${title} - GeeksHacking Portal` : 'GeeksHacking Portal'),
 })
 
 const route = useRoute()
@@ -17,8 +17,8 @@ const dashboardPath = computed(() => (hackathonId.value ? `/dash/${hackathonId.v
         <div class="w-full flex justify-center">
           <div class="flex flex-col items-center gap-6 max-w-2xl">
             <img
-              src="/logos/logo-hackomania2026-typography.svg"
-              alt="HackOMania 2026"
+              src="/logos/geekshacking.svg"
+              alt="GeeksHacking Portal"
               class="w-full max-w-xl h-auto"
             >
 
@@ -28,7 +28,7 @@ const dashboardPath = computed(() => (hackathonId.value ? `/dash/${hackathonId.v
               </h1>
 
               <div class="font-raleway text-base md:text-lg font-normal text-(--ui-text) text-center max-w-lg space-y-4">
-                <p>Thank you for registering for HackOMania 2026!</p>
+                <p>Thank you for registering through GeeksHacking Portal.</p>
 
                 <p>Our team will review your details and notify you once your registration is verified.</p>
 

@@ -9,7 +9,7 @@ definePageMeta({
 const config = useRuntimeConfig()
 
 useHead({
-  titleTemplate: title => (title ? `${title} - HackOMania` : 'HackOMania'),
+  titleTemplate: title => (title ? `${title} - GeeksHacking Portal` : 'GeeksHacking Portal'),
 })
 
 const hasNavigated = ref(false)

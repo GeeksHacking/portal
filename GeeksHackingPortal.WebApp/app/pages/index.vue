@@ -7,7 +7,7 @@ definePageMeta({
 })
 
 useHead({
-  titleTemplate: title => (title ? `${title} - HackOMania` : 'HackOMania'),
+  titleTemplate: title => (title ? `${title} - GeeksHacking Portal` : 'GeeksHacking Portal'),
 })
 
 const hasNavigated = ref(false)
@@ -19,7 +19,7 @@ const { data: user, isLoading, isError } = useGeeksHackingPortalApiEndpointsAuth
 })
 
 // Watch for authentication status and redirect
-watch([user, isError, isLoading], ([userData, hasError, loading]) => {
+watch([user, isError, isLoading], ([userData, _hasError, loading]) => {
   if (loading || hasNavigated.value)
     return
 

@@ -26,7 +26,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var hackathon = await sql.Queryable<Entities.Hackathon>().Includes(h => h.Activity).InSingleAsync(req.HackathonId);
-        if (hackathon is null || !hackathon.Activity.IsPublished)
+        if (hackathon is null || !hackathon.Activity.IsPublished || hackathon.Activity.EndTime <= DateTimeOffset.UtcNow)
         {
             await Send.NotFoundAsync(ct);
             return;

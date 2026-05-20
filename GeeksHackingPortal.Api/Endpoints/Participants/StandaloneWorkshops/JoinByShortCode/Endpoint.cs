@@ -30,7 +30,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .Where(w => w.ShortCode == req.ShortCode)
             .Includes(w => w.Activity)
             .FirstAsync(ct);
-        if (workshop is null || !workshop.Activity.IsPublished)
+        if (workshop is null || !workshop.Activity.IsPublished || workshop.Activity.EndTime <= DateTimeOffset.UtcNow)
         {
             await Send.NotFoundAsync(ct);
             return;

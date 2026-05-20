@@ -77,7 +77,7 @@ const stateContent = computed(() => {
     case 'not_registered':
       return {
         title: 'Registration Required',
-        description: 'You haven\'t registered for HackOMania 2026 yet. Start your registration to participate in the hackathon.',
+        description: 'You have not registered yet. Start your registration to participate in the hackathon.',
         primaryButton: {
           label: 'Start Registration',
           to: `/${shortCode}/registration/`,
@@ -97,9 +97,8 @@ const stateContent = computed(() => {
         title: 'Registration Under Review',
         description: 'Thank you for registering! Our team is reviewing your application. You will be notified once a decision has been made.',
         primaryButton: {
-          label: 'Back to Website',
-          to: 'https://hackomania.geekshacking.com/',
-          external: true,
+          label: 'Back to GeeksHacking Portal',
+          to: '/',
         },
       }
     case 'rejected':
@@ -107,9 +106,8 @@ const stateContent = computed(() => {
         title: 'Registration Rejected',
         description: 'Unfortunately, your registration has not been approved.',
         primaryButton: {
-          label: 'Back to Website',
-          to: 'https://hackomania.geekshacking.com/',
-          external: true,
+          label: 'Back to GeeksHacking Portal',
+          to: '/',
         },
       }
     case 'approved':
@@ -121,6 +119,15 @@ const stateContent = computed(() => {
           to: route.query.joinCode
             ? { path: `/${shortCode}/team`, query: { joinCode: route.query.joinCode } }
             : `/${shortCode}/team`,
+        },
+      }
+    default:
+      return {
+        title: 'Registration Status',
+        description: 'Your registration status is being prepared.',
+        primaryButton: {
+          label: 'Back to GeeksHacking Portal',
+          to: '/',
         },
       }
   }
@@ -170,8 +177,8 @@ watchEffect(() => {
     <div class="w-full flex justify-center">
       <div class="flex flex-col items-center gap-6 max-w-2xl">
         <img
-          src="/logos/logo-hackomania2026-typography.svg"
-          alt="HackOMania 2026"
+          src="/logos/geekshacking.svg"
+          alt="GeeksHacking Portal"
           class="w-full max-w-xl h-auto"
         >
 
@@ -213,14 +220,13 @@ watchEffect(() => {
           </UButton>
 
           <UButton
-            to="https://hackomania.geekshacking.com/"
-            external
+            to="/"
             size="xl"
             color="neutral"
             variant="outline"
             class="w-full justify-center"
           >
-            Visit HackOMania Website
+            Visit GeeksHacking Portal
           </UButton>
         </div>
       </div>

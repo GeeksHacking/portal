@@ -10,7 +10,7 @@ definePageMeta({
 })
 
 useHead({
-  titleTemplate: title => (title ? `${title} - HackOMania` : 'HackOMania'),
+  titleTemplate: title => (title ? `${title} - GeeksHacking Portal` : 'GeeksHacking Portal'),
 })
 
 const route = useRoute()
@@ -75,8 +75,8 @@ watchEffect(() => {
     <div class="w-full flex justify-center">
       <div class="flex flex-col items-center gap-6 max-w-2xl">
         <img
-          src="/logos/logo-hackomania2026-typography.svg"
-          alt="HackOMania 2026"
+          src="/logos/geekshacking.svg"
+          alt="GeeksHacking Portal"
           class="w-full max-w-xl h-auto"
         >
 
@@ -88,7 +88,7 @@ watchEffect(() => {
           <div class="font-raleway text-base md:text-lg font-normal text-(--ui-text) text-center max-w-lg space-y-4">
             <p>Our team will review your details and notify you once your registration is verified.</p>
 
-            <p>You may check your application status below or return to HackOMania2026 website.</p>
+            <p>You may check your application status below or return to GeeksHacking Portal.</p>
           </div>
         </div>
 
@@ -103,14 +103,13 @@ watchEffect(() => {
           </UButton>
 
           <UButton
-            to="https://hackomania.geekshacking.com/"
-            external
+            to="/"
             size="xl"
             color="neutral"
             variant="outline"
             class="w-full justify-center"
           >
-            Return to HackOMania Website
+            Return to GeeksHacking Portal
           </UButton>
         </div>
       </div>

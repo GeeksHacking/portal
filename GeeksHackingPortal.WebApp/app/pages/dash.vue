@@ -16,7 +16,7 @@ const standaloneWorkshopId = computed(() => route.params.standaloneWorkshopId as
 const links = computed<NavigationMenuItem[][]>(() => {
   const defaultLinks: NavigationMenuItem[] = [
     {
-      label: 'Dashboard',
+      label: 'Explore Events',
       icon: 'i-lucide-house',
       exact: true,
       to: '/dash',
@@ -25,6 +25,17 @@ const links = computed<NavigationMenuItem[][]>(() => {
       },
     },
   ]
+
+  if (user.value?.id) {
+    defaultLinks.push({
+      label: 'Organizer Workspace',
+      icon: 'i-lucide-settings-2',
+      to: '/dash/manage',
+      onSelect: () => {
+        open.value = false
+      },
+    })
+  }
 
   if (user.value?.isRoot) {
     defaultLinks.push({
@@ -112,7 +123,7 @@ const links = computed<NavigationMenuItem[][]>(() => {
         :ui="{ footer: 'lg:border-t lg:border-default' }"
       >
         <template #header>
-          HackOMania
+          GeeksHacking Portal
         </template>
         <template #default="{ collapsed }">
           <UNavigationMenu

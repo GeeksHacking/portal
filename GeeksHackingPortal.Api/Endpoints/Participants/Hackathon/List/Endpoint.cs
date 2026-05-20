@@ -19,10 +19,10 @@ public class Endpoint(ISqlSugarClient sql) : EndpointWithoutRequest<Response>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
+        var now = DateTimeOffset.UtcNow;
         var hackathons = await sql.Queryable<Entities.Hackathon>()
             .LeftJoin<Entities.Activity>((hackathon, activity) => hackathon.Id == activity.Id)
-            .Where((hackathon, activity) => activity.IsPublished)
-            
+            .Where((hackathon, activity) => activity.IsPublished && activity.EndTime > now)
             .Select((hackathon, activity) => new Response.HackathonItem
             {
                 Id = hackathon.Id,

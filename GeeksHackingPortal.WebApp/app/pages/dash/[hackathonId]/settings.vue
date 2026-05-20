@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useQueryClient } from '@tanstack/vue-query'
 import {
-  useGeeksHackingPortalApiEndpointsOrganizersActivitiesHackathonsEndpoint,
   geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpointQueryKey,
+  useGeeksHackingPortalApiEndpointsOrganizersActivitiesHackathonsEndpoint,
   useGeeksHackingPortalApiEndpointsOrganizersHackathonGetEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
+import { useQueryClient } from '@tanstack/vue-query'
 import { computed, ref, watch } from 'vue'
 
 const route = useRoute()
@@ -210,7 +210,7 @@ async function handleSubmit() {
               <UFormField label="Forked Repository Prefix">
                 <UInput
                   v-model="form.repositoryPrefix"
-                  placeholder="hackomania-"
+                  placeholder="geekshacking-"
                 />
               </UFormField>
 

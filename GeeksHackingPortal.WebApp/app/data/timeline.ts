@@ -1,6 +1,5 @@
 import type { ItineraryItem } from '~/data/preevent'
 
-
 export const day1Items: ItineraryItem[] = [
   { time: '10:00 AM', event: 'Registration & Team Forming' },
   { time: '11:00 AM', event: 'Introduction' },
@@ -25,5 +24,5 @@ export const day2Items: ItineraryItem[] = [
   { time: '01:30 PM', event: 'Judging Period' },
   { time: '03:30 PM', event: 'Deliberation' },
   { time: '04:00 PM', event: 'Prize Presentation' },
-  { time: '04:30 PM', event: 'End of HackOMania' },
+  { time: '04:30 PM', event: 'End of GeeksHacking Portal event' },
 ]

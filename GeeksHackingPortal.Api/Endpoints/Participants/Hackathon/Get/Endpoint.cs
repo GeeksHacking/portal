@@ -28,7 +28,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             
             .FirstAsync(ct);
 
-        if (hackathon is null || !hackathon.Activity.IsPublished)
+        if (hackathon is null || !hackathon.Activity.IsPublished || hackathon.Activity.EndTime <= DateTimeOffset.UtcNow)
         {
             await Send.NotFoundAsync(ct);
             return;

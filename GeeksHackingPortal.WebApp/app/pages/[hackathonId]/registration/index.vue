@@ -15,7 +15,7 @@ const routeHackathonId = computed(() => (route.params.hackathonId as string) ?? 
 const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(routeHackathonId)
 
 useHead({
-  titleTemplate: title => (title ? `${title} - HackOMania` : 'HackOMania'),
+  titleTemplate: title => (title ? `${title} - GeeksHacking Portal` : 'GeeksHacking Portal'),
 })
 
 // Check if user is authenticated
@@ -61,8 +61,8 @@ watchEffect(() => {
           Register to participate in
         </p>
         <img
-          src="/logos/logo-hackomania2026-typography.svg"
-          alt="HackOMania 2026"
+          src="/logos/geekshacking.svg"
+          alt="GeeksHacking Portal"
           class="w-full max-w-xl h-auto"
         >
         <div class="flex justify-center mt-8 w-full">
@@ -87,8 +87,7 @@ watchEffect(() => {
         </div>
         <div class="mt-30">
           <NuxtLink
-            to="https://hackomania.geekshacking.com/"
-            external
+            to="/"
             class="text-base font-normal text-(--ui-text-highlighted) underline"
           >
             Exit Registration

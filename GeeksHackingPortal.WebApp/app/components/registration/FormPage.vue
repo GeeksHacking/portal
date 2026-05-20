@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
-  useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1,
   geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpointQueryOptions,
+  useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
@@ -12,7 +12,7 @@ const props = defineProps<{
 }>()
 
 useHead({
-  titleTemplate: title => (title ? `${title} - HackOMania` : 'HackOMania'),
+  titleTemplate: title => (title ? `${title} - GeeksHacking Portal` : 'GeeksHacking Portal'),
 })
 
 const hackathonId = computed(() => props.hackathonId ?? null)
@@ -113,13 +113,12 @@ async function joinHackathonFromRegistration() {
         description="Please return to the website and try again."
       />
       <UButton
-        to="https://hackomania.geekshacking.com/"
-        external
+        to="/"
         variant="link"
         color="neutral"
         class="mt-3 px-0"
       >
-        Return to HackOMania
+        Return to GeeksHacking Portal
       </UButton>
     </div>
 

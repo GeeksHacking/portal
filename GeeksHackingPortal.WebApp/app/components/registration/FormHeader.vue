@@ -3,7 +3,7 @@ defineProps<{
   hackathonId?: string | null
 }>()
 
-const exitTo = 'https://hackomania.geekshacking.com/'
+const exitTo = '/'
 </script>
 
 <template>
@@ -13,16 +13,15 @@ const exitTo = 'https://hackomania.geekshacking.com/'
         <!-- Exit Registration link -->
         <NuxtLink
           :to="exitTo"
-          external
           class="font-raleway text-sm sm:text-base font-normal text-(--ui-text-highlighted) underline"
         >
           Exit Registration
         </NuxtLink>
 
-        <!-- HackOMania 2026 Logo - centered -->
+        <!-- GeeksHacking Portal logo - centered -->
         <img
-          src="/logos/logo-hackomania2026-typography.svg"
-          alt="HackOMania 2026"
+          src="/logos/geekshacking.svg"
+          alt="GeeksHacking Portal"
           class="w-full max-w-xs sm:max-w-md h-auto mx-auto"
         >
       </div>

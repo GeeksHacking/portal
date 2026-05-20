@@ -4,8 +4,8 @@
       TEAM PORTAL
     </h1>
     <NuxtImg
-      src="/logos/logo-hackomania2026-typography.svg"
-      alt="HackOMania 2026"
+      src="/logos/geekshacking.svg"
+      alt="GeeksHacking Portal"
       class="w-64 md:w-96 mt-2 md:mt-6"
     />
   </section>

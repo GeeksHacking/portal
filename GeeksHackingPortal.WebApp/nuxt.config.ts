@@ -59,5 +59,23 @@ export default defineNuxtConfig({
   
   pwa: {
     registerType: 'autoUpdate',
+    manifest: {
+      name: 'GeeksHacking Portal',
+      short_name: 'GeeksHacking',
+      description: 'Portal for GeeksHacking stuff',
+      theme_color: '#ffffff',
+      icons: [
+        {
+          src: 'pwa-192x192.png',
+          sizes: '192x192',
+          type: 'image/png'
+        },
+        {
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png'
+        }
+      ]
+    }
   }
 })

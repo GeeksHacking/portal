@@ -24,6 +24,7 @@
     "@tanstack/vue-query": "^5.100.11",
     "@types/node": "^25.9.1",
     "@unhead/vue": "^3.1.0",
+    "@vite-pwa/nuxt": "1.1.1",
     "@vueuse/core": "14.3.0",
     "eslint": "^10.4.0",
     "html5-qrcode": "^2.3.8",

@@ -1,13 +1,7 @@
 /* eslint-disable node/prefer-global/process */
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: [
-    '@nuxt/hints',
-    '@nuxt/image',
-    '@nuxt/scripts',
-    '@nuxt/test-utils',
-    '@nuxt/ui',
-  ],
+  modules: ['@nuxt/hints', '@nuxt/image', '@nuxt/scripts', '@nuxt/test-utils', '@nuxt/ui', '@vite-pwa/nuxt'],
 
   ssr: false,
 
@@ -62,4 +56,8 @@ export default defineNuxtConfig({
       stylistic: true,
     },
   },
+  
+  pwa: {
+    registerType: 'autoUpdate',
+  }
 })

@@ -45,6 +45,17 @@ function normalizeValidationErrors(value: unknown): ValidationErrorBag {
   return {}
 }
 
+function validationErrorMessages(error: unknown): string[] {
+  return Object.values(getApiValidationErrors(error))
+    .flatMap(value => Array.isArray(value) ? value : [value])
+    .map(value => value.trim())
+    .filter(Boolean)
+}
+
+function isGenericApiErrorMessage(message: string) {
+  return message.trim().toLowerCase() === 'one or more errors occurred!'
+}
+
 export function getApiErrorPayload(error: unknown): ApiErrorPayload | undefined {
   if (!error || typeof error !== 'object')
     return undefined
@@ -66,12 +77,35 @@ export function getApiValidationErrors(error: unknown): ValidationErrorBag {
   return {}
 }
 
+export function getApiValidationSummary(error: unknown): string | undefined {
+  const messages = validationErrorMessages(error)
+  if (!messages.length)
+    return undefined
+
+  const uniqueMessages = Array.from(new Set(messages))
+  if (uniqueMessages.length === 1)
+    return uniqueMessages[0]
+
+  return uniqueMessages.join(' ')
+}
+
+export function getApiFieldError(errorBag: ValidationErrorBag, fieldName: string): string | undefined {
+  const entry = Object.entries(errorBag).find(([key]) => key.toLowerCase() === fieldName.toLowerCase())?.[1]
+  if (!entry)
+    return undefined
+
+  const message = Array.isArray(entry) ? entry[0] : entry
+  return message?.trim() || undefined
+}
+
 export function getApiErrorMessage(error: unknown, fallback: string): string {
   const payload = getApiErrorPayload(error)
   if (payload) {
-    if (typeof payload.message === 'string' && payload.message.trim())
+    const validationSummary = getApiValidationSummary(error)
+
+    if (typeof payload.message === 'string' && payload.message.trim() && !isGenericApiErrorMessage(payload.message))
       return payload.message
-    if (typeof payload.Message === 'string' && payload.Message.trim())
+    if (typeof payload.Message === 'string' && payload.Message.trim() && !isGenericApiErrorMessage(payload.Message))
       return payload.Message
     if (typeof payload.reason === 'string' && payload.reason.trim())
       return payload.reason
@@ -82,12 +116,8 @@ export function getApiErrorMessage(error: unknown, fallback: string): string {
     if (typeof payload.Title === 'string' && payload.Title.trim())
       return payload.Title
 
-    const firstFieldError = Object.values(getApiValidationErrors(error)).flatMap(value =>
-      Array.isArray(value) ? value : [value],
-    )[0]
-
-    if (typeof firstFieldError === 'string' && firstFieldError.trim())
-      return firstFieldError
+    if (validationSummary)
+      return validationSummary
   }
 
   if (error && typeof error === 'object') {

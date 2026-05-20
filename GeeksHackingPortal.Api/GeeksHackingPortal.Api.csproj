@@ -15,13 +15,13 @@
     <PackageReference Include="FastEndpoints.Security" Version="8.1.0" />
     <PackageReference Include="Google.Cloud.Diagnostics.AspNetCore3" Version="5.3.0" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="4.14.0" />
-    <PackageReference Include="Jint" Version="4.9.1" />
+    <PackageReference Include="Jint" Version="4.9.2" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.7">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.8">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microting.EntityFrameworkCore.MySql" Version="10.0.7" />
+    <PackageReference Include="Microting.EntityFrameworkCore.MySql" Version="10.0.8" />
     <PackageReference Include="Octokit" Version="14.0.0" />
     <PackageReference Include="OpenIddict.Core" Version="7.5.0" />
     <PackageReference Include="OpenIddict.AspNetCore" Version="7.5.0" />

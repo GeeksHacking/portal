@@ -17,11 +17,6 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true },
 
-  // https://github.com/nuxt/nuxt/issues/34957
-  experimental: {
-    viteEnvironmentApi: true,
-  },
-
   $production: {
     scripts: {
       registry: {
@@ -45,7 +40,7 @@ export default defineNuxtConfig({
     },
   },
 
-  compatibilityDate: '2025-07-15',
+  compatibilityDate: 'latest',
 
   nitro: {
     cloudflare: {

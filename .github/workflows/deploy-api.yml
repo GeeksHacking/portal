@@ -45,7 +45,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: 10.0.300
+          dotnet-version: 11
           cache: true
           cache-dependency-path: |
             global.json
@@ -164,7 +164,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: 10.0.300
+          dotnet-version: 11
           cache: true
           cache-dependency-path: |
             global.json
@@ -221,7 +221,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: 10.0.300
+          dotnet-version: 11
           cache: true
           cache-dependency-path: |
             global.json

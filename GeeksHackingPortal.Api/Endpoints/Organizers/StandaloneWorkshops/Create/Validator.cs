@@ -28,10 +28,6 @@ public class Validator : Validator<Request>
             .MaximumLength(240)
             .WithMessage("Location must be 240 characters or fewer.");
 
-        RuleFor(x => x.HomepageUri)
-            .NotNull()
-            .WithMessage("Homepage URL is required.");
-
         When(x => x.HomepageUri is not null, () =>
         {
             RuleFor(x => x.HomepageUri!)

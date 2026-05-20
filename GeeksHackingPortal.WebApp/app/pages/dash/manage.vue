@@ -286,9 +286,7 @@ function validateStandaloneEventForm() {
   }
 
   const homepageUri = normalizeOptionalUrl(standaloneEventForm.value.homepageUri)
-  if (!isEditingStandaloneEvent.value && !homepageUri)
-    setStandaloneEventFieldError('homepageUri', 'Homepage URL is required.')
-  else if (homepageUri && (!URL.canParse(homepageUri) || !['http:', 'https:'].includes(new URL(homepageUri).protocol)))
+  if (homepageUri && (!URL.canParse(homepageUri) || !['http:', 'https:'].includes(new URL(homepageUri).protocol)))
     setStandaloneEventFieldError('homepageUri', 'Homepage URL must start with http:// or https://.')
 
   if (!standaloneEventForm.value.startTime)
@@ -1434,7 +1432,6 @@ function capacityPercent(event: typeof standaloneEvents.value[number]) {
 
           <UFormField
             label="Homepage URL"
-            :required="!isEditingStandaloneEvent"
             :error="standaloneEventFieldErrors.homepageUri"
           >
             <UInput

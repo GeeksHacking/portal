@@ -427,12 +427,17 @@ public class DefaultStack : Stack
                                 },
                                 new ServiceTemplateContainerEnvArgs
                                 {
-                                    Name = "App__AdminGitHubLogins__3",
+                                    Name = "App__AdminGitHubLogins__1",
                                     Value = "tohkailiang",
                                 },
                                 new ServiceTemplateContainerEnvArgs
                                 {
-                                    Name = "App__AdminGitHubLogins__8",
+                                    Name = "App__AdminGitHubLogins__2",
+                                    Value = "julwrites",
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "App__AdminGitHubLogins__3",
                                     Value = "rogeryeosgit",
                                 },
                                 new ServiceTemplateContainerEnvArgs

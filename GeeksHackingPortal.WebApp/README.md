@@ -1,75 +1,40 @@
-# Nuxt Minimal Starter
+# GeeksHackingPortal.WebApp
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Frontend for the GeeksHacking Portal built with Nuxt. See Nuxt docs: https://nuxt.com/docs
 
 ## Setup
 
-Make sure to install dependencies:
+Install dependencies with your package manager of choice:
 
 ```bash
+# pnpm (recommended)
+pnpm install
+
 # npm
 npm install
 
-# pnpm
-pnpm install
-
 # yarn
 yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+## Development
 
-Start the development server on `http://localhost:3000`:
+Start dev server:
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
+pnpm dev    # or `npm run dev` / `yarn dev`
 ```
+
+Open http://localhost:3000 after the server starts.
 
 ## Production
 
-Build the application for production:
+Build and preview:
 
 ```bash
-# npm
-npm run build
-
-# pnpm
 pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
 pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Refer to Nuxt deployment docs for hosting instructions.
+

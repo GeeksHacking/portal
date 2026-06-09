@@ -19,7 +19,7 @@ export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointQ
 
         const queryKey = geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointQueryKey(id)
         return queryOptions<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint403>, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointQueryResponse, typeof queryKey>({
-        enabled: !!(id),
+        enabled: () => !!toValue(id),
         queryKey,
         queryFn: async ({ signal }) => {
             return geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint(toValue(id)!, { ...config, signal: config.signal ?? signal })

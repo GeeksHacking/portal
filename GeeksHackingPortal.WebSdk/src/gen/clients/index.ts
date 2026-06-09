@@ -1,7 +1,9 @@
 export { geeksHackingPortalApiEndpointsAdminCachePurgeEndpoint } from "./geeksHackingPortalApiEndpointsAdminCachePurgeEndpoint.ts";
+export { geeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint.ts";
 export { geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint.ts";
 export { geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint.ts";
 export { geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint.ts";
+export { geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint.ts";
 export { geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint.ts";
 export { geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint.ts";
 export { geeksHackingPortalApiEndpointsAuthWhoAmIEndpoint } from "./geeksHackingPortalApiEndpointsAuthWhoAmIEndpoint.ts";

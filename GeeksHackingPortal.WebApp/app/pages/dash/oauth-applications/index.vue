@@ -10,6 +10,7 @@ import {
   useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint,
   useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint,
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
+  useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
 import { computed, ref } from 'vue'
@@ -35,6 +36,22 @@ const { data: applicationsData, isLoading: isLoadingApplications } = useGeeksHac
   query: {
     enabled: computed(() => user.value?.isRoot === true),
   },
+})
+
+const { data: analyticsData, isLoading: isLoadingAnalytics } = useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint({
+  query: {
+    enabled: computed(() => user.value?.isRoot === true),
+  },
+})
+
+const analyticsMap = computed(() => {
+  const map = new Map()
+  if (analyticsData.value?.items) {
+    for (const item of analyticsData.value.items) {
+      map.set(item.applicationId, item)
+    }
+  }
+  return map
 })
 
 const createMutation = useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint()
@@ -216,7 +233,7 @@ function platformBadgeColor(platform: OAuthApplicationPlatform | null | undefine
 
     <template #body>
       <div
-        v-if="isLoadingUser || isLoadingApplications"
+        v-if="isLoadingUser || isLoadingApplications || isLoadingAnalytics"
         class="text-sm text-(--ui-text-muted)"
       >
         Loading OAuth applications...
@@ -282,6 +299,25 @@ function platformBadgeColor(platform: OAuthApplicationPlatform | null | undefine
             </div>
           </template>
 
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col rounded-lg border border-default p-3">
+              <div class="text-xs font-medium uppercase text-(--ui-text-muted)">
+                Authorizations
+              </div>
+              <div class="mt-1 text-2xl font-semibold">
+                {{ analyticsMap.get(application.id)?.totalAuthorizations ?? 0 }}
+              </div>
+            </div>
+            <div class="flex flex-col rounded-lg border border-default p-3">
+              <div class="text-xs font-medium uppercase text-(--ui-text-muted)">
+                Unique Users
+              </div>
+              <div class="mt-1 text-2xl font-semibold">
+                {{ analyticsMap.get(application.id)?.uniqueUsers ?? 0 }}
+              </div>
+            </div>
+          </div>
+
           <div class="space-y-3">
             <div>
               <div class="mb-1 text-xs font-medium uppercase text-(--ui-text-muted)">
@@ -316,6 +352,14 @@ function platformBadgeColor(platform: OAuthApplicationPlatform | null | undefine
 
           <template #footer>
             <div class="flex justify-end gap-2">
+              <UButton
+                variant="ghost"
+                icon="i-lucide-history"
+                size="sm"
+                :to="`/dash/oauth-applications/${application.id}`"
+              >
+                History
+              </UButton>
               <UButton
                 variant="ghost"
                 icon="i-lucide-pencil"
@@ -387,59 +431,59 @@ function platformBadgeColor(platform: OAuthApplicationPlatform | null | undefine
           </UAlert>
 
           <div class="grid gap-4 sm:grid-cols-2">
-            <UFormField
+            <LazyUFormField
               label="Client ID"
               required
             >
-              <UInput
+              <LazyUInput
                 v-model="form.clientId"
                 placeholder="my-client"
               />
-            </UFormField>
+            </LazyUFormField>
 
-            <UFormField
+            <LazyUFormField
               label="Platform"
               required
             >
-              <USelect
+              <LazyUSelect
                 v-model="form.platform"
                 :items="platformItems"
                 value-key="value"
                 label-key="label"
               />
-            </UFormField>
+            </LazyUFormField>
           </div>
 
-          <UFormField
+          <LazyUFormField
             label="Display Name"
             required
           >
-            <UInput
+            <LazyUInput
               v-model="form.displayName"
               placeholder="My Client Application"
             />
-          </UFormField>
+          </LazyUFormField>
 
-          <UFormField
+          <LazyUFormField
             label="Redirect URIs"
             required
           >
-            <UTextarea
+            <LazyUTextarea
               v-model="form.redirectUrisText"
               :rows="4"
               placeholder="https://app.example.com/callback"
             />
-          </UFormField>
+          </LazyUFormField>
 
-          <UFormField label="Post Logout Redirect URIs">
-            <UTextarea
+          <LazyUFormField label="Post Logout Redirect URIs">
+            <LazyUTextarea
               v-model="form.postLogoutRedirectUrisText"
               :rows="3"
               placeholder="https://app.example.com/signed-out"
             />
-          </UFormField>
+          </LazyUFormField>
 
-          <UCheckbox
+          <LazyUCheckbox
             v-if="isEditing && form.platform === 'Web'"
             v-model="form.rotateClientSecret"
             label="Rotate client secret"

@@ -6,10 +6,14 @@
 
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest = {
     /**
+     * @minLength 0
+     * @maxLength 160
      * @type string | undefined
     */
     title?: string;
     /**
+     * @minLength 0
+     * @maxLength 4000
      * @type string | undefined
     */
     description?: string;
@@ -22,6 +26,8 @@ export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateReq
     */
     endTime?: string;
     /**
+     * @minLength 0
+     * @maxLength 240
      * @type string | undefined
     */
     location?: string;

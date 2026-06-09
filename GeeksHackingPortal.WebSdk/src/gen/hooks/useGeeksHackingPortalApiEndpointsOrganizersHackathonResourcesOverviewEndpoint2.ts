@@ -19,7 +19,7 @@ export function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOvervi
 
         const queryKey = geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryKey(activityId, resourceId)
         return queryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2403>, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryResponse, typeof queryKey>({
-        enabled: !!(activityId && resourceId),
+        enabled: () => !!toValue(activityId) && !!toValue(resourceId),
         queryKey,
         queryFn: async ({ signal }) => {
             return geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2(toValue(activityId)!, toValue(resourceId)!, { ...config, signal: config.signal ?? signal })

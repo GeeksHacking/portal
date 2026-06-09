@@ -6,11 +6,11 @@
 import { z } from "zod/v4";
 
 export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequestSchema = z.object({
-    "title": z.optional(z.string()),
-"description": z.optional(z.string()),
+    "title": z.optional(z.string().min(0).max(160)),
+"description": z.optional(z.string().min(0).max(4000)),
 "startTime": z.optional(z.iso.datetime()),
 "endTime": z.optional(z.iso.datetime()),
-"location": z.optional(z.string()),
+"location": z.optional(z.string().min(0).max(240)),
 "homepageUri": z.url().nullish(),
 "shortCode": z.optional(z.string().min(3).max(16).regex(/^[A-Za-z0-9-]+$/)),
 "maxParticipants": z.optional(z.int().gt(0)),

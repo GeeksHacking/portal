@@ -19,7 +19,7 @@ export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnaly
 
         const queryKey = geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryKey(standaloneWorkshopId)
         return queryOptions<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint403>, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryResponse, typeof queryKey>({
-        enabled: !!(standaloneWorkshopId),
+        enabled: () => !!toValue(standaloneWorkshopId),
         queryKey,
         queryFn: async ({ signal }) => {
             return geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint(toValue(standaloneWorkshopId)!, { ...config, signal: config.signal ?? signal })

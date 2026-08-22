@@ -245,6 +245,15 @@ builder
             .EnableUserInfoEndpointPassthrough();
     });
 
+builder.Services.PostConfigure<OpenIddict.Client.AspNetCore.OpenIddictClientAspNetCoreOptions>(options =>
+{
+    if (builder.Environment.IsProduction())
+    {
+        options.CookieBuilder.Domain = ".geekshacking.com";
+        options.CookieBuilder.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+    }
+});
+
 builder
     .Services.AddAuthenticationCookie(
         validFor: TimeSpan.FromDays(7),

@@ -44,7 +44,16 @@ public class Endpoint(
                 openIddictResponse.ErrorDescription
             );
 
-            HttpContext.Response.Cookies.Delete("auth_redirect_uri");
+            HttpContext.Response.Cookies.Delete(
+                "auth_redirect_uri",
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = !HttpContext.Request.Host.Host.Contains("localhost"),
+                    SameSite = SameSiteMode.Lax,
+                    Path = "/",
+                }
+            );
             await Send.RedirectAsync(
                 $"{options.Value.FrontendUrl}/login",
                 allowRemoteRedirects: true
@@ -67,7 +76,16 @@ public class Endpoint(
                 logger.LogWarning("GitHub OAuth authentication failed; redirecting to login.");
             }
 
-            HttpContext.Response.Cookies.Delete("auth_redirect_uri");
+            HttpContext.Response.Cookies.Delete(
+                "auth_redirect_uri",
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = !HttpContext.Request.Host.Host.Contains("localhost"),
+                    SameSite = SameSiteMode.Lax,
+                    Path = "/",
+                }
+            );
             await Send.RedirectAsync("/auth/login");
             return;
         }
@@ -206,7 +224,16 @@ public class Endpoint(
         }
 
         // Clear the redirect cookie
-        HttpContext.Response.Cookies.Delete("auth_redirect_uri");
+        HttpContext.Response.Cookies.Delete(
+            "auth_redirect_uri",
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = !HttpContext.Request.Host.Host.Contains("localhost"),
+                SameSite = SameSiteMode.Lax,
+                Path = "/",
+            }
+        );
 
         await Send.RedirectAsync(
             $"{options.Value.FrontendUrl}{redirectPath}",

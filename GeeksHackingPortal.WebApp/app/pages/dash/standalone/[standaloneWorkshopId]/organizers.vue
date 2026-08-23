@@ -402,7 +402,7 @@ watch(standaloneWorkshopId, fetchInvites)
                         size="xs"
                         variant="ghost"
                         icon="i-lucide-copy"
-                        @click="copyInviteLink"
+                        @click="copyInviteLink()"
                       />
                     </div>
                     <p class="text-xs text-(--ui-text-muted)">

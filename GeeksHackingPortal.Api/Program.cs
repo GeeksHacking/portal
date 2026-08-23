@@ -160,6 +160,31 @@ builder
         options.UseSystemNetHttp();
         options.SetRedirectionEndpointUris("/callback/login/github");
 
+        // GitHub returns an "iss" parameter ("https://github.com/login/oauth") in its OAuth
+        // authorization responses, but OpenIddict's GitHub provider is registered with the
+        // issuer "https://github.com/" and doesn't advertise "authorization_response_iss_parameter_supported",
+        // so the built-in issuer parameter validation rejects every GitHub login callback.
+        // Since GitHub is the only registered provider, disable the validation for it.
+        options.AddEventHandler<OpenIddictClientEvents.ProcessAuthenticationContext>(builder2 =>
+        {
+            builder2.SetOrder(
+                OpenIddictClientHandlers.ValidateIssuerParameter.Descriptor.Order - 500
+            );
+            builder2.UseInlineHandler(context =>
+            {
+                if (
+                    context.Registration?.ProviderType
+                    == OpenIddict.Client.WebIntegration.OpenIddictClientWebIntegrationConstants
+                        .ProviderTypes.GitHub
+                )
+                {
+                    context.DisableIssuerParameterValidation = true;
+                }
+
+                return default;
+            });
+        });
+
         options.AddEventHandler<OpenIddictClientEvents.ProcessAuthenticationContext>(builder2 =>
         {
             builder2.UseInlineHandler(context =>

@@ -39,6 +39,29 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         var registration = await sql.Queryable<ActivityRegistration>()
             .FirstAsync(r => r.ActivityId == workshop.Id && r.UserId == userId.Value, ct);
 
+        if (
+            registration is null
+            || registration.Status == ActivityRegistrationStatus.Withdrawn
+            || registration.WithdrawnAt is not null
+        )
+        {
+            var registeredCount = await sql.Queryable<ActivityRegistration>()
+                .CountAsync(
+                    r =>
+                        r.ActivityId == workshop.Id
+                        && r.Status == ActivityRegistrationStatus.Registered
+                        && r.WithdrawnAt == null,
+                    ct
+                );
+
+            if (registeredCount >= workshop.MaxParticipants)
+            {
+                AddError("Workshop is full");
+                await Send.ErrorsAsync(400, ct);
+                return;
+            }
+        }
+
         if (registration is null)
         {
             registration = new ActivityRegistration

@@ -53,6 +53,46 @@ public class StandaloneWorkshopJoinAndStatusTests
     }
 
     [Test]
+    public async Task JoinStandaloneWorkshop_WhenWorkshopIsFull_ReturnsBadRequest()
+    {
+        // Arrange
+        var request = TestDataHelper.CreateValidStandaloneWorkshopRequest();
+        request.MaxParticipants = 1;
+        var createResponse = await Client.HttpClient.PostAsJsonAsync(
+            "/organizers/standalone-workshops",
+            request
+        );
+        var workshop = await createResponse.Content.ReadFromJsonAsync<StandaloneWorkshopResponse>();
+        await Client.HttpClient.PostAsync($"/participants/standalone-workshops/{workshop!.Id}/join", null);
+
+        var secondUser = new AuthenticatedHttpClientDataClass
+        {
+            GitHubId = 997,
+            GitHubLogin = "standalone-full-user",
+            FirstName = "Standalone",
+            LastName = "Full",
+            Email = "standalone-full@example.com",
+        };
+        await secondUser.InitializeAsync();
+
+        try
+        {
+            // Act
+            var response = await secondUser.HttpClient.PostAsync(
+                $"/participants/standalone-workshops/{workshop.Id}/join",
+                null
+            );
+
+            // Assert
+            await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+        }
+        finally
+        {
+            await secondUser.DisposeAsync();
+        }
+    }
+
+    [Test]
     public async Task JoinStandaloneWorkshopByShortCode_WithValidShortCode_ReturnsOk()
     {
         // Arrange
@@ -69,6 +109,49 @@ public class StandaloneWorkshopJoinAndStatusTests
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
         await Assert.That(result).IsNotNull();
         await Assert.That(result!.StandaloneWorkshopId).IsEqualTo(workshop.Id);
+    }
+
+    [Test]
+    public async Task JoinStandaloneWorkshopByShortCode_WhenWorkshopIsFull_ReturnsBadRequest()
+    {
+        // Arrange
+        var request = TestDataHelper.CreateValidStandaloneWorkshopRequest();
+        request.MaxParticipants = 1;
+        var createResponse = await Client.HttpClient.PostAsJsonAsync(
+            "/organizers/standalone-workshops",
+            request
+        );
+        var workshop = await createResponse.Content.ReadFromJsonAsync<StandaloneWorkshopResponse>();
+        await Client.HttpClient.PostAsJsonAsync(
+            "/participants/standalone-workshops/join",
+            new { workshop!.ShortCode }
+        );
+
+        var secondUser = new AuthenticatedHttpClientDataClass
+        {
+            GitHubId = 996,
+            GitHubLogin = "standalone-shortcode-full-user",
+            FirstName = "Standalone",
+            LastName = "ShortCode",
+            Email = "standalone-shortcode-full@example.com",
+        };
+        await secondUser.InitializeAsync();
+
+        try
+        {
+            // Act
+            var response = await secondUser.HttpClient.PostAsJsonAsync(
+                "/participants/standalone-workshops/join",
+                new { workshop.ShortCode }
+            );
+
+            // Assert
+            await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+        }
+        finally
+        {
+            await secondUser.DisposeAsync();
+        }
     }
 
     [Test]

@@ -9,7 +9,7 @@ import { faker } from "@faker-js/faker";
 export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponse(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponse>): GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponse {
 
   return {
-    ...{"id": faker.string.alpha(),"title": faker.string.alpha(),"description": faker.string.alpha(),"location": faker.string.alpha(),"homepageUri": faker.internet.url(),"shortCode": faker.string.alpha(),"isPublished": faker.datatype.boolean(),"startTime": faker.date.anytime().toISOString(),"endTime": faker.date.anytime().toISOString(),"maxParticipants": faker.number.int()},
+    ...{"id": faker.string.alpha(),"title": faker.string.alpha(),"description": faker.string.alpha(),"location": faker.string.alpha(),"homepageUri": faker.internet.url(),"shortCode": faker.string.alpha(),"isPublished": faker.datatype.boolean(),"startTime": faker.date.anytime().toISOString(),"endTime": faker.date.anytime().toISOString(),"maxParticipants": faker.number.int(),"currentParticipants": faker.number.int(),"isAtCapacity": faker.datatype.boolean()},
     ...data || {}
   }
 }

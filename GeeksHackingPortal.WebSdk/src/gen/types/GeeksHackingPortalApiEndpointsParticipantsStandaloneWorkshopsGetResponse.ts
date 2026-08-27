@@ -45,4 +45,12 @@ export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResp
      * @type integer | undefined, int32
     */
     maxParticipants?: number;
+    /**
+     * @type integer | undefined, int32
+    */
+    currentParticipants?: number;
+    /**
+     * @type boolean | undefined
+    */
+    isAtCapacity?: boolean;
 };

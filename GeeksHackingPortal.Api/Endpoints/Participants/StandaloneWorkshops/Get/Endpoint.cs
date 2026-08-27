@@ -33,6 +33,15 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             return;
         }
 
+        var currentParticipants = await sql.Queryable<Entities.ActivityRegistration>()
+            .CountAsync(
+                r =>
+                    r.ActivityId == workshop.Id
+                    && r.Status == Entities.ActivityRegistrationStatus.Registered
+                    && r.WithdrawnAt == null,
+                ct
+            );
+
         await Send.OkAsync(
             new Response
             {
@@ -46,6 +55,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 StartTime = workshop.Activity.StartTime,
                 EndTime = workshop.Activity.EndTime,
                 MaxParticipants = workshop.MaxParticipants,
+                CurrentParticipants = currentParticipants,
+                IsAtCapacity = currentParticipants >= workshop.MaxParticipants,
             },
             ct
         );

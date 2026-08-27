@@ -15,5 +15,7 @@ export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetRes
 "isPublished": z.optional(z.boolean()),
 "startTime": z.optional(z.iso.datetime()),
 "endTime": z.optional(z.iso.datetime()),
-"maxParticipants": z.optional(z.int())
+"maxParticipants": z.optional(z.int()),
+"currentParticipants": z.optional(z.int()),
+"isAtCapacity": z.optional(z.boolean())
     })

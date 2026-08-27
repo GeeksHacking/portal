@@ -67,6 +67,8 @@ const registrationState = computed(() => {
     return 'loading'
   if (isLoadingStatus.value)
     return 'checking-status'
+  if (!statusData.value?.isRegistered && workshop.value?.isAtCapacity)
+    return 'at-capacity'
   if (!statusData.value?.isRegistered)
     return 'ready-to-join'
   if (isLoadingQuestions.value || isLoadingSubmissions.value)
@@ -367,10 +369,10 @@ const totalQuestionsCount = computed(() => {
           <UBadge
             v-if="workshop?.isPublished"
             size="sm"
-            color="success"
+            :color="workshop?.isAtCapacity ? 'error' : 'success'"
             variant="subtle"
           >
-            Open for registration
+            {{ workshop?.isAtCapacity ? 'Workshop full' : 'Open for registration' }}
           </UBadge>
           <UButton
             v-if="!user && (authResolved || authErrored)"
@@ -518,7 +520,12 @@ const totalQuestionsCount = computed(() => {
                   v-if="registrationState !== 'registered'"
                   class="rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) px-4 py-3 text-sm leading-6 text-(--ui-text-muted)"
                 >
-                  Sign in with GitHub to complete registration. Details are locked after signup.
+                  <template v-if="workshop?.isAtCapacity">
+                    This workshop is currently full and no new registrations can be accepted.
+                  </template>
+                  <template v-else>
+                    Sign in with GitHub to complete registration. Details are locked after signup.
+                  </template>
                 </div>
               </div>
 
@@ -660,10 +667,15 @@ const totalQuestionsCount = computed(() => {
                       Registration
                     </p>
                     <h2 class="text-2xl font-semibold text-(--ui-text-highlighted)">
-                      Reserve your spot
+                      {{ workshop?.isAtCapacity ? 'Workshop full' : 'Reserve your spot' }}
                     </h2>
                     <p class="text-sm leading-6 text-(--ui-text-muted)">
-                      Complete the signup form with your GitHub account. Your progress is saved when you submit.
+                      <template v-if="workshop?.isAtCapacity">
+                        Registration has reached capacity for this workshop.
+                      </template>
+                      <template v-else>
+                        Complete the signup form with your GitHub account. Your progress is saved when you submit.
+                      </template>
                     </p>
                   </div>
 
@@ -684,7 +696,15 @@ const totalQuestionsCount = computed(() => {
                     v-else-if="registrationState === 'signed-out'"
                     class="space-y-4 rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) p-5 shadow-lg shadow-black/5"
                   >
-                    <p class="text-sm leading-6 text-(--ui-text-muted)">
+                    <template v-if="workshop?.isAtCapacity">
+                      <p class="text-sm leading-6 text-(--ui-text-muted)">
+                        You can review the workshop details without signing in. This workshop is currently full, so signup is unavailable.
+                      </p>
+                    </template>
+                    <p
+                      v-else
+                      class="text-sm leading-6 text-(--ui-text-muted)"
+                    >
                       You can review the workshop details without signing in. To register, sign in first and we’ll bring you straight back here.
                     </p>
                     <UButton
@@ -693,8 +713,9 @@ const totalQuestionsCount = computed(() => {
                       block
                       size="lg"
                       icon="i-lucide-github"
+                      :disabled="workshop?.isAtCapacity"
                     >
-                      Sign in to register
+                      {{ workshop?.isAtCapacity ? 'Signup closed' : 'Sign in to register' }}
                     </UButton>
                   </div>
 
@@ -714,6 +735,21 @@ const totalQuestionsCount = computed(() => {
                     >
                       Start registration
                     </UButton>
+                  </div>
+
+                  <div
+                    v-else-if="registrationState === 'at-capacity'"
+                    class="space-y-4 rounded-2xl border border-error/40 bg-error/10 p-5 shadow-lg shadow-black/5"
+                  >
+                    <div class="flex items-start gap-3">
+                      <UIcon
+                        name="i-lucide-circle-alert"
+                        class="mt-0.5 size-5 text-error"
+                      />
+                      <p class="text-sm leading-6 text-(--ui-text-highlighted)">
+                        This workshop is over capacity, so new signups are currently closed.
+                      </p>
+                    </div>
                   </div>
 
                   <div

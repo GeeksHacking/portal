@@ -2,3 +2,34 @@
 pnpm = "latest"
 dotnet = "11.0.100-preview.7.26381.103"
 aspire = "latest"
+kiota = "latest"
+
+[tasks.dev]
+description = "Runs the dev server"
+run = "aspire run --detach --non-interactive"
+
+[tasks.codegen]
+description = "Runs the codegen against the production server"
+run = """
+kiota generate --output ./GeeksHackingPortal.WebApp/app/api-client --language TypeScript -d https://portal-api.geekshacking.com/openapi/v1.json --co
+kiota info -d https://portal-api.geekshacking.com/openapi/v1.json -l TypeScript
+"""
+
+[tasks.codegen-local]
+description = "Runs the codegen against the local dev server"
+run = """
+url=http://localhost:5227/openapi/v1.json
+
+attempt=0
+until curl --fail --silent --output /dev/null "$url"; do
+  attempt=$((attempt + 1))
+  if [ "$attempt" -ge 60 ]; then
+    echo "Timed out waiting for $url" >&2
+    exit 1
+  fi
+  sleep 1
+done
+
+kiota generate --output ./GeeksHackingPortal.WebApp/app/api-client --language TypeScript -d "$url" --co
+"""
+depends = ["dev"]

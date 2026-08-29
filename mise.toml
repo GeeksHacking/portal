@@ -1,0 +1,4 @@
+[tools]
+pnpm = "latest"
+dotnet = "11.0.100-preview.7.26381.103"
+aspire = "latest"

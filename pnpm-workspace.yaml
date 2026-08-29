@@ -3,6 +3,16 @@ packages:
   - GeeksHackingPortal.WebSdk
   - GeeksHackingPortal.OidcWebPlayground
 
+allowBuilds:
+  '@firebase/util': true
+  '@parcel/watcher': true
+  es5-ext: true
+  esbuild: true
+  msw: true
+  protobufjs: true
+  sharp: true
+  vue-demi: true
+
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - esbuild

@@ -3,39 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint } from "../clients/geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationKey = () => [{ url: '/organizers/hackathons/:hackathonId/workshops/:workshopId' }] as const
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationKey>
-
-/**
- * @description Updates an existing workshop.
- * @summary Update a workshop
- * {@link /organizers/hackathons/:hackathonId/workshops/:workshopId}
- */
-export function useGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint403>, {hackathonId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointPathParams["hackathonId"]>, workshopId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointPathParams["workshopId"]>, data: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationRequest>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationRequest>> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint403>, {hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointPathParams["hackathonId"], workshopId: GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointPathParams["workshopId"], data: GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationRequest}, TContext>({
-            mutationFn: async({ hackathonId, workshopId, data }) => {
-              return geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint(hackathonId, workshopId, data, config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

@@ -3,38 +3,40 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequest } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequest.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteResponse } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequest } from './GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequest'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteResponse } from './GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteResponse'
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     hackathonId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationRequest = GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequest;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointBody = GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequest;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationResponse = GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationRequest;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointBody;
+    path: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointStatus403);

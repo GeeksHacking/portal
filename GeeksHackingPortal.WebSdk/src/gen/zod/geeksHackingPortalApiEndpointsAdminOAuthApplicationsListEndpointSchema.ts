@@ -3,22 +3,15 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponseSchema } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponseSchema } from './geeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponseSchema'
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponseSchema)
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus200Schema = geeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointResponseSchema = geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus401Schema, geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus403Schema])

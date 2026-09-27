@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2MutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2PathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2401, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Url(activityId: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2PathParams["activityId"], participantUserId: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2PathParams["participantUserId"], resourceId: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2PathParams["resourceId"]) {
-  const res = { method: 'POST', url: `/organizers/standalone-workshops/${activityId}/participants/${participantUserId}/resources/${resourceId}/redemptions` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Options, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Responses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Creates a redemption record for an activity resource on behalf of a participant.
  * @summary Redeem a resource for a participant
  * {@link /organizers/standalone-workshops/:activityId/participants/:participantUserId/resources/:resourceId/redemptions}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2(activityId: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2PathParams["activityId"], participantUserId: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2PathParams["participantUserId"], resourceId: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2PathParams["resourceId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Options, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Responses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2MutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2403>, unknown>({ method : "POST", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Url(activityId, participantUserId, resourceId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/organizers/standalone-workshops/{activityId}/participants/{participantUserId}/resources/{resourceId}/redemptions', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Responses, ThrowOnError>>)
 }

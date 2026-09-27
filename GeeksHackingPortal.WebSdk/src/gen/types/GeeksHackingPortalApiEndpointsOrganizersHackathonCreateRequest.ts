@@ -3,23 +3,16 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequest } from "./GeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequest.ts";
+import type { GeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequest } from './GeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequest'
 
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest = {
-    /**
-     * @type string | undefined
-    */
     name?: string;
-    /**
-     * @type string | undefined
-    */
     description?: string;
-    /**
-     * @type string | undefined
-    */
     venue?: string;
     /**
-     * @type string, uri
+     * @description
+     * Format: `uri`
+     * @type string
     */
     homepageUri: string;
     /**
@@ -30,40 +23,48 @@ export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest = {
     */
     shortCode?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     eventStartDate?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     eventEndDate?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     submissionsStartDate?: string;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     challengeSelectionEndDate?: string | null;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     submissionsEndDate?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     judgingStartDate?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     judgingEndDate?: string;
-    /**
-     * @type boolean | undefined
-    */
     isPublished?: boolean;
-    /**
-     * @type object
-    */
     emailTemplates?: {
         [key: string]: string;
     } | null;

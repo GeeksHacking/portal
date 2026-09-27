@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointUrl() {
-  const res = { method: 'GET', url: `/admin/oauth-applications` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointOptions, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Lists OpenIddict OAuth clients owned by the current admin.
  * @summary List OAuth applications
  * {@link /admin/oauth-applications}
  */
-export async function geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint(config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointOptions, ThrowOnError> = {}): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint403>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointUrl().url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/admin/oauth-applications', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointResponses, ThrowOnError>>)
 }

@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryResponse } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointUrl() {
-  const res = { method: 'GET', url: `/participants/hackathons` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Retrieves all published hackathons.
  * @summary List all hackathons
  * {@link /participants/hackathons}
  */
-export async function geeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint(config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointOptions, ThrowOnError> = {}): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryResponse, ResponseErrorConfig<Error>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointUrl().url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/participants/hackathons', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointResponses, ThrowOnError>>)
 }

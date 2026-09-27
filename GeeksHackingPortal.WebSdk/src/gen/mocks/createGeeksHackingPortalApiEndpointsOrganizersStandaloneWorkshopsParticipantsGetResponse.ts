@@ -3,12 +3,27 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetRegistrationSubmissionItem } from "./createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetRegistrationSubmissionItem.ts";
-import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItem } from "./createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse'
+import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetRegistrationSubmissionItem } from './createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetRegistrationSubmissionItem'
+import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItem } from './createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItem'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse> = object>(data?: TData)
 
-  return { ...{"registrationId": faker.string.alpha(),"userId": faker.string.alpha(),"name": faker.string.alpha(),"email": faker.string.alpha(),"status": faker.string.alpha(),"registeredAt": faker.date.anytime().toISOString(),"withdrawnAt": faker.date.anytime().toISOString(),get "registrationSubmissions"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetRegistrationSubmissionItem())) },get "venueCheckIns"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItem())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  registrationId: faker.string.alpha(),
+  userId: faker.string.alpha(),
+  name: faker.string.alpha(),
+  email: faker.string.alpha(),
+  status: faker.string.alpha(),
+  registeredAt: faker.date.anytime().toISOString(),
+  withdrawnAt: faker.date.anytime().toISOString(),
+  registrationSubmissions: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetRegistrationSubmissionItem())),
+  venueCheckIns: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItem())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

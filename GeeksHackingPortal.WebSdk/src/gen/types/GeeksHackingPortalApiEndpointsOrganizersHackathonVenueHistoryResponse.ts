@@ -3,27 +3,22 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto } from './GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto'
 
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryResponse = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     participantId?: string;
     /**
-     * @type string | undefined, guid
-    */
-    userId?: string;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    userId?: string;
     userName?: string;
-    /**
-     * @type boolean | undefined
-    */
     isCurrentlyCheckedIn?: boolean;
-    /**
-     * @type array | undefined
-    */
     history?: GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto[];
 };

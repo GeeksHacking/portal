@@ -3,11 +3,11 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsAdminCachePurgeResponseSchema = z.object({
-    "message": z.optional(z.string()),
-"purgedKeys": z.optional(z.int()),
-"remainingKeys": z.optional(z.int()),
-"purgedAt": z.optional(z.iso.datetime())
-    })
+export const geeksHackingPortalApiEndpointsAdminCachePurgeResponseSchema = z.strictObject({
+  message: z.string().optional(),
+  purgedKeys: z.int32().optional(),
+  remainingKeys: z.int32().optional(),
+  purgedAt: z.iso.datetime().optional(),
+})

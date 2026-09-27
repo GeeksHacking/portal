@@ -3,30 +3,31 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewParticipantResourceRedemptionDto = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     participantId?: string;
     /**
-     * @type string | undefined, guid
-    */
-    userId?: string;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    userId?: string;
     userName?: string;
-    /**
-     * @type boolean | undefined
-    */
     hasRedeemed?: boolean;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     redemptionCount?: number;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     lastRedeemedAt?: string | null;
 };

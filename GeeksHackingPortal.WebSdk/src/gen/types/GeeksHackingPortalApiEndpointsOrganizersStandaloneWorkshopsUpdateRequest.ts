@@ -3,56 +3,57 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateRequest = {
     /**
      * @minLength 0
      * @maxLength 160
-     * @type string
+     * @type string | undefined
     */
     title?: string | null;
     /**
      * @minLength 0
      * @maxLength 4000
-     * @type string
+     * @type string | undefined
     */
     description?: string | null;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     startTime?: string | null;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     endTime?: string | null;
     /**
      * @minLength 0
      * @maxLength 240
-     * @type string
+     * @type string | undefined
     */
     location?: string | null;
-    /**
-     * @type boolean
-    */
     isPublished?: boolean | null;
     /**
-     * @type string, uri
+     * @description
+     * Format: `uri`
+     * @type string | undefined
     */
     homepageUri?: string | null;
     /**
      * @minLength 3
      * @maxLength 16
      * @pattern ^[A-Za-z0-9-]+$
-     * @type string
+     * @type string | undefined
     */
     shortCode?: string | null;
     /**
-     * @type integer, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     maxParticipants?: number | null;
-    /**
-     * @type object
-    */
     emailTemplates?: {
         [key: string]: string;
     } | null;

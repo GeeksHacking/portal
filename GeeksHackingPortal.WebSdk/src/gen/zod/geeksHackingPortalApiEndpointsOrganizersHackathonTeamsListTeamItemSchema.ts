@@ -3,13 +3,13 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListTeamItemSchema = z.object({
-    "id": z.optional(z.string()),
-"name": z.optional(z.string()),
-"description": z.optional(z.string()),
-"challengeId": z.string().nullish(),
-"createdAt": z.optional(z.iso.datetime()),
-"memberCount": z.optional(z.int())
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListTeamItemSchema = z.strictObject({
+  id: z.string().optional(),
+  name: z.string().optional(),
+  description: z.string().optional(),
+  challengeId: z.string().nullish(),
+  createdAt: z.iso.datetime().optional(),
+  memberCount: z.int32().optional(),
+})

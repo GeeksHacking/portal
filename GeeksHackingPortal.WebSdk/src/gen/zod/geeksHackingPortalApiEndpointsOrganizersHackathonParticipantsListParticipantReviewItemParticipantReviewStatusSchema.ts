@@ -3,6 +3,6 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatusSchema = z.enum(["Rejected", "Accepted"])
+export const geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatusSchema = z.union([z.literal('Rejected'), z.literal('Accepted')])

@@ -3,38 +3,23 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsAuthWhoAmIResponse = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
-    /**
-     * @type string | undefined
-    */
     name?: string;
-    /**
-     * @type string | undefined
-    */
     firstName?: string;
-    /**
-     * @type string | undefined
-    */
     lastName?: string;
-    /**
-     * @type string | undefined
-    */
     email?: string;
     /**
-     * @type integer | undefined, int64
+     * @description
+     * Format: `int64`
+     * @type integer | undefined
     */
-    gitHubId?: number;
-    /**
-     * @type string | undefined
-    */
+    gitHubId?: bigint;
     gitHubLogin?: string;
-    /**
-     * @type boolean | undefined
-    */
     isRoot?: boolean;
 };

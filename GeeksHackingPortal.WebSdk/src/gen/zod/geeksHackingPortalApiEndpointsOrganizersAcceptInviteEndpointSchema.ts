@@ -3,20 +3,16 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersAcceptInviteRequestSchema } from "./geeksHackingPortalApiEndpointsOrganizersAcceptInviteRequestSchema.ts";
-import { geeksHackingPortalApiEndpointsOrganizersAcceptInviteResponseSchema } from "./geeksHackingPortalApiEndpointsOrganizersAcceptInviteResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersAcceptInviteRequestSchema } from './geeksHackingPortalApiEndpointsOrganizersAcceptInviteRequestSchema'
+import { geeksHackingPortalApiEndpointsOrganizersAcceptInviteResponseSchema } from './geeksHackingPortalApiEndpointsOrganizersAcceptInviteResponseSchema'
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersAcceptInviteResponseSchema)
+export const geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointStatus200Schema = geeksHackingPortalApiEndpointsOrganizersAcceptInviteResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointStatus401Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationRequestSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersAcceptInviteRequestSchema)
+export const geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointResponseSchema = geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointStatus200Schema
 
-export const geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointErrorSchema = geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointStatus401Schema
+
+export const geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointBodySchema = geeksHackingPortalApiEndpointsOrganizersAcceptInviteRequestSchema

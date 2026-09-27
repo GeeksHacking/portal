@@ -3,11 +3,25 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantRedemptionEventItem } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantRedemptionEventItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantRedemptionEventItem } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantRedemptionEventItem'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem> = object>(data?: TData)
 
-  return { ...{"participantId": faker.string.alpha(),"userId": faker.string.alpha(),"userName": faker.string.alpha(),"redemptionCount": faker.number.int(),"distinctResourcesRedeemed": faker.number.int(),"firstRedeemedAt": faker.date.anytime().toISOString(),"lastRedeemedAt": faker.date.anytime().toISOString(),get "redemptions"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantRedemptionEventItem())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  participantId: faker.string.alpha(),
+  userId: faker.string.alpha(),
+  userName: faker.string.alpha(),
+  redemptionCount: faker.number.int(),
+  distinctResourcesRedeemed: faker.number.int(),
+  firstRedeemedAt: faker.date.anytime().toISOString(),
+  lastRedeemedAt: faker.date.anytime().toISOString(),
+  redemptions: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantRedemptionEventItem())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

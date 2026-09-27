@@ -3,17 +3,13 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsUsersProfileGetResponseSchema } from "./geeksHackingPortalApiEndpointsUsersProfileGetResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsUsersProfileGetResponseSchema } from './geeksHackingPortalApiEndpointsUsersProfileGetResponseSchema'
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsUsersProfileGetEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsUsersProfileGetResponseSchema)
+export const geeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200Schema = geeksHackingPortalApiEndpointsUsersProfileGetResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsUsersProfileGetEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsUsersProfileGetEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsUsersProfileGetEndpointResponseSchema = geeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsUsersProfileGetEndpointErrorSchema = geeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401Schema

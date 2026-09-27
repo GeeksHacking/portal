@@ -3,42 +3,43 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1MutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1PathParams } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Path, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Response, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Status204, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Status401, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Status403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1PathParams(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1PathParams>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1PathParams {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Path<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Path> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  activityId: faker.string.alpha(),
+  resourceId: faker.string.alpha(),
+}
   return {
-    ...{"activityId": faker.string.alpha(),"resourceId": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }
 
 /**
  * @description No Content
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1204() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Status204() {
   return undefined
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1401() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Status401() {
   return undefined
 }
 
 /**
  * @description Forbidden
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1403() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Status403() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1MutationResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1MutationResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1MutationResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1204()])
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Response(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Response>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Response {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Status204(), createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Status401(), createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Status403()])) as GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Response
 }

@@ -3,27 +3,23 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequestSchema } from "./geeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequestSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequestSchema } from './geeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequestSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonCreateRequestSchema = z.object({
-    "name": z.optional(z.string()),
-"description": z.optional(z.string()),
-"venue": z.optional(z.string()),
-"homepageUri": z.url(),
-"shortCode": z.optional(z.string().min(3).max(16).regex(/^[A-Za-z0-9-]+$/)),
-"eventStartDate": z.optional(z.iso.datetime()),
-"eventEndDate": z.optional(z.iso.datetime()),
-"submissionsStartDate": z.optional(z.iso.datetime()),
-"challengeSelectionEndDate": z.iso.datetime().nullish(),
-"submissionsEndDate": z.optional(z.iso.datetime()),
-"judgingStartDate": z.optional(z.iso.datetime()),
-"judgingEndDate": z.optional(z.iso.datetime()),
-"isPublished": z.optional(z.boolean()),
-"emailTemplates": z.object({
-    
-    }).catchall(z.string()).nullish(),
-get "gitHubRepositorySettings"(){
-                return geeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequestSchema.nullish()
-              }
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonCreateRequestSchema = z.strictObject({
+  name: z.string().optional(),
+  description: z.string().optional(),
+  venue: z.string().optional(),
+  homepageUri: z.url(),
+  shortCode: z.string().min(3).max(16).regex(/^[A-Za-z0-9-]+$/).optional(),
+  eventStartDate: z.iso.datetime().optional(),
+  eventEndDate: z.iso.datetime().optional(),
+  submissionsStartDate: z.iso.datetime().optional(),
+  challengeSelectionEndDate: z.iso.datetime().nullish(),
+  submissionsEndDate: z.iso.datetime().optional(),
+  judgingStartDate: z.iso.datetime().optional(),
+  judgingEndDate: z.iso.datetime().optional(),
+  isPublished: z.boolean().optional(),
+  emailTemplates: z.object({}).catchall(z.string()).nullish(),
+  gitHubRepositorySettings: geeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequestSchema.strict().nullish(),
+})

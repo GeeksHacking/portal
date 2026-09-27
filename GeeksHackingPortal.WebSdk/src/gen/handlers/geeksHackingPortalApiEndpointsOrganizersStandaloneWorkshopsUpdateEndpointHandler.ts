@@ -3,54 +3,47 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint400, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus400, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus403, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointBody } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint'
+import type { HttpResponseResolver } from 'msw'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointMutationResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 200,
-          headers: {
-          'Content-Type': 'application/json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointHandlerResponse400(data: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint400) {
-
-      return new Response(JSON.stringify(data), {
-        status: 400,
-          headers: {
-          'Content-Type': 'application/problem+json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointHandlerResponse400(data: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus400) {
+  return new Response(JSON.stringify(data), {
+    status: 400,
+    headers: {
+      'Content-Type': 'application/problem+json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint403) {
-
-      return new Response(JSON.stringify(data), {
-        status: 403,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus403) {
+  return new Response(JSON.stringify(data), {
+    status: 403,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointHandler(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointMutationResponse | ((
-        info: Parameters<Parameters<typeof http.patch>[1]>[0],
-      ) => Response | Promise<Response>)) {
-  return http.patch(`/organizers/standalone-workshops/:standaloneWorkshopId`, function handler(info) {
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointHandler(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointResponse | HttpResponseResolver<Record<string, string>, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointBody>) {
+  return http.patch<Record<string, string>, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointBody>(`/organizers/standalone-workshops/:standaloneWorkshopId`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 200,
-          headers: {
+        headers: {
           'Content-Type': 'application/json'
         },
       })

@@ -3,13 +3,31 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonListResponseHackathonItem } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonListResponseHackathonItem.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonListResponseHackathonItem } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonListResponseHackathonItem'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonListResponseHackathonItem(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonListResponseHackathonItem>): GeeksHackingPortalApiEndpointsOrganizersHackathonListResponseHackathonItem {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonListResponseHackathonItem<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonListResponseHackathonItem> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  name: faker.string.alpha(),
+  description: faker.string.alpha(),
+  venue: faker.string.alpha(),
+  homepageUri: faker.internet.url(),
+  shortCode: faker.string.alpha(),
+  isPublished: faker.datatype.boolean(),
+  eventStartDate: faker.date.anytime().toISOString(),
+  eventEndDate: faker.date.anytime().toISOString(),
+  submissionsStartDate: faker.date.anytime().toISOString(),
+  challengeSelectionEndDate: faker.date.anytime().toISOString(),
+  submissionsEndDate: faker.date.anytime().toISOString(),
+  judgingStartDate: faker.date.anytime().toISOString(),
+  judgingEndDate: faker.date.anytime().toISOString(),
+  emailTemplates: {},
+}
   return {
-    ...{"id": faker.string.alpha(),"name": faker.string.alpha(),"description": faker.string.alpha(),"venue": faker.string.alpha(),"homepageUri": faker.internet.url(),"shortCode": faker.string.alpha(),"isPublished": faker.datatype.boolean(),"eventStartDate": faker.date.anytime().toISOString(),"eventEndDate": faker.date.anytime().toISOString(),"submissionsStartDate": faker.date.anytime().toISOString(),"challengeSelectionEndDate": faker.date.anytime().toISOString(),"submissionsEndDate": faker.date.anytime().toISOString(),"judgingStartDate": faker.date.anytime().toISOString(),"judgingEndDate": faker.date.anytime().toISOString(),"emailTemplates": {}},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

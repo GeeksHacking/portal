@@ -3,26 +3,18 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointPathParamsSchema = z.object({
-    "standaloneWorkshopId": z.string(),
-"userId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointPathStandaloneWorkshopIdSchema = z.string()
 
-/**
- * @description No Content
- */
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint204Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointPathUserIdSchema = z.string()
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus204Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus401Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint204Schema)
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus403Schema = z.unknown()
+
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointResponseSchema = geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus204Schema
+
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus401Schema, geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus403Schema])

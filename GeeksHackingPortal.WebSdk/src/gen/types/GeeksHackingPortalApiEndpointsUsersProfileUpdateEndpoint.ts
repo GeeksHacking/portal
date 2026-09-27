@@ -3,31 +3,32 @@
 * Do not edit manually.
 */
 
-import type { FastEndpointsErrorResponse } from "./FastEndpointsErrorResponse.ts";
-import type { GeeksHackingPortalApiEndpointsUsersProfileUpdateRequest } from "./GeeksHackingPortalApiEndpointsUsersProfileUpdateRequest.ts";
-import type { GeeksHackingPortalApiEndpointsUsersProfileUpdateResponse } from "./GeeksHackingPortalApiEndpointsUsersProfileUpdateResponse.ts";
+import type { FastEndpointsErrorResponse } from './FastEndpointsErrorResponse'
+import type { GeeksHackingPortalApiEndpointsUsersProfileUpdateRequest } from './GeeksHackingPortalApiEndpointsUsersProfileUpdateRequest'
+import type { GeeksHackingPortalApiEndpointsUsersProfileUpdateResponse } from './GeeksHackingPortalApiEndpointsUsersProfileUpdateResponse'
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint200 = GeeksHackingPortalApiEndpointsUsersProfileUpdateResponse;
+export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200 = GeeksHackingPortalApiEndpointsUsersProfileUpdateResponse;
 
-/**
- * @description Bad Request
-*/
-export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint400 = FastEndpointsErrorResponse;
+export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400 = FastEndpointsErrorResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus401 = unknown;
 
-export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationRequest = GeeksHackingPortalApiEndpointsUsersProfileUpdateRequest;
+export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointBody = GeeksHackingPortalApiEndpointsUsersProfileUpdateRequest;
 
-export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationResponse = GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationRequest;
-    Errors: GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint400 | GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint401;
+export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointBody;
+    path?: never;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200;
+    "400": GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400;
+    "401": GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus401;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponse = (GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200 | GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400 | GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus401);

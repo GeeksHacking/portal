@@ -3,37 +3,41 @@
 * Do not edit manually.
 */
 
-
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     standaloneWorkshopId: string;
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     userId: string;
 };
 
-/**
- * @description No Content
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint204 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus204 = unknown;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointMutationResponse = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint204;
-
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint204;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointOptions = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointResponses = {
+    "204": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus204;
+    "401": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus204 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus403);

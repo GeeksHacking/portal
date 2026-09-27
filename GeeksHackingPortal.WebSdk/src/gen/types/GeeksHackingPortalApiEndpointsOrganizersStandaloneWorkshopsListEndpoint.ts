@@ -3,21 +3,25 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponse } from "./GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponse } from './GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponse'
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointStatus401 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryResponse = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQuery = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint200;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint401;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointOptions = {
+    body?: never;
+    path?: never;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointStatus401;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointStatus401);

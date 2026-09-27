@@ -3,77 +3,91 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItem } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItem.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItem } from './GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItem'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem } from './GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem } from './GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem'
 
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponse = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     resourceId?: string | null;
-    /**
-     * @type string
-    */
     resourceName?: string | null;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     resourceCount?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     resourcesWithRedemptions?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     resourcesWithoutRedemptions?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     totalParticipants?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     participantsWithRedemptions?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     participantsWithoutRedemptions?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     teamsWithRedemptions?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     redeemersWithoutTeam?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     totalRedemptions?: number;
     /**
-     * @type number | undefined, decimal
+     * @description
+     * Format: `decimal`
+     * @type number | undefined
     */
     averageRedemptionsPerRedeemer?: number;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     firstRedeemedAt?: string | null;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     lastRedeemedAt?: string | null;
-    /**
-     * @type array | undefined
-    */
     resourceSummaries?: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem[];
-    /**
-     * @type array | undefined
-    */
     teamBreakdown?: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem[];
-    /**
-     * @type array | undefined
-    */
     recentActivity?: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItem[];
 };

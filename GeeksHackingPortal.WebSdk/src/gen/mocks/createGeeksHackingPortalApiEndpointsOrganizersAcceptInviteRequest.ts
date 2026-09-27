@@ -3,13 +3,17 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersAcceptInviteRequest } from "../types/GeeksHackingPortalApiEndpointsOrganizersAcceptInviteRequest.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersAcceptInviteRequest } from '../types/GeeksHackingPortalApiEndpointsOrganizersAcceptInviteRequest'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersAcceptInviteRequest(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersAcceptInviteRequest>): GeeksHackingPortalApiEndpointsOrganizersAcceptInviteRequest {
+export function createGeeksHackingPortalApiEndpointsOrganizersAcceptInviteRequest<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersAcceptInviteRequest> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  code: faker.string.alpha(),
+}
   return {
-    ...{"code": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

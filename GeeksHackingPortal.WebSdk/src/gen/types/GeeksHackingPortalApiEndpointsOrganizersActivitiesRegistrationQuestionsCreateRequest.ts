@@ -3,48 +3,23 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateCreateOptionDto } from "./GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateCreateOptionDto.ts";
-import type { GeeksHackingPortalApiEntitiesQuestionType } from "./GeeksHackingPortalApiEntitiesQuestionType.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateCreateOptionDto } from './GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateCreateOptionDto'
+import type { GeeksHackingPortalApiEntitiesQuestionTypeKey } from './GeeksHackingPortalApiEntitiesQuestionType'
 
 export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateRequest = {
-    /**
-     * @type string | undefined
-    */
     questionText?: string;
-    /**
-     * @type string | undefined
-    */
     questionKey?: string;
+    type?: GeeksHackingPortalApiEntitiesQuestionTypeKey;
     /**
-     * @type string | undefined
-    */
-    type?: GeeksHackingPortalApiEntitiesQuestionType;
-    /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     displayOrder?: number;
-    /**
-     * @type boolean | undefined
-    */
     isRequired?: boolean;
-    /**
-     * @type string
-    */
     helpText?: string | null;
-    /**
-     * @type string
-    */
     conditionalLogic?: string | null;
-    /**
-     * @type string
-    */
     category?: string | null;
-    /**
-     * @type string
-    */
     validationRules?: string | null;
-    /**
-     * @type array
-    */
     options?: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateCreateOptionDto[] | null;
 };

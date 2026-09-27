@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint400, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointUrl() {
-  const res = { method: 'POST', url: `/organizers/standalone-workshops` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Creates an activity-backed workshop independent of a hackathon.
  * @summary Create a standalone workshop
  * {@link /organizers/standalone-workshops}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint(data: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint400 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint403>, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointMutationRequest>({ method : "POST", url : getGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointUrl().url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/organizers/standalone-workshops', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointResponses, ThrowOnError>>)
 }

@@ -3,11 +3,19 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListCategoryDto } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListCategoryDto.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto } from "./createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListCategoryDto } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListCategoryDto'
+import { createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto } from './createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListCategoryDto(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListCategoryDto>): GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListCategoryDto {
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListCategoryDto<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListCategoryDto> = object>(data?: TData)
 
-  return { ...{"name": faker.string.alpha(),get "questions"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  name: faker.string.alpha(),
+  questions: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

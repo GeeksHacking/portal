@@ -3,36 +3,35 @@
 * Do not edit manually.
 */
 
-import type { FastEndpointsErrorResponse } from "./FastEndpointsErrorResponse.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest } from "./GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateResponse } from "./GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateResponse.ts";
+import type { FastEndpointsErrorResponse } from './FastEndpointsErrorResponse'
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest } from './GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest'
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateResponse } from './GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateResponse'
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateResponse;
 
-/**
- * @description Bad Request
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint400 = FastEndpointsErrorResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus400 = FastEndpointsErrorResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointMutationRequest = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointBody = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest;
 
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointMutationResponse = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointMutationRequest;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint400 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointBody;
+    path?: never;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus200;
+    "400": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus400;
+    "401": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus400 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus403);

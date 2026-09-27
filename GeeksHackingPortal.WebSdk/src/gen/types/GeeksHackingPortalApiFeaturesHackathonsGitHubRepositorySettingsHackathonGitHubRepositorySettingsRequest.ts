@@ -3,30 +3,16 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequest = {
-    /**
-     * @type boolean | undefined
-    */
     isRepositoryCheckingEnabled?: boolean;
-    /**
-     * @type boolean | undefined
-    */
     isRepositoryForkingEnabled?: boolean;
-    /**
-     * @type string
-    */
     apiKey?: string | null;
-    /**
-     * @type boolean | undefined
-    */
     clearApiKey?: boolean;
-    /**
-     * @type string
-    */
     repositoryPrefix?: string | null;
     /**
-     * @type integer, int64
+     * @description
+     * Format: `int64`
+     * @type integer | undefined
     */
-    organizationId?: number | null;
+    organizationId?: bigint | null;
 };

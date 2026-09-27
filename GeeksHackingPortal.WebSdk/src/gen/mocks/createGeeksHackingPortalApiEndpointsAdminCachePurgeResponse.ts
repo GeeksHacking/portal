@@ -3,13 +3,20 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminCachePurgeResponse } from "../types/GeeksHackingPortalApiEndpointsAdminCachePurgeResponse.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsAdminCachePurgeResponse } from '../types/GeeksHackingPortalApiEndpointsAdminCachePurgeResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsAdminCachePurgeResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminCachePurgeResponse>): GeeksHackingPortalApiEndpointsAdminCachePurgeResponse {
+export function createGeeksHackingPortalApiEndpointsAdminCachePurgeResponse<TData extends Partial<GeeksHackingPortalApiEndpointsAdminCachePurgeResponse> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  message: faker.string.alpha(),
+  purgedKeys: faker.number.int(),
+  remainingKeys: faker.number.int(),
+  purgedAt: faker.date.anytime().toISOString(),
+}
   return {
-    ...{"message": faker.string.alpha(),"purgedKeys": faker.number.int(),"remainingKeys": faker.number.int(),"purgedAt": faker.date.anytime().toISOString()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

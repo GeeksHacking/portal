@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationRequest, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointUrl() {
-  const res = { method: 'POST', url: `/participants/standalone-workshops/join` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Registers the current user for a standalone workshop using its short code.
  * @summary Join a standalone workshop by short code
  * {@link /participants/standalone-workshops/join}
  */
-export async function geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpoint(data: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpoint401>, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationRequest>({ method : "POST", url : getGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointUrl().url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/participants/standalone-workshops/join', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointResponses, ThrowOnError>>)
 }

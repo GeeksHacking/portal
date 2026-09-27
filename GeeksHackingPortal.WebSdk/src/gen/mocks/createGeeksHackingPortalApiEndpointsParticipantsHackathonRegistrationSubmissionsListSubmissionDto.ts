@@ -3,13 +3,23 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListSubmissionDto } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListSubmissionDto.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListSubmissionDto } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListSubmissionDto'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListSubmissionDto(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListSubmissionDto>): GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListSubmissionDto {
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListSubmissionDto<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListSubmissionDto> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  questionId: faker.string.alpha(),
+  questionKey: faker.string.alpha(),
+  questionText: faker.string.alpha(),
+  category: faker.string.alpha(),
+  value: faker.string.alpha(),
+  followUpValue: faker.string.alpha(),
+  updatedAt: faker.date.anytime().toISOString(),
+}
   return {
-    ...{"questionId": faker.string.alpha(),"questionKey": faker.string.alpha(),"questionText": faker.string.alpha(),"category": faker.string.alpha(),"value": faker.string.alpha(),"followUpValue": faker.string.alpha(),"updatedAt": faker.date.anytime().toISOString()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

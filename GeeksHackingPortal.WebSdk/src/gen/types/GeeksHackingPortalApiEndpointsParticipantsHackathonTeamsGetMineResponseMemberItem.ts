@@ -3,22 +3,14 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     userId?: string;
-    /**
-     * @type string | undefined
-    */
     name?: string;
-    /**
-     * @type string | undefined
-    */
     email?: string;
-    /**
-     * @type boolean | undefined
-    */
     isCurrentUser?: boolean;
 };

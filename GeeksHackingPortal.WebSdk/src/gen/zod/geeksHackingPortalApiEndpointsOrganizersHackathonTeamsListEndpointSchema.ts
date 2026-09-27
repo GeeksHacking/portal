@@ -3,26 +3,17 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListResponseSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListResponseSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListResponseSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointPathParamsSchema = z.object({
-    "hackathonId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointPathHackathonIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListResponseSchema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointStatus200Schema = geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointStatus401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointStatus403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointQueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointResponseSchema = geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointStatus401Schema, geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointStatus403Schema])

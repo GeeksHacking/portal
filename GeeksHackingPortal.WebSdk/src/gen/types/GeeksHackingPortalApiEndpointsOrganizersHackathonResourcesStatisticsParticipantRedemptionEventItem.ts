@@ -3,22 +3,24 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantRedemptionEventItem = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     redemptionId?: string;
     /**
-     * @type string | undefined, guid
-    */
-    resourceId?: string;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    resourceId?: string;
     resourceName?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     timestamp?: string;
 };

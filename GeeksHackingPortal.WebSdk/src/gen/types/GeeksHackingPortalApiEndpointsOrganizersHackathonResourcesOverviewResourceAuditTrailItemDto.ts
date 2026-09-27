@@ -3,26 +3,30 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDto = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     redemptionId?: string;
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     participantId?: string;
     /**
-     * @type string | undefined, guid
-    */
-    userId?: string;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    userId?: string;
     userName?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     timestamp?: string;
 };

@@ -3,36 +3,32 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointResponse, GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointBody } from '../types/GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint'
+import type { HttpResponseResolver } from 'msw'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 200,
-          headers: {
-          'Content-Type': 'application/json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointStatus401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointHandler(data?: GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationResponse | ((
-        info: Parameters<Parameters<typeof http.post>[1]>[0],
-      ) => Response | Promise<Response>)) {
-  return http.post(`/organizers/accept-invite`, function handler(info) {
+export function geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointHandler(data?: GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointResponse | HttpResponseResolver<Record<string, string>, GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointBody>) {
+  return http.post<Record<string, string>, GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointBody>(`/organizers/accept-invite`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 200,
-          headers: {
+        headers: {
           'Content-Type': 'application/json'
         },
       })

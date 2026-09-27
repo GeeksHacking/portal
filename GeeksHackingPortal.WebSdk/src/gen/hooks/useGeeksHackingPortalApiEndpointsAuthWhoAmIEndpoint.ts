@@ -3,54 +3,21 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse, GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint.ts";
-import { queryOptions, useQuery } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsAuthWhoAmIEndpoint } from "../clients/geeksHackingPortalApiEndpointsAuthWhoAmIEndpoint.ts";
-import { toValue } from "vue";
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200, GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint'
+import { geeksHackingPortalApiEndpointsAuthWhoAmIEndpoint } from '../clients/geeksHackingPortalApiEndpointsAuthWhoAmIEndpoint'
+import { queryOptions } from '@tanstack/vue-query'
 
 export const geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryKey = () => [{ url: '/auth/whoami' }] as const
 
 export type GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryKey = ReturnType<typeof geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryKey>
 
-export function geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryOptions(config: Partial<RequestConfig> & { client?: Client } = {}) {
-
-        const queryKey = geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryKey()
-        return queryOptions<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint401>, GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse, typeof queryKey>({
-        
-        queryKey,
-        queryFn: async ({ signal }) => {
-            return geeksHackingPortalApiEndpointsAuthWhoAmIEndpoint({ ...config, signal: config.signal ?? signal })
-         },
-        })
-
-}
-
-/**
- * @description Returns the current authenticated user's information including GitHub details.
- * @summary Get current user info
- * {@link /auth/whoami}
- */
-export function useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint<TData = GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse, TQueryData = GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryKey>(options: 
-{
-  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint401>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
-  client?: Partial<RequestConfig> & { client?: Client }
-}
- = {}) {
-
-         const { query: queryConfig = {}, client: config = {} } = options ?? {}
-         const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryKey()
-
-         const query = useQuery({
-          ...geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryOptions(config),
-          ...resolvedOptions,
-          queryKey
-         } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint401>, TData, GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint401>> & { queryKey: TQueryKey }
-
-         query.queryKey = queryKey as TQueryKey
-
-         return query
-         
+export function geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryOptions(config: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>> = {}) {
+  const queryKey = geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryKey()
+  return queryOptions<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus401>, GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200>({
+   queryKey,
+   queryFn: async ({ signal }) => {
+      return geeksHackingPortalApiEndpointsAuthWhoAmIEndpoint({ ...config, signal: config.signal ?? signal, throwOnError: true }).unwrap()
+   },
+  })
 }

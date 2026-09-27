@@ -3,11 +3,12 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeRequest = {
     /**
+     * @description
+     * Format: `guid`
      * @minLength 1
-     * @type string, guid
+     * @type string
     */
     challengeId: string;
 };

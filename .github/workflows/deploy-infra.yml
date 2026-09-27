@@ -5,7 +5,7 @@ on:
     paths:
       - "GeeksHackingPortal.Infra/**"
       - ".github/workflows/deploy-infra.yml"
-    branches: ["main"]
+    branches: [ "main" ]
 
 defaults:
   run:
@@ -21,9 +21,9 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-dotnet@v5
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.401
 
@@ -32,7 +32,7 @@ jobs:
           workload_identity_provider: projects/242247218750/locations/global/workloadIdentityPools/github/providers/github
           service_account: pulumi-deployer@hackomania-event-portal.iam.gserviceaccount.com
 
-      - uses: pulumi/actions@v6
+      - uses: pulumi/actions@v7
         env:
           PULUMI_CONFIG_PASSPHRASE: ""
         with:

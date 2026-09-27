@@ -3,13 +3,19 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponse } from "../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponse.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponse } from '../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponse(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponse>): GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponse {
+export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponse<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponse> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  standaloneWorkshopId: faker.string.alpha(),
+  userId: faker.string.alpha(),
+  joinedAt: faker.date.anytime().toISOString(),
+}
   return {
-    ...{"standaloneWorkshopId": faker.string.alpha(),"userId": faker.string.alpha(),"joinedAt": faker.date.anytime().toISOString()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

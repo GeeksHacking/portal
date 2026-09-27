@@ -3,54 +3,47 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint400, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus400, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus403, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointBody } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint'
+import type { HttpResponseResolver } from 'msw'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 200,
-          headers: {
-          'Content-Type': 'application/json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointHandlerResponse400(data: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint400) {
-
-      return new Response(JSON.stringify(data), {
-        status: 400,
-          headers: {
-          'Content-Type': 'application/problem+json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointHandlerResponse400(data: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus400) {
+  return new Response(JSON.stringify(data), {
+    status: 400,
+    headers: {
+      'Content-Type': 'application/problem+json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint403) {
-
-      return new Response(JSON.stringify(data), {
-        status: 403,
-        
-      })
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus403) {
+  return new Response(JSON.stringify(data), {
+    status: 403,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointHandler(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationResponse | ((
-        info: Parameters<Parameters<typeof http.put>[1]>[0],
-      ) => Response | Promise<Response>)) {
-  return http.put(`/admin/oauth-applications/:id`, function handler(info) {
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointHandler(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointResponse | HttpResponseResolver<Record<string, string>, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointBody>) {
+  return http.put<Record<string, string>, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointBody>(`/admin/oauth-applications/:id`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 200,
-          headers: {
+        headers: {
           'Content-Type': 'application/json'
         },
       })

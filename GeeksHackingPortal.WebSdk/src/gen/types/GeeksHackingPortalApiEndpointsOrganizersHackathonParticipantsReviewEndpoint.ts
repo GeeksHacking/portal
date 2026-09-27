@@ -3,42 +3,46 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewRequest } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewRequest.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewResponse } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewRequest } from './GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewRequest'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewResponse } from './GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewResponse'
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     hackathonId: string;
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     participantUserId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointMutationRequest = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewRequest;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointBody = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewRequest;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointMutationResponse = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointMutationRequest;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointBody;
+    path: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpointStatus403);

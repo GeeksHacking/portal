@@ -3,16 +3,16 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsResponseSchema = z.object({
-    "registeredCount": z.optional(z.int()),
-"withdrawnCount": z.optional(z.int()),
-"capacityRemaining": z.optional(z.int()),
-"capacityUsedPercent": z.optional(z.number()),
-"checkInCount": z.optional(z.int()),
-"currentlyCheckedInCount": z.optional(z.int()),
-"resourceCount": z.optional(z.int()),
-"resourceRedemptionCount": z.optional(z.int()),
-"emailTemplateCount": z.optional(z.int())
-    })
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsResponseSchema = z.strictObject({
+  registeredCount: z.int32().optional(),
+  withdrawnCount: z.int32().optional(),
+  capacityRemaining: z.int32().optional(),
+  capacityUsedPercent: z.number().optional(),
+  checkInCount: z.int32().optional(),
+  currentlyCheckedInCount: z.int32().optional(),
+  resourceCount: z.int32().optional(),
+  resourceRedemptionCount: z.int32().optional(),
+  emailTemplateCount: z.int32().optional(),
+})

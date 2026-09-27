@@ -3,12 +3,9 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItem } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItem.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItem } from './GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItem'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem } from './GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem'
 
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse = (GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem & {
-    /**
-     * @type array | undefined
-    */
     emailDeliveries?: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItem[];
 });

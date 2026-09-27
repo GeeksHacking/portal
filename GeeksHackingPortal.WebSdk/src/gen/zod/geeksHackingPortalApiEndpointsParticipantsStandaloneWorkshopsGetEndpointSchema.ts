@@ -3,16 +3,11 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponseSchema } from "./geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponseSchema } from './geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponseSchema'
 
-export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointPathParamsSchema = z.object({
-    "standaloneWorkshopIdOrShortCode": z.string()
-    })
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointPathStandaloneWorkshopIdOrShortCodeSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponseSchema)
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointStatus200Schema = geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponseSchema
 
-export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointQueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointResponseSchema = geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointStatus200Schema

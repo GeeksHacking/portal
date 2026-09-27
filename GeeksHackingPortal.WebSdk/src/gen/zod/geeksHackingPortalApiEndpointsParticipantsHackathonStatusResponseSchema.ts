@@ -3,17 +3,15 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusSchema } from "./geeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusSchema } from './geeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusSchema'
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonStatusResponseSchema = z.object({
-    "isParticipant": z.optional(z.boolean()),
-"isOrganizer": z.optional(z.boolean()),
-"teamId": z.string().nullish(),
-"teamName": z.string().nullish(),
-get "status"(){
-                return geeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusSchema.nullish()
-              },
-"reviewReason": z.string().nullish(),
-"reviewedAt": z.iso.datetime().nullish()
-    })
+export const geeksHackingPortalApiEndpointsParticipantsHackathonStatusResponseSchema = z.strictObject({
+  isParticipant: z.boolean().optional(),
+  isOrganizer: z.boolean().optional(),
+  teamId: z.string().nullish(),
+  teamName: z.string().nullish(),
+  status: geeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusSchema.nullish(),
+  reviewReason: z.string().nullish(),
+  reviewedAt: z.iso.datetime().nullish(),
+})

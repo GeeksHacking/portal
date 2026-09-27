@@ -3,27 +3,19 @@
 * Do not edit manually.
 */
 
-
-/**
- * @description the dto used to send an error response to the client
-*/
 export type FastEndpointsErrorResponse = {
     /**
-     * @description the http status code sent to the client. default is 400.
+     * @description
+     * Format: `int32`
      * @default 400
-     * @type integer | undefined, int32
+     * @type integer | undefined
     */
     statusCode?: number;
     /**
-     * @description the message for the error response
-     * @default "One or more errors occurred!"
+     * @default 'One or more errors occurred!'
      * @type string | undefined
     */
     message?: string;
-    /**
-     * @description the collection of errors for the current context
-     * @type object | undefined
-    */
     errors?: {
         [key: string]: string[];
     };

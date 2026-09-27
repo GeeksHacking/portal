@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationRequest, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint400, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointUrl() {
-  const res = { method: 'PATCH', url: `/users/me` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointOptions, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Updates the current user's first and last name.
  * @summary Update current user profile
  * {@link /users/me}
  */
-export async function geeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint(data: GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint400 | GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint401>, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationRequest>({ method : "PATCH", url : getGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointUrl().url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'PATCH', url: '/users/me', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponses, ThrowOnError>>)
 }

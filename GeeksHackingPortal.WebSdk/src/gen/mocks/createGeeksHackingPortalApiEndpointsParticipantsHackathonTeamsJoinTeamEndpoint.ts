@@ -3,49 +3,49 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint200, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationRequest, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPathParams } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest } from "./createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest.ts";
-import { createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamResponse } from "./createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamResponse.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointBody, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPath, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus200, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus401, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint'
+import { createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest } from './createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest'
+import { createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamResponse } from './createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPathParams(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPathParams>): GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPathParams {
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPath<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPath> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  hackathonId: faker.string.alpha(),
+  teamId: faker.string.alpha(),
+}
   return {
-    ...{"hackathonId": faker.string.alpha(),"teamId": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint200(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint200>): GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint200 {
-
-  return createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamResponse(data)
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus200(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus200>): GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus200 {
+  return createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamResponse(data) as GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus200
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint401() {
-
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus401() {
   return undefined
 }
 
 /**
  * @description Forbidden
  */
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint403() {
-
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus403() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationRequest(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationRequest>): GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationRequest {
-
-  return createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest(data)
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointBody(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointBody>): GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointBody {
+  return createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest(data) as GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointBody
 }
 
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationResponse(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationResponse>): GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint200()])
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointResponse(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointResponse>): GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointResponse {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus200(), createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus401(), createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus403()])) as GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointResponse
 }

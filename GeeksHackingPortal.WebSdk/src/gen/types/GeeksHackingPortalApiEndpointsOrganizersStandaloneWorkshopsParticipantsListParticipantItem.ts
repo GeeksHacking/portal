@@ -3,39 +3,35 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItem } from "./GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItem } from './GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItem'
 
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     registrationId?: string;
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     userId?: string;
-    /**
-     * @type string | undefined
-    */
     name?: string;
-    /**
-     * @type string | undefined
-    */
     email?: string;
-    /**
-     * @type string | undefined
-    */
     status?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     registeredAt?: string;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     withdrawnAt?: string | null;
-    /**
-     * @type array | undefined
-    */
     registrationSubmissions?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItem[];
 };

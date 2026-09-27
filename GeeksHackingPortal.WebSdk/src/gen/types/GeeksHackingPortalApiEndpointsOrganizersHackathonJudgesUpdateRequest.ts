@@ -3,18 +3,8 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateRequest = {
-    /**
-     * @type string
-    */
     name?: string | null;
-    /**
-     * @type boolean
-    */
     active?: boolean | null;
-    /**
-     * @type boolean | undefined
-    */
     regenerateSecret?: boolean;
 };

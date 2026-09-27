@@ -3,44 +3,37 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 200,
-          headers: {
-          'Content-Type': 'application/json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint403) {
-
-      return new Response(JSON.stringify(data), {
-        status: 403,
-        
-      })
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus403) {
+  return new Response(JSON.stringify(data), {
+    status: 403,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointHandler(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryResponse | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Response | Promise<Response>)) {
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointHandler(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Response | Promise<Response>)) {
   return http.get(`/admin/oauth-applications`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 200,
-          headers: {
+        headers: {
           'Content-Type': 'application/json'
         },
       })

@@ -3,49 +3,49 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint200, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointPathParams } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateRequest } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateRequest.ts";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateResponse } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointBody, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointPath, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus200, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateRequest } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateRequest'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateResponse } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointPathParams(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointPathParams>): GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointPathParams {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointPath<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointPath> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  hackathonId: faker.string.alpha(),
+  workshopId: faker.string.alpha(),
+}
   return {
-    ...{"hackathonId": faker.string.alpha(),"workshopId": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint200(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint200>): GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint200 {
-
-  return createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateResponse(data)
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus200(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus200>): GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus200 {
+  return createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateResponse(data) as GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus200
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint401() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus401() {
   return undefined
 }
 
 /**
  * @description Forbidden
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint403() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus403() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationRequest(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationRequest>): GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationRequest {
-
-  return createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateRequest(data)
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointBody(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointBody>): GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointBody {
+  return createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateRequest(data) as GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointBody
 }
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint200()])
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointResponse {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus200(), createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus401(), createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus403()])) as GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointResponse
 }

@@ -3,38 +3,40 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateRequest } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateRequest.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateResponse } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateRequest } from './GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateRequest'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateResponse } from './GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateResponse'
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     hackathonId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointMutationRequest = GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateRequest;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointBody = GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateRequest;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointMutationResponse = GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointMutationRequest;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointBody;
+    path: GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateEndpointStatus403);

@@ -3,29 +3,34 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse } from './GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse'
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     hackathonId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint200 = GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointStatus200 = GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointStatus401 = unknown;
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryResponse = GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQuery = {
-    Response: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint200;
-    PathParams: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint401;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointOptions = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointStatus401;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointResponse = (GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointStatus200 | GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointStatus401);

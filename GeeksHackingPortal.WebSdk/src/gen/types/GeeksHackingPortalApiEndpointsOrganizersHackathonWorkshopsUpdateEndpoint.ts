@@ -3,42 +3,46 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateRequest } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateRequest.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateResponse } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateRequest } from './GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateRequest'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateResponse } from './GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateResponse'
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     hackathonId: string;
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     workshopId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationRequest = GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateRequest;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointBody = GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateRequest;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationResponse = GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointMutationRequest;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointBody;
+    path: GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateEndpointStatus403);

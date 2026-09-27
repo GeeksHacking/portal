@@ -3,39 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationRequest, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpoint } from "../clients/geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationKey = () => [{ url: '/participants/standalone-workshops/join' }] as const
-
-export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationKey>
-
-/**
- * @description Registers the current user for a standalone workshop using its short code.
- * @summary Join a standalone workshop by short code
- * {@link /participants/standalone-workshops/join}
- */
-export function useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpoint401>, {data: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationRequest>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationRequest>> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpoint401>, {data: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpointMutationRequest}, TContext>({
-            mutationFn: async({ data }) => {
-              return geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinByShortCodeEndpoint(data, config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

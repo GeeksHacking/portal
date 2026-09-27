@@ -3,27 +3,22 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform } from "./GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformKey } from './GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform'
 
 export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponse = {
-    /**
-     * @type string | undefined
-    */
     applicationId?: string;
-    /**
-     * @type string | undefined
-    */
     displayName?: string;
+    platform?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformKey;
     /**
-     * @type string | undefined
-    */
-    platform?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform;
-    /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     totalAuthorizations?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     uniqueUsers?: number;
 };

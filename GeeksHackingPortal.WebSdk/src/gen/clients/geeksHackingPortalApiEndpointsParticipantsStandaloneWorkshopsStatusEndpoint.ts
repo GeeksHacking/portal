@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointQueryResponse, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointUrl(standaloneWorkshopId: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointPathParams["standaloneWorkshopId"]) {
-  const res = { method: 'GET', url: `/participants/standalone-workshops/${standaloneWorkshopId}/status` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Returns the current user's registration status for a standalone workshop.
  * @summary Get my standalone workshop status
  * {@link /participants/standalone-workshops/:standaloneWorkshopId/status}
  */
-export async function geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint(standaloneWorkshopId: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointPathParams["standaloneWorkshopId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint401>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointUrl(standaloneWorkshopId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/participants/standalone-workshops/{standaloneWorkshopId}/status', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointResponses, ThrowOnError>>)
 }

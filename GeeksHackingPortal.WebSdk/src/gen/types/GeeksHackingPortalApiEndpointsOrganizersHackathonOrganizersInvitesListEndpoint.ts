@@ -3,34 +3,37 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListResponse } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListResponse } from './GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListResponse'
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     hackathonId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointQueryResponse = GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointQuery = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpoint200;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointOptions = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListEndpointStatus403);

@@ -3,13 +3,25 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsResponse.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsResponse>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsResponse> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  registeredCount: faker.number.int(),
+  withdrawnCount: faker.number.int(),
+  capacityRemaining: faker.number.int(),
+  capacityUsedPercent: faker.number.float(),
+  checkInCount: faker.number.int(),
+  currentlyCheckedInCount: faker.number.int(),
+  resourceCount: faker.number.int(),
+  resourceRedemptionCount: faker.number.int(),
+  emailTemplateCount: faker.number.int(),
+}
   return {
-    ...{"registeredCount": faker.number.int(),"withdrawnCount": faker.number.int(),"capacityRemaining": faker.number.int(),"capacityUsedPercent": faker.number.float(),"checkInCount": faker.number.int(),"currentlyCheckedInCount": faker.number.int(),"resourceCount": faker.number.int(),"resourceRedemptionCount": faker.number.int(),"emailTemplateCount": faker.number.int()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

@@ -3,24 +3,26 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListResponse } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListResponse.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListResponse } from './GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListResponse'
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointPathParams = {
-    /**
-     * @type string
-    */
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointPath = {
     hackathonIdOrShortCode: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpoint200 = GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListResponse;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointStatus200 = GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListResponse;
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointQueryResponse = GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointQuery = {
-    Response: GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpoint200;
-    PathParams: GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointPathParams;
-    Errors: any;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointOptions = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointStatus200;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointResponse = GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointStatus200;

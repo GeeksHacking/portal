@@ -3,12 +3,14 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryRequest } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryRequest.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryRequest } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryRequest'
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryRequest(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryRequest>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryRequest {
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryRequest<TData extends Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryRequest> = object>(data?: TData)
 
+{
+  const defaultFakeData = {}
   return {
-    ...{},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

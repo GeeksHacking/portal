@@ -3,42 +3,39 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateResponse = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
-    /**
-     * @type string | undefined
-    */
     title?: string;
-    /**
-     * @type string | undefined
-    */
     description?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     startTime?: string;
     /**
-     * @type string | undefined, date-time
-    */
-    endTime?: string;
-    /**
+     * @description
+     * Format: `date-time`
      * @type string | undefined
     */
+    endTime?: string;
     location?: string;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     maxParticipants?: number;
-    /**
-     * @type boolean | undefined
-    */
     isPublished?: boolean;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     updatedAt?: string;
 };

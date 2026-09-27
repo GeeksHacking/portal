@@ -3,11 +3,18 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto } from "./createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListResponse'
+import { createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto } from './createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListResponse>): GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListResponse> = object>(data?: TData)
 
-  return { ...{get "questions"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  questions: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

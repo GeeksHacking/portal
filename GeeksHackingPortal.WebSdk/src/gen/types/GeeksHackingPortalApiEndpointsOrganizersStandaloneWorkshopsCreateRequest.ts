@@ -3,7 +3,6 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest = {
     /**
      * @minLength 0
@@ -18,11 +17,15 @@ export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateReq
     */
     description?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     startTime?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     endTime?: string;
     /**
@@ -32,7 +35,9 @@ export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateReq
     */
     location?: string;
     /**
-     * @type string, uri
+     * @description
+     * Format: `uri`
+     * @type string | undefined
     */
     homepageUri?: string | null;
     /**
@@ -43,16 +48,12 @@ export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateReq
     */
     shortCode?: string;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     maxParticipants?: number;
-    /**
-     * @type boolean | undefined
-    */
     isPublished?: boolean;
-    /**
-     * @type object
-    */
     emailTemplates?: {
         [key: string]: string;
     } | null;

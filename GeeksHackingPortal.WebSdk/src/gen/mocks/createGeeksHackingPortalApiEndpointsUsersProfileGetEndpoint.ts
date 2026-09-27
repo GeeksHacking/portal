@@ -3,27 +3,24 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint200, GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse } from "../types/GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsUsersProfileGetResponse } from "./createGeeksHackingPortalApiEndpointsUsersProfileGetResponse.ts";
+import type { GeeksHackingPortalApiEndpointsUsersProfileGetEndpointResponse, GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200, GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint'
+import { createGeeksHackingPortalApiEndpointsUsersProfileGetResponse } from './createGeeksHackingPortalApiEndpointsUsersProfileGetResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsUsersProfileGetEndpoint200(data?: Partial<GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint200>): GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint200 {
-
-  return createGeeksHackingPortalApiEndpointsUsersProfileGetResponse(data)
+export function createGeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200(data?: Partial<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200>): GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200 {
+  return createGeeksHackingPortalApiEndpointsUsersProfileGetResponse(data) as GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsUsersProfileGetEndpoint401() {
-
+export function createGeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse(data?: Partial<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse>): GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsUsersProfileGetEndpoint200()])
+export function createGeeksHackingPortalApiEndpointsUsersProfileGetEndpointResponse(data?: Partial<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointResponse>): GeeksHackingPortalApiEndpointsUsersProfileGetEndpointResponse {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200(), createGeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401()])) as GeeksHackingPortalApiEndpointsUsersProfileGetEndpointResponse
 }

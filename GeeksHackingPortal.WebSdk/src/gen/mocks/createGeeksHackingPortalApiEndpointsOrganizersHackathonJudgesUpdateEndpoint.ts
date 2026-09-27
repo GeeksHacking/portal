@@ -3,49 +3,49 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint200, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointPathParams } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateRequest } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateRequest.ts";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateResponse } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointBody, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointPath, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus200, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateRequest } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateRequest'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateResponse } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointPathParams(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointPathParams>): GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointPathParams {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointPath<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointPath> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  hackathonId: faker.string.alpha(),
+  judgeId: faker.string.alpha(),
+}
   return {
-    ...{"hackathonId": faker.string.alpha(),"judgeId": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint200(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint200>): GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint200 {
-
-  return createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateResponse(data)
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus200(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus200>): GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus200 {
+  return createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateResponse(data) as GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus200
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint401() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus401() {
   return undefined
 }
 
 /**
  * @description Forbidden
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint403() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus403() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationRequest(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationRequest>): GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationRequest {
-
-  return createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateRequest(data)
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointBody(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointBody>): GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointBody {
+  return createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateRequest(data) as GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointBody
 }
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint200()])
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointResponse {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus200(), createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus401(), createGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus403()])) as GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointResponse
 }

@@ -3,22 +3,19 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineCreateRequest = {
-    /**
-     * @type string | undefined
-    */
     title?: string;
-    /**
-     * @type string
-    */
     description?: string | null;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     startTime?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     endTime?: string;
 };

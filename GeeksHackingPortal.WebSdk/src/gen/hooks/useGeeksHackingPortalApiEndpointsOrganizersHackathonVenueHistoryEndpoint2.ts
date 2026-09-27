@@ -3,55 +3,23 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2PathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2401, GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { queryOptions, useQuery } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2 } from "../clients/geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2.ts";
-import { toValue } from "vue";
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2Options, GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2Status200, GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2Status401, GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2Status403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2'
+import type { MaybeRefOrGetter } from 'vue'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2 } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2'
+import { queryOptions } from '@tanstack/vue-query'
+import { toValue } from 'vue'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryKey = (activityId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2PathParams["activityId"] | undefined>, participantUserId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2PathParams["participantUserId"] | undefined>) => [{ url: '/organizers/standalone-workshops/:activityId/participants/:participantUserId/venue/history', params: {activityId:activityId,participantUserId:participantUserId} }] as const
+export const geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryKey = ({ path }: { path: MaybeRefOrGetter<Omit<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2Options, 'headers'>['path']> }) => [{ url: '/organizers/standalone-workshops/:activityId/participants/:participantUserId/venue/history', params: path }] as const
 
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryKey = ReturnType<typeof geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryKey>
 
-export function geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryOptions(activityId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2PathParams["activityId"] | undefined>, participantUserId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2PathParams["participantUserId"] | undefined>, config: Partial<RequestConfig> & { client?: Client } = {}) {
-
-        const queryKey = geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryKey(activityId, participantUserId)
-        return queryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2401 | GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2403>, GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryResponse, typeof queryKey>({
-        enabled: () => !!toValue(activityId) && !!toValue(participantUserId),
-        queryKey,
-        queryFn: async ({ signal }) => {
-            return geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2(toValue(activityId)!, toValue(participantUserId)!, { ...config, signal: config.signal ?? signal })
-         },
-        })
-
-}
-
-/**
- * @description Returns check-in and check-out history for a participant.
- * @summary Get participant venue history
- * {@link /organizers/standalone-workshops/:activityId/participants/:participantUserId/venue/history}
- */
-export function useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2<TData = GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryResponse, TQueryData = GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryResponse, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryKey>(activityId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2PathParams["activityId"] | undefined>, participantUserId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2PathParams["participantUserId"] | undefined>, options: 
-{
-  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2401 | GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2403>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
-  client?: Partial<RequestConfig> & { client?: Client }
-}
- = {}) {
-
-         const { query: queryConfig = {}, client: config = {} } = options ?? {}
-         const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryKey(activityId, participantUserId)
-
-         const query = useQuery({
-          ...geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryOptions(activityId, participantUserId, config),
-          ...resolvedOptions,
-          queryKey
-         } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2401 | GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2403>, TData, GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryResponse, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2401 | GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2403>> & { queryKey: TQueryKey }
-
-         query.queryKey = queryKey as TQueryKey
-
-         return query
-         
+export function geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryOptions({ path }: { path: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2Options['path']> }, config: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>> = {}) {
+  const queryKey = geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryKey({ path })
+  return queryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2Status200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2Status401 | GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2Status403>, GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2Status200>({
+   queryKey,
+   queryFn: async ({ signal }) => {
+      return geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2({ ...config, path: toValue(path), signal: config.signal ?? signal, throwOnError: true }).unwrap()
+   },
+  })
 }

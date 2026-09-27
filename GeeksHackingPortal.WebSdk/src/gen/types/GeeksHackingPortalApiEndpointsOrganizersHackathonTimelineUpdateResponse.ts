@@ -3,34 +3,37 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateResponse = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
     /**
-     * @type string | undefined, guid
-    */
-    hackathonId?: string;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    hackathonId?: string;
     title?: string;
-    /**
-     * @type string
-    */
     description?: string | null;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     startTime?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     endTime?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     updatedAt?: string;
 };

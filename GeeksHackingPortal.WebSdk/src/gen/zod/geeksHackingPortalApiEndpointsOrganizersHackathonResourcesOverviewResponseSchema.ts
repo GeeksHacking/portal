@@ -3,20 +3,16 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewParticipantResourceRedemptionDtoSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewParticipantResourceRedemptionDtoSchema.ts";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDtoSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDtoSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewParticipantResourceRedemptionDtoSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewParticipantResourceRedemptionDtoSchema'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDtoSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDtoSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResponseSchema = z.object({
-    "resourceId": z.optional(z.string()),
-"resourceName": z.optional(z.string()),
-"isPublished": z.optional(z.boolean()),
-"totalRedemptions": z.optional(z.int()),
-"uniqueRedeemers": z.optional(z.int()),
-get "participants"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewParticipantResourceRedemptionDtoSchema).optional()
-              },
-get "auditTrail"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDtoSchema).optional()
-              }
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResponseSchema = z.strictObject({
+  resourceId: z.string().optional(),
+  resourceName: z.string().optional(),
+  isPublished: z.boolean().optional(),
+  totalRedemptions: z.int32().optional(),
+  uniqueRedeemers: z.int32().optional(),
+  participants: z.array(geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewParticipantResourceRedemptionDtoSchema).optional(),
+  auditTrail: z.array(geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDtoSchema).optional(),
+})

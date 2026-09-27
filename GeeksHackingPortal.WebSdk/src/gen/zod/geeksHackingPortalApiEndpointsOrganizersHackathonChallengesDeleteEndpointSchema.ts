@@ -3,26 +3,18 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointPathParamsSchema = z.object({
-    "hackathonId": z.string(),
-"challengeId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointPathHackathonIdSchema = z.string()
 
-/**
- * @description No Content
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpoint204Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointPathChallengeIdSchema = z.string()
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointStatus204Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointStatus401Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpoint204Schema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointStatus403Schema = z.unknown()
+
+export const geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointResponseSchema = geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointStatus204Schema
+
+export const geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointStatus401Schema, geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointStatus403Schema])

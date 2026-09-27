@@ -3,27 +3,19 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetResponseSchema } from "./geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetResponseSchema } from './geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetResponseSchema'
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpointPathParamsSchema = z.object({
-    "hackathonId": z.string(),
-"submissionId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpointPathHackathonIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetResponseSchema)
+export const geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpointPathSubmissionIdSchema = z.string()
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpointStatus200Schema = geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetResponseSchema
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpointStatus401Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpointQueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpointStatus403Schema = z.unknown()
+
+export const geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpointResponseSchema = geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpointStatus401Schema, geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpointStatus403Schema])

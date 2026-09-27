@@ -3,26 +3,18 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointPathParamsSchema = z.object({
-    "hackathonId": z.string(),
-"inviteId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointPathHackathonIdSchema = z.string()
 
-/**
- * @description No Content
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint204Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointPathInviteIdSchema = z.string()
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus204Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus401Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint204Schema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus403Schema = z.unknown()
+
+export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointResponseSchema = geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus204Schema
+
+export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus401Schema, geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus403Schema])

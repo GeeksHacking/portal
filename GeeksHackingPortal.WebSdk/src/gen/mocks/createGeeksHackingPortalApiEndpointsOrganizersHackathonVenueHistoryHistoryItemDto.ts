@@ -3,13 +3,19 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto>): GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  checkInTime: faker.date.anytime().toISOString(),
+  checkOutTime: faker.date.anytime().toISOString(),
+  isCheckedIn: faker.datatype.boolean(),
+}
   return {
-    ...{"checkInTime": faker.date.anytime().toISOString(),"checkOutTime": faker.date.anytime().toISOString(),"isCheckedIn": faker.datatype.boolean()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

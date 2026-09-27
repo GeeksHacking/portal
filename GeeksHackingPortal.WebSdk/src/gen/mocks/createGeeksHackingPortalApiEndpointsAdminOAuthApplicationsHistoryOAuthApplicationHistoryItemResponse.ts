@@ -3,13 +3,22 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryOAuthApplicationHistoryItemResponse } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryOAuthApplicationHistoryItemResponse.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryOAuthApplicationHistoryItemResponse } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryOAuthApplicationHistoryItemResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryOAuthApplicationHistoryItemResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryOAuthApplicationHistoryItemResponse>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryOAuthApplicationHistoryItemResponse {
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryOAuthApplicationHistoryItemResponse<TData extends Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryOAuthApplicationHistoryItemResponse> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  subject: faker.string.alpha(),
+  userName: faker.string.alpha(),
+  userEmail: faker.string.alpha(),
+  creationDate: faker.date.anytime().toISOString(),
+  scopes: faker.string.alpha(),
+}
   return {
-    ...{"id": faker.string.alpha(),"subject": faker.string.alpha(),"userName": faker.string.alpha(),"userEmail": faker.string.alpha(),"creationDate": faker.date.anytime().toISOString(),"scopes": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

@@ -3,24 +3,26 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonGetResponse } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonGetResponse.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonGetResponse } from './GeeksHackingPortalApiEndpointsParticipantsHackathonGetResponse'
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointPathParams = {
-    /**
-     * @type string
-    */
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointPath = {
     hackathonIdOrShortCode: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint200 = GeeksHackingPortalApiEndpointsParticipantsHackathonGetResponse;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointStatus200 = GeeksHackingPortalApiEndpointsParticipantsHackathonGetResponse;
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointQueryResponse = GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointQuery = {
-    Response: GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint200;
-    PathParams: GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointPathParams;
-    Errors: any;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointOptions = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointStatus200;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointResponse = GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointStatus200;

@@ -3,12 +3,10 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItemSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItemSchema.ts";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItemSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItemSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItemSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItemSchema'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItemSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItemSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItemSchema).and(z.object({
-    get "emailDeliveries"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItemSchema).optional()
-              }
-    }))
+export const geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponseSchema = geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItemSchema.and(z.strictObject({
+  emailDeliveries: z.array(geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItemSchema).optional(),
+}))

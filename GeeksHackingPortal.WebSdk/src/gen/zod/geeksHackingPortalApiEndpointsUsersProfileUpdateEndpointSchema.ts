@@ -3,26 +3,19 @@
 * Do not edit manually.
 */
 
-import { fastEndpointsErrorResponseSchema } from "./fastEndpointsErrorResponseSchema.ts";
-import { geeksHackingPortalApiEndpointsUsersProfileUpdateRequestSchema } from "./geeksHackingPortalApiEndpointsUsersProfileUpdateRequestSchema.ts";
-import { geeksHackingPortalApiEndpointsUsersProfileUpdateResponseSchema } from "./geeksHackingPortalApiEndpointsUsersProfileUpdateResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { fastEndpointsErrorResponseSchema } from './fastEndpointsErrorResponseSchema'
+import { geeksHackingPortalApiEndpointsUsersProfileUpdateRequestSchema } from './geeksHackingPortalApiEndpointsUsersProfileUpdateRequestSchema'
+import { geeksHackingPortalApiEndpointsUsersProfileUpdateResponseSchema } from './geeksHackingPortalApiEndpointsUsersProfileUpdateResponseSchema'
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsUsersProfileUpdateResponseSchema)
+export const geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200Schema = geeksHackingPortalApiEndpointsUsersProfileUpdateResponseSchema
 
-/**
- * @description Bad Request
- */
-export const geeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint400Schema = z.lazy(() => fastEndpointsErrorResponseSchema).describe("the dto used to send an error response to the client")
+export const geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400Schema = fastEndpointsErrorResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus401Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationRequestSchema = z.lazy(() => geeksHackingPortalApiEndpointsUsersProfileUpdateRequestSchema)
+export const geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponseSchema = geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200Schema
 
-export const geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400Schema, geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus401Schema])
+
+export const geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointBodySchema = geeksHackingPortalApiEndpointsUsersProfileUpdateRequestSchema

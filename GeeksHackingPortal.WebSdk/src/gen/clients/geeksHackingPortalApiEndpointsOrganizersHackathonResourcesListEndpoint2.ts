@@ -3,23 +3,15 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2QueryResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2PathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2401, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2Url(activityId: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2PathParams["activityId"]) {
-  const res = { method: 'GET', url: `/organizers/standalone-workshops/${activityId}/resources` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2Options, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2Responses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * {@link /organizers/standalone-workshops/:activityId/resources}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2(activityId: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2PathParams["activityId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2Options, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2Responses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2QueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2403>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2Url(activityId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/organizers/standalone-workshops/{activityId}/resources', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2Responses, ThrowOnError>>)
 }

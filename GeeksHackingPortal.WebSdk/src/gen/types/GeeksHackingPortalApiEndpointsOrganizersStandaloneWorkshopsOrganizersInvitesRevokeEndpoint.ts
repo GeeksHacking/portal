@@ -3,37 +3,41 @@
 * Do not edit manually.
 */
 
-
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     standaloneWorkshopId: string;
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     inviteId: string;
 };
 
-/**
- * @description No Content
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint204 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus204 = unknown;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointMutationResponse = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint204;
-
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint204;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointOptions = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointResponses = {
+    "204": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus204;
+    "401": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus204 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus403);

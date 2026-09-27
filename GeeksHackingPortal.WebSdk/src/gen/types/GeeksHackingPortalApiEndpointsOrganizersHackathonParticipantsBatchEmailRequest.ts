@@ -3,14 +3,7 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest = {
-    /**
-     * @type string | undefined
-    */
     status?: string;
-    /**
-     * @type array
-    */
     participantUserIds?: string[] | null;
 };

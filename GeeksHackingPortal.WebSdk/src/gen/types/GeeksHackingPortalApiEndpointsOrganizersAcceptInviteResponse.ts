@@ -3,15 +3,14 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEntitiesOrganizerType } from "./GeeksHackingPortalApiEntitiesOrganizerType.ts";
+import type { GeeksHackingPortalApiEntitiesOrganizerTypeKey } from './GeeksHackingPortalApiEntitiesOrganizerType'
 
 export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteResponse = {
     /**
-     * @type string | undefined, guid
-    */
-    activityId?: string;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
-    type?: GeeksHackingPortalApiEntitiesOrganizerType;
+    activityId?: string;
+    type?: GeeksHackingPortalApiEntitiesOrganizerTypeKey;
 };

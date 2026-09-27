@@ -3,26 +3,20 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDtoSchema } from "./geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDtoSchema.ts";
-import { geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDtoSchema } from "./geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDtoSchema.ts";
-import { geeksHackingPortalApiEntitiesQuestionTypeSchema } from "./geeksHackingPortalApiEntitiesQuestionTypeSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDtoSchema } from './geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDtoSchema'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDtoSchema } from './geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDtoSchema'
+import { geeksHackingPortalApiEntitiesQuestionTypeSchema } from './geeksHackingPortalApiEntitiesQuestionTypeSchema'
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDtoSchema = z.object({
-    "id": z.optional(z.string()),
-"questionText": z.optional(z.string()),
-"questionKey": z.optional(z.string()),
-get "type"(){
-                return geeksHackingPortalApiEntitiesQuestionTypeSchema.optional()
-              },
-"isRequired": z.optional(z.boolean()),
-"helpText": z.string().nullish(),
-"conditionalLogic": z.string().nullish(),
-"validationRules": z.string().nullish(),
-get "options"(){
-                return z.array(geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDtoSchema).optional()
-              },
-get "currentSubmission"(){
-                return geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDtoSchema.nullish()
-              }
-    })
+export const geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDtoSchema = z.strictObject({
+  id: z.string().optional(),
+  questionText: z.string().optional(),
+  questionKey: z.string().optional(),
+  type: geeksHackingPortalApiEntitiesQuestionTypeSchema.optional(),
+  isRequired: z.boolean().optional(),
+  helpText: z.string().nullish(),
+  conditionalLogic: z.string().nullish(),
+  validationRules: z.string().nullish(),
+  options: z.array(geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDtoSchema).optional(),
+  currentSubmission: geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDtoSchema.strict().nullish(),
+})

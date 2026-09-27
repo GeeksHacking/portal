@@ -3,58 +3,56 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint200, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint400, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationRequest, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointPathParams } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint.ts";
-import { faker } from "@faker-js/faker";
-import { createFastEndpointsErrorResponse } from "./createFastEndpointsErrorResponse.ts";
-import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse } from "./createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse.ts";
-import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequest } from "./createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequest.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointBody, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointPath, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus200, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus400, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint'
+import { createFastEndpointsErrorResponse } from './createFastEndpointsErrorResponse'
+import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse } from './createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse'
+import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequest } from './createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequest'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointPathParams(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointPathParams>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointPathParams {
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointPath<TData extends Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointPath> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+}
   return {
-    ...{"id": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint200(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint200>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint200 {
-
-  return createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse(data)
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus200(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus200>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus200 {
+  return createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse(data) as GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus200
 }
 
 /**
  * @description Bad Request
  */
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint400(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint400>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint400 {
-
-  return createFastEndpointsErrorResponse(data)
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus400(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus400>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus400 {
+  return createFastEndpointsErrorResponse(data) as GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus400
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint401() {
-
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus401() {
   return undefined
 }
 
 /**
  * @description Forbidden
  */
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint403() {
-
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus403() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationRequest(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationRequest>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationRequest {
-
-  return createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequest(data)
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointBody(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointBody>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointBody {
+  return createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequest(data) as GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointBody
 }
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationResponse>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint200()])
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointResponse>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointResponse {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus200(), createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus400(), createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus401(), createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus403()])) as GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointResponse
 }

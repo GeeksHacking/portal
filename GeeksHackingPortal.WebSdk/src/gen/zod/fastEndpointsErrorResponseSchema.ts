@@ -3,15 +3,10 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-/**
- * @description the dto used to send an error response to the client
- */
-export const fastEndpointsErrorResponseSchema = z.object({
-    "statusCode": z.optional(z.int().default(400).describe("the http status code sent to the client. default is 400.")),
-"message": z.optional(z.string().default("One or more errors occurred!").describe("the message for the error response")),
-"errors": z.optional(z.object({
-    
-    }).catchall(z.array(z.string())).describe("the collection of errors for the current context"))
-    }).describe("the dto used to send an error response to the client")
+export const fastEndpointsErrorResponseSchema = z.strictObject({
+  statusCode: z.int32().optional().default(400),
+  message: z.string().optional().default('One or more errors occurred!'),
+  errors: z.object({}).catchall(z.array(z.string())).optional(),
+})

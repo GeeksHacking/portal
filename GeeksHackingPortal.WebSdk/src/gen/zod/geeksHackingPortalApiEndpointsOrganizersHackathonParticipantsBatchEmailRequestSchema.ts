@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequestSchema = z.object({
-    "status": z.optional(z.string()),
-"participantUserIds": z.array(z.string()).nullish()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequestSchema = z.strictObject({
+  status: z.string().optional(),
+  participantUserIds: z.array(z.string()).nullish(),
+})

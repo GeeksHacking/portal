@@ -3,12 +3,10 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEntitiesOrganizerTypeSchema } from "./geeksHackingPortalApiEntitiesOrganizerTypeSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEntitiesOrganizerTypeSchema } from './geeksHackingPortalApiEntitiesOrganizerTypeSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersAcceptInviteResponseSchema = z.object({
-    "activityId": z.optional(z.string()),
-get "type"(){
-                return geeksHackingPortalApiEntitiesOrganizerTypeSchema.optional()
-              }
-    })
+export const geeksHackingPortalApiEndpointsOrganizersAcceptInviteResponseSchema = z.strictObject({
+  activityId: z.string().optional(),
+  type: geeksHackingPortalApiEntitiesOrganizerTypeSchema.optional(),
+})

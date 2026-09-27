@@ -3,22 +3,18 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDtoSchema } from "./geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDtoSchema.ts";
-import { geeksHackingPortalApiEntitiesQuestionTypeSchema } from "./geeksHackingPortalApiEntitiesQuestionTypeSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDtoSchema } from './geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDtoSchema'
+import { geeksHackingPortalApiEntitiesQuestionTypeSchema } from './geeksHackingPortalApiEntitiesQuestionTypeSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateRequestSchema = z.object({
-    "questionText": z.string().nullish(),
-get "type"(){
-                return geeksHackingPortalApiEntitiesQuestionTypeSchema.nullish()
-              },
-"displayOrder": z.int().nullish(),
-"isRequired": z.boolean().nullish(),
-"helpText": z.string().nullish(),
-"conditionalLogic": z.string().nullish(),
-"category": z.string().nullish(),
-"validationRules": z.string().nullish(),
-get "options"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDtoSchema).nullish()
-              }
-    })
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateRequestSchema = z.strictObject({
+  questionText: z.string().nullish(),
+  type: geeksHackingPortalApiEntitiesQuestionTypeSchema.nullish(),
+  displayOrder: z.int32().nullish(),
+  isRequired: z.boolean().nullish(),
+  helpText: z.string().nullish(),
+  conditionalLogic: z.string().nullish(),
+  category: z.string().nullish(),
+  validationRules: z.string().nullish(),
+  options: z.array(geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDtoSchema).nullish(),
+})

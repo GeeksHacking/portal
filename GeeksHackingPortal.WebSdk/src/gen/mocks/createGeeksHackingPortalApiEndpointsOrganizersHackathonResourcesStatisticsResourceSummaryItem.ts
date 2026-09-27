@@ -3,13 +3,22 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  resourceId: faker.string.alpha(),
+  resourceName: faker.string.alpha(),
+  isPublished: faker.datatype.boolean(),
+  totalRedemptions: faker.number.int(),
+  uniqueRedeemers: faker.number.int(),
+  lastRedeemedAt: faker.date.anytime().toISOString(),
+}
   return {
-    ...{"resourceId": faker.string.alpha(),"resourceName": faker.string.alpha(),"isPublished": faker.datatype.boolean(),"totalRedemptions": faker.number.int(),"uniqueRedeemers": faker.number.int(),"lastRedeemedAt": faker.date.anytime().toISOString()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

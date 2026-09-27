@@ -3,26 +3,17 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveResponseSchema } from "./geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveResponseSchema } from './geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveResponseSchema'
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointPathParamsSchema = z.object({
-    "hackathonId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointPathHackathonIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveResponseSchema)
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointStatus200Schema = geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointStatus401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointStatus403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointResponseSchema = geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointStatus401Schema, geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointStatus403Schema])

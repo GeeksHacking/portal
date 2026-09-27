@@ -3,36 +3,30 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewParticipantResourceRedemptionDto } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewParticipantResourceRedemptionDto.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDto } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDto.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewParticipantResourceRedemptionDto } from './GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewParticipantResourceRedemptionDto'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDto } from './GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDto'
 
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResponse = {
     /**
-     * @type string | undefined, guid
-    */
-    resourceId?: string;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    resourceId?: string;
     resourceName?: string;
-    /**
-     * @type boolean | undefined
-    */
     isPublished?: boolean;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     totalRedemptions?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     uniqueRedeemers?: number;
-    /**
-     * @type array | undefined
-    */
     participants?: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewParticipantResourceRedemptionDto[];
-    /**
-     * @type array | undefined
-    */
     auditTrail?: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewResourceAuditTrailItemDto[];
 };

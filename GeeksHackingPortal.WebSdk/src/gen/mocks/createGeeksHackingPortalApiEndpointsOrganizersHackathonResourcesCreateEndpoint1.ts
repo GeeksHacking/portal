@@ -3,49 +3,48 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1200, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1MutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1MutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1PathParams } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequest } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequest.ts";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponse } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Body, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Path, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Response, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status200, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status401, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequest } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequest'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponse } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1PathParams(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1PathParams>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1PathParams {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Path<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Path> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  activityId: faker.string.alpha(),
+}
   return {
-    ...{"activityId": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1200(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1200>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1200 {
-
-  return createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponse(data)
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status200(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status200>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status200 {
+  return createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponse(data) as GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status200
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1401() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status401() {
   return undefined
 }
 
 /**
  * @description Forbidden
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1403() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status403() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1MutationRequest(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1MutationRequest>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1MutationRequest {
-
-  return createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequest(data)
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Body(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Body>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Body {
+  return createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequest(data) as GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Body
 }
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1MutationResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1MutationResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1MutationResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1200()])
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Response(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Response>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Response {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status200(), createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status401(), createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status403()])) as GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Response
 }

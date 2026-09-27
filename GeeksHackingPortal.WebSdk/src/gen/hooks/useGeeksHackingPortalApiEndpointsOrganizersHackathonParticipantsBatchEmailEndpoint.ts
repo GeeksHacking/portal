@@ -3,39 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint } from "../clients/geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationKey = () => [{ url: '/organizers/hackathons/:hackathonId/participants/batch-email' }] as const
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationKey>
-
-/**
- * @description Send acceptance or rejection emails to multiple participants based on their review status.
- * @summary Send batch emails to participants
- * {@link /organizers/hackathons/:hackathonId/participants/batch-email}
- */
-export function useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint403>, {hackathonId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointPathParams["hackathonId"]>, data: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationRequest>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationRequest>> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint403>, {hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointPathParams["hackathonId"], data: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationRequest}, TContext>({
-            mutationFn: async({ hackathonId, data }) => {
-              return geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint(hackathonId, data, config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

@@ -3,26 +3,28 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponse } from "./GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponse.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponse } from './GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponse'
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint200 = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponse;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus200 = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryResponse = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQuery = {
-    Response: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint200;
-    Errors: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint403;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointOptions = {
+    body?: never;
+    path?: never;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointResponse = (GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus200 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus403);

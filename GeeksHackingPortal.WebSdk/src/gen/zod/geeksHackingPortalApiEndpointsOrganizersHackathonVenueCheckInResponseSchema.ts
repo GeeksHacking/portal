@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInResponseSchema = z.object({
-    "id": z.optional(z.string()),
-"checkInTime": z.optional(z.iso.datetime()),
-"isCheckedIn": z.optional(z.boolean())
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInResponseSchema = z.strictObject({
+  id: z.string().optional(),
+  checkInTime: z.iso.datetime().optional(),
+  isCheckedIn: z.boolean().optional(),
+})

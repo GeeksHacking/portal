@@ -3,13 +3,15 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequest } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequest.ts";
-import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest } from "./createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequest } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequest'
+import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest } from './createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest'
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequest(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequest>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequest {
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequest<TData extends Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequest> = object>(data?: TData)
 
+{
+  const defaultFakeData = {...createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest(), ...{}}
   return {
-    ...{...createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest(), ...{}},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

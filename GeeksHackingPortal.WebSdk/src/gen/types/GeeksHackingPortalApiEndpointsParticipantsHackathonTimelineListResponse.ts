@@ -3,11 +3,8 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListTimelineItemDto } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListTimelineItemDto.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListTimelineItemDto } from './GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListTimelineItemDto'
 
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListResponse = {
-    /**
-     * @type array | undefined
-    */
     timelineItems?: GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListTimelineItemDto[];
 };

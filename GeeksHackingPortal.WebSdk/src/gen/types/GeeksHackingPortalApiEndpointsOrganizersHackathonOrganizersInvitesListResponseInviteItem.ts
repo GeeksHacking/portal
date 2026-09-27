@@ -3,43 +3,41 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEntitiesOrganizerType } from "./GeeksHackingPortalApiEntitiesOrganizerType.ts";
+import type { GeeksHackingPortalApiEntitiesOrganizerTypeKey } from './GeeksHackingPortalApiEntitiesOrganizerType'
 
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListResponseInviteItem = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
-    /**
-     * @type string | undefined
-    */
     code?: string;
+    type?: GeeksHackingPortalApiEntitiesOrganizerTypeKey;
     /**
+     * @description
+     * Format: `date-time`
      * @type string | undefined
-    */
-    type?: GeeksHackingPortalApiEntitiesOrganizerType;
-    /**
-     * @type string | undefined, date-time
     */
     createdAt?: string;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     expiresAt?: string | null;
     /**
-     * @type integer, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     maxUses?: number | null;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     useCount?: number;
-    /**
-     * @type boolean | undefined
-    */
     isExpired?: boolean;
-    /**
-     * @type boolean | undefined
-    */
     isExhausted?: boolean;
 };

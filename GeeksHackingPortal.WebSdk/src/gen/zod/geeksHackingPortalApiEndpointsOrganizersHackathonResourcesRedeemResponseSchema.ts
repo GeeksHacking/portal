@@ -3,11 +3,11 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemResponseSchema = z.object({
-    "redemptionId": z.optional(z.string()),
-"resourceId": z.optional(z.string()),
-"activityId": z.optional(z.string()),
-"createdAt": z.optional(z.iso.datetime())
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemResponseSchema = z.strictObject({
+  redemptionId: z.string().optional(),
+  resourceId: z.string().optional(),
+  activityId: z.string().optional(),
+  createdAt: z.iso.datetime().optional(),
+})

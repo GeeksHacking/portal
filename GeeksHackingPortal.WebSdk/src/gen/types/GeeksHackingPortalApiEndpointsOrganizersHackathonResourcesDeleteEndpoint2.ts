@@ -3,37 +3,41 @@
 * Do not edit manually.
 */
 
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2PathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2Path = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     activityId: string;
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     resourceId: string;
 };
 
-/**
- * @description No Content
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2204 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2Status204 = unknown;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2Status401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2Status403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2MutationResponse = GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2204;
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2Mutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2204;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2PathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2403;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2Options = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2Path;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2Responses = {
+    "204": GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2Status204;
+    "401": GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2Status401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2Status403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2Response = (GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2Status204 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2Status401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint2Status403);

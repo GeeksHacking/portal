@@ -3,13 +3,24 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAuthWhoAmIResponse } from "../types/GeeksHackingPortalApiEndpointsAuthWhoAmIResponse.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsAuthWhoAmIResponse } from '../types/GeeksHackingPortalApiEndpointsAuthWhoAmIResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsAuthWhoAmIResponse(data?: Partial<GeeksHackingPortalApiEndpointsAuthWhoAmIResponse>): GeeksHackingPortalApiEndpointsAuthWhoAmIResponse {
+export function createGeeksHackingPortalApiEndpointsAuthWhoAmIResponse<TData extends Partial<GeeksHackingPortalApiEndpointsAuthWhoAmIResponse> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  name: faker.string.alpha(),
+  firstName: faker.string.alpha(),
+  lastName: faker.string.alpha(),
+  email: faker.string.alpha(),
+  gitHubId: faker.number.bigInt(),
+  gitHubLogin: faker.string.alpha(),
+  isRoot: faker.datatype.boolean(),
+}
   return {
-    ...{"id": faker.string.alpha(),"name": faker.string.alpha(),"firstName": faker.string.alpha(),"lastName": faker.string.alpha(),"email": faker.string.alpha(),"gitHubId": faker.number.int(),"gitHubLogin": faker.string.alpha(),"isRoot": faker.datatype.boolean()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

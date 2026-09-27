@@ -3,17 +3,13 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersHackathonListResponseSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonListResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonListResponseSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonListResponseSchema'
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonListResponseSchema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus200Schema = geeksHackingPortalApiEndpointsOrganizersHackathonListResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus401Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointResponseSchema = geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointErrorSchema = geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus401Schema

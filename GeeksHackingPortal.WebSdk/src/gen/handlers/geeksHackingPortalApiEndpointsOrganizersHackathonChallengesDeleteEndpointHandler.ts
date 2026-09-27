@@ -3,42 +3,33 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpoint'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointHandlerResponse204(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointMutationResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 204,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointHandlerResponse204(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 204,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpoint401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointStatus401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpoint403) {
-
-      return new Response(JSON.stringify(data), {
-        status: 403,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointStatus403) {
+  return new Response(JSON.stringify(data), {
+    status: 403,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointHandler(data?: string | number | boolean | null | object | ((
-        info: Parameters<Parameters<typeof http.delete>[1]>[0],
-      ) => Response | Promise<Response>)) {
+export function geeksHackingPortalApiEndpointsOrganizersHackathonChallengesDeleteEndpointHandler(data?: string | number | boolean | null | object | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Response | Promise<Response>)) {
   return http.delete(`/organizers/hackathons/:hackathonId/challenges/:challengeId`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 204,
-        
       })
     })
 }

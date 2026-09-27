@@ -3,36 +3,31 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse, GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointResponse, GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsAuthWhoAmIEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 200,
-          headers: {
-          'Content-Type': 'application/json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsAuthWhoAmIEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAuthWhoAmIEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsAuthWhoAmIEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAuthWhoAmIEndpointHandler(data?: GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Response | Promise<Response>)) {
+export function geeksHackingPortalApiEndpointsAuthWhoAmIEndpointHandler(data?: GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Response | Promise<Response>)) {
   return http.get(`/auth/whoami`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 200,
-          headers: {
+        headers: {
           'Content-Type': 'application/json'
         },
       })

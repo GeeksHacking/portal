@@ -3,7 +3,7 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform } from "./GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformKey } from './GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform'
 
 export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest = {
     /**
@@ -19,16 +19,7 @@ export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthAppli
      * @type string | undefined
     */
     displayName?: string;
-    /**
-     * @type string | undefined
-    */
-    platform?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform;
-    /**
-     * @type array
-    */
+    platform?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformKey;
     redirectUris: string[];
-    /**
-     * @type array | undefined
-    */
     postLogoutRedirectUris?: string[];
 };

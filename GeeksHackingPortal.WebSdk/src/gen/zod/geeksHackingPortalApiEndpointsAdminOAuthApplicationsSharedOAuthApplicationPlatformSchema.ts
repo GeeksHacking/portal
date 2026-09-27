@@ -3,6 +3,6 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema = z.enum(["Web", "Native"])
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema = z.union([z.literal('Web'), z.literal('Native')])

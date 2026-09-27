@@ -3,6 +3,6 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEntitiesQuestionTypeSchema = z.enum(["Text", "LongText", "Number", "SingleChoice", "MultipleChoice", "Boolean", "Email", "Url", "Phone", "Date", "Dropdown"])
+export const geeksHackingPortalApiEntitiesQuestionTypeSchema = z.union([z.literal('Text'), z.literal('LongText'), z.literal('Number'), z.literal('SingleChoice'), z.literal('MultipleChoice'), z.literal('Boolean'), z.literal('Email'), z.literal('Url'), z.literal('Phone'), z.literal('Date'), z.literal('Dropdown')])

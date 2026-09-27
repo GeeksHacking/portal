@@ -3,46 +3,24 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto.ts";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDto } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDto.ts";
-import type { GeeksHackingPortalApiEntitiesQuestionType } from "./GeeksHackingPortalApiEntitiesQuestionType.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto } from './GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDto } from './GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDto'
+import type { GeeksHackingPortalApiEntitiesQuestionTypeKey } from './GeeksHackingPortalApiEntitiesQuestionType'
 
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
-    /**
-     * @type string | undefined
-    */
     questionText?: string;
-    /**
-     * @type string | undefined
-    */
     questionKey?: string;
-    /**
-     * @type string | undefined
-    */
-    type?: GeeksHackingPortalApiEntitiesQuestionType;
-    /**
-     * @type boolean | undefined
-    */
+    type?: GeeksHackingPortalApiEntitiesQuestionTypeKey;
     isRequired?: boolean;
-    /**
-     * @type string
-    */
     helpText?: string | null;
-    /**
-     * @type string
-    */
     conditionalLogic?: string | null;
-    /**
-     * @type string
-    */
     validationRules?: string | null;
-    /**
-     * @type array | undefined
-    */
     options?: GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto[];
     currentSubmission?: GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDto | null;
 };

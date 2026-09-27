@@ -3,11 +3,26 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryResponse'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryResponse> = object>(data?: TData)
 
-  return { ...{"participantId": faker.string.alpha(),"userId": faker.string.alpha(),"userName": faker.string.alpha(),"resourceId": faker.string.alpha(),"resourceName": faker.string.alpha(),"resourceIsPublished": faker.datatype.boolean(),"hasRedeemed": faker.datatype.boolean(),"redemptionCount": faker.number.int(),get "history"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  participantId: faker.string.alpha(),
+  userId: faker.string.alpha(),
+  userName: faker.string.alpha(),
+  resourceId: faker.string.alpha(),
+  resourceName: faker.string.alpha(),
+  resourceIsPublished: faker.datatype.boolean(),
+  hasRedeemed: faker.datatype.boolean(),
+  redemptionCount: faker.number.int(),
+  history: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

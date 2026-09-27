@@ -3,42 +3,46 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateRequest } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateRequest.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateResponse } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateRequest } from './GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateRequest'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateResponse } from './GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateResponse'
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     hackathonId: string;
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     timelineItemId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointMutationRequest = GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateRequest;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointBody = GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateRequest;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointMutationResponse = GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointMutationRequest;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointBody;
+    path: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointStatus403);

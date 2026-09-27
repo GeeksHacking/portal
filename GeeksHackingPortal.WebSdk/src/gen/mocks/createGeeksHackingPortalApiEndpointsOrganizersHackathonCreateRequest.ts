@@ -3,11 +3,32 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequest } from "./createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequest.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest'
+import { createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequest } from './createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequest'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest>): GeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest> = object>(data?: TData)
 
-  return { ...{"name": faker.string.alpha(),"description": faker.string.alpha(),"venue": faker.string.alpha(),"homepageUri": faker.internet.url(),"shortCode": faker.helpers.fromRegExp("^[A-Za-z0-9-]+$"),"eventStartDate": faker.date.anytime().toISOString(),"eventEndDate": faker.date.anytime().toISOString(),"submissionsStartDate": faker.date.anytime().toISOString(),"challengeSelectionEndDate": faker.date.anytime().toISOString(),"submissionsEndDate": faker.date.anytime().toISOString(),"judgingStartDate": faker.date.anytime().toISOString(),"judgingEndDate": faker.date.anytime().toISOString(),"isPublished": faker.datatype.boolean(),"emailTemplates": {},get "gitHubRepositorySettings"() { return faker.helpers.arrayElement<any>([createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequest()]) },...(data || {})} }
+{
+  const defaultFakeData = {
+  name: faker.string.alpha(),
+  description: faker.string.alpha(),
+  venue: faker.string.alpha(),
+  homepageUri: faker.internet.url(),
+  shortCode: faker.helpers.fromRegExp("^[A-Za-z0-9-]+$"),
+  eventStartDate: faker.date.anytime().toISOString(),
+  eventEndDate: faker.date.anytime().toISOString(),
+  submissionsStartDate: faker.date.anytime().toISOString(),
+  challengeSelectionEndDate: faker.date.anytime().toISOString(),
+  submissionsEndDate: faker.date.anytime().toISOString(),
+  judgingStartDate: faker.date.anytime().toISOString(),
+  judgingEndDate: faker.date.anytime().toISOString(),
+  isPublished: faker.datatype.boolean(),
+  emailTemplates: {},
+  gitHubRepositorySettings: faker.helpers.arrayElement([createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequest<object>()]),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

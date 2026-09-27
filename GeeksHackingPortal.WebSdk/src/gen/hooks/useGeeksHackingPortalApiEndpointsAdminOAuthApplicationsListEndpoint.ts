@@ -3,54 +3,21 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint.ts";
-import { queryOptions, useQuery } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint } from "../clients/geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint.ts";
-import { toValue } from "vue";
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus200, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint'
+import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint } from '../clients/geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint'
+import { queryOptions } from '@tanstack/vue-query'
 
 export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryKey = () => [{ url: '/admin/oauth-applications' }] as const
 
 export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryKey = ReturnType<typeof geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryKey>
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryOptions(config: Partial<RequestConfig> & { client?: Client } = {}) {
-
-        const queryKey = geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryKey()
-        return queryOptions<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint403>, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryResponse, typeof queryKey>({
-        
-        queryKey,
-        queryFn: async ({ signal }) => {
-            return geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint({ ...config, signal: config.signal ?? signal })
-         },
-        })
-
-}
-
-/**
- * @description Lists OpenIddict OAuth clients owned by the current admin.
- * @summary List OAuth applications
- * {@link /admin/oauth-applications}
- */
-export function useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint<TData = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryResponse, TQueryData = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryResponse, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryKey>(options: 
-{
-  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint403>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
-  client?: Partial<RequestConfig> & { client?: Client }
-}
- = {}) {
-
-         const { query: queryConfig = {}, client: config = {} } = options ?? {}
-         const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryKey()
-
-         const query = useQuery({
-          ...geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryOptions(config),
-          ...resolvedOptions,
-          queryKey
-         } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint403>, TData, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryResponse, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint403>> & { queryKey: TQueryKey }
-
-         query.queryKey = queryKey as TQueryKey
-
-         return query
-         
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryOptions(config: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>> = {}) {
+  const queryKey = geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryKey()
+  return queryOptions<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus403>, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointStatus200>({
+   queryKey,
+   queryFn: async ({ signal }) => {
+      return geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint({ ...config, signal: config.signal ?? signal, throwOnError: true }).unwrap()
+   },
+  })
 }

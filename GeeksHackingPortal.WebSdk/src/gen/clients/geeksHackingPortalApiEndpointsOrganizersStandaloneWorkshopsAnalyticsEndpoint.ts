@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointUrl(standaloneWorkshopId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointPathParams["standaloneWorkshopId"]) {
-  const res = { method: 'GET', url: `/organizers/standalone-workshops/${standaloneWorkshopId}/analytics` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Returns summary analytics for registrations, check-ins, resources, and templates.
  * @summary Get standalone workshop analytics
  * {@link /organizers/standalone-workshops/:standaloneWorkshopId/analytics}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint(standaloneWorkshopId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointPathParams["standaloneWorkshopId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint403>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointUrl(standaloneWorkshopId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/organizers/standalone-workshops/{standaloneWorkshopId}/analytics', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointResponses, ThrowOnError>>)
 }

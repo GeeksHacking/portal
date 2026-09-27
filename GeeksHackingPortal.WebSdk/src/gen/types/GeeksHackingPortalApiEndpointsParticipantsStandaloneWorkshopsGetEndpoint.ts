@@ -3,24 +3,26 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponse } from "./GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponse.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponse } from './GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponse'
 
-export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointPathParams = {
-    /**
-     * @type string
-    */
+export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointPath = {
     standaloneWorkshopIdOrShortCode: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint200 = GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponse;
+export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointStatus200 = GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponse;
 
-export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointQueryResponse = GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointQuery = {
-    Response: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint200;
-    PathParams: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointPathParams;
-    Errors: any;
+export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointOptions = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointStatus200;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointResponse = GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointStatus200;

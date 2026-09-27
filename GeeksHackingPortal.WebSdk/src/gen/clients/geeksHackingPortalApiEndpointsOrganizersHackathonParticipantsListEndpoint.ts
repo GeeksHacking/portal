@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointQueryResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointPathParams["hackathonId"]) {
-  const res = { method: 'GET', url: `/organizers/hackathons/${hackathonId}/participants` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Retrieves all participants for a hackathon with their review status.
  * @summary List all participants
  * {@link /organizers/hackathons/:hackathonId/participants}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointPathParams["hackathonId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint403>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointUrl(hackathonId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/organizers/hackathons/{hackathonId}/participants', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointResponses, ThrowOnError>>)
 }

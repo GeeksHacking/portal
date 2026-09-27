@@ -3,44 +3,47 @@
 * Do not edit manually.
 */
 
-import type { FastEndpointsErrorResponse } from "./FastEndpointsErrorResponse.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse.ts";
+import type { FastEndpointsErrorResponse } from './FastEndpointsErrorResponse'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse } from './GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse'
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     hackathonId: string;
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     userId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse;
 
-/**
- * @description Bad Request
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint400 = FastEndpointsErrorResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointStatus400 = FastEndpointsErrorResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointQueryResponse = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointQuery = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint200;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint400 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointOptions = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointStatus200;
+    "400": GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointStatus400;
+    "401": GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointStatus400 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointStatus403);

@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointMutationRequest, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointUrl() {
-  const res = { method: 'POST', url: `/participants/hackathons/join` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Registers the current user as a participant in the hackathon using the hackathon's short code.
  * @summary Join a hackathon by short code
  * {@link /participants/hackathons/join}
  */
-export async function geeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpoint(data: GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpoint401>, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointMutationRequest>({ method : "POST", url : getGeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointUrl().url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/participants/hackathons/join', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointResponses, ThrowOnError>>)
 }

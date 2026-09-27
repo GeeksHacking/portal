@@ -3,42 +3,44 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItem = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     redemptionId?: string;
     /**
-     * @type string | undefined, guid
-    */
-    resourceId?: string;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    resourceId?: string;
     resourceName?: string;
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     participantId?: string;
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     userId?: string;
-    /**
-     * @type string | undefined
-    */
     userName?: string;
     /**
-     * @type string, guid
-    */
-    teamId?: string | null;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    teamId?: string | null;
     teamName?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     timestamp?: string;
 };

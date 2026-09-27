@@ -3,11 +3,19 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersAcceptInviteResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersAcceptInviteResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEntitiesOrganizerType } from "./createGeeksHackingPortalApiEntitiesOrganizerType.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersAcceptInviteResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersAcceptInviteResponse'
+import { createGeeksHackingPortalApiEntitiesOrganizerType } from './createGeeksHackingPortalApiEntitiesOrganizerType'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersAcceptInviteResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersAcceptInviteResponse>): GeeksHackingPortalApiEndpointsOrganizersAcceptInviteResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersAcceptInviteResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersAcceptInviteResponse> = object>(data?: TData)
 
-  return { ...{"activityId": faker.string.alpha(),get "type"() { return createGeeksHackingPortalApiEntitiesOrganizerType() },...(data || {})} }
+{
+  const defaultFakeData = {
+  activityId: faker.string.alpha(),
+  type: createGeeksHackingPortalApiEntitiesOrganizerType(),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

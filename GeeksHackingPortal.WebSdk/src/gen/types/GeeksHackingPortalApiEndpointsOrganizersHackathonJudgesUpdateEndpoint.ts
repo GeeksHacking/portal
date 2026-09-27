@@ -3,42 +3,46 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateRequest } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateRequest.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateResponse } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateRequest } from './GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateRequest'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateResponse } from './GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateResponse'
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     hackathonId: string;
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     judgeId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationRequest = GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateRequest;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointBody = GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateRequest;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationResponse = GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationRequest;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointBody;
+    path: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus403);

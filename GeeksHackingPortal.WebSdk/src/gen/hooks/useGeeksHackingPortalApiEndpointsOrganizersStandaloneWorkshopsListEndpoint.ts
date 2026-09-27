@@ -3,54 +3,21 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint.ts";
-import { queryOptions, useQuery } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint } from "../clients/geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint.ts";
-import { toValue } from "vue";
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointStatus200, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint'
+import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint } from '../clients/geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint'
+import { queryOptions } from '@tanstack/vue-query'
 
 export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryKey = () => [{ url: '/organizers/standalone-workshops' }] as const
 
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryKey = ReturnType<typeof geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryKey>
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryOptions(config: Partial<RequestConfig> & { client?: Client } = {}) {
-
-        const queryKey = geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryKey()
-        return queryOptions<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint401>, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryResponse, typeof queryKey>({
-        
-        queryKey,
-        queryFn: async ({ signal }) => {
-            return geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint({ ...config, signal: config.signal ?? signal })
-         },
-        })
-
-}
-
-/**
- * @description Retrieves all standalone workshops the current user can manage.
- * @summary List organizer standalone workshops
- * {@link /organizers/standalone-workshops}
- */
-export function useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint<TData = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryResponse, TQueryData = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryResponse, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryKey>(options: 
-{
-  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint401>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
-  client?: Partial<RequestConfig> & { client?: Client }
-}
- = {}) {
-
-         const { query: queryConfig = {}, client: config = {} } = options ?? {}
-         const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryKey()
-
-         const query = useQuery({
-          ...geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryOptions(config),
-          ...resolvedOptions,
-          queryKey
-         } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint401>, TData, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryResponse, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint401>> & { queryKey: TQueryKey }
-
-         query.queryKey = queryKey as TQueryKey
-
-         return query
-         
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryOptions(config: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>> = {}) {
+  const queryKey = geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryKey()
+  return queryOptions<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointStatus401>, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointStatus200>({
+   queryKey,
+   queryFn: async ({ signal }) => {
+      return geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint({ ...config, signal: config.signal ?? signal, throwOnError: true }).unwrap()
+   },
+  })
 }

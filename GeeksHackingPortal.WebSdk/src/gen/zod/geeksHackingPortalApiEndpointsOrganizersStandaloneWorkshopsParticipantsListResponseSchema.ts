@@ -3,14 +3,12 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItemSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItemSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItemSchema } from './geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItemSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponseSchema = z.object({
-    "totalCount": z.optional(z.int()),
-"registeredCount": z.optional(z.int()),
-"withdrawnCount": z.optional(z.int()),
-get "participants"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItemSchema).optional()
-              }
-    })
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponseSchema = z.strictObject({
+  totalCount: z.int32().optional(),
+  registeredCount: z.int32().optional(),
+  withdrawnCount: z.int32().optional(),
+  participants: z.array(geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItemSchema).optional(),
+})

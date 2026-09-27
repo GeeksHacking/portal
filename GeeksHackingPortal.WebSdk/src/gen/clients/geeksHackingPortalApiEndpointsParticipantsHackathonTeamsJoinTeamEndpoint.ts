@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationRequest, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint401, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPathParams["hackathonId"], teamId: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPathParams["teamId"]) {
-  const res = { method: 'POST', url: `/participants/hackathons/${hackathonId}/teams/${teamId}/join` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Joins the current user to a team using the team's join code.
  * @summary Join a team
  * {@link /participants/hackathons/:hackathonId/teams/:teamId/join}
  */
-export async function geeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPathParams["hackathonId"], teamId: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPathParams["teamId"], data: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint403>, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationRequest>({ method : "POST", url : getGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointUrl(hackathonId, teamId).url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/participants/hackathons/{hackathonId}/teams/{teamId}/join', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointResponses, ThrowOnError>>)
 }

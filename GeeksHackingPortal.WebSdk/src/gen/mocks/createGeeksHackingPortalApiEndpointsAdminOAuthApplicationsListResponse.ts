@@ -3,11 +3,18 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponse } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse } from "./createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponse } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponse'
+import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse } from './createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponse>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponse {
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponse<TData extends Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponse> = object>(data?: TData)
 
-  return { ...{get "items"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  items: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

@@ -3,16 +3,11 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsParticipantsHackathonTimelineListResponseSchema } from "./geeksHackingPortalApiEndpointsParticipantsHackathonTimelineListResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonTimelineListResponseSchema } from './geeksHackingPortalApiEndpointsParticipantsHackathonTimelineListResponseSchema'
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointPathParamsSchema = z.object({
-    "hackathonIdOrShortCode": z.string()
-    })
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointPathHackathonIdOrShortCodeSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsHackathonTimelineListResponseSchema)
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointStatus200Schema = geeksHackingPortalApiEndpointsParticipantsHackathonTimelineListResponseSchema
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointQueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointResponseSchema = geeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointStatus200Schema

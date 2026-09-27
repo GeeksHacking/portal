@@ -3,11 +3,26 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListResponseInviteItem } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListResponseInviteItem.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEntitiesOrganizerType } from "./createGeeksHackingPortalApiEntitiesOrganizerType.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListResponseInviteItem } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListResponseInviteItem'
+import { createGeeksHackingPortalApiEntitiesOrganizerType } from './createGeeksHackingPortalApiEntitiesOrganizerType'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListResponseInviteItem(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListResponseInviteItem>): GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListResponseInviteItem {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListResponseInviteItem<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesListResponseInviteItem> = object>(data?: TData)
 
-  return { ...{"id": faker.string.alpha(),"code": faker.string.alpha(),get "type"() { return createGeeksHackingPortalApiEntitiesOrganizerType() },"createdAt": faker.date.anytime().toISOString(),"expiresAt": faker.date.anytime().toISOString(),"maxUses": faker.number.int(),"useCount": faker.number.int(),"isExpired": faker.datatype.boolean(),"isExhausted": faker.datatype.boolean(),...(data || {})} }
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  code: faker.string.alpha(),
+  type: createGeeksHackingPortalApiEntitiesOrganizerType(),
+  createdAt: faker.date.anytime().toISOString(),
+  expiresAt: faker.date.anytime().toISOString(),
+  maxUses: faker.number.int(),
+  useCount: faker.number.int(),
+  isExpired: faker.datatype.boolean(),
+  isExhausted: faker.datatype.boolean(),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

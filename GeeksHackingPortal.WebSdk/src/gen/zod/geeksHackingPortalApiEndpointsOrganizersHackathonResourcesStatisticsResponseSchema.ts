@@ -3,33 +3,27 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItemSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItemSchema.ts";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItemSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItemSchema.ts";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItemSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItemSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItemSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItemSchema'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItemSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItemSchema'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItemSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItemSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponseSchema = z.object({
-    "resourceId": z.string().nullish(),
-"resourceName": z.string().nullish(),
-"resourceCount": z.optional(z.int()),
-"resourcesWithRedemptions": z.optional(z.int()),
-"resourcesWithoutRedemptions": z.optional(z.int()),
-"totalParticipants": z.optional(z.int()),
-"participantsWithRedemptions": z.optional(z.int()),
-"participantsWithoutRedemptions": z.optional(z.int()),
-"teamsWithRedemptions": z.optional(z.int()),
-"redeemersWithoutTeam": z.optional(z.int()),
-"totalRedemptions": z.optional(z.int()),
-"averageRedemptionsPerRedeemer": z.optional(z.number()),
-"firstRedeemedAt": z.iso.datetime().nullish(),
-"lastRedeemedAt": z.iso.datetime().nullish(),
-get "resourceSummaries"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItemSchema).optional()
-              },
-get "teamBreakdown"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItemSchema).optional()
-              },
-get "recentActivity"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItemSchema).optional()
-              }
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponseSchema = z.strictObject({
+  resourceId: z.string().nullish(),
+  resourceName: z.string().nullish(),
+  resourceCount: z.int32().optional(),
+  resourcesWithRedemptions: z.int32().optional(),
+  resourcesWithoutRedemptions: z.int32().optional(),
+  totalParticipants: z.int32().optional(),
+  participantsWithRedemptions: z.int32().optional(),
+  participantsWithoutRedemptions: z.int32().optional(),
+  teamsWithRedemptions: z.int32().optional(),
+  redeemersWithoutTeam: z.int32().optional(),
+  totalRedemptions: z.int32().optional(),
+  averageRedemptionsPerRedeemer: z.number().optional(),
+  firstRedeemedAt: z.iso.datetime().nullish(),
+  lastRedeemedAt: z.iso.datetime().nullish(),
+  resourceSummaries: z.array(geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItemSchema).optional(),
+  teamBreakdown: z.array(geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItemSchema).optional(),
+  recentActivity: z.array(geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItemSchema).optional(),
+})

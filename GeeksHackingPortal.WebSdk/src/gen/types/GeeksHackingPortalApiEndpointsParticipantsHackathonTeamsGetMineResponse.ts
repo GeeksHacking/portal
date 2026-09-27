@@ -3,35 +3,29 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem } from './GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem'
 
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponse = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     hackathonId?: string;
-    /**
-     * @type string | undefined
-    */
     name?: string;
-    /**
-     * @type string | undefined
-    */
     description?: string;
     /**
-     * @type string, guid
-    */
-    challengeId?: string | null;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    challengeId?: string | null;
     joinCode?: string;
-    /**
-     * @type array | undefined
-    */
     members?: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem[];
 };

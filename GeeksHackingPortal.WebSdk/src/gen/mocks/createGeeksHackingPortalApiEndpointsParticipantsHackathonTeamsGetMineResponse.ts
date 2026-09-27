@@ -3,11 +3,24 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponse } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem } from "./createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponse } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponse'
+import { createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem } from './createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponse(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponse>): GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponse {
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponse<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponse> = object>(data?: TData)
 
-  return { ...{"id": faker.string.alpha(),"hackathonId": faker.string.alpha(),"name": faker.string.alpha(),"description": faker.string.alpha(),"challengeId": faker.string.alpha(),"joinCode": faker.string.alpha(),get "members"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  hackathonId: faker.string.alpha(),
+  name: faker.string.alpha(),
+  description: faker.string.alpha(),
+  challengeId: faker.string.alpha(),
+  joinCode: faker.string.alpha(),
+  members: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

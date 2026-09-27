@@ -3,37 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint } from "../clients/geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationKey = () => [{ url: '/organizers/standalone-workshops/:standaloneWorkshopId/timeline/:timelineItemId' }] as const
-
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationKey>
-
-/**
- * {@link /organizers/standalone-workshops/:standaloneWorkshopId/timeline/:timelineItemId}
- */
-export function useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint403>, {standaloneWorkshopId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointPathParams["standaloneWorkshopId"]>, timelineItemId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointPathParams["timelineItemId"]>, data: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationRequest>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationRequest>> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint403>, {standaloneWorkshopId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointPathParams["standaloneWorkshopId"], timelineItemId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointPathParams["timelineItemId"], data: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationRequest}, TContext>({
-            mutationFn: async({ standaloneWorkshopId, timelineItemId, data }) => {
-              return geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint(standaloneWorkshopId, timelineItemId, data, config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

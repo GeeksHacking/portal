@@ -3,30 +3,21 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListResponseChallengeItem = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
-    /**
-     * @type string | undefined
-    */
     title?: string;
-    /**
-     * @type string | undefined
-    */
     description?: string;
-    /**
-     * @type string | undefined
-    */
     sponsor?: string;
-    /**
-     * @type string | undefined
-    */
     selectionCriteriaStmt?: string;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     teamCount?: number;
 };

@@ -3,46 +3,50 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsListResponseResponseSubmission = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
     /**
-     * @type string, guid
-    */
-    challengeId?: string | null;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    challengeId?: string | null;
     title?: string;
-    /**
-     * @type string
-    */
     summary?: string | null;
-    /**
-     * @type string
-    */
     location?: string | null;
     /**
-     * @type string, uri
+     * @description
+     * Format: `uri`
+     * @type string | undefined
     */
     devpostUri?: string | null;
     /**
-     * @type string, uri
+     * @description
+     * Format: `uri`
+     * @type string | undefined
     */
     repoUri?: string | null;
     /**
-     * @type string, uri
+     * @description
+     * Format: `uri`
+     * @type string | undefined
     */
     demoUri?: string | null;
     /**
-     * @type string, uri
+     * @description
+     * Format: `uri`
+     * @type string | undefined
     */
     slidesUri?: string | null;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     submittedAt?: string;
 };

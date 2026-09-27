@@ -3,26 +3,17 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListResponseSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListResponseSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListResponseSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1PathParamsSchema = z.object({
-    "activityId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1PathActivityIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListResponseSchema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1Status200Schema = geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1401Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1Status401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1403Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1Status403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1QueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1200Schema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1ResponseSchema = geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1Status200Schema
+
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1ErrorSchema = z.union([geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1Status401Schema, geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1Status403Schema])

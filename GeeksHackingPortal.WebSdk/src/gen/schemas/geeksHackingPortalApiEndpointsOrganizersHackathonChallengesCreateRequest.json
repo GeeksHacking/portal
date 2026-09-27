@@ -1,1 +1,0 @@
-{"type":"object","additionalProperties":false,"properties":{"title":{"type":"string"},"description":{"type":"string"},"sponsor":{"type":"string"},"selectionCriteriaStmt":{"type":"string","nullable":true},"isPublished":{"type":"boolean"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateRequest"}

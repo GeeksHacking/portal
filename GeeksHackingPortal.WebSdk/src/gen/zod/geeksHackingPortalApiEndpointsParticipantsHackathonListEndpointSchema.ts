@@ -3,12 +3,8 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsParticipantsHackathonListResponseSchema } from "./geeksHackingPortalApiEndpointsParticipantsHackathonListResponseSchema.ts";
-import { z } from "zod/v4";
+import { geeksHackingPortalApiEndpointsParticipantsHackathonListResponseSchema } from './geeksHackingPortalApiEndpointsParticipantsHackathonListResponseSchema'
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsHackathonListResponseSchema)
+export const geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointStatus200Schema = geeksHackingPortalApiEndpointsParticipantsHackathonListResponseSchema
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointResponseSchema = geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointStatus200Schema

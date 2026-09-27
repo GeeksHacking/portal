@@ -3,11 +3,8 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse } from "./GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse } from './GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse'
 
 export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponse = {
-    /**
-     * @type array | undefined
-    */
     items?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse[];
 };

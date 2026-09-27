@@ -3,34 +3,37 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListResponse } from "./GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListResponse } from './GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListResponse'
 
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     standaloneWorkshopId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointQueryResponse = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointQuery = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpoint200;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointOptions = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointStatus403);

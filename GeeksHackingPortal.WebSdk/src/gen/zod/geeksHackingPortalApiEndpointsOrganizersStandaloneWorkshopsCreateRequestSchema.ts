@@ -3,19 +3,17 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequestSchema = z.object({
-    "title": z.optional(z.string().min(0).max(160)),
-"description": z.optional(z.string().min(0).max(4000)),
-"startTime": z.optional(z.iso.datetime()),
-"endTime": z.optional(z.iso.datetime()),
-"location": z.optional(z.string().min(0).max(240)),
-"homepageUri": z.url().nullish(),
-"shortCode": z.optional(z.string().min(3).max(16).regex(/^[A-Za-z0-9-]+$/)),
-"maxParticipants": z.optional(z.int().gt(0)),
-"isPublished": z.optional(z.boolean()),
-"emailTemplates": z.object({
-    
-    }).catchall(z.string()).nullish()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequestSchema = z.strictObject({
+  title: z.string().min(0).max(160).optional(),
+  description: z.string().min(0).max(4000).optional(),
+  startTime: z.iso.datetime().optional(),
+  endTime: z.iso.datetime().optional(),
+  location: z.string().min(0).max(240).optional(),
+  homepageUri: z.url().nullish(),
+  shortCode: z.string().min(3).max(16).regex(/^[A-Za-z0-9-]+$/).optional(),
+  maxParticipants: z.int32().optional(),
+  isPublished: z.boolean().optional(),
+  emailTemplates: z.object({}).catchall(z.string()).nullish(),
+})

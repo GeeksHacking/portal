@@ -3,11 +3,21 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListSubmissionDto } from "./createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListSubmissionDto.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse'
+import { createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListSubmissionDto } from './createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListSubmissionDto'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse>): GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse {
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse> = object>(data?: TData)
 
-  return { ...{get "submissions"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListSubmissionDto())) },"totalQuestions": faker.number.int(),"answeredQuestions": faker.number.int(),"requiredQuestionsRemaining": faker.number.int(),...(data || {})} }
+{
+  const defaultFakeData = {
+  submissions: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListSubmissionDto())),
+  totalQuestions: faker.number.int(),
+  answeredQuestions: faker.number.int(),
+  requiredQuestionsRemaining: faker.number.int(),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

@@ -3,23 +3,15 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPathParams["hackathonId"], challengeId: GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPathParams["challengeId"]) {
-  const res = { method: 'PATCH', url: `/organizers/hackathons/${hackathonId}/challenges/${challengeId}` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * {@link /organizers/hackathons/:hackathonId/challenges/:challengeId}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPathParams["hackathonId"], challengeId: GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPathParams["challengeId"], data: GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint403>, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationRequest>({ method : "PATCH", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointUrl(hackathonId, challengeId).url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'PATCH', url: '/organizers/hackathons/{hackathonId}/challenges/{challengeId}', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointResponses, ThrowOnError>>)
 }

@@ -3,46 +3,40 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponse = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
-    /**
-     * @type string | undefined
-    */
     title?: string;
-    /**
-     * @type string | undefined
-    */
     description?: string;
-    /**
-     * @type string | undefined
-    */
     location?: string;
     /**
-     * @type string, uri
-    */
-    homepageUri?: string | null;
-    /**
+     * @description
+     * Format: `uri`
      * @type string | undefined
     */
+    homepageUri?: string | null;
     shortCode?: string;
-    /**
-     * @type boolean | undefined
-    */
     isPublished?: boolean;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     startTime?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     endTime?: string;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     maxParticipants?: number;
 };

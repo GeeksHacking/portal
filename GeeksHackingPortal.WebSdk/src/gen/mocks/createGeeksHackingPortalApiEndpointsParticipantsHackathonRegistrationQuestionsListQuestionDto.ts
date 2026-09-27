@@ -3,13 +3,29 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto } from "./createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto.ts";
-import { createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDto } from "./createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDto.ts";
-import { createGeeksHackingPortalApiEntitiesQuestionType } from "./createGeeksHackingPortalApiEntitiesQuestionType.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto'
+import { createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto } from './createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto'
+import { createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDto } from './createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDto'
+import { createGeeksHackingPortalApiEntitiesQuestionType } from './createGeeksHackingPortalApiEntitiesQuestionType'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto>): GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto {
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto> = object>(data?: TData)
 
-  return { ...{"id": faker.string.alpha(),"questionText": faker.string.alpha(),"questionKey": faker.string.alpha(),get "type"() { return createGeeksHackingPortalApiEntitiesQuestionType() },"isRequired": faker.datatype.boolean(),"helpText": faker.string.alpha(),"conditionalLogic": faker.string.alpha(),"validationRules": faker.string.alpha(),get "options"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto())) },get "currentSubmission"() { return faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDto()]) },...(data || {})} }
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  questionText: faker.string.alpha(),
+  questionKey: faker.string.alpha(),
+  type: createGeeksHackingPortalApiEntitiesQuestionType(),
+  isRequired: faker.datatype.boolean(),
+  helpText: faker.string.alpha(),
+  conditionalLogic: faker.string.alpha(),
+  validationRules: faker.string.alpha(),
+  options: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto())),
+  currentSubmission: faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDto<object>()]),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

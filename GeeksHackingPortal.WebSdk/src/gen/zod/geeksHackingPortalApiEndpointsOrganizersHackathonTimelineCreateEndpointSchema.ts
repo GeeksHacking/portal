@@ -3,29 +3,20 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateRequestSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateRequestSchema.ts";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateResponseSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateRequestSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateRequestSchema'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateResponseSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateResponseSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointPathParamsSchema = z.object({
-    "hackathonId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointPathHackathonIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateResponseSchema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointStatus200Schema = geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointStatus401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointStatus403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointMutationRequestSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateRequestSchema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointResponseSchema = geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointStatus200Schema
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointStatus401Schema, geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointStatus403Schema])
+
+export const geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointBodySchema = geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateRequestSchema

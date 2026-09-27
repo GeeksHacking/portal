@@ -3,34 +3,22 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetResponse = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     hackathonId?: string;
-    /**
-     * @type string | undefined
-    */
     title?: string;
-    /**
-     * @type string | undefined
-    */
     description?: string;
-    /**
-     * @type string | undefined
-    */
     sponsor?: string;
-    /**
-     * @type string | undefined
-    */
     selectionCriteriaStmt?: string;
-    /**
-     * @type boolean | undefined
-    */
     isPublished?: boolean;
 };

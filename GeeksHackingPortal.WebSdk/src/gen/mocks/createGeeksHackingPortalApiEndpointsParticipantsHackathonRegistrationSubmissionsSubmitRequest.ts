@@ -3,11 +3,18 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitRequest } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitRequest.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitSubmissionDto } from "./createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitSubmissionDto.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitRequest } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitRequest'
+import { createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitSubmissionDto } from './createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitSubmissionDto'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitRequest(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitRequest>): GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitRequest {
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitRequest<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitRequest> = object>(data?: TData)
 
-  return { ...{get "submissions"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitSubmissionDto())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  submissions: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitSubmissionDto())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

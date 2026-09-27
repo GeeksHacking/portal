@@ -3,22 +3,24 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsAdminCachePurgeResponse = {
-    /**
-     * @type string | undefined
-    */
     message?: string;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     purgedKeys?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     remainingKeys?: number;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     purgedAt?: string;
 };

@@ -3,55 +3,23 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint401, GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { queryOptions, useQuery } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint } from "../clients/geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint.ts";
-import { toValue } from "vue";
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointStatus200, GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointStatus401, GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint'
+import type { MaybeRefOrGetter } from 'vue'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint } from '../clients/geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint'
+import { queryOptions } from '@tanstack/vue-query'
+import { toValue } from 'vue'
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryKey = (hackathonId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointPathParams["hackathonId"] | undefined>, challengeId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointPathParams["challengeId"] | undefined>) => [{ url: '/participants/hackathons/:hackathonId/challenges/:challengeId', params: {hackathonId:hackathonId,challengeId:challengeId} }] as const
+export const geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryKey = ({ path }: { path: MaybeRefOrGetter<Omit<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointOptions, 'headers'>['path']> }) => [{ url: '/participants/hackathons/:hackathonId/challenges/:challengeId', params: path }] as const
 
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryKey = ReturnType<typeof geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryKey>
 
-export function geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryOptions(hackathonId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointPathParams["hackathonId"] | undefined>, challengeId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointPathParams["challengeId"] | undefined>, config: Partial<RequestConfig> & { client?: Client } = {}) {
-
-        const queryKey = geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryKey(hackathonId, challengeId)
-        return queryOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint403>, GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryResponse, typeof queryKey>({
-        enabled: () => !!toValue(hackathonId) && !!toValue(challengeId),
-        queryKey,
-        queryFn: async ({ signal }) => {
-            return geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint(toValue(hackathonId)!, toValue(challengeId)!, { ...config, signal: config.signal ?? signal })
-         },
-        })
-
-}
-
-/**
- * @description Retrieves public details about a challenge within a hackathon.
- * @summary Get challenge details
- * {@link /participants/hackathons/:hackathonId/challenges/:challengeId}
- */
-export function useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint<TData = GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryResponse, TQueryData = GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryResponse, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryKey>(hackathonId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointPathParams["hackathonId"] | undefined>, challengeId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointPathParams["challengeId"] | undefined>, options: 
-{
-  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint403>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
-  client?: Partial<RequestConfig> & { client?: Client }
-}
- = {}) {
-
-         const { query: queryConfig = {}, client: config = {} } = options ?? {}
-         const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryKey(hackathonId, challengeId)
-
-         const query = useQuery({
-          ...geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryOptions(hackathonId, challengeId, config),
-          ...resolvedOptions,
-          queryKey
-         } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint403>, TData, GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryResponse, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint403>> & { queryKey: TQueryKey }
-
-         query.queryKey = queryKey as TQueryKey
-
-         return query
-         
+export function geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryOptions({ path }: { path: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointOptions['path']> }, config: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>> = {}) {
+  const queryKey = geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryKey({ path })
+  return queryOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointStatus200>({
+   queryKey,
+   queryFn: async ({ signal }) => {
+      return geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpoint({ ...config, path: toValue(path), signal: config.signal ?? signal, throwOnError: true }).unwrap()
+   },
+  })
 }

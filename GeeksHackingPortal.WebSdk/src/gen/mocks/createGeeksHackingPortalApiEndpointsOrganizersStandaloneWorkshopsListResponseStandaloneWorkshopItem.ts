@@ -3,13 +3,28 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponseStandaloneWorkshopItem } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponseStandaloneWorkshopItem.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponseStandaloneWorkshopItem } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponseStandaloneWorkshopItem'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponseStandaloneWorkshopItem(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponseStandaloneWorkshopItem>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponseStandaloneWorkshopItem {
+export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponseStandaloneWorkshopItem<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponseStandaloneWorkshopItem> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  title: faker.string.alpha(),
+  description: faker.string.alpha(),
+  startTime: faker.date.anytime().toISOString(),
+  endTime: faker.date.anytime().toISOString(),
+  location: faker.string.alpha(),
+  homepageUri: faker.internet.url(),
+  shortCode: faker.string.alpha(),
+  maxParticipants: faker.number.int(),
+  isPublished: faker.datatype.boolean(),
+  createdAt: faker.date.anytime().toISOString(),
+  emailTemplates: {},
+}
   return {
-    ...{"id": faker.string.alpha(),"title": faker.string.alpha(),"description": faker.string.alpha(),"startTime": faker.date.anytime().toISOString(),"endTime": faker.date.anytime().toISOString(),"location": faker.string.alpha(),"homepageUri": faker.internet.url(),"shortCode": faker.string.alpha(),"maxParticipants": faker.number.int(),"isPublished": faker.datatype.boolean(),"createdAt": faker.date.anytime().toISOString(),"emailTemplates": {}},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

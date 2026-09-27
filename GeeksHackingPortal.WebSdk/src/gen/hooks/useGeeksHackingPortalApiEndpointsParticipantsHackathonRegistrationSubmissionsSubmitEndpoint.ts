@@ -3,39 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationRequest, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint400, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint401, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint } from "../clients/geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationKey = () => [{ url: '/participants/hackathons/:hackathonId/registration/submissions' }] as const
-
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationKey>
-
-/**
- * @description Submit or update answers to registration questions. Existing answers will be replaced.
- * @summary Submit registration responses
- * {@link /participants/hackathons/:hackathonId/registration/submissions}
- */
-export function useGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint400 | GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint403>, {hackathonId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointPathParams["hackathonId"]>, data: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationRequest>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationRequest>> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint400 | GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint403>, {hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointPathParams["hackathonId"], data: GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationRequest}, TContext>({
-            mutationFn: async({ hackathonId, data }) => {
-              return geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint(hackathonId, data, config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

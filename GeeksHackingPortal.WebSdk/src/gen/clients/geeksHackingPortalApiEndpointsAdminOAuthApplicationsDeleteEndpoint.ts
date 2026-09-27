@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointMutationResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointPathParams, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointUrl(id: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointPathParams["id"]) {
-  const res = { method: 'DELETE', url: `/admin/oauth-applications/${id}` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointOptions, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Deletes an OpenIddict OAuth client owned by the current admin.
  * @summary Delete an OAuth application
  * {@link /admin/oauth-applications/:id}
  */
-export async function geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint(id: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointPathParams["id"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint403>, unknown>({ method : "DELETE", url : getGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointUrl(id).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'DELETE', url: '/admin/oauth-applications/{id}', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointResponses, ThrowOnError>>)
 }

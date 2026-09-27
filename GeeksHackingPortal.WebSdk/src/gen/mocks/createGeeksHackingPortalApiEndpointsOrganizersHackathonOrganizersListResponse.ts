@@ -3,11 +3,18 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListResponseOrganizerItem } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListResponseOrganizerItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListResponse'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListResponseOrganizerItem } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListResponseOrganizerItem'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListResponse> = object>(data?: TData)
 
-  return { ...{get "organizers"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListResponseOrganizerItem())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  organizers: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListResponseOrganizerItem())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

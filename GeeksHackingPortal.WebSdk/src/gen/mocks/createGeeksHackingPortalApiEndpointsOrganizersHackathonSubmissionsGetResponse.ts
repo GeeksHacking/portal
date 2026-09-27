@@ -3,13 +3,27 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetResponse.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetResponse> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  title: faker.string.alpha(),
+  description: faker.string.alpha(),
+  repositoryUri: faker.internet.url(),
+  demoUri: faker.internet.url(),
+  slidesUri: faker.internet.url(),
+  submittedAt: faker.date.anytime().toISOString(),
+  teamId: faker.string.alpha(),
+  teamName: faker.string.alpha(),
+  challengeId: faker.string.alpha(),
+  challengeTitle: faker.string.alpha(),
+}
   return {
-    ...{"id": faker.string.alpha(),"title": faker.string.alpha(),"description": faker.string.alpha(),"repositoryUri": faker.internet.url(),"demoUri": faker.internet.url(),"slidesUri": faker.internet.url(),"submittedAt": faker.date.anytime().toISOString(),"teamId": faker.string.alpha(),"teamName": faker.string.alpha(),"challengeId": faker.string.alpha(),"challengeTitle": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

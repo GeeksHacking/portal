@@ -3,14 +3,7 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateRequest = {
-    /**
-     * @type string
-    */
     name?: string | null;
-    /**
-     * @type string
-    */
     description?: string | null;
 };

@@ -3,38 +3,40 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequest } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequest.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponse } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequest } from './GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequest'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponse } from './GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponse'
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1PathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Path = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     activityId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1200 = GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status200 = GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1MutationRequest = GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequest;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Body = GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequest;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1MutationResponse = GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Mutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1200;
-    Request: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1MutationRequest;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1PathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1403;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Options = {
+    body: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Body;
+    path: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Path;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Responses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Response = (GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status200 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint1Status403);

@@ -3,15 +3,13 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema } from './geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequestSchema = z.object({
-    "clientId": z.optional(z.string().min(3).max(100).regex(/^[A-Za-z0-9._:-]+$/)),
-"displayName": z.optional(z.string().min(0).max(200)),
-get "platform"(){
-                return geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema.optional()
-              },
-"redirectUris": z.array(z.url()).min(1),
-"postLogoutRedirectUris": z.optional(z.array(z.url()))
-    })
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequestSchema = z.strictObject({
+  clientId: z.string().min(3).max(100).regex(/^[A-Za-z0-9._:-]+$/).optional(),
+  displayName: z.string().min(0).max(200).optional(),
+  platform: geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema.optional(),
+  redirectUris: z.array(z.url()),
+  postLogoutRedirectUris: z.array(z.url()).optional(),
+})

@@ -3,13 +3,24 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateRequest } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateRequest.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateRequest } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateRequest'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateRequest(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateRequest>): GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateRequest {
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateRequest<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateRequest> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  challengeId: faker.string.alpha(),
+  title: faker.string.alpha({ length: 1 }),
+  summary: faker.string.alpha(),
+  location: faker.string.alpha(),
+  devpostUri: faker.internet.url(),
+  repoUri: faker.internet.url(),
+  demoUri: faker.internet.url(),
+  slidesUri: faker.internet.url(),
+}
   return {
-    ...{"challengeId": faker.string.alpha(),"title": faker.string.alpha({ length: 1 }),"summary": faker.string.alpha(),"location": faker.string.alpha(),"devpostUri": faker.internet.url(),"repoUri": faker.internet.url(),"demoUri": faker.internet.url(),"slidesUri": faker.internet.url()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

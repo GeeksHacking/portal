@@ -3,14 +3,12 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsSubmitResponse = {
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     submissionsCount?: number;
-    /**
-     * @type string | undefined
-    */
     message?: string;
 };

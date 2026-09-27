@@ -3,39 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint } from "../clients/geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointMutationKey = () => [{ url: '/organizers/standalone-workshops/:standaloneWorkshopId/organizers/invites' }] as const
-
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointMutationKey>
-
-/**
- * @description Generates a reusable invite code that other users can redeem to join the standalone workshop as an organizer.
- * @summary Create an organizer invite code for a standalone workshop
- * {@link /organizers/standalone-workshops/:standaloneWorkshopId/organizers/invites}
- */
-export function useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint403>, {standaloneWorkshopId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointPathParams["standaloneWorkshopId"]>, data: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointMutationRequest>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointMutationRequest>> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint403>, {standaloneWorkshopId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointPathParams["standaloneWorkshopId"], data: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointMutationRequest}, TContext>({
-            mutationFn: async({ standaloneWorkshopId, data }) => {
-              return geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint(standaloneWorkshopId, data, config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

@@ -3,13 +3,33 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus.ts";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.ts";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem>): GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem> = object>(data?: TData)
 
-  return { ...{"createdAt": faker.date.anytime().toISOString(),"withdrawnAt": faker.date.anytime().toISOString(),"isWithdrawn": faker.datatype.boolean(),"id": faker.string.alpha(),"name": faker.string.alpha(),"email": faker.string.alpha(),"teamId": faker.string.alpha(),"teamName": faker.string.alpha(),get "concludedStatus"() { return createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus() },get "reviews"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem())) },get "registrationSubmissions"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem())) },"emailSentCount": faker.number.int(),"lastEmailSentAt": faker.date.anytime().toISOString(),"lastEmailStatus": faker.string.alpha(),...(data || {})} }
+{
+  const defaultFakeData = {
+  createdAt: faker.date.anytime().toISOString(),
+  withdrawnAt: faker.date.anytime().toISOString(),
+  isWithdrawn: faker.datatype.boolean(),
+  id: faker.string.alpha(),
+  name: faker.string.alpha(),
+  email: faker.string.alpha(),
+  teamId: faker.string.alpha(),
+  teamName: faker.string.alpha(),
+  concludedStatus: createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus(),
+  reviews: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem())),
+  registrationSubmissions: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem())),
+  emailSentCount: faker.number.int(),
+  lastEmailSentAt: faker.date.anytime().toISOString(),
+  lastEmailStatus: faker.string.alpha(),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

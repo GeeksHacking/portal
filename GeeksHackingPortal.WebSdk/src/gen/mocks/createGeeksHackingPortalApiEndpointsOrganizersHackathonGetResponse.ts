@@ -3,11 +3,33 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonGetResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonGetResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse } from "./createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonGetResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonGetResponse'
+import { createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse } from './createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonGetResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonGetResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonGetResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonGetResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonGetResponse> = object>(data?: TData)
 
-  return { ...{"id": faker.string.alpha(),"name": faker.string.alpha(),"description": faker.string.alpha(),"venue": faker.string.alpha(),"homepageUri": faker.internet.url(),"shortCode": faker.string.alpha(),"isPublished": faker.datatype.boolean(),"eventStartDate": faker.date.anytime().toISOString(),"eventEndDate": faker.date.anytime().toISOString(),"submissionsStartDate": faker.date.anytime().toISOString(),"challengeSelectionEndDate": faker.date.anytime().toISOString(),"submissionsEndDate": faker.date.anytime().toISOString(),"judgingStartDate": faker.date.anytime().toISOString(),"judgingEndDate": faker.date.anytime().toISOString(),"emailTemplates": {},get "gitHubRepositorySettings"() { return createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse() },...(data || {})} }
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  name: faker.string.alpha(),
+  description: faker.string.alpha(),
+  venue: faker.string.alpha(),
+  homepageUri: faker.internet.url(),
+  shortCode: faker.string.alpha(),
+  isPublished: faker.datatype.boolean(),
+  eventStartDate: faker.date.anytime().toISOString(),
+  eventEndDate: faker.date.anytime().toISOString(),
+  submissionsStartDate: faker.date.anytime().toISOString(),
+  challengeSelectionEndDate: faker.date.anytime().toISOString(),
+  submissionsEndDate: faker.date.anytime().toISOString(),
+  judgingStartDate: faker.date.anytime().toISOString(),
+  judgingEndDate: faker.date.anytime().toISOString(),
+  emailTemplates: {},
+  gitHubRepositorySettings: createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse(),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

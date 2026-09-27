@@ -3,22 +3,18 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetRegistrationSubmissionItemSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetRegistrationSubmissionItemSchema.ts";
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItemSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItemSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetRegistrationSubmissionItemSchema } from './geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetRegistrationSubmissionItemSchema'
+import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItemSchema } from './geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItemSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponseSchema = z.object({
-    "registrationId": z.optional(z.string()),
-"userId": z.optional(z.string()),
-"name": z.optional(z.string()),
-"email": z.optional(z.string()),
-"status": z.optional(z.string()),
-"registeredAt": z.optional(z.iso.datetime()),
-"withdrawnAt": z.iso.datetime().nullish(),
-get "registrationSubmissions"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetRegistrationSubmissionItemSchema).optional()
-              },
-get "venueCheckIns"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItemSchema).optional()
-              }
-    })
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponseSchema = z.strictObject({
+  registrationId: z.string().optional(),
+  userId: z.string().optional(),
+  name: z.string().optional(),
+  email: z.string().optional(),
+  status: z.string().optional(),
+  registeredAt: z.iso.datetime().optional(),
+  withdrawnAt: z.iso.datetime().nullish(),
+  registrationSubmissions: z.array(geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetRegistrationSubmissionItemSchema).optional(),
+  venueCheckIns: z.array(geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItemSchema).optional(),
+})

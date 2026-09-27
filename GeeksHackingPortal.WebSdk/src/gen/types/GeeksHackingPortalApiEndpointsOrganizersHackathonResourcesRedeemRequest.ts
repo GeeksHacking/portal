@@ -3,5 +3,4 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemRequest = object;

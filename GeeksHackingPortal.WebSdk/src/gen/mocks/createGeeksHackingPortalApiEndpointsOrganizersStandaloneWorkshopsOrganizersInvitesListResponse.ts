@@ -3,11 +3,18 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponseInviteItem } from "./createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponseInviteItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponse'
+import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponseInviteItem } from './createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponseInviteItem'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponse>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponse> = object>(data?: TData)
 
-  return { ...{get "invites"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponseInviteItem())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  invites: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponseInviteItem())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

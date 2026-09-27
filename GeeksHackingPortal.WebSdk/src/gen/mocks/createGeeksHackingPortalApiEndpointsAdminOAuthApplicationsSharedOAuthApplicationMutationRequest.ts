@@ -3,11 +3,22 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform } from "./createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest'
+import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform } from './createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest {
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest<TData extends Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest> = object>(data?: TData)
 
-  return { ...{"clientId": faker.helpers.fromRegExp("^[A-Za-z0-9._:-]+$"),"displayName": faker.string.alpha({ length: { min: 0, max: 200 } }),get "platform"() { return createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform() },"redirectUris": faker.helpers.multiple(() => (faker.internet.url()), { count: 1 }),"postLogoutRedirectUris": faker.helpers.multiple(() => (faker.internet.url())),...(data || {})} }
+{
+  const defaultFakeData = {
+  clientId: faker.helpers.fromRegExp("^[A-Za-z0-9._:-]+$"),
+  displayName: faker.string.alpha({ length: { min: 0, max: 200 } }),
+  platform: createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform(),
+  redirectUris: faker.helpers.multiple(() => (faker.internet.url())),
+  postLogoutRedirectUris: faker.helpers.multiple(() => (faker.internet.url())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

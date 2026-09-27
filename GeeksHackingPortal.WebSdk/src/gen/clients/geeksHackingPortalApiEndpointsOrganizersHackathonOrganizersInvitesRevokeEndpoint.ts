@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointPathParams["hackathonId"], inviteId: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointPathParams["inviteId"]) {
-  const res = { method: 'DELETE', url: `/organizers/hackathons/${hackathonId}/organizers/invites/${inviteId}` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Expires an organizer invite code immediately so it can no longer be redeemed.
  * @summary Revoke a hackathon organizer invite code
  * {@link /organizers/hackathons/:hackathonId/organizers/invites/:inviteId}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointPathParams["hackathonId"], inviteId: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointPathParams["inviteId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint403>, unknown>({ method : "DELETE", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointUrl(hackathonId, inviteId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'DELETE', url: '/organizers/hackathons/{hackathonId}/organizers/invites/{inviteId}', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointResponses, ThrowOnError>>)
 }

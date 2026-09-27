@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeRequestSchema = z.object({
-    "challengeId": z.string().min(1)
-    })
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeRequestSchema = z.strictObject({
+  challengeId: z.string().min(1),
+})

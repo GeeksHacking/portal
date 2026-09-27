@@ -3,26 +3,15 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse = {
-    /**
-     * @type boolean | undefined
-    */
     isRepositoryCheckingEnabled?: boolean;
-    /**
-     * @type boolean | undefined
-    */
     isRepositoryForkingEnabled?: boolean;
-    /**
-     * @type boolean | undefined
-    */
     hasApiKey?: boolean;
-    /**
-     * @type string
-    */
     repositoryPrefix?: string | null;
     /**
-     * @type integer, int64
+     * @description
+     * Format: `int64`
+     * @type integer | undefined
     */
-    organizationId?: number | null;
+    organizationId?: bigint | null;
 };

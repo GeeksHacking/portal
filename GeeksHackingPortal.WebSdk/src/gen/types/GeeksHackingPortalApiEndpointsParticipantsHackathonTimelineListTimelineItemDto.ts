@@ -3,26 +3,25 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListTimelineItemDto = {
     /**
-     * @type string | undefined, guid
-    */
-    id?: string;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    id?: string;
     title?: string;
-    /**
-     * @type string
-    */
     description?: string | null;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     startTime?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     endTime?: string;
 };

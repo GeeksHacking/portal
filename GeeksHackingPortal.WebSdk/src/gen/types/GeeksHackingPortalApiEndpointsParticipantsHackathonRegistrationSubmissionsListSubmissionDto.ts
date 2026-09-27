@@ -3,34 +3,22 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListSubmissionDto = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     questionId?: string;
-    /**
-     * @type string | undefined
-    */
     questionKey?: string;
-    /**
-     * @type string | undefined
-    */
     questionText?: string;
-    /**
-     * @type string
-    */
     category?: string | null;
-    /**
-     * @type string | undefined
-    */
     value?: string;
-    /**
-     * @type string
-    */
     followUpValue?: string | null;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     updatedAt?: string;
 };

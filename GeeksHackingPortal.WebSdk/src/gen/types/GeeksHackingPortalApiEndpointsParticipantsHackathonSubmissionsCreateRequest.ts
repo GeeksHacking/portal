@@ -3,10 +3,11 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateRequest = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     challengeId?: string;
     /**
@@ -14,28 +15,30 @@ export type GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreate
      * @type string
     */
     title: string;
-    /**
-     * @type string
-    */
     summary?: string | null;
-    /**
-     * @type string
-    */
     location?: string | null;
     /**
-     * @type string, uri
+     * @description
+     * Format: `uri`
+     * @type string | undefined
     */
     devpostUri?: string | null;
     /**
-     * @type string, uri
+     * @description
+     * Format: `uri`
+     * @type string
     */
     repoUri: string;
     /**
-     * @type string, uri
+     * @description
+     * Format: `uri`
+     * @type string | undefined
     */
     demoUri?: string | null;
     /**
-     * @type string, uri
+     * @description
+     * Format: `uri`
+     * @type string
     */
     slidesUri: string;
 };

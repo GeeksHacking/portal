@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpointQueryResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint401, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpointPathParams["hackathonId"]) {
-  const res = { method: 'GET', url: `/participants/hackathons/${hackathonId}/teams/me` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Retrieves the current user's team for the specified hackathon.
  * @summary Get my team
  * {@link /participants/hackathons/:hackathonId/teams/me}
  */
-export async function geeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpointPathParams["hackathonId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint403>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpointUrl(hackathonId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/participants/hackathons/{hackathonId}/teams/me', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpointResponses, ThrowOnError>>)
 }

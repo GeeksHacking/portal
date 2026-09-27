@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse, GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsAuthWhoAmIEndpointUrl() {
-  const res = { method: 'GET', url: `/auth/whoami` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointOptions, GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Returns the current authenticated user's information including GitHub details.
  * @summary Get current user info
  * {@link /auth/whoami}
  */
-export async function geeksHackingPortalApiEndpointsAuthWhoAmIEndpoint(config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsAuthWhoAmIEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointOptions, ThrowOnError> = {}): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint401>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsAuthWhoAmIEndpointUrl().url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/auth/whoami', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointResponses, ThrowOnError>>)
 }

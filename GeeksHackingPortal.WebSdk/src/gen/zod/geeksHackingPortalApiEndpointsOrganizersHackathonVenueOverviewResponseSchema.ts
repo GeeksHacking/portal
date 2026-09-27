@@ -3,15 +3,11 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDtoSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDtoSchema.ts";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDtoSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDtoSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDtoSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDtoSchema'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDtoSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDtoSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewResponseSchema = z.object({
-    get "participants"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDtoSchema).optional()
-              },
-get "auditTrail"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDtoSchema).optional()
-              }
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewResponseSchema = z.strictObject({
+  participants: z.array(geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDtoSchema).optional(),
+  auditTrail: z.array(geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDtoSchema).optional(),
+})

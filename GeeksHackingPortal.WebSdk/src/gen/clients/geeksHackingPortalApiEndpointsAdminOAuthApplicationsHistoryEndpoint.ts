@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointQueryResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointPathParams, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointUrl(id: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointPathParams["id"]) {
-  const res = { method: 'GET', url: `/admin/oauth-applications/${id}/history` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointOptions, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Gets recent sign in history for a specific OAuth application owned by the current admin.
  * @summary Get OAuth application sign in history
  * {@link /admin/oauth-applications/:id/history}
  */
-export async function geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint(id: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointPathParams["id"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint403>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointUrl(id).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/admin/oauth-applications/{id}/history', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointResponses, ThrowOnError>>)
 }

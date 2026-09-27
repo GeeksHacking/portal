@@ -3,15 +3,13 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDtoSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDtoSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDtoSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDtoSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryResponseSchema = z.object({
-    "participantId": z.optional(z.string()),
-"userId": z.optional(z.string()),
-"userName": z.optional(z.string()),
-"isCurrentlyCheckedIn": z.optional(z.boolean()),
-get "history"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDtoSchema).optional()
-              }
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryResponseSchema = z.strictObject({
+  participantId: z.string().optional(),
+  userId: z.string().optional(),
+  userName: z.string().optional(),
+  isCurrentlyCheckedIn: z.boolean().optional(),
+  history: z.array(geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDtoSchema).optional(),
+})

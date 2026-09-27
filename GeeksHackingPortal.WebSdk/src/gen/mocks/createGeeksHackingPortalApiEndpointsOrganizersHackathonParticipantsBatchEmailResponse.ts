@@ -3,13 +3,20 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailResponse.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailResponse> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  totalEmailsSent: faker.number.int(),
+  acceptedEmailsSent: faker.number.int(),
+  rejectedEmailsSent: faker.number.int(),
+  errors: faker.helpers.multiple(() => (faker.string.alpha())),
+}
   return {
-    ...{"totalEmailsSent": faker.number.int(),"acceptedEmailsSent": faker.number.int(),"rejectedEmailsSent": faker.number.int(),"errors": faker.helpers.multiple(() => (faker.string.alpha()))},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

@@ -3,23 +3,15 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1MutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1PathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1401, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Url(activityId: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1PathParams["activityId"], resourceId: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1PathParams["resourceId"]) {
-  const res = { method: 'DELETE', url: `/organizers/hackathons/${activityId}/resources/${resourceId}` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Options, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Responses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * {@link /organizers/hackathons/:activityId/resources/:resourceId}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1(activityId: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1PathParams["activityId"], resourceId: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1PathParams["resourceId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Options, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Responses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1MutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1403>, unknown>({ method : "DELETE", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Url(activityId, resourceId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'DELETE', url: '/organizers/hackathons/{activityId}/resources/{resourceId}', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesDeleteEndpoint1Responses, ThrowOnError>>)
 }

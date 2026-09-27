@@ -3,35 +3,14 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform } from "./GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformKey } from './GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform'
 
 export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse = {
-    /**
-     * @type string | undefined
-    */
     id?: string;
-    /**
-     * @type string | undefined
-    */
     clientId?: string;
-    /**
-     * @type string
-    */
     clientSecret?: string | null;
-    /**
-     * @type string | undefined
-    */
     displayName?: string;
-    /**
-     * @type string | undefined
-    */
-    platform?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform;
-    /**
-     * @type array | undefined
-    */
+    platform?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformKey;
     redirectUris?: string[];
-    /**
-     * @type array | undefined
-    */
     postLogoutRedirectUris?: string[];
 };

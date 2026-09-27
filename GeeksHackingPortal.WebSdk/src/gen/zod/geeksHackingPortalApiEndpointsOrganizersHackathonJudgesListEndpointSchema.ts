@@ -3,26 +3,17 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListResponseSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListResponseSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListResponseSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpointPathParamsSchema = z.object({
-    "hackathonId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpointPathHackathonIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListResponseSchema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpointStatus200Schema = geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpointStatus401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpointStatus403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpointQueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpointResponseSchema = geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpointStatus401Schema, geeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpointStatus403Schema])

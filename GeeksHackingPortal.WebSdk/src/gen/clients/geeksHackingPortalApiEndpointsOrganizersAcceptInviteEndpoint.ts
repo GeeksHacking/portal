@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointUrl() {
-  const res = { method: 'POST', url: `/organizers/accept-invite` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Redeems an invite code and registers the current user as an organizer for the activity the code was issued for. Codes are reusable unless a MaxUses limit is set.
  * @summary Accept an organizer invite
  * {@link /organizers/accept-invite}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint(data: GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint401>, GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationRequest>({ method : "POST", url : getGeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointUrl().url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/organizers/accept-invite', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointResponses, ThrowOnError>>)
 }

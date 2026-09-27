@@ -3,13 +3,10 @@
 * Do not edit manually.
 */
 
-
 export const geeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus = {
     Pending: "Pending",
     Accepted: "Accepted",
     Rejected: "Rejected"
 } as const;
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusEnumKey = (typeof geeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus)[keyof typeof geeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus];
-
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus = GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusEnumKey;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusKey = (typeof geeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus)[keyof typeof geeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus];

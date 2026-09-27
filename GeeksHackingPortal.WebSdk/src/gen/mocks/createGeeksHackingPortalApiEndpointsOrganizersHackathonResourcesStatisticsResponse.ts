@@ -3,13 +3,36 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItem } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItem.ts";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem.ts";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponse'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItem } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItem'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponse> = object>(data?: TData)
 
-  return { ...{"resourceId": faker.string.alpha(),"resourceName": faker.string.alpha(),"resourceCount": faker.number.int(),"resourcesWithRedemptions": faker.number.int(),"resourcesWithoutRedemptions": faker.number.int(),"totalParticipants": faker.number.int(),"participantsWithRedemptions": faker.number.int(),"participantsWithoutRedemptions": faker.number.int(),"teamsWithRedemptions": faker.number.int(),"redeemersWithoutTeam": faker.number.int(),"totalRedemptions": faker.number.int(),"averageRedemptionsPerRedeemer": faker.number.float(),"firstRedeemedAt": faker.date.anytime().toISOString(),"lastRedeemedAt": faker.date.anytime().toISOString(),get "resourceSummaries"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem())) },get "teamBreakdown"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem())) },get "recentActivity"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItem())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  resourceId: faker.string.alpha(),
+  resourceName: faker.string.alpha(),
+  resourceCount: faker.number.int(),
+  resourcesWithRedemptions: faker.number.int(),
+  resourcesWithoutRedemptions: faker.number.int(),
+  totalParticipants: faker.number.int(),
+  participantsWithRedemptions: faker.number.int(),
+  participantsWithoutRedemptions: faker.number.int(),
+  teamsWithRedemptions: faker.number.int(),
+  redeemersWithoutTeam: faker.number.int(),
+  totalRedemptions: faker.number.int(),
+  averageRedemptionsPerRedeemer: faker.number.float(),
+  firstRedeemedAt: faker.date.anytime().toISOString(),
+  lastRedeemedAt: faker.date.anytime().toISOString(),
+  resourceSummaries: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem())),
+  teamBreakdown: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem())),
+  recentActivity: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsRecentRedemptionItem())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

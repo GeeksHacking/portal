@@ -3,17 +3,13 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsAuthWhoAmIResponseSchema } from "./geeksHackingPortalApiEndpointsAuthWhoAmIResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsAuthWhoAmIResponseSchema } from './geeksHackingPortalApiEndpointsAuthWhoAmIResponseSchema'
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsAuthWhoAmIEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsAuthWhoAmIResponseSchema)
+export const geeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200Schema = geeksHackingPortalApiEndpointsAuthWhoAmIResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsAuthWhoAmIEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus401Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsAuthWhoAmIEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsAuthWhoAmIEndpointResponseSchema = geeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsAuthWhoAmIEndpointErrorSchema = geeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus401Schema

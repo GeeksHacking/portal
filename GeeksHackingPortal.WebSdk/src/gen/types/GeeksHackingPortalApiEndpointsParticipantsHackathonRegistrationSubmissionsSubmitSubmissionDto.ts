@@ -3,18 +3,13 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitSubmissionDto = {
     /**
-     * @type string | undefined, guid
-    */
-    questionId?: string;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    questionId?: string;
     value?: string;
-    /**
-     * @type string
-    */
     followUpValue?: string | null;
 };

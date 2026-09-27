@@ -3,13 +3,13 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequestSchema = z.object({
-    "isRepositoryCheckingEnabled": z.optional(z.boolean()),
-"isRepositoryForkingEnabled": z.optional(z.boolean()),
-"apiKey": z.string().nullish(),
-"clearApiKey": z.optional(z.boolean()),
-"repositoryPrefix": z.string().nullish(),
-"organizationId": z.int().nullish()
-    })
+export const geeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequestSchema = z.strictObject({
+  isRepositoryCheckingEnabled: z.boolean().optional(),
+  isRepositoryForkingEnabled: z.boolean().optional(),
+  apiKey: z.string().nullish(),
+  clearApiKey: z.boolean().optional(),
+  repositoryPrefix: z.string().nullish(),
+  organizationId: z.coerce.bigint().nullish(),
+})

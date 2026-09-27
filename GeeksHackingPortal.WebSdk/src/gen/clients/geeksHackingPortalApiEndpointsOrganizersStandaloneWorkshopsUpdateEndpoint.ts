@@ -3,23 +3,15 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint400, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointUrl(standaloneWorkshopId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointPathParams["standaloneWorkshopId"]) {
-  const res = { method: 'PATCH', url: `/organizers/standalone-workshops/${standaloneWorkshopId}` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * {@link /organizers/standalone-workshops/:standaloneWorkshopId}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint(standaloneWorkshopId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointPathParams["standaloneWorkshopId"], data: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint400 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint403>, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointMutationRequest>({ method : "PATCH", url : getGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointUrl(standaloneWorkshopId).url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'PATCH', url: '/organizers/standalone-workshops/{standaloneWorkshopId}', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointResponses, ThrowOnError>>)
 }

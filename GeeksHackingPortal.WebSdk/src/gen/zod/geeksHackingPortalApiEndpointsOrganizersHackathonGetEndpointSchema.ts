@@ -3,26 +3,17 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersHackathonGetResponseSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonGetResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonGetResponseSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonGetResponseSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpointPathParamsSchema = z.object({
-    "hackathonId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpointPathHackathonIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonGetResponseSchema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpointStatus200Schema = geeksHackingPortalApiEndpointsOrganizersHackathonGetResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpointStatus401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpointStatus403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpointQueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpointResponseSchema = geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpointStatus401Schema, geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpointStatus403Schema])

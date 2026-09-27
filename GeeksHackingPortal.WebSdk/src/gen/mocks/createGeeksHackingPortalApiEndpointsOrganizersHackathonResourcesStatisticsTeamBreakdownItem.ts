@@ -3,11 +3,25 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem> = object>(data?: TData)
 
-  return { ...{"teamId": faker.string.alpha(),"teamName": faker.string.alpha(),"memberCount": faker.number.int(),"redeemerCount": faker.number.int(),"totalRedemptions": faker.number.int(),"distinctResourcesRedeemed": faker.number.int(),"lastRedeemedAt": faker.date.anytime().toISOString(),get "participants"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  teamId: faker.string.alpha(),
+  teamName: faker.string.alpha(),
+  memberCount: faker.number.int(),
+  redeemerCount: faker.number.int(),
+  totalRedemptions: faker.number.int(),
+  distinctResourcesRedeemed: faker.number.int(),
+  lastRedeemedAt: faker.date.anytime().toISOString(),
+  participants: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

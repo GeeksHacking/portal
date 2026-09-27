@@ -3,43 +3,36 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto } from './GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto'
 
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryResponse = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     participantId?: string;
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     userId?: string;
-    /**
-     * @type string | undefined
-    */
     userName?: string;
     /**
-     * @type string | undefined, guid
-    */
-    resourceId?: string;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    resourceId?: string;
     resourceName?: string;
-    /**
-     * @type boolean | undefined
-    */
     resourceIsPublished?: boolean;
-    /**
-     * @type boolean | undefined
-    */
     hasRedeemed?: boolean;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     redemptionCount?: number;
-    /**
-     * @type array | undefined
-    */
     history?: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto[];
 };

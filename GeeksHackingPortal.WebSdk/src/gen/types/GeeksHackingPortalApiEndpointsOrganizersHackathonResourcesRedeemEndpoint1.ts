@@ -3,42 +3,49 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemResponse } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemResponse } from './GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemResponse'
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1PathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1Path = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     activityId: string;
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     participantUserId: string;
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     resourceId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1200 = GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1Status200 = GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1Status401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1Status403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1MutationResponse = GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1Mutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1200;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1PathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1403;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1Options = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1Path;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1Responses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1Status200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1Status401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1Status403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1Response = (GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1Status200 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1Status401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1Status403);

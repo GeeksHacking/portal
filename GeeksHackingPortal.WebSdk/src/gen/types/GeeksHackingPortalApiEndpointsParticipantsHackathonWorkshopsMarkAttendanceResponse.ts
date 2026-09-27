@@ -3,14 +3,12 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceResponse = {
-    /**
-     * @type boolean | undefined
-    */
     hasAttended?: boolean;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     attendedAt?: string;
 };

@@ -3,39 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationRequest, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint401, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint } from "../clients/geeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationKey = () => [{ url: '/participants/hackathons/:hackathonId/teams/:teamId/join' }] as const
-
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationKey>
-
-/**
- * @description Joins the current user to a team using the team's join code.
- * @summary Join a team
- * {@link /participants/hackathons/:hackathonId/teams/:teamId/join}
- */
-export function useGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint403>, {hackathonId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPathParams["hackathonId"]>, teamId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPathParams["teamId"]>, data: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationRequest>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationRequest>> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint403>, {hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPathParams["hackathonId"], teamId: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPathParams["teamId"], data: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationRequest}, TContext>({
-            mutationFn: async({ hackathonId, teamId, data }) => {
-              return geeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint(hackathonId, teamId, data, config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

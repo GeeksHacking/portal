@@ -1,1 +1,0 @@
-{"type":"object","additionalProperties":false,"properties":{"status":{"type":"string"},"participantUserIds":{"type":"array","nullable":true,"items":{"type":"string","format":"guid"}}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest"}

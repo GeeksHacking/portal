@@ -3,13 +3,26 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest {
+export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRequest> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  title: faker.string.alpha({ length: { min: 0, max: 160 } }),
+  description: faker.string.alpha({ length: { min: 0, max: 4000 } }),
+  startTime: faker.date.anytime().toISOString(),
+  endTime: faker.date.anytime().toISOString(),
+  location: faker.string.alpha({ length: { min: 0, max: 240 } }),
+  homepageUri: faker.internet.url(),
+  shortCode: faker.helpers.fromRegExp("^[A-Za-z0-9-]+$"),
+  maxParticipants: faker.number.int(),
+  isPublished: faker.datatype.boolean(),
+  emailTemplates: {},
+}
   return {
-    ...{"title": faker.string.alpha({ length: { min: 0, max: 160 } }),"description": faker.string.alpha({ length: { min: 0, max: 4000 } }),"startTime": faker.date.anytime().toISOString(),"endTime": faker.date.anytime().toISOString(),"location": faker.string.alpha({ length: { min: 0, max: 240 } }),"homepageUri": faker.internet.url(),"shortCode": faker.helpers.fromRegExp("^[A-Za-z0-9-]+$"),"maxParticipants": faker.number.int(),"isPublished": faker.datatype.boolean(),"emailTemplates": {}},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

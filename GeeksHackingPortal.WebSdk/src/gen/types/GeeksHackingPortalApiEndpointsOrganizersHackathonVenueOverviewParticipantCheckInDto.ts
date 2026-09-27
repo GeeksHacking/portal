@@ -3,34 +3,37 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     participantId?: string;
     /**
-     * @type string | undefined, guid
-    */
-    userId?: string;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    userId?: string;
     userName?: string;
-    /**
-     * @type boolean | undefined
-    */
     isCurrentlyCheckedIn?: boolean;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     lastCheckInTime?: string | null;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     lastCheckOutTime?: string | null;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     totalCheckIns?: number;
 };

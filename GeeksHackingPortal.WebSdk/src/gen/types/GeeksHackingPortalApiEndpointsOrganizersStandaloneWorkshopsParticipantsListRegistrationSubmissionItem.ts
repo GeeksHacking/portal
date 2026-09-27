@@ -3,26 +3,20 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItem = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     questionId?: string;
-    /**
-     * @type string | undefined
-    */
     questionText?: string;
-    /**
-     * @type string | undefined
-    */
     value?: string;
-    /**
-     * @type string
-    */
     followUpValue?: string | null;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     updatedAt?: string;
 };

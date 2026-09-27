@@ -3,44 +3,38 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus403, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointBody } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint'
+import type { HttpResponseResolver } from 'msw'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 200,
-          headers: {
-          'Content-Type': 'application/json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint403) {
-
-      return new Response(JSON.stringify(data), {
-        status: 403,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus403) {
+  return new Response(JSON.stringify(data), {
+    status: 403,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointHandler(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationResponse | ((
-        info: Parameters<Parameters<typeof http.post>[1]>[0],
-      ) => Response | Promise<Response>)) {
-  return http.post(`/organizers/hackathons/:hackathonId/participants/batch-email`, function handler(info) {
+export function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointHandler(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointResponse | HttpResponseResolver<Record<string, string>, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointBody>) {
+  return http.post<Record<string, string>, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointBody>(`/organizers/hackathons/:hackathonId/participants/batch-email`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 200,
-          headers: {
+        headers: {
           'Content-Type': 'application/json'
         },
       })

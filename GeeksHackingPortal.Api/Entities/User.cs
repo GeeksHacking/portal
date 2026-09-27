@@ -26,4 +26,7 @@ public class User
 
     [Navigate(NavigateType.OneToMany, nameof(ResourceRedemption.UserId))]
     public List<ResourceRedemption> ResourceRedemptions { get; set; } = null!;
+
+    [Navigate(NavigateType.OneToMany, nameof(NfcTag.UserId))]
+    public List<NfcTag> NfcTags { get; set; } = null!;
 }

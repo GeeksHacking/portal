@@ -1,6 +1,6 @@
 [tools]
 pnpm = "latest"
-dotnet = "11.0.100-preview.7.26381.103"
+dotnet = "10.0.401"
 aspire = "latest"
 kiota = "latest"
 

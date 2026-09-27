@@ -3,42 +3,43 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointPathParams } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointPath, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus204, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointPathParams(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointPathParams>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointPathParams {
+export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointPath<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointPath> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  standaloneWorkshopId: faker.string.alpha(),
+  inviteId: faker.string.alpha(),
+}
   return {
-    ...{"standaloneWorkshopId": faker.string.alpha(),"inviteId": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }
 
 /**
  * @description No Content
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint204() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus204() {
   return undefined
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint401() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus401() {
   return undefined
 }
 
 /**
  * @description Forbidden
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint403() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus403() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointMutationResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointMutationResponse>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointMutationResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint204()])
+export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointResponse>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointResponse {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus204(), createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus401(), createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus403()])) as GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointResponse
 }

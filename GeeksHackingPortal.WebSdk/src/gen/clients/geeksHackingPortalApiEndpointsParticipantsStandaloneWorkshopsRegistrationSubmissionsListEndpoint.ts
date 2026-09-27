@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpointQueryResponse, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint401, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpointUrl(standaloneWorkshopId: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpointPathParams["standaloneWorkshopId"]) {
-  const res = { method: 'GET', url: `/participants/standalone-workshops/${standaloneWorkshopId}/registration/submissions` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Gets the current user's registration submissions for a standalone workshop.
  * @summary Get my standalone workshop registration submissions
  * {@link /participants/standalone-workshops/:standaloneWorkshopId/registration/submissions}
  */
-export async function geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint(standaloneWorkshopId: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpointPathParams["standaloneWorkshopId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint403>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpointUrl(standaloneWorkshopId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/participants/standalone-workshops/{standaloneWorkshopId}/registration/submissions', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpointResponses, ThrowOnError>>)
 }

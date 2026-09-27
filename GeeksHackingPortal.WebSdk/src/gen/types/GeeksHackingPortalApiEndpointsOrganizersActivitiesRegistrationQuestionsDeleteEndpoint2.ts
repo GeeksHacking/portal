@@ -3,37 +3,41 @@
 * Do not edit manually.
 */
 
-
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2PathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2Path = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     activityId: string;
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     questionId: string;
 };
 
-/**
- * @description No Content
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2204 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2Status204 = unknown;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2Status401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2Status403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2MutationResponse = GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2204;
-
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2Mutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2204;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2PathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2401 | GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2403;
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2Options = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2Path;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2Responses = {
+    "204": GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2Status204;
+    "401": GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2Status401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2Status403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2Response = (GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2Status204 | GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2Status401 | GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint2Status403);

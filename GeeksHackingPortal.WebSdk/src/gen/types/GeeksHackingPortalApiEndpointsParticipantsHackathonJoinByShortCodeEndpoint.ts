@@ -3,25 +3,28 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeRequest } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeRequest.ts";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeResponse } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeResponse.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeRequest } from './GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeRequest'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeResponse } from './GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeResponse'
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpoint200 = GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeResponse;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointStatus200 = GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointStatus401 = unknown;
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointMutationRequest = GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeRequest;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointBody = GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeRequest;
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointMutationResponse = GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointMutationRequest;
-    Errors: GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpoint401;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointBody;
+    path?: never;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointStatus401;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointResponse = (GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointStatus200 | GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointStatus401);

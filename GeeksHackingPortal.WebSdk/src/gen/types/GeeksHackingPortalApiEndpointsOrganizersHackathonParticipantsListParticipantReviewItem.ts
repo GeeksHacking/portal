@@ -3,23 +3,21 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatus } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatus.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatusKey } from './GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatus'
 
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
-    /**
-     * @type string | undefined
-    */
-    status?: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatus;
-    /**
-     * @type string | undefined
-    */
+    status?: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatusKey;
     reason?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     createdAt?: string;
 };

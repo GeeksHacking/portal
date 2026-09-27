@@ -3,26 +3,17 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema } from './geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointPathParamsSchema = z.object({
-    "id": z.string()
-    })
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointPathIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema)
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus200Schema = geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointQueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointResponseSchema = geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus401Schema, geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus403Schema])

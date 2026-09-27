@@ -3,35 +3,31 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint200, GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationResponse } from "../types/GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsAdminCachePurgeResponse } from "./createGeeksHackingPortalApiEndpointsAdminCachePurgeResponse.ts";
+import type { GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponse, GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus200, GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus401, GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint'
+import { createGeeksHackingPortalApiEndpointsAdminCachePurgeResponse } from './createGeeksHackingPortalApiEndpointsAdminCachePurgeResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint200(data?: Partial<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint200>): GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint200 {
-
-  return createGeeksHackingPortalApiEndpointsAdminCachePurgeResponse(data)
+export function createGeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus200(data?: Partial<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus200>): GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus200 {
+  return createGeeksHackingPortalApiEndpointsAdminCachePurgeResponse(data) as GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus200
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint401() {
-
+export function createGeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus401() {
   return undefined
 }
 
 /**
  * @description Forbidden
  */
-export function createGeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint403() {
-
+export function createGeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus403() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationResponse>): GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint200()])
+export function createGeeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponse>): GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponse {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus200(), createGeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus401(), createGeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus403()])) as GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponse
 }

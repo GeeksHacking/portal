@@ -3,13 +3,11 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEntitiesOrganizerTypeSchema } from "./geeksHackingPortalApiEntitiesOrganizerTypeSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEntitiesOrganizerTypeSchema } from './geeksHackingPortalApiEntitiesOrganizerTypeSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequestSchema = z.object({
-    get "type"(){
-                return geeksHackingPortalApiEntitiesOrganizerTypeSchema.optional()
-              },
-"expiresAt": z.iso.datetime().nullish(),
-"maxUses": z.int().nullish()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequestSchema = z.strictObject({
+  type: geeksHackingPortalApiEntitiesOrganizerTypeSchema.optional(),
+  expiresAt: z.iso.datetime().nullish(),
+  maxUses: z.int32().nullish(),
+})

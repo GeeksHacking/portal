@@ -3,65 +3,53 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusKey } from './GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem } from './GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem } from './GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem'
 
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem = {
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     createdAt?: string;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     withdrawnAt?: string | null;
-    /**
-     * @type boolean | undefined
-    */
     isWithdrawn?: boolean;
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
-    /**
-     * @type string | undefined
-    */
     name?: string;
-    /**
-     * @type string
-    */
     email?: string | null;
     /**
-     * @type string, guid
-    */
-    teamId?: string | null;
-    /**
-     * @type string
-    */
-    teamName?: string | null;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
-    concludedStatus?: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus;
-    /**
-     * @type array | undefined
-    */
+    teamId?: string | null;
+    teamName?: string | null;
+    concludedStatus?: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusKey;
     reviews?: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem[];
-    /**
-     * @type array | undefined
-    */
     registrationSubmissions?: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem[];
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     emailSentCount?: number;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     lastEmailSentAt?: string | null;
-    /**
-     * @type string
-    */
     lastEmailStatus?: string | null;
 };

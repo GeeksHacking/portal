@@ -3,11 +3,24 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus } from "./createGeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse'
+import { createGeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus } from './createGeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse>): GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse {
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse> = object>(data?: TData)
 
-  return { ...{"isParticipant": faker.datatype.boolean(),"isOrganizer": faker.datatype.boolean(),"teamId": faker.string.alpha(),"teamName": faker.string.alpha(),get "status"() { return faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus()]) },"reviewReason": faker.string.alpha(),"reviewedAt": faker.date.anytime().toISOString(),...(data || {})} }
+{
+  const defaultFakeData = {
+  isParticipant: faker.datatype.boolean(),
+  isOrganizer: faker.datatype.boolean(),
+  teamId: faker.string.alpha(),
+  teamName: faker.string.alpha(),
+  status: faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus()]),
+  reviewReason: faker.string.alpha(),
+  reviewedAt: faker.date.anytime().toISOString(),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

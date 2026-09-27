@@ -3,34 +3,37 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeResponse } from "./GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeResponse } from './GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeResponse'
 
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1PathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Path = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     activityId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1200 = GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Status200 = GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Status401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Status403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1MutationResponse = GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Mutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1200;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1PathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1401 | GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1403;
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Options = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Path;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Responses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Status200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Status401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Status403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Response = (GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Status200 | GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Status401 | GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Status403);

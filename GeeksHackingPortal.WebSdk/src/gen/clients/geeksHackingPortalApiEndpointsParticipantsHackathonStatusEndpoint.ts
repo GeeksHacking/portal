@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointPathParams["hackathonId"]) {
-  const res = { method: 'GET', url: `/participants/hackathons/${hackathonId}/status` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Retrieves the current user's participation status for a hackathon, including team info and review status.
  * @summary Get my participation status
  * {@link /participants/hackathons/:hackathonId/status}
  */
-export async function geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointPathParams["hackathonId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint401>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointUrl(hackathonId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/participants/hackathons/{hackathonId}/status', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointResponses, ThrowOnError>>)
 }

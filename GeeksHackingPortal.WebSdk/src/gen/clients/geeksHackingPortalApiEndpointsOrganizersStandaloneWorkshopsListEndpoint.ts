@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointUrl() {
-  const res = { method: 'GET', url: `/organizers/standalone-workshops` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Retrieves all standalone workshops the current user can manage.
  * @summary List organizer standalone workshops
  * {@link /organizers/standalone-workshops}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint(config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointOptions, ThrowOnError> = {}): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint401>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointUrl().url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/organizers/standalone-workshops', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointResponses, ThrowOnError>>)
 }

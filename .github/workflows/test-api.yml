@@ -35,9 +35,9 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      - uses: actions/setup-dotnet@v5
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.401
           cache: true
@@ -52,7 +52,7 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: Enable Automated Test Report Artifact Upload
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env['ACTIONS_RUNTIME_TOKEN']);

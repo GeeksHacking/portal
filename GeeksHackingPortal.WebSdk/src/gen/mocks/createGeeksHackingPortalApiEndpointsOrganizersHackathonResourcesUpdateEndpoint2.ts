@@ -3,49 +3,49 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2200, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2MutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2MutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2PathParams } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateRequest } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateRequest.ts";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateResponse } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Body, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Path, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Response, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Status200, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Status401, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Status403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateRequest } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateRequest'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateResponse } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2PathParams(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2PathParams>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2PathParams {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Path<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Path> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  activityId: faker.string.alpha(),
+  resourceId: faker.string.alpha(),
+}
   return {
-    ...{"activityId": faker.string.alpha(),"resourceId": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2200(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2200>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2200 {
-
-  return createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateResponse(data)
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Status200(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Status200>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Status200 {
+  return createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateResponse(data) as GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Status200
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2401() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Status401() {
   return undefined
 }
 
 /**
  * @description Forbidden
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2403() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Status403() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2MutationRequest(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2MutationRequest>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2MutationRequest {
-
-  return createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateRequest(data)
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Body(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Body>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Body {
+  return createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateRequest(data) as GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Body
 }
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2MutationResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2MutationResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2MutationResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2200()])
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Response(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Response>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Response {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Status200(), createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Status401(), createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Status403()])) as GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesUpdateEndpoint2Response
 }

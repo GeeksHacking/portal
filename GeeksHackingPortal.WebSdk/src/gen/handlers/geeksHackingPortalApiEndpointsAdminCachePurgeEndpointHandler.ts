@@ -3,44 +3,37 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationResponse, GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint401, GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponse, GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus401, GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsAdminCachePurgeEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 200,
-          headers: {
-          'Content-Type': 'application/json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsAdminCachePurgeEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminCachePurgeEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsAdminCachePurgeEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminCachePurgeEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint403) {
-
-      return new Response(JSON.stringify(data), {
-        status: 403,
-        
-      })
+export function geeksHackingPortalApiEndpointsAdminCachePurgeEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus403) {
+  return new Response(JSON.stringify(data), {
+    status: 403,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminCachePurgeEndpointHandler(data?: GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationResponse | ((
-        info: Parameters<Parameters<typeof http.post>[1]>[0],
-      ) => Response | Promise<Response>)) {
+export function geeksHackingPortalApiEndpointsAdminCachePurgeEndpointHandler(data?: GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Response | Promise<Response>)) {
   return http.post(`/admin/cache/purge`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 200,
-          headers: {
+        headers: {
           'Content-Type': 'application/json'
         },
       })

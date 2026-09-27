@@ -3,32 +3,24 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusKey } from './GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus'
 
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse = {
-    /**
-     * @type boolean | undefined
-    */
     isParticipant?: boolean;
-    /**
-     * @type boolean | undefined
-    */
     isOrganizer?: boolean;
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     teamId?: string | null;
-    /**
-     * @type string
-    */
     teamName?: string | null;
-    status?: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus | null;
-    /**
-     * @type string
-    */
+    status?: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusKey | null;
     reviewReason?: string | null;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     reviewedAt?: string | null;
 };

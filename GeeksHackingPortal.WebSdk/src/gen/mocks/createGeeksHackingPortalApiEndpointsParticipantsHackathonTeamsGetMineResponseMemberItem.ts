@@ -3,13 +3,20 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem>): GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem {
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItem> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  userId: faker.string.alpha(),
+  name: faker.string.alpha(),
+  email: faker.string.alpha(),
+  isCurrentUser: faker.datatype.boolean(),
+}
   return {
-    ...{"userId": faker.string.alpha(),"name": faker.string.alpha(),"email": faker.string.alpha(),"isCurrentUser": faker.datatype.boolean()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

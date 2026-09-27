@@ -3,10 +3,9 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEntitiesOrganizerType } from "../types/GeeksHackingPortalApiEntitiesOrganizerType.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEntitiesOrganizerTypeKey } from '../types/GeeksHackingPortalApiEntitiesOrganizerType'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEntitiesOrganizerType(data?: Partial<GeeksHackingPortalApiEntitiesOrganizerType>): GeeksHackingPortalApiEntitiesOrganizerType {
-
-  return data || faker.helpers.arrayElement<GeeksHackingPortalApiEntitiesOrganizerType>(["Admin", "Volunteer"])
+export function createGeeksHackingPortalApiEntitiesOrganizerType(data?: GeeksHackingPortalApiEntitiesOrganizerTypeKey): GeeksHackingPortalApiEntitiesOrganizerTypeKey {
+  return data ?? faker.helpers.arrayElement<GeeksHackingPortalApiEntitiesOrganizerTypeKey>(['Admin', 'Volunteer'])
 }

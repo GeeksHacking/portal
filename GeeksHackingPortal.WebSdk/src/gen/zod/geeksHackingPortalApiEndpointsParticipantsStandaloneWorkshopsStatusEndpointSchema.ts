@@ -3,21 +3,15 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponseSchema } from "./geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponseSchema } from './geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponseSchema'
 
-export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointPathParamsSchema = z.object({
-    "standaloneWorkshopId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointPathStandaloneWorkshopIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponseSchema)
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus200Schema = geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus401Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointQueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointResponseSchema = geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointErrorSchema = geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus401Schema

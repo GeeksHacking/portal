@@ -3,38 +3,23 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItem = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
-    /**
-     * @type string | undefined
-    */
     eventKey?: string;
-    /**
-     * @type string | undefined
-    */
     templateId?: string;
-    /**
-     * @type string | undefined
-    */
     provider?: string;
-    /**
-     * @type string | undefined
-    */
     status?: string;
-    /**
-     * @type string
-    */
     errorMessage?: string | null;
-    /**
-     * @type string
-    */
     providerMessageId?: string | null;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     sentAt?: string;
 };

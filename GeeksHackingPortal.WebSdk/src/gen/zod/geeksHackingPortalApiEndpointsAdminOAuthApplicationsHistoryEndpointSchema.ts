@@ -3,26 +3,17 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponseSchema } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponseSchema } from './geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponseSchema'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointPathParamsSchema = z.object({
-    "id": z.string()
-    })
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointPathIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponseSchema)
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200Schema = geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointQueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointResponseSchema = geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus401Schema, geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus403Schema])

@@ -3,38 +3,40 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteRequest } from "./GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteRequest.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteResponse } from "./GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteRequest } from './GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteRequest'
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteResponse } from './GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteResponse'
 
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     standaloneWorkshopId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointMutationRequest = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteRequest;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointBody = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteRequest;
 
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointMutationResponse = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointMutationRequest;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointBody;
+    path: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteEndpointStatus403);

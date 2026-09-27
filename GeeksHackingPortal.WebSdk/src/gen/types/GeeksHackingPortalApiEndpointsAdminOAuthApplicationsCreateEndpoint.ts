@@ -3,36 +3,35 @@
 * Do not edit manually.
 */
 
-import type { FastEndpointsErrorResponse } from "./FastEndpointsErrorResponse.ts";
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequest } from "./GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequest.ts";
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse } from "./GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse.ts";
+import type { FastEndpointsErrorResponse } from './FastEndpointsErrorResponse'
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequest } from './GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequest'
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse } from './GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse'
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint200 = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus200 = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse;
 
-/**
- * @description Bad Request
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint400 = FastEndpointsErrorResponse;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus400 = FastEndpointsErrorResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointMutationRequest = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequest;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointBody = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequest;
 
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointMutationResponse = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointMutationRequest;
-    Errors: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint400 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint403;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointBody;
+    path?: never;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus200;
+    "400": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus400;
+    "401": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointResponse = (GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus200 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus400 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus403);

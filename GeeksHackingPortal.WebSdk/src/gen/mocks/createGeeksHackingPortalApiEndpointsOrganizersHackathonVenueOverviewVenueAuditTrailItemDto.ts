@@ -3,13 +3,21 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto>): GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  participantId: faker.string.alpha(),
+  userId: faker.string.alpha(),
+  userName: faker.string.alpha(),
+  action: faker.string.alpha(),
+  timestamp: faker.date.anytime().toISOString(),
+}
   return {
-    ...{"participantId": faker.string.alpha(),"userId": faker.string.alpha(),"userName": faker.string.alpha(),"action": faker.string.alpha(),"timestamp": faker.date.anytime().toISOString()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

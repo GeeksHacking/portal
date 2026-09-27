@@ -3,34 +3,27 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateRequest = {
-    /**
-     * @type string | undefined
-    */
     title?: string;
-    /**
-     * @type string | undefined
-    */
     description?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     startTime?: string;
     /**
-     * @type string | undefined, date-time
-    */
-    endTime?: string;
-    /**
+     * @description
+     * Format: `date-time`
      * @type string | undefined
     */
+    endTime?: string;
     location?: string;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     maxParticipants?: number;
-    /**
-     * @type boolean | undefined
-    */
     isPublished?: boolean;
 };

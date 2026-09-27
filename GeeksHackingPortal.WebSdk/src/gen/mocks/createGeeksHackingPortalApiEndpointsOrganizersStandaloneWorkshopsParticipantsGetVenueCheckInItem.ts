@@ -3,13 +3,20 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItem } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItem.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItem } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItem'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItem(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItem>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItem {
+export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItem<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItem> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  checkInTime: faker.date.anytime().toISOString(),
+  checkOutTime: faker.date.anytime().toISOString(),
+  isCheckedIn: faker.datatype.boolean(),
+}
   return {
-    ...{"id": faker.string.alpha(),"checkInTime": faker.date.anytime().toISOString(),"checkOutTime": faker.date.anytime().toISOString(),"isCheckedIn": faker.datatype.boolean()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

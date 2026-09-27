@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointPathParams["hackathonId"]) {
-  const res = { method: 'POST', url: `/participants/hackathons/${hackathonId}/join` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Registers the current user as a participant in the hackathon.
  * @summary Join a hackathon
  * {@link /participants/hackathons/:hackathonId/join}
  */
-export async function geeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointPathParams["hackathonId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint401>, unknown>({ method : "POST", url : getGeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointUrl(hackathonId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/participants/hackathons/{hackathonId}/join', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointResponses, ThrowOnError>>)
 }

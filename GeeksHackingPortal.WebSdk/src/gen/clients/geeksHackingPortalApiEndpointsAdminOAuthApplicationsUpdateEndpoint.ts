@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationRequest, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointPathParams, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint400, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointUrl(id: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointPathParams["id"]) {
-  const res = { method: 'PUT', url: `/admin/oauth-applications/${id}` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointOptions, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Updates an admin-owned OpenIddict OAuth client. Set rotateClientSecret to true to issue a new web client secret.
  * @summary Update an OAuth application
  * {@link /admin/oauth-applications/:id}
  */
-export async function geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint(id: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointPathParams["id"], data: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint400 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint403>, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationRequest>({ method : "PUT", url : getGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointUrl(id).url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'PUT', url: '/admin/oauth-applications/{id}', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointResponses, ThrowOnError>>)
 }

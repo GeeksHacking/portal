@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint401, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointPathParams["hackathonId"]) {
-  const res = { method: 'POST', url: `/participants/hackathons/${hackathonId}/teams/leave` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Removes the current user from their team. If they are the only member, the team will be deleted.
  * @summary Leave current team
  * {@link /participants/hackathons/:hackathonId/teams/leave}
  */
-export async function geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointPathParams["hackathonId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint403>, unknown>({ method : "POST", url : getGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointUrl(hackathonId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/participants/hackathons/{hackathonId}/teams/leave', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointResponses, ThrowOnError>>)
 }

@@ -3,30 +3,31 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResourceSummaryItem = {
     /**
-     * @type string | undefined, guid
-    */
-    resourceId?: string;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    resourceId?: string;
     resourceName?: string;
-    /**
-     * @type boolean | undefined
-    */
     isPublished?: boolean;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     totalRedemptions?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     uniqueRedeemers?: number;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     lastRedeemedAt?: string | null;
 };

@@ -1,4 +1,5 @@
 [tools]
+node = "24"
 pnpm = "latest"
 dotnet = "10.0.401"
 aspire = "latest"

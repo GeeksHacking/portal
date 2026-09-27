@@ -3,43 +3,43 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint200, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointPathParams, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointQueryResponse } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse } from "./createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointPath, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus200, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint'
+import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse } from './createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointPathParams(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointPathParams>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointPathParams {
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointPath<TData extends Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointPath> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+}
   return {
-    ...{"id": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint200(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint200>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint200 {
-
-  return createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse(data)
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus200(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus200>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus200 {
+  return createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse(data) as GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus200
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint401() {
-
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus401() {
   return undefined
 }
 
 /**
  * @description Forbidden
  */
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint403() {
-
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus403() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointQueryResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointQueryResponse>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointQueryResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint200()])
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointResponse>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointResponse {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus200(), createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus401(), createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus403()])) as GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointResponse
 }

@@ -3,26 +3,28 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminCachePurgeResponse } from "./GeeksHackingPortalApiEndpointsAdminCachePurgeResponse.ts";
+import type { GeeksHackingPortalApiEndpointsAdminCachePurgeResponse } from './GeeksHackingPortalApiEndpointsAdminCachePurgeResponse'
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint200 = GeeksHackingPortalApiEndpointsAdminCachePurgeResponse;
+export type GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus200 = GeeksHackingPortalApiEndpointsAdminCachePurgeResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationResponse = GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint200;
-    Errors: GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint401 | GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint403;
+export type GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointOptions = {
+    body?: never;
+    path?: never;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponse = (GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus200 | GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus403);

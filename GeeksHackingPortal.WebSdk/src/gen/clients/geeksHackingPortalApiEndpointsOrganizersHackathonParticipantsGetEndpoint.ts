@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointQueryResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint400, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointPathParams["hackathonId"], userId: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointPathParams["userId"]) {
-  const res = { method: 'GET', url: `/organizers/hackathons/${hackathonId}/participants/${userId}` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Retrieves full details for a participant, including registration responses.
  * @summary Get participant details
  * {@link /organizers/hackathons/:hackathonId/participants/:userId}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointPathParams["hackathonId"], userId: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointPathParams["userId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint400 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint403>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointUrl(hackathonId, userId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/organizers/hackathons/{hackathonId}/participants/{userId}', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpointResponses, ThrowOnError>>)
 }

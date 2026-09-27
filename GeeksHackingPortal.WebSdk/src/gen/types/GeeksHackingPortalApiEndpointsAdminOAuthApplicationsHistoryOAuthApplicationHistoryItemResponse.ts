@@ -3,30 +3,16 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryOAuthApplicationHistoryItemResponse = {
-    /**
-     * @type string | undefined
-    */
     id?: string;
-    /**
-     * @type string | undefined
-    */
     subject?: string;
-    /**
-     * @type string | undefined
-    */
     userName?: string;
-    /**
-     * @type string | undefined
-    */
     userEmail?: string;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     creationDate?: string | null;
-    /**
-     * @type string
-    */
     scopes?: string | null;
 };

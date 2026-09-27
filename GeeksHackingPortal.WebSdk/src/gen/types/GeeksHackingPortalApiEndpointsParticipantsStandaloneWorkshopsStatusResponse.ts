@@ -3,26 +3,25 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse = {
-    /**
-     * @type boolean | undefined
-    */
     isRegistered?: boolean;
-    /**
-     * @type boolean | undefined
-    */
     isOrganizer?: boolean;
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     registrationId?: string | null;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     registeredAt?: string | null;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     withdrawnAt?: string | null;
 };

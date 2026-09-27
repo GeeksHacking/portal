@@ -3,29 +3,20 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateRequestSchema } from "./geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateRequestSchema.ts";
-import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateResponseSchema } from "./geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateRequestSchema } from './geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateRequestSchema'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateResponseSchema } from './geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateResponseSchema'
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpointPathParamsSchema = z.object({
-    "hackathonId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpointPathHackathonIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateResponseSchema)
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpointStatus200Schema = geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpointStatus401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpointStatus403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpointMutationRequestSchema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateRequestSchema)
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpointResponseSchema = geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpointStatus200Schema
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpointStatus401Schema, geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpointStatus403Schema])
+
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateEndpointBodySchema = geeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateRequestSchema

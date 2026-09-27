@@ -3,10 +3,6 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberResponse = {
-    /**
-     * @type string | undefined
-    */
     message?: string;
 };

@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint401, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointUrl(standaloneWorkshopId: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointPathParams["standaloneWorkshopId"]) {
-  const res = { method: 'POST', url: `/participants/standalone-workshops/${standaloneWorkshopId}/withdraw` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Withdraws the current user from a standalone workshop registration.
  * @summary Withdraw from a standalone workshop
  * {@link /participants/standalone-workshops/:standaloneWorkshopId/withdraw}
  */
-export async function geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint(standaloneWorkshopId: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointPathParams["standaloneWorkshopId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint403>, unknown>({ method : "POST", url : getGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointUrl(standaloneWorkshopId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/participants/standalone-workshops/{standaloneWorkshopId}/withdraw', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointResponses, ThrowOnError>>)
 }

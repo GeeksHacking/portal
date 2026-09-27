@@ -3,13 +3,13 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryOAuthApplicationHistoryItemResponseSchema = z.object({
-    "id": z.optional(z.string()),
-"subject": z.optional(z.string()),
-"userName": z.optional(z.string()),
-"userEmail": z.optional(z.string()),
-"creationDate": z.iso.datetime().nullish(),
-"scopes": z.string().nullish()
-    })
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryOAuthApplicationHistoryItemResponseSchema = z.strictObject({
+  id: z.string().optional(),
+  subject: z.string().optional(),
+  userName: z.string().optional(),
+  userEmail: z.string().optional(),
+  creationDate: z.iso.datetime().nullish(),
+  scopes: z.string().nullish(),
+})

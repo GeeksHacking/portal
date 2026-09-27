@@ -3,16 +3,10 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto } from './GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto } from './GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto'
 
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewResponse = {
-    /**
-     * @type array | undefined
-    */
     participants?: GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto[];
-    /**
-     * @type array | undefined
-    */
     auditTrail?: GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto[];
 };

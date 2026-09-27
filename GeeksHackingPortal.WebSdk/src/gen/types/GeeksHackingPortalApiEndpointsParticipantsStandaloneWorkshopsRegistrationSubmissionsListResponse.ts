@@ -3,23 +3,26 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto } from "./GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto } from './GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto'
 
 export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListResponse = {
-    /**
-     * @type array | undefined
-    */
     submissions?: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto[];
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     totalQuestions?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     answeredQuestions?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     requiredQuestionsRemaining?: number;
 };

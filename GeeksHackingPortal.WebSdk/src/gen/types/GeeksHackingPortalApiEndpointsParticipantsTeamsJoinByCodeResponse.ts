@@ -3,18 +3,18 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeResponse = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     teamId?: string;
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     hackathonId?: string;
-    /**
-     * @type boolean | undefined
-    */
     autoJoinedHackathon?: boolean;
 };

@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointPathParams["hackathonId"]) {
-  const res = { method: 'POST', url: `/organizers/hackathons/${hackathonId}/participants/batch-email` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Send acceptance or rejection emails to multiple participants based on their review status.
  * @summary Send batch emails to participants
  * {@link /organizers/hackathons/:hackathonId/participants/batch-email}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointPathParams["hackathonId"], data: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint403>, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationRequest>({ method : "POST", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointUrl(hackathonId).url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/organizers/hackathons/{hackathonId}/participants/batch-email', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointResponses, ThrowOnError>>)
 }

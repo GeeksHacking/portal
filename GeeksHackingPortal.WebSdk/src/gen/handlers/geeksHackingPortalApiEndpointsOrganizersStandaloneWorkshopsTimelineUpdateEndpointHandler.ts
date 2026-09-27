@@ -3,44 +3,38 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointStatus403, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointBody } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint'
+import type { HttpResponseResolver } from 'msw'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 200,
-          headers: {
-          'Content-Type': 'application/json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointStatus401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpoint403) {
-
-      return new Response(JSON.stringify(data), {
-        status: 403,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointStatus403) {
+  return new Response(JSON.stringify(data), {
+    status: 403,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointHandler(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointMutationResponse | ((
-        info: Parameters<Parameters<typeof http.patch>[1]>[0],
-      ) => Response | Promise<Response>)) {
-  return http.patch(`/organizers/standalone-workshops/:standaloneWorkshopId/timeline/:timelineItemId`, function handler(info) {
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointHandler(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointResponse | HttpResponseResolver<Record<string, string>, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointBody>) {
+  return http.patch<Record<string, string>, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineUpdateEndpointBody>(`/organizers/standalone-workshops/:standaloneWorkshopId/timeline/:timelineItemId`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 200,
-          headers: {
+        headers: {
           'Content-Type': 'application/json'
         },
       })

@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointQueryResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointPathParams, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointUrl(id: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointPathParams["id"]) {
-  const res = { method: 'GET', url: `/admin/oauth-applications/${id}` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointOptions, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Gets an OpenIddict OAuth client owned by the current admin.
  * @summary Get an OAuth application
  * {@link /admin/oauth-applications/:id}
  */
-export async function geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint(id: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointPathParams["id"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint403>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointUrl(id).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/admin/oauth-applications/{id}', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointResponses, ThrowOnError>>)
 }

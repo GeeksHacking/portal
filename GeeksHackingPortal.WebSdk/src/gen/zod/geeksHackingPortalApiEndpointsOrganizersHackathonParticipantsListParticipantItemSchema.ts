@@ -3,30 +3,24 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusSchema.ts";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemSchema.ts";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItemSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItemSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusSchema'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemSchema'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItemSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItemSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItemSchema = z.object({
-    "createdAt": z.optional(z.iso.datetime()),
-"withdrawnAt": z.iso.datetime().nullish(),
-"isWithdrawn": z.optional(z.boolean()),
-"id": z.optional(z.string()),
-"name": z.optional(z.string()),
-"email": z.string().nullish(),
-"teamId": z.string().nullish(),
-"teamName": z.string().nullish(),
-get "concludedStatus"(){
-                return geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusSchema.optional()
-              },
-get "reviews"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemSchema).optional()
-              },
-get "registrationSubmissions"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItemSchema).optional()
-              },
-"emailSentCount": z.optional(z.int()),
-"lastEmailSentAt": z.iso.datetime().nullish(),
-"lastEmailStatus": z.string().nullish()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItemSchema = z.strictObject({
+  createdAt: z.iso.datetime().optional(),
+  withdrawnAt: z.iso.datetime().nullish(),
+  isWithdrawn: z.boolean().optional(),
+  id: z.string().optional(),
+  name: z.string().optional(),
+  email: z.string().nullish(),
+  teamId: z.string().nullish(),
+  teamName: z.string().nullish(),
+  concludedStatus: geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusSchema.optional(),
+  reviews: z.array(geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemSchema).optional(),
+  registrationSubmissions: z.array(geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItemSchema).optional(),
+  emailSentCount: z.int32().optional(),
+  lastEmailSentAt: z.iso.datetime().nullish(),
+  lastEmailStatus: z.string().nullish(),
+})

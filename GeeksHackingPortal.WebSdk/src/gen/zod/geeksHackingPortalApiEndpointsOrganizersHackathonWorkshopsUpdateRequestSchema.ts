@@ -3,14 +3,14 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateRequestSchema = z.object({
-    "title": z.optional(z.string()),
-"description": z.optional(z.string()),
-"startTime": z.optional(z.iso.datetime()),
-"endTime": z.optional(z.iso.datetime()),
-"location": z.optional(z.string()),
-"maxParticipants": z.optional(z.int()),
-"isPublished": z.optional(z.boolean())
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsUpdateRequestSchema = z.strictObject({
+  title: z.string().optional(),
+  description: z.string().optional(),
+  startTime: z.iso.datetime().optional(),
+  endTime: z.iso.datetime().optional(),
+  location: z.string().optional(),
+  maxParticipants: z.int32().optional(),
+  isPublished: z.boolean().optional(),
+})

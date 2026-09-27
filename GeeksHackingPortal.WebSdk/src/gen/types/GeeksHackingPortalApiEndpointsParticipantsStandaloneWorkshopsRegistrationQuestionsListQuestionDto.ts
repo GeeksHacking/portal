@@ -3,46 +3,24 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListOptionDto } from "./GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListOptionDto.ts";
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListSubmissionDto } from "./GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListSubmissionDto.ts";
-import type { GeeksHackingPortalApiEntitiesQuestionType } from "./GeeksHackingPortalApiEntitiesQuestionType.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListOptionDto } from './GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListOptionDto'
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListSubmissionDto } from './GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListSubmissionDto'
+import type { GeeksHackingPortalApiEntitiesQuestionTypeKey } from './GeeksHackingPortalApiEntitiesQuestionType'
 
 export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
-    /**
-     * @type string | undefined
-    */
     questionText?: string;
-    /**
-     * @type string | undefined
-    */
     questionKey?: string;
-    /**
-     * @type string | undefined
-    */
-    type?: GeeksHackingPortalApiEntitiesQuestionType;
-    /**
-     * @type boolean | undefined
-    */
+    type?: GeeksHackingPortalApiEntitiesQuestionTypeKey;
     isRequired?: boolean;
-    /**
-     * @type string
-    */
     helpText?: string | null;
-    /**
-     * @type string
-    */
     conditionalLogic?: string | null;
-    /**
-     * @type string
-    */
     validationRules?: string | null;
-    /**
-     * @type array | undefined
-    */
     options?: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListOptionDto[];
     currentSubmission?: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListSubmissionDto | null;
 };

@@ -3,38 +3,40 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateRequest } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateRequest.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateResponse } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateRequest } from './GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateRequest'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateResponse } from './GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateResponse'
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     hackathonId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointMutationRequest = GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateRequest;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointBody = GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateRequest;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointMutationResponse = GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointMutationRequest;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointBody;
+    path: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointStatus403);

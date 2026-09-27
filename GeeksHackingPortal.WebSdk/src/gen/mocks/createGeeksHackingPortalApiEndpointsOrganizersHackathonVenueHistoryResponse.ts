@@ -3,11 +3,22 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryResponse'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryResponse> = object>(data?: TData)
 
-  return { ...{"participantId": faker.string.alpha(),"userId": faker.string.alpha(),"userName": faker.string.alpha(),"isCurrentlyCheckedIn": faker.datatype.boolean(),get "history"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  participantId: faker.string.alpha(),
+  userId: faker.string.alpha(),
+  userName: faker.string.alpha(),
+  isCurrentlyCheckedIn: faker.datatype.boolean(),
+  history: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryHistoryItemDto())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

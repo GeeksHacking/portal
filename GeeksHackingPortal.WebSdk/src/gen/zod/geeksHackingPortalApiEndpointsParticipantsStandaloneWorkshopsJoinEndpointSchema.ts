@@ -3,21 +3,15 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponseSchema } from "./geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponseSchema } from './geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponseSchema'
 
-export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointPathParamsSchema = z.object({
-    "standaloneWorkshopId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointPathStandaloneWorkshopIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponseSchema)
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus200Schema = geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus401Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointResponseSchema = geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointErrorSchema = geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus401Schema

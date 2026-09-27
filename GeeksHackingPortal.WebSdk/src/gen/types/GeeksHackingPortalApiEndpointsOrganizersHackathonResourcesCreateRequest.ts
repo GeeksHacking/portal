@@ -3,22 +3,9 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequest = {
-    /**
-     * @type string | undefined
-    */
     name?: string;
-    /**
-     * @type string
-    */
     description?: string | null;
-    /**
-     * @type string | undefined
-    */
     redemptionStmt?: string;
-    /**
-     * @type boolean | undefined
-    */
     isPublished?: boolean;
 };

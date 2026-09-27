@@ -3,36 +3,31 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 200,
-          headers: {
-          'Content-Type': 'application/json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointStatus401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointHandler(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryResponse | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Response | Promise<Response>)) {
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointHandler(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Response | Promise<Response>)) {
   return http.get(`/organizers/standalone-workshops`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 200,
-          headers: {
+        headers: {
           'Content-Type': 'application/json'
         },
       })

@@ -3,62 +3,64 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonGetResponse = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
-    /**
-     * @type string | undefined
-    */
     name?: string;
-    /**
-     * @type string | undefined
-    */
     description?: string;
-    /**
-     * @type string | undefined
-    */
     venue?: string;
     /**
-     * @type string | undefined, uri
-    */
-    homepageUri?: string;
-    /**
+     * @description
+     * Format: `uri`
      * @type string | undefined
     */
+    homepageUri?: string;
     shortCode?: string;
-    /**
-     * @type boolean | undefined
-    */
     isPublished?: boolean;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     eventStartDate?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     eventEndDate?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     submissionsStartDate?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     challengeSelectionEndDate?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     submissionsEndDate?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     judgingStartDate?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     judgingEndDate?: string;
 };

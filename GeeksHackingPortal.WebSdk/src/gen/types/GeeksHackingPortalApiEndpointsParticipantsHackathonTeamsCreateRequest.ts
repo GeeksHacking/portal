@@ -3,14 +3,7 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsCreateRequest = {
-    /**
-     * @type string | undefined
-    */
     name?: string;
-    /**
-     * @type string | undefined
-    */
     description?: string;
 };

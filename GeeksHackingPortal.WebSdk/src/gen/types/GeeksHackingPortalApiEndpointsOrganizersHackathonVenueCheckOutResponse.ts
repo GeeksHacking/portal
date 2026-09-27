@@ -3,18 +3,18 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckOutResponse = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     checkOutTime?: string;
-    /**
-     * @type boolean | undefined
-    */
     isCheckedIn?: boolean;
 };

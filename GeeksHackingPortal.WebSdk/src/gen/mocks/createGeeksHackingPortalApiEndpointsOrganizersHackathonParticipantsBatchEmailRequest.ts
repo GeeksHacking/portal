@@ -3,13 +3,18 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest>): GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  status: faker.string.alpha(),
+  participantUserIds: faker.helpers.multiple(() => (faker.string.alpha())),
+}
   return {
-    ...{"status": faker.string.alpha(),"participantUserIds": faker.helpers.multiple(() => (faker.string.alpha()))},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

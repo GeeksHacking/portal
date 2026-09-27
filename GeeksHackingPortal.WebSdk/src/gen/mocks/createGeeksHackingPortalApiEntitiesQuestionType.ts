@@ -3,10 +3,9 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEntitiesQuestionType } from "../types/GeeksHackingPortalApiEntitiesQuestionType.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEntitiesQuestionTypeKey } from '../types/GeeksHackingPortalApiEntitiesQuestionType'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEntitiesQuestionType(data?: Partial<GeeksHackingPortalApiEntitiesQuestionType>): GeeksHackingPortalApiEntitiesQuestionType {
-
-  return data || faker.helpers.arrayElement<GeeksHackingPortalApiEntitiesQuestionType>(["Text", "LongText", "Number", "SingleChoice", "MultipleChoice", "Boolean", "Email", "Url", "Phone", "Date", "Dropdown"])
+export function createGeeksHackingPortalApiEntitiesQuestionType(data?: GeeksHackingPortalApiEntitiesQuestionTypeKey): GeeksHackingPortalApiEntitiesQuestionTypeKey {
+  return data ?? faker.helpers.arrayElement<GeeksHackingPortalApiEntitiesQuestionTypeKey>(['Text', 'LongText', 'Number', 'SingleChoice', 'MultipleChoice', 'Boolean', 'Email', 'Url', 'Phone', 'Date', 'Dropdown'])
 }

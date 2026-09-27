@@ -3,15 +3,15 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsAuthWhoAmIResponseSchema = z.object({
-    "id": z.optional(z.string()),
-"name": z.optional(z.string()),
-"firstName": z.optional(z.string()),
-"lastName": z.optional(z.string()),
-"email": z.optional(z.string()),
-"gitHubId": z.optional(z.int()),
-"gitHubLogin": z.optional(z.string()),
-"isRoot": z.optional(z.boolean())
-    })
+export const geeksHackingPortalApiEndpointsAuthWhoAmIResponseSchema = z.strictObject({
+  id: z.string().optional(),
+  name: z.string().optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  email: z.string().optional(),
+  gitHubId: z.coerce.bigint().optional(),
+  gitHubLogin: z.string().optional(),
+  isRoot: z.boolean().optional(),
+})

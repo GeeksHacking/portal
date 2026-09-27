@@ -3,26 +3,10 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateRequest = {
-    /**
-     * @type string | undefined
-    */
     title?: string;
-    /**
-     * @type string | undefined
-    */
     description?: string;
-    /**
-     * @type string | undefined
-    */
     sponsor?: string;
-    /**
-     * @type string
-    */
     selectionCriteriaStmt?: string | null;
-    /**
-     * @type boolean | undefined
-    */
     isPublished?: boolean;
 };

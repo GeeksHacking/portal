@@ -1,1 +1,0 @@
-{"type":"object","additionalProperties":false,"properties":{"redemptionId":{"type":"string","format":"guid"},"createdAt":{"type":"string","format":"date-time"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto"}

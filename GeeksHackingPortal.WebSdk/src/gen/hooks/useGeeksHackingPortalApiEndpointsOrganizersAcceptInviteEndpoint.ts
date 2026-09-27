@@ -3,39 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint } from "../clients/geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationKey = () => [{ url: '/organizers/accept-invite' }] as const
-
-export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationKey>
-
-/**
- * @description Redeems an invite code and registers the current user as an organizer for the activity the code was issued for. Codes are reusable unless a MaxUses limit is set.
- * @summary Accept an organizer invite
- * {@link /organizers/accept-invite}
- */
-export function useGeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint401>, {data: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationRequest>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationRequest>> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint401>, {data: GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationRequest}, TContext>({
-            mutationFn: async({ data }) => {
-              return geeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint(data, config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

@@ -3,26 +3,28 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsResponse } from "./GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsResponse.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsResponse } from './GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsResponse'
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint200 = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsResponse;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus200 = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointQueryResponse = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointQuery = {
-    Response: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint200;
-    Errors: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint403;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointOptions = {
+    body?: never;
+    path?: never;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointResponse = (GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus200 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus403);

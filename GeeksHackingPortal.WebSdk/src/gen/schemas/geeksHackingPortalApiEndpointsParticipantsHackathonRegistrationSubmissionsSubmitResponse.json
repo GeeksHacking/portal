@@ -1,1 +1,0 @@
-{"type":"object","additionalProperties":false,"properties":{"submissionsCount":{"type":"integer","format":"int32"},"message":{"type":"string"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitResponse"}

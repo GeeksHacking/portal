@@ -3,11 +3,22 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponse } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform } from "./createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponse } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponse'
+import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform } from './createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponse>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponse {
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponse<TData extends Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponse> = object>(data?: TData)
 
-  return { ...{"applicationId": faker.string.alpha(),"displayName": faker.string.alpha(),get "platform"() { return createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform() },"totalAuthorizations": faker.number.int(),"uniqueUsers": faker.number.int(),...(data || {})} }
+{
+  const defaultFakeData = {
+  applicationId: faker.string.alpha(),
+  displayName: faker.string.alpha(),
+  platform: createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform(),
+  totalAuthorizations: faker.number.int(),
+  uniqueUsers: faker.number.int(),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

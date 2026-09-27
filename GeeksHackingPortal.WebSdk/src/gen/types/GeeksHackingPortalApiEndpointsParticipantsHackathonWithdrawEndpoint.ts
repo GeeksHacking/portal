@@ -3,34 +3,37 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawResponse } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawResponse.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawResponse } from './GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawResponse'
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     hackathonId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpoint200 = GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawResponse;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus200 = GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointMutationResponse = GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpoint200;
-    PathParams: GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpoint403;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointOptions = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointResponse = (GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus200 | GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus403);

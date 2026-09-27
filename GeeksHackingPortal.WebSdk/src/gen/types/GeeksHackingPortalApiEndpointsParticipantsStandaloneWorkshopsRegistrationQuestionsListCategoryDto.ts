@@ -3,15 +3,9 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto } from "./GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto } from './GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto'
 
 export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListCategoryDto = {
-    /**
-     * @type string | undefined
-    */
     name?: string;
-    /**
-     * @type array | undefined
-    */
     questions?: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto[];
 };

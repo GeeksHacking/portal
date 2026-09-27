@@ -3,29 +3,20 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequestSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequestSchema.ts";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponseSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequestSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequestSchema'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponseSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponseSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2PathParamsSchema = z.object({
-    "activityId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2PathActivityIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponseSchema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Status200Schema = geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2401Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Status401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2403Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Status403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2MutationRequestSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequestSchema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2ResponseSchema = geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Status200Schema
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2MutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2200Schema)
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2ErrorSchema = z.union([geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Status401Schema, geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Status403Schema])
+
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2BodySchema = geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateRequestSchema

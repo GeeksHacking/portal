@@ -3,29 +3,34 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse } from "./GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse } from './GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse'
 
-export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     standaloneWorkshopId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint200 = GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse;
+export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus200 = GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus401 = unknown;
 
-export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointQueryResponse = GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointQuery = {
-    Response: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint200;
-    PathParams: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint401;
+export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointOptions = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus401;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointResponse = (GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus200 | GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus401);

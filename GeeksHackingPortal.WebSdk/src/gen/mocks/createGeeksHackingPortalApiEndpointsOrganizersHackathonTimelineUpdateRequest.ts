@@ -3,13 +3,20 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateRequest } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateRequest.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateRequest } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateRequest'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateRequest(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateRequest>): GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateRequest {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateRequest<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateRequest> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  title: faker.string.alpha(),
+  description: faker.string.alpha(),
+  startTime: faker.date.anytime().toISOString(),
+  endTime: faker.date.anytime().toISOString(),
+}
   return {
-    ...{"title": faker.string.alpha(),"description": faker.string.alpha(),"startTime": faker.date.anytime().toISOString(),"endTime": faker.date.anytime().toISOString()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

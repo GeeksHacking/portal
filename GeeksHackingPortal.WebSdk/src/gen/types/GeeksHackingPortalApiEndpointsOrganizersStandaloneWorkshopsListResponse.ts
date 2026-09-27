@@ -3,11 +3,8 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponseStandaloneWorkshopItem } from "./GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponseStandaloneWorkshopItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponseStandaloneWorkshopItem } from './GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponseStandaloneWorkshopItem'
 
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponse = {
-    /**
-     * @type array | undefined
-    */
     standaloneWorkshops?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResponseStandaloneWorkshopItem[];
 };

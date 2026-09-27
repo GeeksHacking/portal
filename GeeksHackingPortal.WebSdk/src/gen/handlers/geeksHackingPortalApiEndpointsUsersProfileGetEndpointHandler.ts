@@ -3,36 +3,31 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse, GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsUsersProfileGetEndpointResponse, GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsUsersProfileGetEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 200,
-          headers: {
-          'Content-Type': 'application/json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsUsersProfileGetEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsUsersProfileGetEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsUsersProfileGetEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsUsersProfileGetEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsUsersProfileGetEndpointHandler(data?: GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Response | Promise<Response>)) {
+export function geeksHackingPortalApiEndpointsUsersProfileGetEndpointHandler(data?: GeeksHackingPortalApiEndpointsUsersProfileGetEndpointResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Response | Promise<Response>)) {
   return http.get(`/users/me`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 200,
-          headers: {
+        headers: {
           'Content-Type': 'application/json'
         },
       })

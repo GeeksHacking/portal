@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1QueryResponse, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1PathParams, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1401, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1Url(activityId: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1PathParams["activityId"]) {
-  const res = { method: 'GET', url: `/organizers/hackathons/${activityId}/registration/questions` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1Options, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1Responses } from '../types/GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Get all registration questions for an activity with their options.
  * @summary List activity registration questions
  * {@link /organizers/hackathons/:activityId/registration/questions}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1(activityId: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1PathParams["activityId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1Options, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1Responses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1QueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1401 | GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1403>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1Url(activityId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/organizers/hackathons/{activityId}/registration/questions', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1Responses, ThrowOnError>>)
 }

@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointPathParams["hackathonId"], judgeId: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointPathParams["judgeId"]) {
-  const res = { method: 'PATCH', url: `/organizers/hackathons/${hackathonId}/judges/${judgeId}` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Updates judge details. Can regenerate the secret to invalidate old links.
  * @summary Update a judge
  * {@link /organizers/hackathons/:hackathonId/judges/:judgeId}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointPathParams["hackathonId"], judgeId: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointPathParams["judgeId"], data: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint403>, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationRequest>({ method : "PATCH", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointUrl(hackathonId, judgeId).url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'PATCH', url: '/organizers/hackathons/{hackathonId}/judges/{judgeId}', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointResponses, ThrowOnError>>)
 }

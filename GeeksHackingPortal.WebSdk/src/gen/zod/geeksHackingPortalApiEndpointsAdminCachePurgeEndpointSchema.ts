@@ -3,22 +3,15 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsAdminCachePurgeResponseSchema } from "./geeksHackingPortalApiEndpointsAdminCachePurgeResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsAdminCachePurgeResponseSchema } from './geeksHackingPortalApiEndpointsAdminCachePurgeResponseSchema'
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsAdminCachePurgeEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsAdminCachePurgeResponseSchema)
+export const geeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus200Schema = geeksHackingPortalApiEndpointsAdminCachePurgeResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsAdminCachePurgeEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsAdminCachePurgeEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsAdminCachePurgeEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponseSchema = geeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsAdminCachePurgeEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus401Schema, geeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus403Schema])

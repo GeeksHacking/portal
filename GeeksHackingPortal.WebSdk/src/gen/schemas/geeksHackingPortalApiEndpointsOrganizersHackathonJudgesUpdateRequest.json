@@ -1,1 +1,0 @@
-{"type":"object","additionalProperties":false,"properties":{"name":{"type":"string","nullable":true},"active":{"type":"boolean","nullable":true},"regenerateSecret":{"type":"boolean"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateRequest"}

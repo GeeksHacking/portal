@@ -3,44 +3,37 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 200,
-          headers: {
-          'Content-Type': 'application/json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint403) {
-
-      return new Response(JSON.stringify(data), {
-        status: 403,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus403) {
+  return new Response(JSON.stringify(data), {
+    status: 403,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointHandler(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryResponse | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Response | Promise<Response>)) {
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointHandler(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Response | Promise<Response>)) {
   return http.get(`/organizers/standalone-workshops/:standaloneWorkshopId/analytics`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 200,
-          headers: {
+        headers: {
           'Content-Type': 'application/json'
         },
       })

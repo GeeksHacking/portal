@@ -3,16 +3,22 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonListResponse } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonListResponse.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonListResponse } from './GeeksHackingPortalApiEndpointsParticipantsHackathonListResponse'
+
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointStatus200 = GeeksHackingPortalApiEndpointsParticipantsHackathonListResponse;
+
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointOptions = {
+    body?: never;
+    path?: never;
+    query?: never;
+    headers?: never;
+};
+
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointStatus200;
+};
 
 /**
- * @description Success
+ * @description Union of all possible responses
 */
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint200 = GeeksHackingPortalApiEndpointsParticipantsHackathonListResponse;
-
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryResponse = GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQuery = {
-    Response: GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint200;
-    Errors: any;
-};
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointResponse = GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointStatus200;

@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1QueryResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1PathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1QueryParams, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1401, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Url(activityId: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1PathParams["activityId"]) {
-  const res = { method: 'GET', url: `/organizers/hackathons/${activityId}/resources/statistics` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Options, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Responses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Returns redemption statistics for all resources or a selected resource, including team-grouped participant breakdowns.
  * @summary Get resource redemption statistics
  * {@link /organizers/hackathons/:activityId/resources/statistics}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1(activityId: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1PathParams["activityId"], params?: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1QueryParams, config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Options, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Responses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1QueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1403>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Url(activityId).url.toString(), params, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/organizers/hackathons/{activityId}/resources/statistics', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Responses, ThrowOnError>>)
 }

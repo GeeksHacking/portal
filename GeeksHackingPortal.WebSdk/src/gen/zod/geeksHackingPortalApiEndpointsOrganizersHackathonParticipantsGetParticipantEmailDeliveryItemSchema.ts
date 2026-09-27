@@ -3,15 +3,15 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItemSchema = z.object({
-    "id": z.optional(z.string()),
-"eventKey": z.optional(z.string()),
-"templateId": z.optional(z.string()),
-"provider": z.optional(z.string()),
-"status": z.optional(z.string()),
-"errorMessage": z.string().nullish(),
-"providerMessageId": z.string().nullish(),
-"sentAt": z.optional(z.iso.datetime())
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItemSchema = z.strictObject({
+  id: z.string().optional(),
+  eventKey: z.string().optional(),
+  templateId: z.string().optional(),
+  provider: z.string().optional(),
+  status: z.string().optional(),
+  errorMessage: z.string().nullish(),
+  providerMessageId: z.string().nullish(),
+  sentAt: z.iso.datetime().optional(),
+})

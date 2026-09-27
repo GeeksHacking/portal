@@ -3,11 +3,9 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsListWorkshopDtoSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsListWorkshopDtoSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsListWorkshopDtoSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsListWorkshopDtoSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsListResponseSchema = z.object({
-    get "workshops"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsListWorkshopDtoSchema).optional()
-              }
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsListResponseSchema = z.strictObject({
+  workshops: z.array(geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsListWorkshopDtoSchema).optional(),
+})

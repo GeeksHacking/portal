@@ -3,42 +3,33 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointMutationResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointHandlerResponse204(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointMutationResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 204,
-        
-      })
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointHandlerResponse204(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 204,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint403) {
-
-      return new Response(JSON.stringify(data), {
-        status: 403,
-        
-      })
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus403) {
+  return new Response(JSON.stringify(data), {
+    status: 403,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointHandler(data?: string | number | boolean | null | object | ((
-        info: Parameters<Parameters<typeof http.delete>[1]>[0],
-      ) => Response | Promise<Response>)) {
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointHandler(data?: string | number | boolean | null | object | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Response | Promise<Response>)) {
   return http.delete(`/admin/oauth-applications/:id`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 204,
-        
       })
     })
 }

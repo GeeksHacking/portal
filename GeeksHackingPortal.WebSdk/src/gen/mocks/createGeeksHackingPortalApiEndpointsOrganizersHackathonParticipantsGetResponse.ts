@@ -3,15 +3,19 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItem } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItem.ts";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItem } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItem'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetResponse> = object>(data?: TData)
 
+{
+  const defaultFakeData = {...createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem(), ...{
+  emailDeliveries: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItem())),
+}}
   return {
-    ...{...createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem(), ...{get "emailDeliveries"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetParticipantEmailDeliveryItem())) }}},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

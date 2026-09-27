@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointQueryResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointPathParams["hackathonId"], judgeId: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointPathParams["judgeId"]) {
-  const res = { method: 'GET', url: `/organizers/hackathons/${hackathonId}/judges/${judgeId}` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Retrieves details about a specific judge including their secret.
  * @summary Get judge details
  * {@link /organizers/hackathons/:hackathonId/judges/:judgeId}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpoint(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointPathParams["hackathonId"], judgeId: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointPathParams["judgeId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpoint403>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointUrl(hackathonId, judgeId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/organizers/hackathons/{hackathonId}/judges/{judgeId}', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointResponses, ThrowOnError>>)
 }

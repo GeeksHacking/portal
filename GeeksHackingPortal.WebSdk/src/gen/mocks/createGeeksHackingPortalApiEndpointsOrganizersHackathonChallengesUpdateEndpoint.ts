@@ -3,49 +3,49 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint200, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPathParams } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateRequest } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateRequest.ts";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateResponse } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointBody, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPath, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointStatus200, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateRequest } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateRequest'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateResponse } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPathParams(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPathParams>): GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPathParams {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPath<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPath> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  hackathonId: faker.string.alpha(),
+  challengeId: faker.string.alpha(),
+}
   return {
-    ...{"hackathonId": faker.string.alpha(),"challengeId": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint200(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint200>): GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint200 {
-
-  return createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateResponse(data)
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointStatus200(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointStatus200>): GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointStatus200 {
+  return createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateResponse(data) as GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointStatus200
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint401() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointStatus401() {
   return undefined
 }
 
 /**
  * @description Forbidden
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint403() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointStatus403() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationRequest(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationRequest>): GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationRequest {
-
-  return createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateRequest(data)
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointBody(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointBody>): GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointBody {
+  return createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateRequest(data) as GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointBody
 }
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint200()])
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointResponse {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointStatus200(), createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointStatus401(), createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointStatus403()])) as GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointResponse
 }

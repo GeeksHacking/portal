@@ -3,42 +3,33 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointHandlerResponse204(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointMutationResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 204,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointHandlerResponse204(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 204,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpoint403) {
-
-      return new Response(JSON.stringify(data), {
-        status: 403,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointStatus403) {
+  return new Response(JSON.stringify(data), {
+    status: 403,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointHandler(data?: string | number | boolean | null | object | ((
-        info: Parameters<Parameters<typeof http.delete>[1]>[0],
-      ) => Response | Promise<Response>)) {
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersDeleteEndpointHandler(data?: string | number | boolean | null | object | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Response | Promise<Response>)) {
   return http.delete(`/organizers/standalone-workshops/:standaloneWorkshopId/organizers/:userId`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 204,
-        
       })
     })
 }

@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationResponse, GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint401, GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsAdminCachePurgeEndpointUrl() {
-  const res = { method: 'POST', url: `/admin/cache/purge` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointOptions, GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Clears the in-process SqlSugar data cache used by the API server.
  * @summary Purge server cache
  * {@link /admin/cache/purge}
  */
-export async function geeksHackingPortalApiEndpointsAdminCachePurgeEndpoint(config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsAdminCachePurgeEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointOptions, ThrowOnError> = {}): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint401 | GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint403>, unknown>({ method : "POST", url : getGeeksHackingPortalApiEndpointsAdminCachePurgeEndpointUrl().url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/admin/cache/purge', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponses, ThrowOnError>>)
 }

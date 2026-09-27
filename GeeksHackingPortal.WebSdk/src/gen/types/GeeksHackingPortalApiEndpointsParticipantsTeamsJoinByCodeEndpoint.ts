@@ -3,25 +3,28 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeRequest } from "./GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeRequest.ts";
-import type { GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeResponse } from "./GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeResponse.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeRequest } from './GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeRequest'
+import type { GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeResponse } from './GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeResponse'
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpoint200 = GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeResponse;
+export type GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointStatus200 = GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointStatus401 = unknown;
 
-export type GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointMutationRequest = GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeRequest;
+export type GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointBody = GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeRequest;
 
-export type GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointMutationResponse = GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointMutationRequest;
-    Errors: GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpoint401;
+export type GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointBody;
+    path?: never;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointStatus401;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointResponse = (GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointStatus200 | GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointStatus401);

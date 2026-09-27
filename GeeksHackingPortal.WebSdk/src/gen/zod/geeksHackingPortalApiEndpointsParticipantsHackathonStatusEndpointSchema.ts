@@ -3,21 +3,15 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsParticipantsHackathonStatusResponseSchema } from "./geeksHackingPortalApiEndpointsParticipantsHackathonStatusResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonStatusResponseSchema } from './geeksHackingPortalApiEndpointsParticipantsHackathonStatusResponseSchema'
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointPathParamsSchema = z.object({
-    "hackathonId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointPathHackathonIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsHackathonStatusResponseSchema)
+export const geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointStatus200Schema = geeksHackingPortalApiEndpointsParticipantsHackathonStatusResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointStatus401Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointResponseSchema = geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointErrorSchema = geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointStatus401Schema

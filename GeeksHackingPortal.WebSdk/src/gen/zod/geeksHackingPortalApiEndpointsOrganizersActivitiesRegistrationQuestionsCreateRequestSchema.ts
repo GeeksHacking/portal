@@ -3,23 +3,19 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateCreateOptionDtoSchema } from "./geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateCreateOptionDtoSchema.ts";
-import { geeksHackingPortalApiEntitiesQuestionTypeSchema } from "./geeksHackingPortalApiEntitiesQuestionTypeSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateCreateOptionDtoSchema } from './geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateCreateOptionDtoSchema'
+import { geeksHackingPortalApiEntitiesQuestionTypeSchema } from './geeksHackingPortalApiEntitiesQuestionTypeSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateRequestSchema = z.object({
-    "questionText": z.optional(z.string()),
-"questionKey": z.optional(z.string()),
-get "type"(){
-                return geeksHackingPortalApiEntitiesQuestionTypeSchema.optional()
-              },
-"displayOrder": z.optional(z.int()),
-"isRequired": z.optional(z.boolean()),
-"helpText": z.string().nullish(),
-"conditionalLogic": z.string().nullish(),
-"category": z.string().nullish(),
-"validationRules": z.string().nullish(),
-get "options"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateCreateOptionDtoSchema).nullish()
-              }
-    })
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateRequestSchema = z.strictObject({
+  questionText: z.string().optional(),
+  questionKey: z.string().optional(),
+  type: geeksHackingPortalApiEntitiesQuestionTypeSchema.optional(),
+  displayOrder: z.int32().optional(),
+  isRequired: z.boolean().optional(),
+  helpText: z.string().nullish(),
+  conditionalLogic: z.string().nullish(),
+  category: z.string().nullish(),
+  validationRules: z.string().nullish(),
+  options: z.array(geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateCreateOptionDtoSchema).nullish(),
+})

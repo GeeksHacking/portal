@@ -1,1 +1,0 @@
-{"type":"object","additionalProperties":false,"properties":{"title":{"type":"string","nullable":true},"description":{"type":"string","nullable":true},"startTime":{"type":"string","format":"date-time","nullable":true},"endTime":{"type":"string","format":"date-time","nullable":true}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateRequest"}

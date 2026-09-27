@@ -3,30 +3,21 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDto = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string | null;
-    /**
-     * @type string | undefined
-    */
     optionText?: string;
-    /**
-     * @type string | undefined
-    */
     optionValue?: string;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     displayOrder?: number;
-    /**
-     * @type boolean | undefined
-    */
     hasFollowUpText?: boolean;
-    /**
-     * @type string
-    */
     followUpPlaceholder?: string | null;
 };

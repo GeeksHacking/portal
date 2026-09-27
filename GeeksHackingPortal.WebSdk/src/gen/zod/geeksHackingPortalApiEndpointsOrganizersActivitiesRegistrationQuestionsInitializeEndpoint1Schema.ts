@@ -3,26 +3,17 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeResponseSchema } from "./geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeResponseSchema } from './geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeResponseSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1PathParamsSchema = z.object({
-    "activityId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1PathActivityIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeResponseSchema)
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Status200Schema = geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1401Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Status401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1403Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Status403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1MutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1200Schema)
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1ResponseSchema = geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Status200Schema
+
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1ErrorSchema = z.union([geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Status401Schema, geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1Status403Schema])

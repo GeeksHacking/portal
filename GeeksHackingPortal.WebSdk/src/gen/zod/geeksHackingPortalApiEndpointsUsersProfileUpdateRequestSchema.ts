@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsUsersProfileUpdateRequestSchema = z.object({
-    "firstName": z.optional(z.string()),
-"lastName": z.optional(z.string())
-    })
+export const geeksHackingPortalApiEndpointsUsersProfileUpdateRequestSchema = z.strictObject({
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+})

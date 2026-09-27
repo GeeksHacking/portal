@@ -3,54 +3,47 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointMutationResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint400, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus400, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus403, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointBody } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint'
+import type { HttpResponseResolver } from 'msw'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointMutationResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 200,
-          headers: {
-          'Content-Type': 'application/json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointHandlerResponse400(data: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint400) {
-
-      return new Response(JSON.stringify(data), {
-        status: 400,
-          headers: {
-          'Content-Type': 'application/problem+json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointHandlerResponse400(data: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus400) {
+  return new Response(JSON.stringify(data), {
+    status: 400,
+    headers: {
+      'Content-Type': 'application/problem+json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint403) {
-
-      return new Response(JSON.stringify(data), {
-        status: 403,
-        
-      })
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointHandlerResponse403(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus403) {
+  return new Response(JSON.stringify(data), {
+    status: 403,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointHandler(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointMutationResponse | ((
-        info: Parameters<Parameters<typeof http.post>[1]>[0],
-      ) => Response | Promise<Response>)) {
-  return http.post(`/admin/oauth-applications`, function handler(info) {
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointHandler(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointResponse | HttpResponseResolver<Record<string, string>, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointBody>) {
+  return http.post<Record<string, string>, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointBody>(`/admin/oauth-applications`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 200,
-          headers: {
+        headers: {
           'Content-Type': 'application/json'
         },
       })

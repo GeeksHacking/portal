@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1MutationRequest, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1MutationResponse, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1PathParams, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1401, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Url(activityId: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1PathParams["activityId"]) {
-  const res = { method: 'POST', url: `/organizers/hackathons/${activityId}/registration/questions` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Options, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Responses } from '../types/GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Create a new registration question for participants to answer.
  * @summary Create an activity registration question
  * {@link /organizers/hackathons/:activityId/registration/questions}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1(activityId: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1PathParams["activityId"], data: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1MutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1MutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Options, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Responses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1MutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1401 | GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1403>, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1MutationRequest>({ method : "POST", url : getGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Url(activityId).url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/organizers/hackathons/{activityId}/registration/questions', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Responses, ThrowOnError>>)
 }

@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpointQueryResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpoint401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpointUrl(standaloneWorkshopId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpointPathParams["standaloneWorkshopId"]) {
-  const res = { method: 'GET', url: `/organizers/standalone-workshops/${standaloneWorkshopId}/organizers/invites` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Retrieves organizer invite codes created for the standalone workshop with usage and expiry status.
  * @summary List organizer invite codes for a standalone workshop
  * {@link /organizers/standalone-workshops/:standaloneWorkshopId/organizers/invites}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpoint(standaloneWorkshopId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpointPathParams["standaloneWorkshopId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpoint403>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpointUrl(standaloneWorkshopId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/organizers/standalone-workshops/{standaloneWorkshopId}/organizers/invites', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListEndpointResponses, ThrowOnError>>)
 }

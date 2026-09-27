@@ -3,13 +3,29 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto } from "../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListOptionDto } from "./createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListOptionDto.ts";
-import { createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListSubmissionDto } from "./createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListSubmissionDto.ts";
-import { createGeeksHackingPortalApiEntitiesQuestionType } from "./createGeeksHackingPortalApiEntitiesQuestionType.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto } from '../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto'
+import { createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListOptionDto } from './createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListOptionDto'
+import { createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListSubmissionDto } from './createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListSubmissionDto'
+import { createGeeksHackingPortalApiEntitiesQuestionType } from './createGeeksHackingPortalApiEntitiesQuestionType'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto>): GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto {
+export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto> = object>(data?: TData)
 
-  return { ...{"id": faker.string.alpha(),"questionText": faker.string.alpha(),"questionKey": faker.string.alpha(),get "type"() { return createGeeksHackingPortalApiEntitiesQuestionType() },"isRequired": faker.datatype.boolean(),"helpText": faker.string.alpha(),"conditionalLogic": faker.string.alpha(),"validationRules": faker.string.alpha(),get "options"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListOptionDto())) },get "currentSubmission"() { return faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListSubmissionDto()]) },...(data || {})} }
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  questionText: faker.string.alpha(),
+  questionKey: faker.string.alpha(),
+  type: createGeeksHackingPortalApiEntitiesQuestionType(),
+  isRequired: faker.datatype.boolean(),
+  helpText: faker.string.alpha(),
+  conditionalLogic: faker.string.alpha(),
+  validationRules: faker.string.alpha(),
+  options: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListOptionDto())),
+  currentSubmission: faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListSubmissionDto<object>()]),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

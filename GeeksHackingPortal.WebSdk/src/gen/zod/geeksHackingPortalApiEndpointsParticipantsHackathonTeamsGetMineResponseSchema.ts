@@ -3,17 +3,15 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItemSchema } from "./geeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItemSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItemSchema } from './geeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItemSchema'
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseSchema = z.object({
-    "id": z.optional(z.string()),
-"hackathonId": z.optional(z.string()),
-"name": z.optional(z.string()),
-"description": z.optional(z.string()),
-"challengeId": z.string().nullish(),
-"joinCode": z.optional(z.string()),
-get "members"(){
-                return z.array(geeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItemSchema).optional()
-              }
-    })
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseSchema = z.strictObject({
+  id: z.string().optional(),
+  hackathonId: z.string().optional(),
+  name: z.string().optional(),
+  description: z.string().optional(),
+  challengeId: z.string().nullish(),
+  joinCode: z.string().optional(),
+  members: z.array(geeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineResponseMemberItemSchema).optional(),
+})

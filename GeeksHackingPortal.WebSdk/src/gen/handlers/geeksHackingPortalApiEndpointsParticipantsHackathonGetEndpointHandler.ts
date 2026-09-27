@@ -3,28 +3,25 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointQueryResponse } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointResponse } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointQueryResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 200,
-          headers: {
-          'Content-Type': 'application/json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointHandler(data?: GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointQueryResponse | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Response | Promise<Response>)) {
+export function geeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointHandler(data?: GeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Response | Promise<Response>)) {
   return http.get(`/participants/hackathons/:hackathonIdOrShortCode`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 200,
-          headers: {
+        headers: {
           'Content-Type': 'application/json'
         },
       })

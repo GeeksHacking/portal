@@ -3,11 +3,20 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequest } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequest.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEntitiesOrganizerType } from "./createGeeksHackingPortalApiEntitiesOrganizerType.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequest } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequest'
+import { createGeeksHackingPortalApiEntitiesOrganizerType } from './createGeeksHackingPortalApiEntitiesOrganizerType'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequest(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequest>): GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequest {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequest<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteRequest> = object>(data?: TData)
 
-  return { ...{get "type"() { return createGeeksHackingPortalApiEntitiesOrganizerType() },"expiresAt": faker.date.anytime().toISOString(),"maxUses": faker.number.int(),...(data || {})} }
+{
+  const defaultFakeData = {
+  type: createGeeksHackingPortalApiEntitiesOrganizerType(),
+  expiresAt: faker.date.anytime().toISOString(),
+  maxUses: faker.number.int(),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

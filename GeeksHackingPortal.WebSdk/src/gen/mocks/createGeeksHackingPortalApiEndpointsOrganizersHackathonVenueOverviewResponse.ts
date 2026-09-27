@@ -3,12 +3,20 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto.ts";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewResponse'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewResponse> = object>(data?: TData)
 
-  return { ...{get "participants"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto())) },get "auditTrail"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  participants: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewParticipantCheckInDto())),
+  auditTrail: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewVenueAuditTrailItemDto())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

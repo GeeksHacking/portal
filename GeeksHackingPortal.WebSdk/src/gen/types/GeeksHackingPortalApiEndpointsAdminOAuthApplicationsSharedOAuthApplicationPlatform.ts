@@ -3,12 +3,9 @@
 * Do not edit manually.
 */
 
-
 export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform = {
     Web: "Web",
     Native: "Native"
 } as const;
 
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformEnumKey = (typeof geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform)[keyof typeof geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform];
-
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformEnumKey;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformKey = (typeof geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform)[keyof typeof geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform];

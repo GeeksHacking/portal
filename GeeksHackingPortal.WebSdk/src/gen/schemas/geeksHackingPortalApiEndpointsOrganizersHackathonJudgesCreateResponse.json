@@ -1,1 +1,0 @@
-{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","format":"guid"},"name":{"type":"string"},"secret":{"type":"string","format":"guid"},"active":{"type":"boolean"}},"x-readme-ref-name":"GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateResponse"}

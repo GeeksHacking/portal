@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpointPathParams["hackathonId"], userId: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpointPathParams["userId"]) {
-  const res = { method: 'POST', url: `/organizers/hackathons/${hackathonId}/participants/${userId}/withdraw` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Withdraws a participant from the hackathon. Organizers can withdraw any active participant.
  * @summary Withdraw a participant
  * {@link /organizers/hackathons/:hackathonId/participants/:userId/withdraw}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpoint(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpointPathParams["hackathonId"], userId: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpointPathParams["userId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpoint403>, unknown>({ method : "POST", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpointUrl(hackathonId, userId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/organizers/hackathons/{hackathonId}/participants/{userId}/withdraw', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsWithdrawEndpointResponses, ThrowOnError>>)
 }

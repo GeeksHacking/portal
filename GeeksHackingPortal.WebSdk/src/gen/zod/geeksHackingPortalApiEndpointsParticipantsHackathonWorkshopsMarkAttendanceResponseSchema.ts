@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceResponseSchema = z.object({
-    "hasAttended": z.optional(z.boolean()),
-"attendedAt": z.optional(z.iso.datetime())
-    })
+export const geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceResponseSchema = z.strictObject({
+  hasAttended: z.boolean().optional(),
+  attendedAt: z.iso.datetime().optional(),
+})

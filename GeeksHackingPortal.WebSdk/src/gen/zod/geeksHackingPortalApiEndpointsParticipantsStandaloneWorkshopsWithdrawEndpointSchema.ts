@@ -3,26 +3,17 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawResponseSchema } from "./geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawResponseSchema } from './geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawResponseSchema'
 
-export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointPathParamsSchema = z.object({
-    "standaloneWorkshopId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointPathStandaloneWorkshopIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawResponseSchema)
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointStatus200Schema = geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointStatus401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointStatus403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointResponseSchema = geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointStatus401Schema, geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpointStatus403Schema])

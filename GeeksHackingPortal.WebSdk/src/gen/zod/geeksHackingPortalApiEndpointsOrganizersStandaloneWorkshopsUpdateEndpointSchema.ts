@@ -3,35 +3,23 @@
 * Do not edit manually.
 */
 
-import { fastEndpointsErrorResponseSchema } from "./fastEndpointsErrorResponseSchema.ts";
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateRequestSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateRequestSchema.ts";
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateResponseSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { fastEndpointsErrorResponseSchema } from './fastEndpointsErrorResponseSchema'
+import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateRequestSchema } from './geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateRequestSchema'
+import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateResponseSchema } from './geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateResponseSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointPathParamsSchema = z.object({
-    "standaloneWorkshopId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointPathStandaloneWorkshopIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateResponseSchema)
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus200Schema = geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateResponseSchema
 
-/**
- * @description Bad Request
- */
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint400Schema = z.lazy(() => fastEndpointsErrorResponseSchema).describe("the dto used to send an error response to the client")
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus400Schema = fastEndpointsErrorResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointMutationRequestSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateRequestSchema)
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointResponseSchema = geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus200Schema
 
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus400Schema, geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus401Schema, geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus403Schema])
+
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointBodySchema = geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateRequestSchema

@@ -3,26 +3,18 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParamsSchema = z.object({
-    "standaloneWorkshopId": z.string(),
-"timelineItemId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathStandaloneWorkshopIdSchema = z.string()
 
-/**
- * @description No Content
- */
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint204Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathTimelineItemIdSchema = z.string()
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointStatus204Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointStatus401Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint204Schema)
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointStatus403Schema = z.unknown()
+
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointResponseSchema = geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointStatus204Schema
+
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointStatus401Schema, geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointStatus403Schema])

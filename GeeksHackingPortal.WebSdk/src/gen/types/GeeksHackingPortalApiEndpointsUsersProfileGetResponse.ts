@@ -3,22 +3,14 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsUsersProfileGetResponse = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
-    /**
-     * @type string | undefined
-    */
     firstName?: string;
-    /**
-     * @type string | undefined
-    */
     lastName?: string;
-    /**
-     * @type string | undefined
-    */
     name?: string;
 };

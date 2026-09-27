@@ -3,39 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint } from "../clients/geeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointMutationKey = () => [{ url: '/participants/hackathons/:hackathonId/join' }] as const
-
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointMutationKey>
-
-/**
- * @description Registers the current user as a participant in the hackathon.
- * @summary Join a hackathon
- * {@link /participants/hackathons/:hackathonId/join}
- */
-export function useGeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint401>, {hackathonId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointPathParams["hackathonId"]>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint401>, {hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointPathParams["hackathonId"]}, TContext>({
-            mutationFn: async({ hackathonId }) => {
-              return geeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint(hackathonId, config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointPathParams["hackathonId"]) {
-  const res = { method: 'POST', url: `/organizers/hackathons/${hackathonId}/judges` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Creates a new judge for the hackathon. Returns the judge secret that should be shared with the judge for authentication.
  * @summary Create a judge
  * {@link /organizers/hackathons/:hackathonId/judges}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpoint(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointPathParams["hackathonId"], data: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpoint403>, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointMutationRequest>({ method : "POST", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointUrl(hackathonId).url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/organizers/hackathons/{hackathonId}/judges', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointResponses, ThrowOnError>>)
 }

@@ -3,22 +3,19 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetResponse = {
     /**
-     * @type string | undefined, guid
-    */
-    id?: string;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    id?: string;
     name?: string;
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     secret?: string;
-    /**
-     * @type boolean | undefined
-    */
     active?: boolean;
 };

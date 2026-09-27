@@ -3,46 +3,41 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint400, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponse, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus401, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointBody } from '../types/GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint'
+import type { HttpResponseResolver } from 'msw'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 200,
-          headers: {
-          'Content-Type': 'application/json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointHandlerResponse200(data: GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponse) {
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointHandlerResponse400(data: GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint400) {
-
-      return new Response(JSON.stringify(data), {
-        status: 400,
-          headers: {
-          'Content-Type': 'application/problem+json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointHandlerResponse400(data: GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400) {
+  return new Response(JSON.stringify(data), {
+    status: 400,
+    headers: {
+      'Content-Type': 'application/problem+json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointHandlerResponse401(data?: GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointHandler(data?: GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationResponse | ((
-        info: Parameters<Parameters<typeof http.patch>[1]>[0],
-      ) => Response | Promise<Response>)) {
-  return http.patch(`/users/me`, function handler(info) {
+export function geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointHandler(data?: GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponse | HttpResponseResolver<Record<string, string>, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointBody>) {
+  return http.patch<Record<string, string>, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointBody>(`/users/me`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 200,
-          headers: {
+        headers: {
           'Content-Type': 'application/json'
         },
       })

@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse, GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsUsersProfileGetEndpointUrl() {
-  const res = { method: 'GET', url: `/users/me` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsUsersProfileGetEndpointOptions, GeeksHackingPortalApiEndpointsUsersProfileGetEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Returns the current user's profile name information.
  * @summary Get current user profile
  * {@link /users/me}
  */
-export async function geeksHackingPortalApiEndpointsUsersProfileGetEndpoint(config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsUsersProfileGetEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointOptions, ThrowOnError> = {}): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint401>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsUsersProfileGetEndpointUrl().url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/users/me', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointResponses, ThrowOnError>>)
 }

@@ -3,10 +3,9 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformKey } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform {
-
-  return data || faker.helpers.arrayElement<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform>(["Web", "Native"])
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform(data?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformKey): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformKey {
+  return data ?? faker.helpers.arrayElement<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformKey>(['Web', 'Native'])
 }

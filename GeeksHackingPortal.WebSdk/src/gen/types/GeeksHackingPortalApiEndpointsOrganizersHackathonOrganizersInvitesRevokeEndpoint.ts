@@ -3,37 +3,41 @@
 * Do not edit manually.
 */
 
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     hackathonId: string;
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     inviteId: string;
 };
 
-/**
- * @description No Content
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint204 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus204 = unknown;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointMutationResponse = GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint204;
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint204;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointOptions = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointResponses = {
+    "204": GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus204;
+    "401": GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus204 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus403);

@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointPathParams["hackathonId"]) {
-  const res = { method: 'POST', url: `/organizers/hackathons/${hackathonId}/organizers/invites` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Generates a reusable invite code that other users can redeem to join the hackathon as an organizer.
  * @summary Create an organizer invite code for a hackathon
  * {@link /organizers/hackathons/:hackathonId/organizers/invites}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointPathParams["hackathonId"], data: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint403>, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationRequest>({ method : "POST", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointUrl(hackathonId).url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/organizers/hackathons/{hackathonId}/organizers/invites', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointResponses, ThrowOnError>>)
 }

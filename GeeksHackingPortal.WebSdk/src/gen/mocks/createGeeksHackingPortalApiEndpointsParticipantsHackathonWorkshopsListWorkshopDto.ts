@@ -3,13 +3,26 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsListWorkshopDto } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsListWorkshopDto.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsListWorkshopDto } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsListWorkshopDto'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsListWorkshopDto(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsListWorkshopDto>): GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsListWorkshopDto {
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsListWorkshopDto<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsListWorkshopDto> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  title: faker.string.alpha(),
+  description: faker.string.alpha(),
+  startTime: faker.date.anytime().toISOString(),
+  endTime: faker.date.anytime().toISOString(),
+  location: faker.string.alpha(),
+  maxParticipants: faker.number.int(),
+  currentParticipants: faker.number.int(),
+  isJoined: faker.datatype.boolean(),
+  hasAttended: faker.datatype.boolean(),
+}
   return {
-    ...{"id": faker.string.alpha(),"title": faker.string.alpha(),"description": faker.string.alpha(),"startTime": faker.date.anytime().toISOString(),"endTime": faker.date.anytime().toISOString(),"location": faker.string.alpha(),"maxParticipants": faker.number.int(),"currentParticipants": faker.number.int(),"isJoined": faker.datatype.boolean(),"hasAttended": faker.datatype.boolean()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

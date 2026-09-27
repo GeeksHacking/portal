@@ -13,6 +13,11 @@ allowBuilds:
   sharp: true
   vue-demi: true
 
+minimumReleaseAgeExclude:
+  - '@kubb/ast@5.3.19'
+  - '@kubb/cli@5.3.19'
+  - '@kubb/core@5.3.19'
+
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - esbuild

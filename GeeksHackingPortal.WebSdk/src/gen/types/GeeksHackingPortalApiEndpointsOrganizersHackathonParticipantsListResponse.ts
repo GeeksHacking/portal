@@ -3,27 +3,32 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem } from './GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem'
 
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListResponse = {
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     totalCount?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     pendingCount?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     acceptedCount?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     rejectedCount?: number;
-    /**
-     * @type array | undefined
-    */
     participants?: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem[];
 };

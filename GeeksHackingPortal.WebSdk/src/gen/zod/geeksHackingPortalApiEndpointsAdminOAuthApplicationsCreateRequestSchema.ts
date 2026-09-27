@@ -3,9 +3,7 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequestSchema } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequestSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequestSchema } from './geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequestSchema'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequestSchema = z.lazy(() => geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequestSchema).and(z.object({
-    
-    }))
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateRequestSchema = geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequestSchema.and(z.strictObject({}))

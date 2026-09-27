@@ -3,19 +3,17 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDtoSchema } from "./geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDtoSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDtoSchema } from './geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDtoSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryResponseSchema = z.object({
-    "participantId": z.optional(z.string()),
-"userId": z.optional(z.string()),
-"userName": z.optional(z.string()),
-"resourceId": z.optional(z.string()),
-"resourceName": z.optional(z.string()),
-"resourceIsPublished": z.optional(z.boolean()),
-"hasRedeemed": z.optional(z.boolean()),
-"redemptionCount": z.optional(z.int()),
-get "history"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDtoSchema).optional()
-              }
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryResponseSchema = z.strictObject({
+  participantId: z.string().optional(),
+  userId: z.string().optional(),
+  userName: z.string().optional(),
+  resourceId: z.string().optional(),
+  resourceName: z.string().optional(),
+  resourceIsPublished: z.boolean().optional(),
+  hasRedeemed: z.boolean().optional(),
+  redemptionCount: z.int32().optional(),
+  history: z.array(geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDtoSchema).optional(),
+})

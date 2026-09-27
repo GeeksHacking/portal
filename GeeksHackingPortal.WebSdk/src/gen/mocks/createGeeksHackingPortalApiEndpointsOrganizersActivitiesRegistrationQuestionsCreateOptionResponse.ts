@@ -3,13 +3,22 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateOptionResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateOptionResponse.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateOptionResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateOptionResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateOptionResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateOptionResponse>): GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateOptionResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateOptionResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateOptionResponse> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  optionText: faker.string.alpha(),
+  optionValue: faker.string.alpha(),
+  displayOrder: faker.number.int(),
+  hasFollowUpText: faker.datatype.boolean(),
+  followUpPlaceholder: faker.string.alpha(),
+}
   return {
-    ...{"id": faker.string.alpha(),"optionText": faker.string.alpha(),"optionValue": faker.string.alpha(),"displayOrder": faker.number.int(),"hasFollowUpText": faker.datatype.boolean(),"followUpPlaceholder": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

@@ -3,23 +3,15 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointQueryResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpoint401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointUrl(standaloneWorkshopId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointPathParams["standaloneWorkshopId"]) {
-  const res = { method: 'GET', url: `/organizers/standalone-workshops/${standaloneWorkshopId}/timeline` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * {@link /organizers/standalone-workshops/:standaloneWorkshopId/timeline}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpoint(standaloneWorkshopId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointPathParams["standaloneWorkshopId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpoint403>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointUrl(standaloneWorkshopId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/organizers/standalone-workshops/{standaloneWorkshopId}/timeline', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineListEndpointResponses, ThrowOnError>>)
 }

@@ -3,11 +3,24 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform } from "./createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse'
+import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform } from './createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse {
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse<TData extends Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse> = object>(data?: TData)
 
-  return { ...{"id": faker.string.alpha(),"clientId": faker.string.alpha(),"clientSecret": faker.string.alpha(),"displayName": faker.string.alpha(),get "platform"() { return createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform() },"redirectUris": faker.helpers.multiple(() => (faker.internet.url())),"postLogoutRedirectUris": faker.helpers.multiple(() => (faker.internet.url())),...(data || {})} }
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  clientId: faker.string.alpha(),
+  clientSecret: faker.string.alpha(),
+  displayName: faker.string.alpha(),
+  platform: createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform(),
+  redirectUris: faker.helpers.multiple(() => (faker.internet.url())),
+  postLogoutRedirectUris: faker.helpers.multiple(() => (faker.internet.url())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

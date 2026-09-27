@@ -3,13 +3,18 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryHistoryItemDto> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  redemptionId: faker.string.alpha(),
+  createdAt: faker.date.anytime().toISOString(),
+}
   return {
-    ...{"redemptionId": faker.string.alpha(),"createdAt": faker.date.anytime().toISOString()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

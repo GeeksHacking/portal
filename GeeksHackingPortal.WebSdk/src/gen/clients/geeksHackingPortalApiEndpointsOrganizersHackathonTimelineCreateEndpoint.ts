@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointPathParams["hackathonId"]) {
-  const res = { method: 'POST', url: `/organizers/hackathons/${hackathonId}/timeline` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Creates a new timeline item for a hackathon.
  * @summary Create timeline item
  * {@link /organizers/hackathons/:hackathonId/timeline}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointPathParams["hackathonId"], data: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpoint403>, GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointMutationRequest>({ method : "POST", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointUrl(hackathonId).url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/organizers/hackathons/{hackathonId}/timeline', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineCreateEndpointResponses, ThrowOnError>>)
 }

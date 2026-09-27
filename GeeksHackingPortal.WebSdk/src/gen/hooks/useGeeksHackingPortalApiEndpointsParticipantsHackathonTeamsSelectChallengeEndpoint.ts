@@ -3,39 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointMutationRequest, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint400, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint401, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint } from "../clients/geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointMutationKey = () => [{ url: '/participants/hackathons/:hackathonId/teams/:teamId/challenge' }] as const
-
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointMutationKey>
-
-/**
- * @description Updates the team's selected challenge.
- * @summary Select a challenge
- * {@link /participants/hackathons/:hackathonId/teams/:teamId/challenge}
- */
-export function useGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint400 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint403>, {hackathonId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointPathParams["hackathonId"]>, teamId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointPathParams["teamId"]>, data: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointMutationRequest>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointMutationRequest>> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint400 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint403>, {hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointPathParams["hackathonId"], teamId: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointPathParams["teamId"], data: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointMutationRequest}, TContext>({
-            mutationFn: async({ hackathonId, teamId, data }) => {
-              return geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint(hackathonId, teamId, data, config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

@@ -3,54 +3,21 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse, GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint.ts";
-import { queryOptions, useQuery } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsUsersProfileGetEndpoint } from "../clients/geeksHackingPortalApiEndpointsUsersProfileGetEndpoint.ts";
-import { toValue } from "vue";
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200, GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint'
+import { geeksHackingPortalApiEndpointsUsersProfileGetEndpoint } from '../clients/geeksHackingPortalApiEndpointsUsersProfileGetEndpoint'
+import { queryOptions } from '@tanstack/vue-query'
 
 export const geeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryKey = () => [{ url: '/users/me' }] as const
 
 export type GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryKey = ReturnType<typeof geeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryKey>
 
-export function geeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryOptions(config: Partial<RequestConfig> & { client?: Client } = {}) {
-
-        const queryKey = geeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryKey()
-        return queryOptions<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint401>, GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse, typeof queryKey>({
-        
-        queryKey,
-        queryFn: async ({ signal }) => {
-            return geeksHackingPortalApiEndpointsUsersProfileGetEndpoint({ ...config, signal: config.signal ?? signal })
-         },
-        })
-
-}
-
-/**
- * @description Returns the current user's profile name information.
- * @summary Get current user profile
- * {@link /users/me}
- */
-export function useGeeksHackingPortalApiEndpointsUsersProfileGetEndpoint<TData = GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse, TQueryData = GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryKey>(options: 
-{
-  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint401>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
-  client?: Partial<RequestConfig> & { client?: Client }
-}
- = {}) {
-
-         const { query: queryConfig = {}, client: config = {} } = options ?? {}
-         const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryKey()
-
-         const query = useQuery({
-          ...geeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryOptions(config),
-          ...resolvedOptions,
-          queryKey
-         } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint401>, TData, GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint401>> & { queryKey: TQueryKey }
-
-         query.queryKey = queryKey as TQueryKey
-
-         return query
-         
+export function geeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryOptions(config: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>> = {}) {
+  const queryKey = geeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryKey()
+  return queryOptions<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401>, GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200>({
+   queryKey,
+   queryFn: async ({ signal }) => {
+      return geeksHackingPortalApiEndpointsUsersProfileGetEndpoint({ ...config, signal: config.signal ?? signal, throwOnError: true }).unwrap()
+   },
+  })
 }

@@ -3,26 +3,17 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListResponseSchema } from "./geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListResponseSchema } from './geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListResponseSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1PathParamsSchema = z.object({
-    "activityId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1PathActivityIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1200Schema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListResponseSchema)
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1Status200Schema = geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1401Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1Status401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1403Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1Status403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1QueryResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1200Schema)
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1ResponseSchema = geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1Status200Schema
+
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1ErrorSchema = z.union([geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1Status401Schema, geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1Status403Schema])

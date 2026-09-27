@@ -3,15 +3,13 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema } from './geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponseSchema = z.object({
-    "applicationId": z.optional(z.string()),
-"displayName": z.optional(z.string()),
-get "platform"(){
-                return geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema.optional()
-              },
-"totalAuthorizations": z.optional(z.int()),
-"uniqueUsers": z.optional(z.int())
-    })
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponseSchema = z.strictObject({
+  applicationId: z.string().optional(),
+  displayName: z.string().optional(),
+  platform: geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema.optional(),
+  totalAuthorizations: z.int32().optional(),
+  uniqueUsers: z.int32().optional(),
+})

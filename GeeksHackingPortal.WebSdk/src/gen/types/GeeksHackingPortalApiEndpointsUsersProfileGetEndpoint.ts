@@ -3,21 +3,25 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsUsersProfileGetResponse } from "./GeeksHackingPortalApiEndpointsUsersProfileGetResponse.ts";
+import type { GeeksHackingPortalApiEndpointsUsersProfileGetResponse } from './GeeksHackingPortalApiEndpointsUsersProfileGetResponse'
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint200 = GeeksHackingPortalApiEndpointsUsersProfileGetResponse;
+export type GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200 = GeeksHackingPortalApiEndpointsUsersProfileGetResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401 = unknown;
 
-export type GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryResponse = GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQuery = {
-    Response: GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint200;
-    Errors: GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint401;
+export type GeeksHackingPortalApiEndpointsUsersProfileGetEndpointOptions = {
+    body?: never;
+    path?: never;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsUsersProfileGetEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsUsersProfileGetEndpointResponse = (GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200 | GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401);

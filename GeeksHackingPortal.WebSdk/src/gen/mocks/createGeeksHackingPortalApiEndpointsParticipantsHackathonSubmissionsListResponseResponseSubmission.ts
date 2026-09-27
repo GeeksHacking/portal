@@ -3,13 +3,26 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsListResponseResponseSubmission } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsListResponseResponseSubmission.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsListResponseResponseSubmission } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsListResponseResponseSubmission'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsListResponseResponseSubmission(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsListResponseResponseSubmission>): GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsListResponseResponseSubmission {
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsListResponseResponseSubmission<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsListResponseResponseSubmission> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  challengeId: faker.string.alpha(),
+  title: faker.string.alpha(),
+  summary: faker.string.alpha(),
+  location: faker.string.alpha(),
+  devpostUri: faker.internet.url(),
+  repoUri: faker.internet.url(),
+  demoUri: faker.internet.url(),
+  slidesUri: faker.internet.url(),
+  submittedAt: faker.date.anytime().toISOString(),
+}
   return {
-    ...{"id": faker.string.alpha(),"challengeId": faker.string.alpha(),"title": faker.string.alpha(),"summary": faker.string.alpha(),"location": faker.string.alpha(),"devpostUri": faker.internet.url(),"repoUri": faker.internet.url(),"demoUri": faker.internet.url(),"slidesUri": faker.internet.url(),"submittedAt": faker.date.anytime().toISOString()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

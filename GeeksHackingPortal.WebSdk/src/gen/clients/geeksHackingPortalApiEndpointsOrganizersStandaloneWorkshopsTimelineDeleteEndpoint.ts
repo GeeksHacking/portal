@@ -3,23 +3,15 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointUrl(standaloneWorkshopId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams["standaloneWorkshopId"], timelineItemId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams["timelineItemId"]) {
-  const res = { method: 'DELETE', url: `/organizers/standalone-workshops/${standaloneWorkshopId}/timeline/${timelineItemId}` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * {@link /organizers/standalone-workshops/:standaloneWorkshopId/timeline/:timelineItemId}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint(standaloneWorkshopId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams["standaloneWorkshopId"], timelineItemId: GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointPathParams["timelineItemId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpoint403>, unknown>({ method : "DELETE", url : getGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointUrl(standaloneWorkshopId, timelineItemId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'DELETE', url: '/organizers/standalone-workshops/{standaloneWorkshopId}/timeline/{timelineItemId}', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsTimelineDeleteEndpointResponses, ThrowOnError>>)
 }

@@ -3,11 +3,25 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItem } from "./createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem'
+import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItem } from './createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItem'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem {
+export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem> = object>(data?: TData)
 
-  return { ...{"registrationId": faker.string.alpha(),"userId": faker.string.alpha(),"name": faker.string.alpha(),"email": faker.string.alpha(),"status": faker.string.alpha(),"registeredAt": faker.date.anytime().toISOString(),"withdrawnAt": faker.date.anytime().toISOString(),get "registrationSubmissions"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItem())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  registrationId: faker.string.alpha(),
+  userId: faker.string.alpha(),
+  name: faker.string.alpha(),
+  email: faker.string.alpha(),
+  status: faker.string.alpha(),
+  registeredAt: faker.date.anytime().toISOString(),
+  withdrawnAt: faker.date.anytime().toISOString(),
+  registrationSubmissions: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItem())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

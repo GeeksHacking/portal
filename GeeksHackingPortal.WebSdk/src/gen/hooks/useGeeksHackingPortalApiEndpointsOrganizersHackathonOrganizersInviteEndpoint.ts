@@ -3,39 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint } from "../clients/geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationKey = () => [{ url: '/organizers/hackathons/:hackathonId/organizers/invites' }] as const
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationKey>
-
-/**
- * @description Generates a reusable invite code that other users can redeem to join the hackathon as an organizer.
- * @summary Create an organizer invite code for a hackathon
- * {@link /organizers/hackathons/:hackathonId/organizers/invites}
- */
-export function useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint403>, {hackathonId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointPathParams["hackathonId"]>, data: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationRequest>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationRequest>> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint403>, {hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointPathParams["hackathonId"], data: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpointMutationRequest}, TContext>({
-            mutationFn: async({ hackathonId, data }) => {
-              return geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInviteEndpoint(hackathonId, data, config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

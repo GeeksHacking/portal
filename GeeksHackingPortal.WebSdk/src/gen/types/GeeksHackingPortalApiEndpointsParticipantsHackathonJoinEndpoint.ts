@@ -3,29 +3,34 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonJoinResponse } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonJoinResponse.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonJoinResponse } from './GeeksHackingPortalApiEndpointsParticipantsHackathonJoinResponse'
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     hackathonId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint200 = GeeksHackingPortalApiEndpointsParticipantsHackathonJoinResponse;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointStatus200 = GeeksHackingPortalApiEndpointsParticipantsHackathonJoinResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointStatus401 = unknown;
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointMutationResponse = GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint200;
-    PathParams: GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint401;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointOptions = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointStatus401;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointResponse = (GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointStatus200 | GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointStatus401);

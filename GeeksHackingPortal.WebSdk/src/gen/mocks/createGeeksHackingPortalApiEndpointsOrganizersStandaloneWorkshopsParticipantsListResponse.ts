@@ -3,11 +3,21 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem } from "./createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponse'
+import { createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem } from './createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponse>): GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListResponse> = object>(data?: TData)
 
-  return { ...{"totalCount": faker.number.int(),"registeredCount": faker.number.int(),"withdrawnCount": faker.number.int(),get "participants"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  totalCount: faker.number.int(),
+  registeredCount: faker.number.int(),
+  withdrawnCount: faker.number.int(),
+  participants: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

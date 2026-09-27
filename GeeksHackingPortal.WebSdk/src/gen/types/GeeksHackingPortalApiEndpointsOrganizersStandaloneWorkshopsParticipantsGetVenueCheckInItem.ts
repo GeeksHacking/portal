@@ -3,22 +3,24 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetVenueCheckInItem = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     checkInTime?: string;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     checkOutTime?: string | null;
-    /**
-     * @type boolean | undefined
-    */
     isCheckedIn?: boolean;
 };

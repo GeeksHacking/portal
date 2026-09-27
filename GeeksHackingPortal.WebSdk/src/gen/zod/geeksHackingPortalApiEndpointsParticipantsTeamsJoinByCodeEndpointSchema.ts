@@ -3,20 +3,16 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeRequestSchema } from "./geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeRequestSchema.ts";
-import { geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeResponseSchema } from "./geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeRequestSchema } from './geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeRequestSchema'
+import { geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeResponseSchema } from './geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeResponseSchema'
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeResponseSchema)
+export const geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointStatus200Schema = geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointStatus401Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointMutationRequestSchema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeRequestSchema)
+export const geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointResponseSchema = geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointStatus200Schema
 
-export const geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointErrorSchema = geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointStatus401Schema
+
+export const geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointBodySchema = geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeRequestSchema

@@ -3,39 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint400, GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint } from "../clients/geeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationKey = () => [{ url: '/organizers/hackathons' }] as const
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationKey>
-
-/**
- * @description Creates a new hackathon event. Permissions depend on the platform configuration.
- * @summary Create a new hackathon
- * {@link /organizers/hackathons}
- */
-export function useGeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint400 | GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint403>, {data: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationRequest>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationRequest>> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint400 | GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint403>, {data: GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationRequest}, TContext>({
-            mutationFn: async({ data }) => {
-              return geeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint(data, config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

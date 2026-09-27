@@ -3,11 +3,8 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest } from "./GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest } from './GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest'
 
 export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequest = (GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest & {
-    /**
-     * @type boolean | undefined
-    */
     rotateClientSecret?: boolean;
 });

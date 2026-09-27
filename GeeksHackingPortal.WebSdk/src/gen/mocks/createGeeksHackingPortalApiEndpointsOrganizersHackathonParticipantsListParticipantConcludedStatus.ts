@@ -3,10 +3,9 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusKey } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus>): GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus {
-
-  return data || faker.helpers.arrayElement<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus>(["Pending", "Accepted", "Rejected"])
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusKey): GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusKey {
+  return data ?? faker.helpers.arrayElement<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusKey>(['Pending', 'Accepted', 'Rejected'])
 }

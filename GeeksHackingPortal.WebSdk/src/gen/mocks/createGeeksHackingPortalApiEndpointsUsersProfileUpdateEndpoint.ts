@@ -3,42 +3,37 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint200, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint400, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationRequest, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationResponse } from "../types/GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint.ts";
-import { faker } from "@faker-js/faker";
-import { createFastEndpointsErrorResponse } from "./createFastEndpointsErrorResponse.ts";
-import { createGeeksHackingPortalApiEndpointsUsersProfileUpdateRequest } from "./createGeeksHackingPortalApiEndpointsUsersProfileUpdateRequest.ts";
-import { createGeeksHackingPortalApiEndpointsUsersProfileUpdateResponse } from "./createGeeksHackingPortalApiEndpointsUsersProfileUpdateResponse.ts";
+import type { GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointBody, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponse, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint'
+import { createFastEndpointsErrorResponse } from './createFastEndpointsErrorResponse'
+import { createGeeksHackingPortalApiEndpointsUsersProfileUpdateRequest } from './createGeeksHackingPortalApiEndpointsUsersProfileUpdateRequest'
+import { createGeeksHackingPortalApiEndpointsUsersProfileUpdateResponse } from './createGeeksHackingPortalApiEndpointsUsersProfileUpdateResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint200(data?: Partial<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint200>): GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint200 {
-
-  return createGeeksHackingPortalApiEndpointsUsersProfileUpdateResponse(data)
+export function createGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200(data?: Partial<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200>): GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200 {
+  return createGeeksHackingPortalApiEndpointsUsersProfileUpdateResponse(data) as GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200
 }
 
 /**
  * @description Bad Request
  */
-export function createGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint400(data?: Partial<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint400>): GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint400 {
-
-  return createFastEndpointsErrorResponse(data)
+export function createGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400(data?: Partial<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400>): GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400 {
+  return createFastEndpointsErrorResponse(data) as GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint401() {
-
+export function createGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus401() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationRequest(data?: Partial<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationRequest>): GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationRequest {
-
-  return createGeeksHackingPortalApiEndpointsUsersProfileUpdateRequest(data)
+export function createGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointBody(data?: Partial<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointBody>): GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointBody {
+  return createGeeksHackingPortalApiEndpointsUsersProfileUpdateRequest(data) as GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointBody
 }
 
-export function createGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationResponse(data?: Partial<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationResponse>): GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint200()])
+export function createGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponse(data?: Partial<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponse>): GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponse {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200(), createGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400(), createGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus401()])) as GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponse
 }

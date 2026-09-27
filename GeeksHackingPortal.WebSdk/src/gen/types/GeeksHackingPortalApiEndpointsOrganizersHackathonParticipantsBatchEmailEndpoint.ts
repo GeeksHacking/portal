@@ -3,38 +3,40 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailResponse } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest } from './GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailResponse } from './GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailResponse'
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     hackathonId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationRequest = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointBody = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailRequest;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationResponse = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationRequest;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointBody;
+    path: GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus403);

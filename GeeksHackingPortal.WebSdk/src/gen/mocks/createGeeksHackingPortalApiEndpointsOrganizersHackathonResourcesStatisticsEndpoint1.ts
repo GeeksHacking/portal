@@ -3,51 +3,55 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1200, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1PathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1QueryParams, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1QueryResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponse } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Path, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Query, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Response, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Status200, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Status401, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Status403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponse } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1PathParams(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1PathParams>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1PathParams {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Path<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Path> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  activityId: faker.string.alpha(),
+}
   return {
-    ...{"activityId": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1QueryParams(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1QueryParams>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1QueryParams {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Query<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Query> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  resourceId: faker.string.alpha(),
+}
   return {
-    ...{"resourceId": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1200(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1200>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1200 {
-
-  return createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponse(data)
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Status200(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Status200>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Status200 {
+  return createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsResponse(data) as GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Status200
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1401() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Status401() {
   return undefined
 }
 
 /**
  * @description Forbidden
  */
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1403() {
-
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Status403() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1QueryResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1QueryResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1QueryResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1200()])
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Response(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Response>): GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Response {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Status200(), createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Status401(), createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Status403()])) as GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1Response
 }

@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeResponseSchema = z.object({
-    "questionsCreated": z.optional(z.int()),
-"message": z.optional(z.string())
-    })
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeResponseSchema = z.strictObject({
+  questionsCreated: z.int32().optional(),
+  message: z.string().optional(),
+})

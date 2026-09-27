@@ -3,38 +3,40 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateRequest } from "./GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateRequest.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateResponse } from "./GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateRequest } from './GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateRequest'
+import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateResponse } from './GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateResponse'
 
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2PathParams = {
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Path = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     activityId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2200 = GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Status200 = GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Status401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Status403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2MutationRequest = GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateRequest;
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Body = GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateRequest;
 
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2MutationResponse = GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Mutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2200;
-    Request: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2MutationRequest;
-    PathParams: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2PathParams;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2401 | GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2403;
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Options = {
+    body: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Body;
+    path: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Path;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Responses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Status200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Status401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Status403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Response = (GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Status200 | GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Status401 | GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Status403);

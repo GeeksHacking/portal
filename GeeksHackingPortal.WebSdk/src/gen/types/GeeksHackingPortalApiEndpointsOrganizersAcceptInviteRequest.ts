@@ -3,10 +3,6 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteRequest = {
-    /**
-     * @type string | undefined
-    */
     code?: string;
 };

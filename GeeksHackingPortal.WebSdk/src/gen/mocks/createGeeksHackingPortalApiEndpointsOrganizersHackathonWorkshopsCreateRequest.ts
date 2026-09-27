@@ -3,13 +3,23 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateRequest } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateRequest.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateRequest } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateRequest'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateRequest(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateRequest>): GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateRequest {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateRequest<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsCreateRequest> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  title: faker.string.alpha(),
+  description: faker.string.alpha(),
+  startTime: faker.date.anytime().toISOString(),
+  endTime: faker.date.anytime().toISOString(),
+  location: faker.string.alpha(),
+  maxParticipants: faker.number.int(),
+  isPublished: faker.datatype.boolean(),
+}
   return {
-    ...{"title": faker.string.alpha(),"description": faker.string.alpha(),"startTime": faker.date.anytime().toISOString(),"endTime": faker.date.anytime().toISOString(),"location": faker.string.alpha(),"maxParticipants": faker.number.int(),"isPublished": faker.datatype.boolean()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

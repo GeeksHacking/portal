@@ -3,6 +3,6 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEntitiesOrganizerTypeSchema = z.enum(["Admin", "Volunteer"])
+export const geeksHackingPortalApiEntitiesOrganizerTypeSchema = z.union([z.literal('Admin'), z.literal('Volunteer')])

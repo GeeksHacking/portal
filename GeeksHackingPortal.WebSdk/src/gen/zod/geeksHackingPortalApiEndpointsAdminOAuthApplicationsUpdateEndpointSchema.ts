@@ -3,35 +3,23 @@
 * Do not edit manually.
 */
 
-import { fastEndpointsErrorResponseSchema } from "./fastEndpointsErrorResponseSchema.ts";
-import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema.ts";
-import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequestSchema } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequestSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { fastEndpointsErrorResponseSchema } from './fastEndpointsErrorResponseSchema'
+import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema } from './geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema'
+import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequestSchema } from './geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequestSchema'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointPathParamsSchema = z.object({
-    "id": z.string()
-    })
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointPathIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema)
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus200Schema = geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema
 
-/**
- * @description Bad Request
- */
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint400Schema = z.lazy(() => fastEndpointsErrorResponseSchema).describe("the dto used to send an error response to the client")
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus400Schema = fastEndpointsErrorResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationRequestSchema = z.lazy(() => geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequestSchema)
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointResponseSchema = geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus200Schema
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus400Schema, geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus401Schema, geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus403Schema])
+
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointBodySchema = geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequestSchema

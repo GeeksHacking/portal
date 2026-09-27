@@ -3,37 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint } from "../clients/geeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationKey = () => [{ url: '/organizers/hackathons/:hackathonId/challenges/:challengeId' }] as const
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationKey>
-
-/**
- * {@link /organizers/hackathons/:hackathonId/challenges/:challengeId}
- */
-export function useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint403>, {hackathonId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPathParams["hackathonId"]>, challengeId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPathParams["challengeId"]>, data: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationRequest>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationRequest>> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint403>, {hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPathParams["hackathonId"], challengeId: GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointPathParams["challengeId"], data: GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpointMutationRequest}, TContext>({
-            mutationFn: async({ hackathonId, challengeId, data }) => {
-              return geeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateEndpoint(hackathonId, challengeId, data, config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

@@ -3,39 +3,45 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem } from './GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem'
 
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsTeamBreakdownItem = {
     /**
-     * @type string, guid
-    */
-    teamId?: string | null;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    teamId?: string | null;
     teamName?: string;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     memberCount?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     redeemerCount?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     totalRedemptions?: number;
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     distinctResourcesRedeemed?: number;
     /**
-     * @type string, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     lastRedeemedAt?: string | null;
-    /**
-     * @type array | undefined
-    */
     participants?: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsParticipantBreakdownItem[];
 };

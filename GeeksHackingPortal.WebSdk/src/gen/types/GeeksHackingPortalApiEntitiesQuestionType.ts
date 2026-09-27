@@ -3,7 +3,6 @@
 * Do not edit manually.
 */
 
-
 export const geeksHackingPortalApiEntitiesQuestionType = {
     Text: "Text",
     LongText: "LongText",
@@ -18,6 +17,4 @@ export const geeksHackingPortalApiEntitiesQuestionType = {
     Dropdown: "Dropdown"
 } as const;
 
-export type GeeksHackingPortalApiEntitiesQuestionTypeEnumKey = (typeof geeksHackingPortalApiEntitiesQuestionType)[keyof typeof geeksHackingPortalApiEntitiesQuestionType];
-
-export type GeeksHackingPortalApiEntitiesQuestionType = GeeksHackingPortalApiEntitiesQuestionTypeEnumKey;
+export type GeeksHackingPortalApiEntitiesQuestionTypeKey = (typeof geeksHackingPortalApiEntitiesQuestionType)[keyof typeof geeksHackingPortalApiEntitiesQuestionType];

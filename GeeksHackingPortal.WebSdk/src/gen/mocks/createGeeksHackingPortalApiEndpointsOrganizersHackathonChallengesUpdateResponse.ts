@@ -3,13 +3,24 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateResponse } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateResponse.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateResponse } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateResponse(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateResponse>): GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateResponse {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateResponse<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesUpdateResponse> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  hackathonId: faker.string.alpha(),
+  title: faker.string.alpha(),
+  description: faker.string.alpha(),
+  sponsor: faker.string.alpha(),
+  criteria: faker.string.alpha(),
+  isPublished: faker.datatype.boolean(),
+  updatedAt: faker.date.anytime().toISOString(),
+}
   return {
-    ...{"id": faker.string.alpha(),"hackathonId": faker.string.alpha(),"title": faker.string.alpha(),"description": faker.string.alpha(),"sponsor": faker.string.alpha(),"criteria": faker.string.alpha(),"isPublished": faker.datatype.boolean(),"updatedAt": faker.date.anytime().toISOString()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

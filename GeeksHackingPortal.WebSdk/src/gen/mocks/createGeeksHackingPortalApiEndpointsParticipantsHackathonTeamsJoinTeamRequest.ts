@@ -3,13 +3,17 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest>): GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest {
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  joinCode: faker.string.alpha(),
+}
   return {
-    ...{"joinCode": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

@@ -3,10 +3,6 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest = {
-    /**
-     * @type string | undefined
-    */
     joinCode?: string;
 };

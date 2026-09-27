@@ -3,54 +3,21 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint401 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint.ts";
-import { queryOptions, useQuery } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint } from "../clients/geeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint.ts";
-import { toValue } from "vue";
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus200, GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint'
+import { queryOptions } from '@tanstack/vue-query'
 
 export const geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryKey = () => [{ url: '/organizers/hackathons' }] as const
 
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryKey = ReturnType<typeof geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryKey>
 
-export function geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryOptions(config: Partial<RequestConfig> & { client?: Client } = {}) {
-
-        const queryKey = geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryKey()
-        return queryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint401>, GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryResponse, typeof queryKey>({
-        
-        queryKey,
-        queryFn: async ({ signal }) => {
-            return geeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint({ ...config, signal: config.signal ?? signal })
-         },
-        })
-
-}
-
-/**
- * @description Retrieves all hackathons the current user has organizer access to.
- * @summary List organizer hackathons
- * {@link /organizers/hackathons}
- */
-export function useGeeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint<TData = GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryResponse, TQueryData = GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryResponse, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryKey>(options: 
-{
-  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint401>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
-  client?: Partial<RequestConfig> & { client?: Client }
-}
- = {}) {
-
-         const { query: queryConfig = {}, client: config = {} } = options ?? {}
-         const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryKey()
-
-         const query = useQuery({
-          ...geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryOptions(config),
-          ...resolvedOptions,
-          queryKey
-         } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint401>, TData, GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryResponse, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint401>> & { queryKey: TQueryKey }
-
-         query.queryKey = queryKey as TQueryKey
-
-         return query
-         
+export function geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryOptions(config: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>> = {}) {
+  const queryKey = geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryKey()
+  return queryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus401>, GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus200>({
+   queryKey,
+   queryFn: async ({ signal }) => {
+      return geeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint({ ...config, signal: config.signal ?? signal, throwOnError: true }).unwrap()
+   },
+  })
 }

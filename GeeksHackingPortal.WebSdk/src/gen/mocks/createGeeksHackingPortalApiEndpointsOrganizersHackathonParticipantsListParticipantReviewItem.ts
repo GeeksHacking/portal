@@ -3,11 +3,21 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatus } from "./createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatus.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem'
+import { createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatus } from './createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatus'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem>): GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItem> = object>(data?: TData)
 
-  return { ...{"id": faker.string.alpha(),get "status"() { return createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatus() },"reason": faker.string.alpha(),"createdAt": faker.date.anytime().toISOString(),...(data || {})} }
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  status: createGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatus(),
+  reason: faker.string.alpha(),
+  createdAt: faker.date.anytime().toISOString(),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

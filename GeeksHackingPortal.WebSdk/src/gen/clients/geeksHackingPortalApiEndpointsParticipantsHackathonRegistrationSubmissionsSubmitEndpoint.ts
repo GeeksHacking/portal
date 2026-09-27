@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationRequest, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint400, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint401, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointPathParams["hackathonId"]) {
-  const res = { method: 'POST', url: `/participants/hackathons/${hackathonId}/registration/submissions` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Submit or update answers to registration questions. Existing answers will be replaced.
  * @summary Submit registration responses
  * {@link /participants/hackathons/:hackathonId/registration/submissions}
  */
-export async function geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointPathParams["hackathonId"], data: GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint400 | GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint403>, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationRequest>({ method : "POST", url : getGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointUrl(hackathonId).url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/participants/hackathons/{hackathonId}/registration/submissions', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointResponses, ThrowOnError>>)
 }

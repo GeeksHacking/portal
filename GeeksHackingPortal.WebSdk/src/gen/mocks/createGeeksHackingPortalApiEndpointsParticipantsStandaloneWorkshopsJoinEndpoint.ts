@@ -3,35 +3,36 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint200, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointPathParams } from "../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponse } from "./createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponse.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointPath, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointResponse, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus200, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint'
+import { createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponse } from './createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointPathParams(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointPathParams>): GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointPathParams {
+export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointPath<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointPath> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  standaloneWorkshopId: faker.string.alpha(),
+}
   return {
-    ...{"standaloneWorkshopId": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint200(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint200>): GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint200 {
-
-  return createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponse(data)
+export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus200(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus200>): GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus200 {
+  return createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinResponse(data) as GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus200
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint401() {
-
+export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus401() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointMutationResponse(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointMutationResponse>): GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointMutationResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint200()])
+export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointResponse(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointResponse>): GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointResponse {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus200(), createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus401()])) as GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointResponse
 }

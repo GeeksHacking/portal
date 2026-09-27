@@ -3,41 +3,22 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDto } from "./GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDto.ts";
-import type { GeeksHackingPortalApiEntitiesQuestionType } from "./GeeksHackingPortalApiEntitiesQuestionType.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDto } from './GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDto'
+import type { GeeksHackingPortalApiEntitiesQuestionTypeKey } from './GeeksHackingPortalApiEntitiesQuestionType'
 
 export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateRequest = {
-    /**
-     * @type string
-    */
     questionText?: string | null;
-    type?: GeeksHackingPortalApiEntitiesQuestionType | null;
+    type?: GeeksHackingPortalApiEntitiesQuestionTypeKey | null;
     /**
-     * @type integer, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     displayOrder?: number | null;
-    /**
-     * @type boolean
-    */
     isRequired?: boolean | null;
-    /**
-     * @type string
-    */
     helpText?: string | null;
-    /**
-     * @type string
-    */
     conditionalLogic?: string | null;
-    /**
-     * @type string
-    */
     category?: string | null;
-    /**
-     * @type string
-    */
     validationRules?: string | null;
-    /**
-     * @type array
-    */
     options?: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDto[] | null;
 };

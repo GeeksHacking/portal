@@ -3,14 +3,12 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeResponse = {
     /**
-     * @type integer | undefined, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     questionsCreated?: number;
-    /**
-     * @type string | undefined
-    */
     message?: string;
 };

@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointQueryResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointPathParams } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointUrl(hackathonIdOrShortCode: GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointPathParams["hackathonIdOrShortCode"]) {
-  const res = { method: 'GET', url: `/participants/hackathons/${hackathonIdOrShortCode}/timeline` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Retrieves the timeline of events for a hackathon by ID or short code.
  * @summary Get event timeline for a hackathon
  * {@link /participants/hackathons/:hackathonIdOrShortCode/timeline}
  */
-export async function geeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpoint(hackathonIdOrShortCode: GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointPathParams["hackathonIdOrShortCode"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointQueryResponse, ResponseErrorConfig<Error>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointUrl(hackathonIdOrShortCode).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/participants/hackathons/{hackathonIdOrShortCode}/timeline', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonTimelineListEndpointResponses, ThrowOnError>>)
 }

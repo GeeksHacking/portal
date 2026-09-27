@@ -3,11 +3,18 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListResponse } from "../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListResponse.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListCategoryDto } from "./createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListCategoryDto.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListResponse } from '../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListResponse'
+import { createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListCategoryDto } from './createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListCategoryDto'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListResponse(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListResponse>): GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListResponse {
+export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListResponse<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListResponse> = object>(data?: TData)
 
-  return { ...{get "categories"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListCategoryDto())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  categories: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListCategoryDto())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

@@ -3,12 +3,9 @@
 * Do not edit manually.
 */
 
-
 export const geeksHackingPortalApiEntitiesOrganizerType = {
     Admin: "Admin",
     Volunteer: "Volunteer"
 } as const;
 
-export type GeeksHackingPortalApiEntitiesOrganizerTypeEnumKey = (typeof geeksHackingPortalApiEntitiesOrganizerType)[keyof typeof geeksHackingPortalApiEntitiesOrganizerType];
-
-export type GeeksHackingPortalApiEntitiesOrganizerType = GeeksHackingPortalApiEntitiesOrganizerTypeEnumKey;
+export type GeeksHackingPortalApiEntitiesOrganizerTypeKey = (typeof geeksHackingPortalApiEntitiesOrganizerType)[keyof typeof geeksHackingPortalApiEntitiesOrganizerType];

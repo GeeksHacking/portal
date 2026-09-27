@@ -3,27 +3,29 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint200, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointQueryResponse } from "../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponse } from "./createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponse.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointPath, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointResponse, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointStatus200 } from '../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint'
+import { createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponse } from './createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointPathParams(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointPathParams>): GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointPathParams {
+export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointPath<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointPath> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  standaloneWorkshopIdOrShortCode: faker.string.alpha(),
+}
   return {
-    ...{"standaloneWorkshopIdOrShortCode": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint200(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint200>): GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint200 {
-
-  return createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponse(data)
+export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointStatus200(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointStatus200>): GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointStatus200 {
+  return createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResponse(data) as GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointStatus200
 }
 
-export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointQueryResponse(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointQueryResponse>): GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointQueryResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint200()])
+export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointResponse(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointResponse>): GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointResponse {
+  return createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointStatus200(data) as GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpointResponse
 }

@@ -3,37 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpoint } from "../clients/geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpointMutationKey = () => [{ url: '/organizers/hackathons/:hackathonId/organizers/:userId' }] as const
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpointMutationKey>
-
-/**
- * {@link /organizers/hackathons/:hackathonId/organizers/:userId}
- */
-export function useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpoint403>, {hackathonId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpointPathParams["hackathonId"]>, userId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpointPathParams["userId"]>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpoint403>, {hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpointPathParams["hackathonId"], userId: GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpointPathParams["userId"]}, TContext>({
-            mutationFn: async({ hackathonId, userId }) => {
-              return geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteEndpoint(hackathonId, userId, config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

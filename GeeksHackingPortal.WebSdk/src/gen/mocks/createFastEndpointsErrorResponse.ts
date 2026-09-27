@@ -3,16 +3,19 @@
 * Do not edit manually.
 */
 
-import type { FastEndpointsErrorResponse } from "../types/FastEndpointsErrorResponse.ts";
-import { faker } from "@faker-js/faker";
+import type { FastEndpointsErrorResponse } from '../types/FastEndpointsErrorResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-/**
- * @description the dto used to send an error response to the client
- */
-export function createFastEndpointsErrorResponse(data?: Partial<FastEndpointsErrorResponse>): FastEndpointsErrorResponse {
+export function createFastEndpointsErrorResponse<TData extends Partial<FastEndpointsErrorResponse> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  statusCode: faker.number.int(),
+  message: faker.string.alpha(),
+  errors: {},
+}
   return {
-    ...{"statusCode": faker.number.int(),"message": faker.string.alpha(),"errors": {}},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

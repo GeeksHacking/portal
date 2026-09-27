@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointQueryResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointPathParams["hackathonId"]) {
-  const res = { method: 'GET', url: `/organizers/hackathons/${hackathonId}/teams` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Retrieves all teams for a hackathon.
  * @summary List all teams
  * {@link /organizers/hackathons/:hackathonId/teams}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointPathParams["hackathonId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint403>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointUrl(hackathonId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/organizers/hackathons/{hackathonId}/teams', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpointResponses, ThrowOnError>>)
 }

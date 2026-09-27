@@ -3,25 +3,28 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersAcceptInviteRequest } from "./GeeksHackingPortalApiEndpointsOrganizersAcceptInviteRequest.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersAcceptInviteResponse } from "./GeeksHackingPortalApiEndpointsOrganizersAcceptInviteResponse.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersAcceptInviteRequest } from './GeeksHackingPortalApiEndpointsOrganizersAcceptInviteRequest'
+import type { GeeksHackingPortalApiEndpointsOrganizersAcceptInviteResponse } from './GeeksHackingPortalApiEndpointsOrganizersAcceptInviteResponse'
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersAcceptInviteResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersAcceptInviteResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointStatus401 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationRequest = GeeksHackingPortalApiEndpointsOrganizersAcceptInviteRequest;
+export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointBody = GeeksHackingPortalApiEndpointsOrganizersAcceptInviteRequest;
 
-export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationResponse = GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointMutationRequest;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint401;
+export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointBody;
+    path?: never;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointStatus401;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointStatus401);

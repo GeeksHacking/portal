@@ -3,10 +3,6 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateRequest = {
-    /**
-     * @type string | undefined
-    */
     name?: string;
 };

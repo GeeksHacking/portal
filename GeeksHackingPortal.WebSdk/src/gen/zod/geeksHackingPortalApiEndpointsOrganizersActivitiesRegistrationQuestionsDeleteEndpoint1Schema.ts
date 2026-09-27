@@ -3,26 +3,18 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint1PathParamsSchema = z.object({
-    "activityId": z.string(),
-"questionId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint1PathActivityIdSchema = z.string()
 
-/**
- * @description No Content
- */
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint1204Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint1PathQuestionIdSchema = z.string()
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint1401Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint1Status204Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint1403Schema = z.any()
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint1Status401Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint1MutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint1204Schema)
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint1Status403Schema = z.unknown()
+
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint1ResponseSchema = geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint1Status204Schema
+
+export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint1ErrorSchema = z.union([geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint1Status401Schema, geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsDeleteEndpoint1Status403Schema])

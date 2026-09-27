@@ -3,55 +3,23 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2PathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2401, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { queryOptions, useQuery } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2 } from "../clients/geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2.ts";
-import { toValue } from "vue";
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2Options, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2Status200, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2Status401, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2Status403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2'
+import type { MaybeRefOrGetter } from 'vue'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2 } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2'
+import { queryOptions } from '@tanstack/vue-query'
+import { toValue } from 'vue'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryKey = (activityId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2PathParams["activityId"] | undefined>, resourceId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2PathParams["resourceId"] | undefined>) => [{ url: '/organizers/standalone-workshops/:activityId/resources/:resourceId/overview', params: {activityId:activityId,resourceId:resourceId} }] as const
+export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryKey = ({ path }: { path: MaybeRefOrGetter<Omit<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2Options, 'headers'>['path']> }) => [{ url: '/organizers/standalone-workshops/:activityId/resources/:resourceId/overview', params: path }] as const
 
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryKey = ReturnType<typeof geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryKey>
 
-export function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryOptions(activityId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2PathParams["activityId"] | undefined>, resourceId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2PathParams["resourceId"] | undefined>, config: Partial<RequestConfig> & { client?: Client } = {}) {
-
-        const queryKey = geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryKey(activityId, resourceId)
-        return queryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2403>, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryResponse, typeof queryKey>({
-        enabled: () => !!toValue(activityId) && !!toValue(resourceId),
-        queryKey,
-        queryFn: async ({ signal }) => {
-            return geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2(toValue(activityId)!, toValue(resourceId)!, { ...config, signal: config.signal ?? signal })
-         },
-        })
-
-}
-
-/**
- * @description Returns participant redemption status and recent redemption activity for a resource.
- * @summary Get resource redemption overview
- * {@link /organizers/standalone-workshops/:activityId/resources/:resourceId/overview}
- */
-export function useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2<TData = GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryResponse, TQueryData = GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryResponse, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryKey>(activityId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2PathParams["activityId"] | undefined>, resourceId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2PathParams["resourceId"] | undefined>, options: 
-{
-  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2403>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
-  client?: Partial<RequestConfig> & { client?: Client }
-}
- = {}) {
-
-         const { query: queryConfig = {}, client: config = {} } = options ?? {}
-         const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryKey(activityId, resourceId)
-
-         const query = useQuery({
-          ...geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryOptions(activityId, resourceId, config),
-          ...resolvedOptions,
-          queryKey
-         } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2403>, TData, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryResponse, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2403>> & { queryKey: TQueryKey }
-
-         query.queryKey = queryKey as TQueryKey
-
-         return query
-         
+export function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryOptions({ path }: { path: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2Options['path']> }, config: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>> = {}) {
+  const queryKey = geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryKey({ path })
+  return queryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2Status200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2Status401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2Status403>, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2Status200>({
+   queryKey,
+   queryFn: async ({ signal }) => {
+      return geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2({ ...config, path: toValue(path), signal: config.signal ?? signal, throwOnError: true }).unwrap()
+   },
+  })
 }

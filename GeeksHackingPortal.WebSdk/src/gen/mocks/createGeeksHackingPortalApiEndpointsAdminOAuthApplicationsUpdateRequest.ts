@@ -3,14 +3,18 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequest } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequest.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest } from "./createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequest } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequest'
+import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest } from './createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequest(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequest>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequest {
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequest<TData extends Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequest> = object>(data?: TData)
 
+{
+  const defaultFakeData = {...createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest(), ...{
+  rotateClientSecret: faker.datatype.boolean(),
+}}
   return {
-    ...{...createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequest(), ...{"rotateClientSecret": faker.datatype.boolean()}},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

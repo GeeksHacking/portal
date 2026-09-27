@@ -3,42 +3,46 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest.ts";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamResponse } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamResponse.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest } from './GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamResponse } from './GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamResponse'
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPath = {
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     hackathonId: string;
     /**
-     * @type string, guid
+     * @description
+     * Format: `guid`
+     * @type string
     */
     teamId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint200 = GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamResponse;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus200 = GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationRequest = GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointBody = GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamRequest;
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationResponse = GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointMutationRequest;
-    PathParams: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpoint403;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointBody;
+    path: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointResponse = (GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus200 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsJoinTeamEndpointStatus403);

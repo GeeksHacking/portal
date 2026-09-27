@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequestSchema } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequestSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequestSchema } from './geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequestSchema'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequestSchema = z.lazy(() => geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequestSchema).and(z.object({
-    "rotateClientSecret": z.optional(z.boolean())
-    }))
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateRequestSchema = geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationMutationRequestSchema.and(z.strictObject({
+  rotateClientSecret: z.boolean().optional(),
+}))

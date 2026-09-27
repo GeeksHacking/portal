@@ -3,42 +3,42 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointMutationResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointPathParams } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointPath, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus204, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointPathParams(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointPathParams>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointPathParams {
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointPath<TData extends Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointPath> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+}
   return {
-    ...{"id": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }
 
 /**
  * @description No Content
  */
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint204() {
-
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus204() {
   return undefined
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint401() {
-
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus401() {
   return undefined
 }
 
 /**
  * @description Forbidden
  */
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint403() {
-
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus403() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointMutationResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointMutationResponse>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointMutationResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint204()])
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointResponse>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointResponse {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus204(), createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus401(), createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus403()])) as GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointResponse
 }

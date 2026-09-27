@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointMutationRequest, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint401, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointPathParams["hackathonId"], teamId: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointPathParams["teamId"]) {
-  const res = { method: 'PATCH', url: `/participants/hackathons/${hackathonId}/teams/${teamId}` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Updates the team name and description. Only team members can update.
  * @summary Update team details
  * {@link /participants/hackathons/:hackathonId/teams/:teamId}
  */
-export async function geeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointPathParams["hackathonId"], teamId: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointPathParams["teamId"], data: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint403>, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointMutationRequest>({ method : "PATCH", url : getGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointUrl(hackathonId, teamId).url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'PATCH', url: '/participants/hackathons/{hackathonId}/teams/{teamId}', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointResponses, ThrowOnError>>)
 }

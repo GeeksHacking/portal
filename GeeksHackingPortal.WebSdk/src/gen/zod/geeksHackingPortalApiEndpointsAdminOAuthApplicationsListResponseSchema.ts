@@ -3,11 +3,9 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema } from './geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponseSchema = z.object({
-    get "items"(){
-                return z.array(geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema).optional()
-              }
-    })
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsListResponseSchema = z.strictObject({
+  items: z.array(geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema).optional(),
+})

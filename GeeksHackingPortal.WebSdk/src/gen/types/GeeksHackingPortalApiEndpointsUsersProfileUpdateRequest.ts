@@ -3,14 +3,7 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsUsersProfileUpdateRequest = {
-    /**
-     * @type string | undefined
-    */
     firstName?: string;
-    /**
-     * @type string | undefined
-    */
     lastName?: string;
 };

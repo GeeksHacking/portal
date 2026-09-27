@@ -3,43 +3,43 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint200, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointPathParams, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointQueryResponse } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponse } from "./createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponse.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointPath, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint'
+import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponse } from './createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointPathParams(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointPathParams>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointPathParams {
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointPath<TData extends Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointPath> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+}
   return {
-    ...{"id": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint200(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint200>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint200 {
-
-  return createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponse(data)
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200 {
+  return createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponse(data) as GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint401() {
-
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus401() {
   return undefined
 }
 
 /**
  * @description Forbidden
  */
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint403() {
-
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus403() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointQueryResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointQueryResponse>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointQueryResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint200()])
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointResponse>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointResponse {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200(), createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus401(), createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus403()])) as GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointResponse
 }

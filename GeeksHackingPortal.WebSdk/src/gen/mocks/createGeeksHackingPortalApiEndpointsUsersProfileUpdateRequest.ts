@@ -3,13 +3,18 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsUsersProfileUpdateRequest } from "../types/GeeksHackingPortalApiEndpointsUsersProfileUpdateRequest.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsUsersProfileUpdateRequest } from '../types/GeeksHackingPortalApiEndpointsUsersProfileUpdateRequest'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsUsersProfileUpdateRequest(data?: Partial<GeeksHackingPortalApiEndpointsUsersProfileUpdateRequest>): GeeksHackingPortalApiEndpointsUsersProfileUpdateRequest {
+export function createGeeksHackingPortalApiEndpointsUsersProfileUpdateRequest<TData extends Partial<GeeksHackingPortalApiEndpointsUsersProfileUpdateRequest> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  firstName: faker.string.alpha(),
+  lastName: faker.string.alpha(),
+}
   return {
-    ...{"firstName": faker.string.alpha(),"lastName": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

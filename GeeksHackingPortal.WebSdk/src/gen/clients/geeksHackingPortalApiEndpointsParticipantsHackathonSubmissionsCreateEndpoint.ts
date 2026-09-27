@@ -3,23 +3,15 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointMutationRequest, GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpoint400, GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpoint401, GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointPathParams["hackathonId"], teamId: GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointPathParams["teamId"]) {
-  const res = { method: 'POST', url: `/participants/hackathons/${hackathonId}/teams/${teamId}/submissions` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * {@link /participants/hackathons/:hackathonId/teams/:teamId/submissions}
  */
-export async function geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpoint(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointPathParams["hackathonId"], teamId: GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointPathParams["teamId"], data: GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpoint400 | GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpoint403>, GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointMutationRequest>({ method : "POST", url : getGeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointUrl(hackathonId, teamId).url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/participants/hackathons/{hackathonId}/teams/{teamId}/submissions', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointResponses, ThrowOnError>>)
 }

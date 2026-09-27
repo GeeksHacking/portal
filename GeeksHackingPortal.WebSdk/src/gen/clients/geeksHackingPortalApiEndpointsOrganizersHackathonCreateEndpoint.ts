@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint400, GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointUrl() {
-  const res = { method: 'POST', url: `/organizers/hackathons` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Creates a new hackathon event. Permissions depend on the platform configuration.
  * @summary Create a new hackathon
  * {@link /organizers/hackathons}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint(data: GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint400 | GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint403>, GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationRequest>({ method : "POST", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointUrl().url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/organizers/hackathons', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointResponses, ThrowOnError>>)
 }

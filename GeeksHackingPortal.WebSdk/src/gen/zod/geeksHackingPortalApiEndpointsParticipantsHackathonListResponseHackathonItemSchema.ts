@@ -3,21 +3,21 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonListResponseHackathonItemSchema = z.object({
-    "id": z.optional(z.string()),
-"name": z.optional(z.string()),
-"description": z.optional(z.string()),
-"venue": z.optional(z.string()),
-"homepageUri": z.optional(z.url()),
-"shortCode": z.optional(z.string()),
-"isPublished": z.optional(z.boolean()),
-"eventStartDate": z.optional(z.iso.datetime()),
-"eventEndDate": z.optional(z.iso.datetime()),
-"submissionsStartDate": z.optional(z.iso.datetime()),
-"challengeSelectionEndDate": z.optional(z.iso.datetime()),
-"submissionsEndDate": z.optional(z.iso.datetime()),
-"judgingStartDate": z.optional(z.iso.datetime()),
-"judgingEndDate": z.optional(z.iso.datetime())
-    })
+export const geeksHackingPortalApiEndpointsParticipantsHackathonListResponseHackathonItemSchema = z.strictObject({
+  id: z.string().optional(),
+  name: z.string().optional(),
+  description: z.string().optional(),
+  venue: z.string().optional(),
+  homepageUri: z.url().optional(),
+  shortCode: z.string().optional(),
+  isPublished: z.boolean().optional(),
+  eventStartDate: z.iso.datetime().optional(),
+  eventEndDate: z.iso.datetime().optional(),
+  submissionsStartDate: z.iso.datetime().optional(),
+  challengeSelectionEndDate: z.iso.datetime().optional(),
+  submissionsEndDate: z.iso.datetime().optional(),
+  judgingStartDate: z.iso.datetime().optional(),
+  judgingEndDate: z.iso.datetime().optional(),
+})

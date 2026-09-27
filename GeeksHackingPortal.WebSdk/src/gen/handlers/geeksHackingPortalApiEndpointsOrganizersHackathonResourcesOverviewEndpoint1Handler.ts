@@ -3,44 +3,37 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1QueryResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1401, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1.ts";
-import { http } from "msw";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1Response, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1Status401, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1Status403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1'
+import { http } from 'msw'
 
-export function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1HandlerResponse200(data: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1QueryResponse) {
-
-      return new Response(JSON.stringify(data), {
-        status: 200,
-          headers: {
-          'Content-Type': 'application/json'
-        },
-      })
+export function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1HandlerResponse200(data: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1Response) {
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1HandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1401) {
-
-      return new Response(JSON.stringify(data), {
-        status: 401,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1HandlerResponse401(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1Status401) {
+  return new Response(JSON.stringify(data), {
+    status: 401,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1HandlerResponse403(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1403) {
-
-      return new Response(JSON.stringify(data), {
-        status: 403,
-        
-      })
+export function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1HandlerResponse403(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1Status403) {
+  return new Response(JSON.stringify(data), {
+    status: 403,
+  })
 }
 
-export function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1Handler(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1QueryResponse | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Response | Promise<Response>)) {
+export function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1Handler(data?: GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1Response | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Response | Promise<Response>)) {
   return http.get(`/organizers/hackathons/:activityId/resources/:resourceId/overview`, function handler(info) {
       if(typeof data === 'function') return data(info)
 
       return new Response(JSON.stringify(data), {
         status: 200,
-          headers: {
+        headers: {
           'Content-Type': 'application/json'
         },
       })

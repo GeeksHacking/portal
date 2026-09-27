@@ -3,38 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationResponse, GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint401, GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint.ts";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsAdminCachePurgeEndpoint } from "../clients/geeksHackingPortalApiEndpointsAdminCachePurgeEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationKey = () => [{ url: '/admin/cache/purge' }] as const
-
-export type GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationKey>
-
-/**
- * @description Clears the in-process SqlSugar data cache used by the API server.
- * @summary Purge server cache
- * {@link /admin/cache/purge}
- */
-export function useGeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint401 | GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint403>, void, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint401 | GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint403>, void, TContext>({
-            mutationFn: async() => {
-              return geeksHackingPortalApiEndpointsAdminCachePurgeEndpoint(config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

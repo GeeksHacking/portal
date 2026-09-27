@@ -3,10 +3,6 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeRequest = {
-    /**
-     * @type string | undefined
-    */
     shortCode?: string;
 };

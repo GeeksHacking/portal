@@ -3,13 +3,21 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse } from "../types/GeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse } from '../types/GeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse(data?: Partial<GeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse>): GeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse {
+export function createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse<TData extends Partial<GeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsResponse> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  isRepositoryCheckingEnabled: faker.datatype.boolean(),
+  isRepositoryForkingEnabled: faker.datatype.boolean(),
+  hasApiKey: faker.datatype.boolean(),
+  repositoryPrefix: faker.string.alpha(),
+  organizationId: faker.number.bigInt(),
+}
   return {
-    ...{"isRepositoryCheckingEnabled": faker.datatype.boolean(),"isRepositoryForkingEnabled": faker.datatype.boolean(),"hasApiKey": faker.datatype.boolean(),"repositoryPrefix": faker.string.alpha(),"organizationId": faker.number.int()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

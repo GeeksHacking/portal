@@ -3,36 +3,25 @@
 * Do not edit manually.
 */
 
-import { fastEndpointsErrorResponseSchema } from "./fastEndpointsErrorResponseSchema.ts";
-import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeRequestSchema } from "./geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeRequestSchema.ts";
-import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeResponseSchema } from "./geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeResponseSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { fastEndpointsErrorResponseSchema } from './fastEndpointsErrorResponseSchema'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeRequestSchema } from './geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeRequestSchema'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeResponseSchema } from './geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeResponseSchema'
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointPathParamsSchema = z.object({
-    "hackathonId": z.string(),
-"teamId": z.string()
-    })
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointPathHackathonIdSchema = z.string()
 
-/**
- * @description Success
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint200Schema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeResponseSchema)
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointPathTeamIdSchema = z.string()
 
-/**
- * @description Bad Request
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint400Schema = z.lazy(() => fastEndpointsErrorResponseSchema).describe("the dto used to send an error response to the client")
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus200Schema = geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeResponseSchema
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus400Schema = fastEndpointsErrorResponseSchema
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus401Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointMutationRequestSchema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeRequestSchema)
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint200Schema)
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointResponseSchema = geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus200Schema
+
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus400Schema, geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus401Schema, geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus403Schema])
+
+export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointBodySchema = geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeRequestSchema

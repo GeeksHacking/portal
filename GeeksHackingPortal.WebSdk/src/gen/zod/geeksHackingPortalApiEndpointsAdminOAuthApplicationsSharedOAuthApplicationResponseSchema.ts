@@ -3,17 +3,15 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema } from "./geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema } from './geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema = z.object({
-    "id": z.optional(z.string()),
-"clientId": z.optional(z.string()),
-"clientSecret": z.string().nullish(),
-"displayName": z.optional(z.string()),
-get "platform"(){
-                return geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema.optional()
-              },
-"redirectUris": z.optional(z.array(z.url())),
-"postLogoutRedirectUris": z.optional(z.array(z.url()))
-    })
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponseSchema = z.strictObject({
+  id: z.string().optional(),
+  clientId: z.string().optional(),
+  clientSecret: z.string().nullish(),
+  displayName: z.string().optional(),
+  platform: geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema.optional(),
+  redirectUris: z.array(z.url()).optional(),
+  postLogoutRedirectUris: z.array(z.url()).optional(),
+})

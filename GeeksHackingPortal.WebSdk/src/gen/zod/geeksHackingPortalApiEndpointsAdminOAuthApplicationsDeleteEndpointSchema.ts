@@ -3,25 +3,16 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointPathParamsSchema = z.object({
-    "id": z.string()
-    })
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointPathIdSchema = z.string()
 
-/**
- * @description No Content
- */
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint204Schema = z.any()
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus204Schema = z.unknown()
 
-/**
- * @description Unauthorized
- */
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint401Schema = z.any()
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus401Schema = z.unknown()
 
-/**
- * @description Forbidden
- */
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint403Schema = z.any()
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus403Schema = z.unknown()
 
-export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointMutationResponseSchema = z.lazy(() => geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint204Schema)
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointResponseSchema = geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus204Schema
+
+export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointErrorSchema = z.union([geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus401Schema, geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus403Schema])

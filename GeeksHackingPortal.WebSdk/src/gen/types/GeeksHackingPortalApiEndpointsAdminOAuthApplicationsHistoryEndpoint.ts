@@ -3,34 +3,32 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponse } from "./GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponse.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponse } from './GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponse'
 
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointPathParams = {
-    /**
-     * @type string
-    */
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointPath = {
     id: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint200 = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponse;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200 = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointQueryResponse = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointQuery = {
-    Response: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint200;
-    PathParams: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint403;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointOptions = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointResponse = (GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus403);

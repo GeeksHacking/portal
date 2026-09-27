@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint401, GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointPathParams["hackathonId"], workshopId: GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointPathParams["workshopId"]) {
-  const res = { method: 'POST', url: `/participants/hackathons/${hackathonId}/workshops/${workshopId}/attendance` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Mark attendance for a workshop that the participant has joined.
  * @summary Mark attendance
  * {@link /participants/hackathons/:hackathonId/workshops/:workshopId/attendance}
  */
-export async function geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint(hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointPathParams["hackathonId"], workshopId: GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointPathParams["workshopId"], config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint403>, unknown>({ method : "POST", url : getGeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointUrl(hackathonId, workshopId).url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/participants/hackathons/{hackathonId}/workshops/{workshopId}/attendance', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointResponses, ThrowOnError>>)
 }

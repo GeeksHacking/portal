@@ -3,13 +3,21 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto>): GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto {
+export function createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  optionText: faker.string.alpha(),
+  optionValue: faker.string.alpha(),
+  hasFollowUpText: faker.datatype.boolean(),
+  followUpPlaceholder: faker.string.alpha(),
+}
   return {
-    ...{"id": faker.string.alpha(),"optionText": faker.string.alpha(),"optionValue": faker.string.alpha(),"hasFollowUpText": faker.datatype.boolean(),"followUpPlaceholder": faker.string.alpha()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

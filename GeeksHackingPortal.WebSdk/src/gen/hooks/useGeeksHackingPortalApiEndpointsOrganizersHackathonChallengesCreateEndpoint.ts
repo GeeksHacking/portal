@@ -3,39 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpoint } from "../clients/geeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpointMutationKey = () => [{ url: '/organizers/hackathons/:hackathonId/challenges' }] as const
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpointMutationKey>
-
-/**
- * @description Creates a new challenge for the hackathon..
- * @summary Create a challenge
- * {@link /organizers/hackathons/:hackathonId/challenges}
- */
-export function useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpoint403>, {hackathonId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpointPathParams["hackathonId"]>, data: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpointMutationRequest>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpointMutationRequest>> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpoint403>, {hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpointPathParams["hackathonId"], data: GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpointMutationRequest}, TContext>({
-            mutationFn: async({ hackathonId, data }) => {
-              return geeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateEndpoint(hackathonId, data, config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

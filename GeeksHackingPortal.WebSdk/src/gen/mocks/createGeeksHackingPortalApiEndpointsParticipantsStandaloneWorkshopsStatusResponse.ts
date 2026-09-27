@@ -3,13 +3,21 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse } from "../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse } from '../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse(data?: Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse>): GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse {
+export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse<TData extends Partial<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusResponse> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  isRegistered: faker.datatype.boolean(),
+  isOrganizer: faker.datatype.boolean(),
+  registrationId: faker.string.alpha(),
+  registeredAt: faker.date.anytime().toISOString(),
+  withdrawnAt: faker.date.anytime().toISOString(),
+}
   return {
-    ...{"isRegistered": faker.datatype.boolean(),"isOrganizer": faker.datatype.boolean(),"registrationId": faker.string.alpha(),"registeredAt": faker.date.anytime().toISOString(),"withdrawnAt": faker.date.anytime().toISOString()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

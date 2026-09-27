@@ -3,55 +3,23 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryResponse, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { queryOptions, useQuery } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint } from "../clients/geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint.ts";
-import { toValue } from "vue";
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus200, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint'
+import type { MaybeRefOrGetter } from 'vue'
+import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint } from '../clients/geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint'
+import { queryOptions } from '@tanstack/vue-query'
+import { toValue } from 'vue'
 
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryKey = (standaloneWorkshopId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointPathParams["standaloneWorkshopId"] | undefined>) => [{ url: '/organizers/standalone-workshops/:standaloneWorkshopId/analytics', params: {standaloneWorkshopId:standaloneWorkshopId} }] as const
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryKey = ({ path }: { path: MaybeRefOrGetter<Omit<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointOptions, 'headers'>['path']> }) => [{ url: '/organizers/standalone-workshops/:standaloneWorkshopId/analytics', params: path }] as const
 
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryKey = ReturnType<typeof geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryKey>
 
-export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryOptions(standaloneWorkshopId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointPathParams["standaloneWorkshopId"] | undefined>, config: Partial<RequestConfig> & { client?: Client } = {}) {
-
-        const queryKey = geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryKey(standaloneWorkshopId)
-        return queryOptions<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint403>, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryResponse, typeof queryKey>({
-        enabled: () => !!toValue(standaloneWorkshopId),
-        queryKey,
-        queryFn: async ({ signal }) => {
-            return geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint(toValue(standaloneWorkshopId)!, { ...config, signal: config.signal ?? signal })
-         },
-        })
-
-}
-
-/**
- * @description Returns summary analytics for registrations, check-ins, resources, and templates.
- * @summary Get standalone workshop analytics
- * {@link /organizers/standalone-workshops/:standaloneWorkshopId/analytics}
- */
-export function useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint<TData = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryResponse, TQueryData = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryResponse, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryKey>(standaloneWorkshopId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointPathParams["standaloneWorkshopId"] | undefined>, options: 
-{
-  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint403>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
-  client?: Partial<RequestConfig> & { client?: Client }
-}
- = {}) {
-
-         const { query: queryConfig = {}, client: config = {} } = options ?? {}
-         const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryKey(standaloneWorkshopId)
-
-         const query = useQuery({
-          ...geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryOptions(standaloneWorkshopId, config),
-          ...resolvedOptions,
-          queryKey
-         } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint403>, TData, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryResponse, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint403>> & { queryKey: TQueryKey }
-
-         query.queryKey = queryKey as TQueryKey
-
-         return query
-         
+export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryOptions({ path }: { path: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointOptions['path']> }, config: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>> = {}) {
+  const queryKey = geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryKey({ path })
+  return queryOptions<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus403>, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus200>({
+   queryKey,
+   queryFn: async ({ signal }) => {
+      return geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint({ ...config, path: toValue(path), signal: config.signal ?? signal, throwOnError: true }).unwrap()
+   },
+  })
 }

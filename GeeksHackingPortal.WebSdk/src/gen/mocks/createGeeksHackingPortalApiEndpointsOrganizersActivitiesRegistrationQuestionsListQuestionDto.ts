@@ -3,12 +3,29 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto } from "../types/GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListOptionDto } from "./createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListOptionDto.ts";
-import { createGeeksHackingPortalApiEntitiesQuestionType } from "./createGeeksHackingPortalApiEntitiesQuestionType.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto } from '../types/GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto'
+import { createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListOptionDto } from './createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListOptionDto'
+import { createGeeksHackingPortalApiEntitiesQuestionType } from './createGeeksHackingPortalApiEntitiesQuestionType'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto>): GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto {
+export function createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto> = object>(data?: TData)
 
-  return { ...{"id": faker.string.alpha(),"questionText": faker.string.alpha(),"questionKey": faker.string.alpha(),get "type"() { return createGeeksHackingPortalApiEntitiesQuestionType() },"displayOrder": faker.number.int(),"isRequired": faker.datatype.boolean(),"helpText": faker.string.alpha(),"conditionalLogic": faker.string.alpha(),"category": faker.string.alpha(),"validationRules": faker.string.alpha(),get "options"() { return faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListOptionDto())) },...(data || {})} }
+{
+  const defaultFakeData = {
+  id: faker.string.alpha(),
+  questionText: faker.string.alpha(),
+  questionKey: faker.string.alpha(),
+  type: createGeeksHackingPortalApiEntitiesQuestionType(),
+  displayOrder: faker.number.int(),
+  isRequired: faker.datatype.boolean(),
+  helpText: faker.string.alpha(),
+  conditionalLogic: faker.string.alpha(),
+  category: faker.string.alpha(),
+  validationRules: faker.string.alpha(),
+  options: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListOptionDto())),
+}
+  return {
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

@@ -3,10 +3,6 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsWithdrawResponse = {
-    /**
-     * @type string | undefined
-    */
     message?: string;
 };

@@ -3,35 +3,31 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint200, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointQueryResponse } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsResponse } from "./createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsResponse.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus200, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint'
+import { createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsResponse } from './createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint200(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint200>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint200 {
-
-  return createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsResponse(data)
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus200(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus200>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus200 {
+  return createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsResponse(data) as GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus200
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint401() {
-
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus401() {
   return undefined
 }
 
 /**
  * @description Forbidden
  */
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint403() {
-
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus403() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointQueryResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointQueryResponse>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointQueryResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint200()])
+export function createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointResponse(data?: Partial<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointResponse>): GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointResponse {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus200(), createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus401(), createGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointStatus403()])) as GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointResponse
 }

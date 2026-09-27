@@ -3,19 +3,17 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEntitiesOrganizerTypeSchema } from "./geeksHackingPortalApiEntitiesOrganizerTypeSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEntitiesOrganizerTypeSchema } from './geeksHackingPortalApiEntitiesOrganizerTypeSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponseInviteItemSchema = z.object({
-    "id": z.optional(z.string()),
-"code": z.optional(z.string()),
-get "type"(){
-                return geeksHackingPortalApiEntitiesOrganizerTypeSchema.optional()
-              },
-"createdAt": z.optional(z.iso.datetime()),
-"expiresAt": z.iso.datetime().nullish(),
-"maxUses": z.int().nullish(),
-"useCount": z.optional(z.int()),
-"isExpired": z.optional(z.boolean()),
-"isExhausted": z.optional(z.boolean())
-    })
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesListResponseInviteItemSchema = z.strictObject({
+  id: z.string().optional(),
+  code: z.string().optional(),
+  type: geeksHackingPortalApiEntitiesOrganizerTypeSchema.optional(),
+  createdAt: z.iso.datetime().optional(),
+  expiresAt: z.iso.datetime().nullish(),
+  maxUses: z.int32().nullish(),
+  useCount: z.int32().optional(),
+  isExpired: z.boolean().optional(),
+  isExhausted: z.boolean().optional(),
+})

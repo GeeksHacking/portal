@@ -3,54 +3,21 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryResponse } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint.ts";
-import { queryOptions, useQuery } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint } from "../clients/geeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint.ts";
-import { toValue } from "vue";
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointStatus200 } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint } from '../clients/geeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint'
+import { queryOptions } from '@tanstack/vue-query'
 
 export const geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryKey = () => [{ url: '/participants/hackathons' }] as const
 
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryKey = ReturnType<typeof geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryKey>
 
-export function geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryOptions(config: Partial<RequestConfig> & { client?: Client } = {}) {
-
-        const queryKey = geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryKey()
-        return queryOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryResponse, ResponseErrorConfig<Error>, GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryResponse, typeof queryKey>({
-        
-        queryKey,
-        queryFn: async ({ signal }) => {
-            return geeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint({ ...config, signal: config.signal ?? signal })
-         },
-        })
-
-}
-
-/**
- * @description Retrieves all published hackathons.
- * @summary List all hackathons
- * {@link /participants/hackathons}
- */
-export function useGeeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint<TData = GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryResponse, TQueryData = GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryResponse, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryKey>(options: 
-{
-  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryResponse, ResponseErrorConfig<Error>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
-  client?: Partial<RequestConfig> & { client?: Client }
-}
- = {}) {
-
-         const { query: queryConfig = {}, client: config = {} } = options ?? {}
-         const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryKey()
-
-         const query = useQuery({
-          ...geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryOptions(config),
-          ...resolvedOptions,
-          queryKey
-         } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryResponse, ResponseErrorConfig<Error>, TData, GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryResponse, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<Error>> & { queryKey: TQueryKey }
-
-         query.queryKey = queryKey as TQueryKey
-
-         return query
-         
+export function geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryOptions(config: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>> = {}) {
+  const queryKey = geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryKey()
+  return queryOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointStatus200, ResponseErrorConfig<Error>, GeeksHackingPortalApiEndpointsParticipantsHackathonListEndpointStatus200>({
+   queryKey,
+   queryFn: async ({ signal }) => {
+      return geeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint({ ...config, signal: config.signal ?? signal, throwOnError: true }).unwrap()
+   },
+  })
 }

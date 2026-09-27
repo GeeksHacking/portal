@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointQueryResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointUrl() {
-  const res = { method: 'GET', url: `/admin/oauth-applications/analytics` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointOptions, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Gets analytics for OAuth applications owned by the current admin.
  * @summary Get OAuth applications analytics
  * {@link /admin/oauth-applications/analytics}
  */
-export async function geeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint(config: Partial<RequestConfig> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointOptions, ThrowOnError> = {}): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-
-
-  const res = await request<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointQueryResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint403>, unknown>({ method : "GET", url : getGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointUrl().url.toString(), ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'GET', url: '/admin/oauth-applications/analytics', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointResponses, ThrowOnError>>)
 }

@@ -3,11 +3,8 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponse } from "./GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponse.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponse } from './GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponse'
 
 export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsResponse = {
-    /**
-     * @type array | undefined
-    */
     items?: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsOAuthApplicationAnalyticsResponse[];
 };

@@ -3,18 +3,16 @@
 * Do not edit manually.
 */
 
-import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItemSchema } from "./geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItemSchema.ts";
-import { z } from "zod/v4";
+import * as z from 'zod'
+import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItemSchema } from './geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItemSchema'
 
-export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItemSchema = z.object({
-    "registrationId": z.optional(z.string()),
-"userId": z.optional(z.string()),
-"name": z.optional(z.string()),
-"email": z.optional(z.string()),
-"status": z.optional(z.string()),
-"registeredAt": z.optional(z.iso.datetime()),
-"withdrawnAt": z.iso.datetime().nullish(),
-get "registrationSubmissions"(){
-                return z.array(geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItemSchema).optional()
-              }
-    })
+export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItemSchema = z.strictObject({
+  registrationId: z.string().optional(),
+  userId: z.string().optional(),
+  name: z.string().optional(),
+  email: z.string().optional(),
+  status: z.string().optional(),
+  registeredAt: z.iso.datetime().optional(),
+  withdrawnAt: z.iso.datetime().nullish(),
+  registrationSubmissions: z.array(geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListRegistrationSubmissionItemSchema).optional(),
+})

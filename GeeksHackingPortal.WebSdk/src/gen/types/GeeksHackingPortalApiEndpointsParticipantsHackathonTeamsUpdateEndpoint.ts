@@ -3,42 +3,41 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateRequest } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateRequest.ts";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateResponse } from "./GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateResponse.ts";
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateRequest } from './GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateRequest'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateResponse } from './GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateResponse'
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointPathParams = {
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointPath = {
     /**
-     * @type string, guid
-    */
-    hackathonId: string;
-    /**
+     * @description
+     * Format: `guid`
      * @type string
     */
+    hackathonId: string;
     teamId: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint200 = GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateResponse;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus200 = GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointMutationRequest = GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateRequest;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointBody = GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateRequest;
 
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointMutationResponse = GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointMutationRequest;
-    PathParams: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint403;
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointBody;
+    path: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointResponse = (GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus200 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus403);

@@ -3,36 +3,35 @@
 * Do not edit manually.
 */
 
-import type { FastEndpointsErrorResponse } from "./FastEndpointsErrorResponse.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest.ts";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonCreateResponse } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonCreateResponse.ts";
+import type { FastEndpointsErrorResponse } from './FastEndpointsErrorResponse'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest } from './GeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonCreateResponse } from './GeeksHackingPortalApiEndpointsOrganizersHackathonCreateResponse'
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint200 = GeeksHackingPortalApiEndpointsOrganizersHackathonCreateResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersHackathonCreateResponse;
 
-/**
- * @description Bad Request
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint400 = FastEndpointsErrorResponse;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointStatus400 = FastEndpointsErrorResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationRequest = GeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointBody = GeeksHackingPortalApiEndpointsOrganizersHackathonCreateRequest;
 
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationResponse = GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint200;
-    Request: GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointMutationRequest;
-    Errors: GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint400 | GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpoint403;
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointOptions = {
+    body: GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointBody;
+    path?: never;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointStatus200;
+    "400": GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointStatus400;
+    "401": GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointStatus400 | GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonCreateEndpointStatus403);

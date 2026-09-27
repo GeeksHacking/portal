@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointMutationRequest, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointMutationResponse, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint400, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointUrl() {
-  const res = { method: 'POST', url: `/admin/oauth-applications` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointOptions, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Creates an admin-owned OpenIddict OAuth client for a web or native platform application.
  * @summary Create an OAuth application
  * {@link /admin/oauth-applications}
  */
-export async function geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint(data: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint400 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint403>, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointMutationRequest>({ method : "POST", url : getGeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointUrl().url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'POST', url: '/admin/oauth-applications', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointResponses, ThrowOnError>>)
 }

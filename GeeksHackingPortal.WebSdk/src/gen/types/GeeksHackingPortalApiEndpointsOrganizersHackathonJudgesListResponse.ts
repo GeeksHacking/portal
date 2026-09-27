@@ -3,11 +3,8 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesListJudgeItem } from "./GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesListJudgeItem.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesListJudgeItem } from './GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesListJudgeItem'
 
 export type GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesListResponse = {
-    /**
-     * @type array | undefined
-    */
     judges?: GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesListJudgeItem[];
 };

@@ -3,39 +3,4 @@
 * Do not edit manually.
 */
 
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { MutationObserverOptions, QueryClient } from "@tanstack/vue-query";
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointMutationResponse, GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointPathParams, GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint401, GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint.ts";
-import type { MaybeRefOrGetter } from "vue";
-import { useMutation } from "@tanstack/vue-query";
-import { geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint } from "../clients/geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint.ts";
-
 export const geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointMutationKey = () => [{ url: '/participants/hackathons/:hackathonId/workshops/:workshopId/attendance' }] as const
-
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointMutationKey = ReturnType<typeof geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointMutationKey>
-
-/**
- * @description Mark attendance for a workshop that the participant has joined.
- * @summary Mark attendance
- * {@link /participants/hackathons/:hackathonId/workshops/:workshopId/attendance}
- */
-export function useGeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint<TContext>(options: 
-{
-  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint403>, {hackathonId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointPathParams["hackathonId"]>, workshopId: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointPathParams["workshopId"]>}, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig> & { client?: Client },
-}
- = {}) {
-
-          const { mutation = {}, client: config = {} } = options ?? {}
-          const { client: queryClient, ...mutationOptions } = mutation;
-          const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointMutationKey()
-
-          return useMutation<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint401 | GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint403>, {hackathonId: GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointPathParams["hackathonId"], workshopId: GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointPathParams["workshopId"]}, TContext>({
-            mutationFn: async({ hackathonId, workshopId }) => {
-              return geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint(hackathonId, workshopId, config)
-            },
-            mutationKey,
-            ...mutationOptions
-          }, queryClient)
-      
-}

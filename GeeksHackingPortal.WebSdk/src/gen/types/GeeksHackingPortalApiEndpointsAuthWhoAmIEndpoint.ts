@@ -3,21 +3,25 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAuthWhoAmIResponse } from "./GeeksHackingPortalApiEndpointsAuthWhoAmIResponse.ts";
+import type { GeeksHackingPortalApiEndpointsAuthWhoAmIResponse } from './GeeksHackingPortalApiEndpointsAuthWhoAmIResponse'
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint200 = GeeksHackingPortalApiEndpointsAuthWhoAmIResponse;
+export type GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200 = GeeksHackingPortalApiEndpointsAuthWhoAmIResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus401 = unknown;
 
-export type GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse = GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQuery = {
-    Response: GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint200;
-    Errors: GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint401;
+export type GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointOptions = {
+    body?: never;
+    path?: never;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus401;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointResponse = (GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200 | GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus401);

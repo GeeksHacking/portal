@@ -3,23 +3,21 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEntitiesOrganizerType } from "./GeeksHackingPortalApiEntitiesOrganizerType.ts";
+import type { GeeksHackingPortalApiEntitiesOrganizerTypeKey } from './GeeksHackingPortalApiEntitiesOrganizerType'
 
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInviteResponse = {
-    /**
-     * @type string | undefined
-    */
     code?: string;
+    type?: GeeksHackingPortalApiEntitiesOrganizerTypeKey;
     /**
+     * @description
+     * Format: `date-time`
      * @type string | undefined
-    */
-    type?: GeeksHackingPortalApiEntitiesOrganizerType;
-    /**
-     * @type string | undefined, date-time
     */
     expiresAt?: string;
     /**
-     * @type integer, int32
+     * @description
+     * Format: `int32`
+     * @type integer | undefined
     */
     maxUses?: number | null;
 };

@@ -3,27 +3,24 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint200, GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse } from "../types/GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint.ts";
-import { faker } from "@faker-js/faker";
-import { createGeeksHackingPortalApiEndpointsAuthWhoAmIResponse } from "./createGeeksHackingPortalApiEndpointsAuthWhoAmIResponse.ts";
+import type { GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointResponse, GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200, GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint'
+import { createGeeksHackingPortalApiEndpointsAuthWhoAmIResponse } from './createGeeksHackingPortalApiEndpointsAuthWhoAmIResponse'
+import { fakerEN as faker } from '@faker-js/faker'
 
 /**
  * @description Success
  */
-export function createGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint200(data?: Partial<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint200>): GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint200 {
-
-  return createGeeksHackingPortalApiEndpointsAuthWhoAmIResponse(data)
+export function createGeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200(data?: Partial<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200>): GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200 {
+  return createGeeksHackingPortalApiEndpointsAuthWhoAmIResponse(data) as GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200
 }
 
 /**
  * @description Unauthorized
  */
-export function createGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint401() {
-
+export function createGeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus401() {
   return undefined
 }
 
-export function createGeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse(data?: Partial<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse>): GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryResponse {
-
-  return data || faker.helpers.arrayElement<any>([createGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint200()])
+export function createGeeksHackingPortalApiEndpointsAuthWhoAmIEndpointResponse(data?: Partial<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointResponse>): GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointResponse {
+  return (data ?? faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200(), createGeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus401()])) as GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointResponse
 }

@@ -3,25 +3,17 @@
 * Do not edit manually.
 */
 
-import fetch from "@kubb/plugin-client/clients/axios";
-import type { Client, RequestConfig, ResponseErrorConfig } from "@kubb/plugin-client/clients/axios";
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointMutationRequest, GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointMutationResponse, GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointPathParams, GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpoint401, GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpoint403 } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpoint.ts";
-
-function getGeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointUrl(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointPathParams["hackathonId"], timelineItemId: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointPathParams["timelineItemId"]) {
-  const res = { method: 'PATCH', url: `/organizers/hackathons/${hackathonId}/timeline/${timelineItemId}` as const }
-  return res
-}
+import type { Options, Unwrappable, RequestResult } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointResponses } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpoint'
+import { client, withUnwrap } from '../.kubb/client'
 
 /**
  * @description Updates an existing timeline item for a hackathon.
  * @summary Update timeline item
  * {@link /organizers/hackathons/:hackathonId/timeline/:timelineItemId}
  */
-export async function geeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpoint(hackathonId: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointPathParams["hackathonId"], timelineItemId: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointPathParams["timelineItemId"], data: GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointMutationRequest, config: Partial<RequestConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointMutationRequest>> & { client?: Client } = {}) {
-  const { client: request = fetch, ...requestConfig } = config
+export function geeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointResponses, ThrowOnError>> {
+  const { client: request = client, ...config } = options
 
-  const requestData = data
-
-  const res = await request<GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointMutationResponse, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpoint401 | GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpoint403>, GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointMutationRequest>({ method : "PATCH", url : getGeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointUrl(hackathonId, timelineItemId).url.toString(), data : requestData, ... requestConfig })
-  return res.data
+  return withUnwrap(request({ method: 'PATCH', url: '/organizers/hackathons/{hackathonId}/timeline/{timelineItemId}', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsOrganizersHackathonTimelineUpdateEndpointResponses, ThrowOnError>>)
 }

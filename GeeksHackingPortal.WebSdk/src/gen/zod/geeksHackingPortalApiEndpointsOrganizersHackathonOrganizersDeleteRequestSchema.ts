@@ -3,8 +3,6 @@
 * Do not edit manually.
 */
 
-import { z } from "zod/v4";
+import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteRequestSchema = z.object({
-    
-    })
+export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersDeleteRequestSchema = z.strictObject({})

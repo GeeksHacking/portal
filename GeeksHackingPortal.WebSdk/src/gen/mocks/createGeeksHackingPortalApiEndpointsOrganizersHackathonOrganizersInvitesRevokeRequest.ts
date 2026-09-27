@@ -3,12 +3,14 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeRequest } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeRequest.ts";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeRequest } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeRequest'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeRequest(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeRequest>): GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeRequest {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeRequest<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeRequest> = object>(data?: TData)
 
+{
+  const defaultFakeData = {}
   return {
-    ...{},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

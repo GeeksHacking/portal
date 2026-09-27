@@ -3,22 +3,24 @@
 * Do not edit manually.
 */
 
-
 export type GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsJoinResponse = {
     /**
-     * @type string | undefined, guid
+     * @description
+     * Format: `guid`
+     * @type string | undefined
     */
     id?: string;
     /**
-     * @type string | undefined, guid
-    */
-    workshopId?: string;
-    /**
+     * @description
+     * Format: `guid`
      * @type string | undefined
     */
+    workshopId?: string;
     workshopTitle?: string;
     /**
-     * @type string | undefined, date-time
+     * @description
+     * Format: `date-time`
+     * @type string | undefined
     */
     joinedAt?: string;
 };

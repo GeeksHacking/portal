@@ -3,34 +3,32 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse } from "./GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse.ts";
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse } from './GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse'
 
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointPathParams = {
-    /**
-     * @type string
-    */
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointPath = {
     id: string;
 };
 
-/**
- * @description Success
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint200 = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus200 = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointQueryResponse = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint200;
-
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointQuery = {
-    Response: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint200;
-    PathParams: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpoint403;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointOptions = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointResponses = {
+    "200": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus200;
+    "401": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointResponse = (GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus200 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsGetEndpointStatus403);

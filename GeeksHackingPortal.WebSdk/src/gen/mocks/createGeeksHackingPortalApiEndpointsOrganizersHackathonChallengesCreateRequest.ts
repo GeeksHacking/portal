@@ -3,13 +3,21 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateRequest } from "../types/GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateRequest.ts";
-import { faker } from "@faker-js/faker";
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateRequest } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateRequest'
+import { fakerEN as faker } from '@faker-js/faker'
 
-export function createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateRequest(data?: Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateRequest>): GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateRequest {
+export function createGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateRequest<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonChallengesCreateRequest> = object>(data?: TData)
 
+{
+  const defaultFakeData = {
+  title: faker.string.alpha(),
+  description: faker.string.alpha(),
+  sponsor: faker.string.alpha(),
+  selectionCriteriaStmt: faker.string.alpha(),
+  isPublished: faker.datatype.boolean(),
+}
   return {
-    ...{"title": faker.string.alpha(),"description": faker.string.alpha(),"sponsor": faker.string.alpha(),"selectionCriteriaStmt": faker.string.alpha(),"isPublished": faker.datatype.boolean()},
-    ...data || {}
-  }
+    ...defaultFakeData,
+    ...(data || {}),
+  } as Omit<typeof defaultFakeData, keyof TData> & TData
 }

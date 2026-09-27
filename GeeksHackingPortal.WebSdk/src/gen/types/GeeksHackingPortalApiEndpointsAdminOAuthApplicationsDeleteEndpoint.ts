@@ -3,33 +3,30 @@
 * Do not edit manually.
 */
 
-
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointPathParams = {
-    /**
-     * @type string
-    */
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointPath = {
     id: string;
 };
 
-/**
- * @description No Content
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint204 = any;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus204 = unknown;
 
-/**
- * @description Unauthorized
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint401 = any;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus401 = unknown;
 
-/**
- * @description Forbidden
-*/
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint403 = any;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus403 = unknown;
 
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointMutationResponse = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint204;
-
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointMutation = {
-    Response: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint204;
-    PathParams: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointPathParams;
-    Errors: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint403;
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointOptions = {
+    body?: never;
+    path: GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointPath;
+    query?: never;
+    headers?: never;
 };
+
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointResponses = {
+    "204": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus204;
+    "401": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus401;
+    "403": GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus403;
+};
+
+/**
+ * @description Union of all possible responses
+*/
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointResponse = (GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus204 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus403);

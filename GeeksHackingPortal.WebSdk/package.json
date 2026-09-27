@@ -63,6 +63,7 @@
   "scripts": {
     "dev": "tsdown -w",
     "generate": "kubb generate",
+    "codegen": "kubb generate && tsdown",
     "postinstall": "tsdown"
   },
   "dependencies": {

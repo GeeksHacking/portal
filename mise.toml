@@ -2,21 +2,19 @@
 pnpm = "latest"
 dotnet = "10.0.401"
 aspire = "latest"
-kiota = "latest"
 
 [tasks.dev]
 description = "Runs the dev server"
 run = "aspire run --detach --non-interactive"
 
 [tasks.codegen]
-description = "Runs the codegen against the production server"
+description = "Generates the WebApp API client with kubb against the production server"
 run = """
-kiota generate --output ./GeeksHackingPortal.WebApp/app/api-client --language TypeScript -d https://portal-api.geekshacking.com/openapi/v1.json --co
-kiota info -d https://portal-api.geekshacking.com/openapi/v1.json -l TypeScript
+OPENAPI_URL=https://portal-api.geekshacking.com/openapi/v1.json pnpm --dir GeeksHackingPortal.WebApp codegen
 """
 
 [tasks.codegen-local]
-description = "Runs the codegen against the local dev server"
+description = "Generates the WebApp API client with kubb against the local dev server"
 run = """
 url=http://localhost:5227/openapi/v1.json
 
@@ -30,6 +28,6 @@ until curl --fail --silent --output /dev/null "$url"; do
   sleep 1
 done
 
-kiota generate --output ./GeeksHackingPortal.WebApp/app/api-client --language TypeScript -d "$url" --co
+OPENAPI_URL="$url" pnpm --dir GeeksHackingPortal.WebApp codegen
 """
 depends = ["dev"]

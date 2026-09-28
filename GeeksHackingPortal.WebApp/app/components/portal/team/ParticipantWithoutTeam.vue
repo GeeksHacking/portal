@@ -29,8 +29,8 @@ function handleCreateTeam() {
   if (!hackathonIdRef.value)
     return
   createTeamMutation.mutate({
-    hackathonId: hackathonIdRef.value,
-    data: {
+    path: { hackathonId: hackathonIdRef.value },
+    body: {
       name: newTeamName.value.trim(),
       description: newTeamDescription.value.trim() || undefined,
     },
@@ -52,7 +52,7 @@ function handleCreateTeam() {
 function handleJoinTeam() {
   if (!joinCode.value.trim())
     return
-  joinTeamMutation.mutate({ data: { joinCode: joinCode.value.trim() } }, {
+  joinTeamMutation.mutate({ body: { joinCode: joinCode.value.trim() } }, {
     onSuccess() {
       joinCode.value = ''
     },

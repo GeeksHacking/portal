@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus200, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationKey = () => [{ url: '/organizers/hackathons/:hackathonId/participants/batch-email' }] as const
+
+/**
+ * @description Send acceptance or rejection emails to multiple participants based on their review status.
+ * @summary Send batch emails to participants
+ * {@link /organizers/hackathons/:hackathonId/participants/batch-email}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus403>, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointStatus403>, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointOptions, TContext>({
+    mutationFn: async({ path, body }) => {
+      return geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointOptions['path']>(path), body: toValue<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsBatchEmailEndpointOptions['body']>(body), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

@@ -5,9 +5,10 @@
 
 import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
 import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointStatus200, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpoint'
+import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from '@tanstack/vue-query'
 import type { MaybeRefOrGetter } from 'vue'
 import { geeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpoint } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpoint'
-import { queryOptions } from '@tanstack/vue-query'
+import { queryOptions, useQuery } from '@tanstack/vue-query'
 import { toValue } from 'vue'
 
 export const geeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointQueryKey = ({ path }: { path: MaybeRefOrGetter<Omit<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointOptions, 'headers'>['path']> }) => [{ url: '/organizers/hackathons/:hackathonId/judges/:judgeId', params: path }] as const
@@ -22,4 +23,28 @@ export function geeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpoi
       return geeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpoint({ ...config, path: toValue(path), signal: config.signal ?? signal, throwOnError: true }).unwrap()
    },
   })
+}
+
+/**
+ * @description Retrieves details about a specific judge including their secret.
+ * @summary Get judge details
+ * {@link /organizers/hackathons/:hackathonId/judges/:judgeId}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpoint<TData = GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointStatus200, TQueryData = GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointStatus200, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointQueryKey>({ path }: { path: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointOptions['path']> }, options: {
+  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointStatus403>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>
+} = {}) {
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointQueryKey({ path })
+
+  const queryResult = useQuery({
+   ...geeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointQueryOptions({ path }, config),
+   ...resolvedOptions,
+   queryKey
+  } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointStatus403>, TData, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointStatus200, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesGetEndpointStatus403>> & { queryKey: TQueryKey }
+
+  queryResult.queryKey = queryKey as TQueryKey
+
+  return queryResult
 }

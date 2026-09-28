@@ -27,10 +27,7 @@ const toast = useToast()
 const queryClient = useQueryClient()
 const standaloneWorkshopId = computed(() => (route.params.standaloneWorkshopId as string | undefined) ?? '')
 
-const { data: organizersData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersListEndpoint(
-  standaloneWorkshopId,
-  { query: { enabled: computed(() => !!standaloneWorkshopId.value) } },
-)
+const { data: organizersData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersListEndpoint({ path: computed(() => ({ standaloneWorkshopId: standaloneWorkshopId.value })) }, { query: { enabled: computed(() => !!standaloneWorkshopId.value) } })
 
 const organizers = computed(() => organizersData.value?.organizers ?? [])
 
@@ -72,8 +69,8 @@ function openInviteModal() {
 async function handleGenerateInvite() {
   try {
     const result = await inviteMutation.mutateAsync({
-      standaloneWorkshopId: standaloneWorkshopId.value,
-      data: {
+      path: { standaloneWorkshopId: standaloneWorkshopId.value },
+      body: {
         type: inviteForm.value.type,
         maxUses: inviteForm.value.maxUses ?? undefined,
       },
@@ -140,9 +137,9 @@ async function revokeInvite(inviteId: string) {
 
 async function handleDelete(userId: string) {
   try {
-    await deleteMutation.mutateAsync({ standaloneWorkshopId: standaloneWorkshopId.value, userId })
+    await deleteMutation.mutateAsync({ path: { standaloneWorkshopId: standaloneWorkshopId.value, userId: userId } })
     await queryClient.invalidateQueries({
-      queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersListEndpointQueryKey(standaloneWorkshopId.value),
+      queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersListEndpointQueryKey({ path: { standaloneWorkshopId: standaloneWorkshopId.value } }),
     })
     toast.add({ title: 'Organizer removed', color: 'success' })
   }

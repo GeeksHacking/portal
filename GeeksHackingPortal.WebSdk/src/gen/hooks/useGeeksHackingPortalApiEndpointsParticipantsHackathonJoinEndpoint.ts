@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointStatus200, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint } from '../clients/geeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointMutationKey = () => [{ url: '/participants/hackathons/:hackathonId/join' }] as const
+
+/**
+ * @description Registers the current user as a participant in the hackathon.
+ * @summary Join a hackathon
+ * {@link /participants/hackathons/:hackathonId/join}
+ */
+export function useGeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointStatus401>, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointStatus401>, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointOptions, TContext>({
+    mutationFn: async({ path }) => {
+      return geeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointOptions['path']>(path), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

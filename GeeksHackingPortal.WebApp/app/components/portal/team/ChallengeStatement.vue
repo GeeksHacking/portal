@@ -17,12 +17,10 @@ const toast = useToast()
 
 const hackathonIdRef = computed(() => props.hackathonId)
 const teamIdRef = computed(() => props.teamId)
-const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(hackathonIdRef)
+const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({ path: computed(() => ({ hackathonIdOrShortCode: hackathonIdRef.value })) })
 
 // Fetch challenges list for the hackathon
-const { data: challengesData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint(
-  computed(() => props.hackathonId),
-)
+const { data: challengesData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint({ path: computed(() => ({ hackathonId: props.hackathonId })) })
 
 const challenges = computed(() => [...(challengesData.value?.challenges ?? [])].reverse())
 
@@ -58,7 +56,7 @@ watch(selectedChallenge, (newVal, oldVal) => {
   }
 
   if (newVal && newVal !== oldVal && newVal !== props.selectedChallengeId) {
-    selectChallengeMutation.mutate({ hackathonId: hackathonIdRef.value, teamId: teamIdRef.value, data: { challengeId: newVal } }, {
+    selectChallengeMutation.mutate({ path: { hackathonId: hackathonIdRef.value, teamId: teamIdRef.value }, body: { challengeId: newVal } }, {
       onSuccess() {
         const selectedItem = challengeItems.value.find(item => item.value === newVal)
         toast.add({

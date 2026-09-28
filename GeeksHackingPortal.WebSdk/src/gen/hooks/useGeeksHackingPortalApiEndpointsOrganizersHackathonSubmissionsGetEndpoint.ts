@@ -5,9 +5,10 @@
 
 import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
 import type { GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointStatus200, GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpoint'
+import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from '@tanstack/vue-query'
 import type { MaybeRefOrGetter } from 'vue'
 import { geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpoint } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpoint'
-import { queryOptions } from '@tanstack/vue-query'
+import { queryOptions, useQuery } from '@tanstack/vue-query'
 import { toValue } from 'vue'
 
 export const geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointQueryKey = ({ path }: { path: MaybeRefOrGetter<Omit<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointOptions, 'headers'>['path']> }) => [{ url: '/organizers/hackathons/:hackathonId/submissions/:submissionId', params: path }] as const
@@ -22,4 +23,28 @@ export function geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetE
       return geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpoint({ ...config, path: toValue(path), signal: config.signal ?? signal, throwOnError: true }).unwrap()
    },
   })
+}
+
+/**
+ * @description Retrieves detailed information about a specific submission.
+ * @summary Get submission details
+ * {@link /organizers/hackathons/:hackathonId/submissions/:submissionId}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpoint<TData = GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointStatus200, TQueryData = GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointStatus200, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointQueryKey>({ path }: { path: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointOptions['path']> }, options: {
+  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointStatus403>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>
+} = {}) {
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointQueryKey({ path })
+
+  const queryResult = useQuery({
+   ...geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointQueryOptions({ path }, config),
+   ...resolvedOptions,
+   queryKey
+  } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointStatus403>, TData, GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointStatus200, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointStatus403>> & { queryKey: TQueryKey }
+
+  queryResult.queryKey = queryKey as TQueryKey
+
+  return queryResult
 }

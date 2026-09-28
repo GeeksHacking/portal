@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus204, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointMutationKey = () => [{ url: '/organizers/hackathons/:hackathonId/organizers/invites/:inviteId' }] as const
+
+/**
+ * @description Expires an organizer invite code immediately so it can no longer be redeemed.
+ * @summary Revoke a hackathon organizer invite code
+ * {@link /organizers/hackathons/:hackathonId/organizers/invites/:inviteId}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus204, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus403>, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus204, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointStatus403>, GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointOptions, TContext>({
+    mutationFn: async({ path }) => {
+      return geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersInvitesRevokeEndpointOptions['path']>(path), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

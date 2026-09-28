@@ -1,14 +1,18 @@
+import { client } from '../gen/.kubb/client'
+
 export type {
-  Client,
+  ClientConfig,
+  ClientInstance,
   RequestConfig,
-  ResponseConfig,
-  ResponseErrorConfig,
-} from '@kubb/plugin-client/clients/axios'
-export {
-  axiosInstance,
-  client,
-  default,
-  getConfig,
-  mergeConfig,
-  setConfig,
-} from '@kubb/plugin-client/clients/axios'
+  ResponseError,
+} from '../gen/.kubb/client'
+
+export { client, createClient } from '../gen/.kubb/client'
+
+export function getConfig() {
+  return client.getConfig()
+}
+
+export function setConfig(config: Parameters<typeof client.setConfig>[0]) {
+  return client.setConfig(config)
+}

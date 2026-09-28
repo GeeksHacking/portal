@@ -8,7 +8,7 @@ import { computed, nextTick, ref, watch } from 'vue'
 
 const route = useRoute()
 const routeHackathonId = computed(() => (route.params.hackathonId as string) ?? '')
-const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(routeHackathonId)
+const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({ path: computed(() => ({ hackathonIdOrShortCode: routeHackathonId.value })) })
 const hackathonId = computed(() => hackathon.value?.id ?? '')
 
 // Get joinCode from URL query param
@@ -21,16 +21,10 @@ const joinCodeParam = computed(() => {
 const sectionRef = ref<HTMLElement | null>(null)
 
 // Fetch participation status
-const { data: statusData, isLoading: isLoadingStatus } = useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint(
-  hackathonId,
-  { query: { enabled: computed(() => !!hackathonId.value) } },
-)
+const { data: statusData, isLoading: isLoadingStatus } = useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) }, { query: { enabled: computed(() => !!hackathonId.value) } })
 
 // Fetch current user's team
-const { data: teamData, isLoading: isLoadingTeam } = useGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint(
-  hackathonId,
-  { query: { enabled: computed(() => !!hackathonId.value && !!statusData.value?.isParticipant) } },
-)
+const { data: teamData, isLoading: isLoadingTeam } = useGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) }, { query: { enabled: computed(() => !!hackathonId.value && !!statusData.value?.isParticipant) } })
 
 const isLoading = computed(() => isLoadingStatus.value || isLoadingTeam.value)
 const isParticipant = computed(() => !!statusData.value?.isParticipant)

@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2Options, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2Status200, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2Status401, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2Status403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2 } from '../clients/geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2MutationKey = () => [{ url: '/organizers/standalone-workshops/:activityId/registration/questions/:questionId' }] as const
+
+/**
+ * @description Update an existing registration question and its options.
+ * @summary Update an activity registration question
+ * {@link /organizers/standalone-workshops/:activityId/registration/questions/:questionId}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2Status200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2Status401 | GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2Status403>, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2Options, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2MutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2Status200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2Status401 | GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2Status403>, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2Options, TContext>({
+    mutationFn: async({ path, body }) => {
+      return geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2({ ...config, path: toValue<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2Options['path']>(path), body: toValue<GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateEndpoint2Options['body']>(body), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

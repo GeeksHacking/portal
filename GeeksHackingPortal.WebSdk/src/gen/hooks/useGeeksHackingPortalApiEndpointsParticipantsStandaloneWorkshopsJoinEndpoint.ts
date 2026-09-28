@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus200, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint } from '../clients/geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointMutationKey = () => [{ url: '/participants/standalone-workshops/:standaloneWorkshopId/join' }] as const
+
+/**
+ * @description Registers the current user for a standalone workshop.
+ * @summary Join a standalone workshop
+ * {@link /participants/standalone-workshops/:standaloneWorkshopId/join}
+ */
+export function useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus401>, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointStatus401>, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointOptions, TContext>({
+    mutationFn: async({ path }) => {
+      return geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpointOptions['path']>(path), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

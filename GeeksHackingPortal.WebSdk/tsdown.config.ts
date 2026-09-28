@@ -9,8 +9,7 @@ export default defineConfig({
     './src/testing.ts',
     './src/testing/handlers.ts',
     './src/testing/mocks.ts',
-    './src/client/index.ts',
-    './src/client/fetch.ts',
+    './src/client/index.ts'
   ],
   root: './src',
   platform: 'neutral',

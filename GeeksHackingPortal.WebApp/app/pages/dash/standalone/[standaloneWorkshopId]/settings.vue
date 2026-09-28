@@ -145,8 +145,8 @@ async function handleSubmit() {
 
   try {
     await updateMutation.mutateAsync({
-      standaloneWorkshopId: standaloneWorkshopId.value,
-      data: {
+      path: { standaloneWorkshopId: standaloneWorkshopId.value },
+      body: {
         title: form.value.title.trim(),
         description: form.value.description.trim(),
         startTime: serializeHackathonDateTimeInput(form.value.startTime),

@@ -12,10 +12,7 @@ const toast = useToast()
 const queryClient = useQueryClient()
 const hackathonId = computed(() => (route.params.hackathonId as string | undefined) ?? '')
 
-const { data: hackathon, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersHackathonGetEndpoint(
-  hackathonId,
-  { query: { enabled: computed(() => !!hackathonId.value) } },
-)
+const { data: hackathon, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersHackathonGetEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) }, { query: { enabled: computed(() => !!hackathonId.value) } })
 
 const updateMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesHackathonsEndpoint()
 
@@ -86,8 +83,8 @@ async function handleSubmit() {
 
   try {
     const result = await updateMutation.mutateAsync({
-      hackathonId: hackathonId.value,
-      data: {
+      path: { hackathonId: hackathonId.value },
+      body: {
         gitHubRepositorySettings: {
           isRepositoryCheckingEnabled: form.value.enableRepositoryChecking,
           isRepositoryForkingEnabled: form.value.enableRepositoryForking,
@@ -100,7 +97,7 @@ async function handleSubmit() {
     })
 
     await queryClient.invalidateQueries({
-      queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpointQueryKey(hackathonId.value),
+      queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonGetEndpointQueryKey({ path: { hackathonId: hackathonId.value } }),
     })
 
     form.value.apiKey = ''

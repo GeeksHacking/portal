@@ -26,7 +26,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   try {
     // Try to fetch the hackathon to verify it exists
-    await queryClient.fetchQuery(geeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointQueryOptions(hackathonId))
+    await queryClient.fetchQuery(geeksHackingPortalApiEndpointsParticipantsHackathonGetEndpointQueryOptions({ path: { hackathonIdOrShortCode: hackathonId } }))
   }
   catch (error: any) {
     // Check multiple possible error structures from the API client

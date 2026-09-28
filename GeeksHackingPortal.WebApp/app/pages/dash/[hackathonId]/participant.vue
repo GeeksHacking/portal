@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus } from '@geekshacking/portal-sdk'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusKey } from '@geekshacking/portal-sdk'
 import { useQueryClient } from '@tanstack/vue-query'
 import {
   geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryKey,
@@ -23,23 +23,14 @@ const queryClient = useQueryClient()
 const hackathonIdOrShortCode = computed(() => route.params.hackathonId as string | undefined)
 const participantUserId = computed(() => route.query.userId as string | undefined)
 
-const { data: hackathon, isLoading: isLoadingHackathon, error: hackathonError } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(
-  hackathonIdOrShortCode,
-  { query: { enabled: computed(() => !!hackathonIdOrShortCode.value) } },
-)
+const { data: hackathon, isLoading: isLoadingHackathon, error: hackathonError } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({ path: computed(() => ({ hackathonIdOrShortCode: hackathonIdOrShortCode.value ?? '' })) }, { query: { enabled: computed(() => !!hackathonIdOrShortCode.value) } })
 
 const resolvedHackathonId = computed(() => hackathon.value?.id)
 
-const { data: statusData, isLoading: isLoadingStatus, error: statusError } = useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint(
-  resolvedHackathonId,
-  { query: { enabled: computed(() => !!resolvedHackathonId.value) } },
-)
+const { data: statusData, isLoading: isLoadingStatus, error: statusError } = useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint({ path: computed(() => ({ hackathonId: resolvedHackathonId.value ?? '' })) }, { query: { enabled: computed(() => !!resolvedHackathonId.value) } })
 
 // Fetch registration submissions to check completion status
-const { data: submissionsData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListEndpoint(
-  resolvedHackathonId,
-  { query: { enabled: computed(() => !!resolvedHackathonId.value && statusData.value?.isParticipant === true) } },
-)
+const { data: submissionsData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListEndpoint({ path: computed(() => ({ hackathonId: resolvedHackathonId.value ?? '' })) }, { query: { enabled: computed(() => !!resolvedHackathonId.value && statusData.value?.isParticipant === true) } })
 
 const isRegistrationComplete = computed(() => submissionsData.value?.requiredQuestionsRemaining === 0)
 
@@ -50,10 +41,7 @@ const isWithdrawModalOpen = ref(false)
 // Organizer check
 const { data: user } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
 
-const { data: organizersData } = useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListEndpoint(
-  resolvedHackathonId,
-  { query: { enabled: computed(() => !!resolvedHackathonId.value) } },
-)
+const { data: organizersData } = useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListEndpoint({ path: computed(() => ({ hackathonId: resolvedHackathonId.value ?? '' })) }, { query: { enabled: computed(() => !!resolvedHackathonId.value) } })
 
 const isOrganizer = computed(() => {
   if (!user.value?.id) {
@@ -73,10 +61,10 @@ async function withdrawFromHackathon() {
     return
 
   try {
-    await withdrawMutation.mutateAsync({ hackathonId: resolvedHackathonId.value })
-    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryKey(resolvedHackathonId.value) })
+    await withdrawMutation.mutateAsync({ path: { hackathonId: resolvedHackathonId.value } })
+    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryKey({ path: { hackathonId: resolvedHackathonId.value } }) })
     await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryKey() })
-    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListEndpointQueryKey(resolvedHackathonId.value) })
+    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListEndpointQueryKey({ path: { hackathonId: resolvedHackathonId.value } }) })
     isWithdrawModalOpen.value = false
     toast.add({
       title: 'Withdrawn',
@@ -117,9 +105,8 @@ async function handleReview() {
     return
   try {
     await reviewMutation.mutateAsync({
-      hackathonId: resolvedHackathonId.value ?? '',
-      participantUserId: participantUserId.value,
-      data: {
+      path: { hackathonId: resolvedHackathonId.value ?? '', participantUserId: participantUserId.value },
+      body: {
         decision: reviewForm.value.decision,
         reason: reviewForm.value.reason || null,
       },
@@ -186,8 +173,8 @@ async function joinHackathon() {
   if (!resolvedHackathonId.value || !hackathon.value)
     return
   try {
-    await joinMutation.mutateAsync({ hackathonId: resolvedHackathonId.value })
-    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryKey(resolvedHackathonId.value) })
+    await joinMutation.mutateAsync({ path: { hackathonId: resolvedHackathonId.value } })
+    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryKey({ path: { hackathonId: resolvedHackathonId.value } }) })
     await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryKey() })
     await navigateTo(`/${hackathon.value.shortCode}/registration`)
   }
@@ -215,7 +202,7 @@ function formatReviewedDate(value: Date | string | null | undefined) {
   return `${reviewedDateFormatter.format(parsed)} SGT`
 }
 
-function formatParticipantStatus(status: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus | null | undefined, isParticipant?: boolean | null) {
+function formatParticipantStatus(status: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusKey | null | undefined, isParticipant?: boolean | null) {
   if (!isParticipant)
     return { label: 'Not joined', color: 'neutral' as const }
   switch (status) {

@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointStatus200, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointStatus400, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointStatus401, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint } from '../clients/geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationKey = () => [{ url: '/participants/hackathons/:hackathonId/registration/submissions' }] as const
+
+/**
+ * @description Submit or update answers to registration questions. Existing answers will be replaced.
+ * @summary Submit registration responses
+ * {@link /participants/hackathons/:hackathonId/registration/submissions}
+ */
+export function useGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointStatus400 | GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointStatus400 | GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointOptions, TContext>({
+    mutationFn: async({ path, body }) => {
+      return geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointOptions['path']>(path), body: toValue<GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpointOptions['body']>(body), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

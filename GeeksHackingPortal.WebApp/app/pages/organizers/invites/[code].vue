@@ -29,7 +29,7 @@ async function acceptInvite() {
 
   try {
     const result = await acceptInviteMutation.mutateAsync({
-      data: { code: code.value },
+      body: { code: code.value },
     })
 
     acceptedRole.value = result?.type ?? null

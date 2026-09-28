@@ -5,9 +5,10 @@
 
 import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
 import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus200, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint'
+import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from '@tanstack/vue-query'
 import type { MaybeRefOrGetter } from 'vue'
 import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint } from '../clients/geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint'
-import { queryOptions } from '@tanstack/vue-query'
+import { queryOptions, useQuery } from '@tanstack/vue-query'
 import { toValue } from 'vue'
 
 export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryKey = ({ path }: { path: MaybeRefOrGetter<Omit<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointOptions, 'headers'>['path']> }) => [{ url: '/organizers/standalone-workshops/:standaloneWorkshopId/analytics', params: path }] as const
@@ -22,4 +23,28 @@ export function geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnaly
       return geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint({ ...config, path: toValue(path), signal: config.signal ?? signal, throwOnError: true }).unwrap()
    },
   })
+}
+
+/**
+ * @description Returns summary analytics for registrations, check-ins, resources, and templates.
+ * @summary Get standalone workshop analytics
+ * {@link /organizers/standalone-workshops/:standaloneWorkshopId/analytics}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint<TData = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus200, TQueryData = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus200, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryKey>({ path }: { path: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointOptions['path']> }, options: {
+  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus403>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>
+} = {}) {
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryKey({ path })
+
+  const queryResult = useQuery({
+   ...geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryOptions({ path }, config),
+   ...resolvedOptions,
+   queryKey
+  } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus403>, TData, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus200, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointStatus403>> & { queryKey: TQueryKey }
+
+  queryResult.queryKey = queryKey as TQueryKey
+
+  return queryResult
 }

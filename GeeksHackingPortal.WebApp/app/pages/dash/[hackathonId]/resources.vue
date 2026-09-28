@@ -41,10 +41,7 @@ const isScanning = ref(false)
 
 const queryClient = useQueryClient()
 
-const { data: resourcesData, isLoading: isLoadingResources } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1(
-  hackathonId,
-  { query: { enabled: computed(() => !!hackathonId.value) } },
-)
+const { data: resourcesData, isLoading: isLoadingResources } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1({ path: computed(() => ({ activityId: hackathonId.value })) }, { query: { enabled: computed(() => !!hackathonId.value) } })
 
 const resources = computed<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListResponseResponseResource[]>(() => resourcesData.value?.resources ?? [])
 
@@ -64,23 +61,11 @@ const selectedResource = computed(() =>
   resources.value.find(resource => resource.id === selectedResourceId.value) ?? null,
 )
 
-const { data: resourceOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1(
-  hackathonId,
-  selectedResourceId,
-  { query: { enabled: computed(() => !!hackathonId.value && !!selectedResourceId.value) } },
-)
+const { data: resourceOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint1({ path: computed(() => ({ activityId: hackathonId.value, resourceId: selectedResourceId.value })) }, { query: { enabled: computed(() => !!hackathonId.value && !!selectedResourceId.value) } })
 
-const { data: participantDetail } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint(
-  computed(() => hackathonId.value),
-  computed(() => scannedUserId.value),
-)
+const { data: participantDetail } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value, userId: scannedUserId.value })) })
 
-const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1(
-  hackathonId,
-  selectedParticipantUserId,
-  selectedResourceId,
-  { query: { enabled: computed(() => !!hackathonId.value && !!selectedParticipantUserId.value && !!selectedResourceId.value) } },
-)
+const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1({ path: computed(() => ({ activityId: hackathonId.value, participantUserId: selectedParticipantUserId.value, resourceId: selectedResourceId.value })) }, { query: { enabled: computed(() => !!hackathonId.value && !!selectedParticipantUserId.value && !!selectedResourceId.value) } })
 
 const redeemMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint1()
 
@@ -301,7 +286,7 @@ async function redeemForParticipant(userId: string, participantName: string) {
   selectedParticipantName.value = participantName
 
   try {
-    const result = await redeemMutation.mutateAsync({ activityId: hackathonId.value, participantUserId: userId, resourceId: selectedResourceId.value })
+    const result = await redeemMutation.mutateAsync({ path: { activityId: hackathonId.value, participantUserId: userId, resourceId: selectedResourceId.value } })
     scanResult.value = {
       success: true,
       message: `${participantName || 'Participant'} redeemed ${selectedResource.value?.name || 'resource'} at ${formatRedemptionTime(result.createdAt)}.`,

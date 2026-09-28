@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus200, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus401, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint } from '../clients/geeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointMutationKey = () => [{ url: '/participants/hackathons/:hackathonId/teams/:teamId' }] as const
+
+/**
+ * @description Updates the team name and description. Only team members can update.
+ * @summary Update team details
+ * {@link /participants/hackathons/:hackathonId/teams/:teamId}
+ */
+export function useGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointOptions, TContext>({
+    mutationFn: async({ path, body }) => {
+      return geeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointOptions['path']>(path), body: toValue<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsUpdateEndpointOptions['body']>(body), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

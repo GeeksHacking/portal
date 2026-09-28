@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointStatus200, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointStatus401, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint } from '../clients/geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointMutationKey = () => [{ url: '/participants/hackathons/:hackathonId/teams/leave' }] as const
+
+/**
+ * @description Removes the current user from their team. If they are the only member, the team will be deleted.
+ * @summary Leave current team
+ * {@link /participants/hackathons/:hackathonId/teams/leave}
+ */
+export function useGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointOptions, TContext>({
+    mutationFn: async({ path }) => {
+      return geeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpointOptions['path']>(path), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

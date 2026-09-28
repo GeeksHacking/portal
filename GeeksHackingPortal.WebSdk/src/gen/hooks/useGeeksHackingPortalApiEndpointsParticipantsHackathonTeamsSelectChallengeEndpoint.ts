@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus200, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus400, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus401, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint } from '../clients/geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointMutationKey = () => [{ url: '/participants/hackathons/:hackathonId/teams/:teamId/challenge' }] as const
+
+/**
+ * @description Updates the team's selected challenge.
+ * @summary Select a challenge
+ * {@link /participants/hackathons/:hackathonId/teams/:teamId/challenge}
+ */
+export function useGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus400 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus400 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointOptions, TContext>({
+    mutationFn: async({ path, body }) => {
+      return geeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointOptions['path']>(path), body: toValue<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsSelectChallengeEndpointOptions['body']>(body), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

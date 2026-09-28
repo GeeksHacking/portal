@@ -28,7 +28,7 @@ function goToWorkshopDetails() {
   navigateTo(registrationPath.value)
 }
 
-const { data: workshop, isLoading: isLoadingWorkshop, error: workshopError } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint(slug)
+const { data: workshop, isLoading: isLoadingWorkshop, error: workshopError } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint({ path: computed(() => ({ standaloneWorkshopIdOrShortCode: slug.value })) })
 const workshopId = computed(() => workshop.value?.id ?? '')
 
 const { data: user, isLoading: isLoadingUser, isError: isAuthError } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint({
@@ -39,20 +39,11 @@ const { data: user, isLoading: isLoadingUser, isError: isAuthError } = useGeeksH
   },
 })
 
-const { data: statusData, isLoading: isLoadingStatus } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint(
-  workshopId,
-  { query: { enabled: computed(() => !!workshopId.value && !!user.value) } },
-)
+const { data: statusData, isLoading: isLoadingStatus } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint({ path: computed(() => ({ standaloneWorkshopId: workshopId.value })) }, { query: { enabled: computed(() => !!workshopId.value && !!user.value) } })
 
-const { data: questionsData, isLoading: isLoadingQuestions } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListEndpoint(
-  workshopId,
-  { query: { enabled: computed(() => !!workshopId.value && statusData.value?.isRegistered === true) } },
-)
+const { data: questionsData, isLoading: isLoadingQuestions } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListEndpoint({ path: computed(() => ({ standaloneWorkshopId: workshopId.value })) }, { query: { enabled: computed(() => !!workshopId.value && statusData.value?.isRegistered === true) } })
 
-const { data: submissionsData, isLoading: isLoadingSubmissions } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint(
-  workshopId,
-  { query: { enabled: computed(() => !!workshopId.value && statusData.value?.isRegistered === true) } },
-)
+const { data: submissionsData, isLoading: isLoadingSubmissions } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint({ path: computed(() => ({ standaloneWorkshopId: workshopId.value })) }, { query: { enabled: computed(() => !!workshopId.value && statusData.value?.isRegistered === true) } })
 
 useHead(() => ({
   title: workshop.value?.title ? `Registration Complete - ${workshop.value.title}` : 'Registration Complete - GeeksHacking',

@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus204, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint } from '../clients/geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointMutationKey = () => [{ url: '/organizers/standalone-workshops/:standaloneWorkshopId/organizers/invites/:inviteId' }] as const
+
+/**
+ * @description Expires an organizer invite code immediately so it can no longer be redeemed.
+ * @summary Revoke a standalone workshop organizer invite code
+ * {@link /organizers/standalone-workshops/:standaloneWorkshopId/organizers/invites/:inviteId}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus204, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus403>, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus204, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointStatus403>, GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointOptions, TContext>({
+    mutationFn: async({ path }) => {
+      return geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsOrganizersInvitesRevokeEndpointOptions['path']>(path), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

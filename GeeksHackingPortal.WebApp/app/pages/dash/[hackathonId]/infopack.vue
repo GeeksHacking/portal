@@ -36,15 +36,10 @@ function setCachedCount(dataType: string, count: number) {
 }
 
 // Fetch participants data
-const { data: participantsData, isLoading: isLoadingParticipants } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint(
-  computed(() => hackathonId.value),
-)
+const { data: participantsData, isLoading: isLoadingParticipants } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) })
 
 // Fetch teams data
-const { data: teamsData, isLoading: isLoadingTeams } = useGeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint(
-  hackathonId,
-  { query: { enabled: computed(() => !!hackathonId.value) } },
-)
+const { data: teamsData, isLoading: isLoadingTeams } = useGeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) }, { query: { enabled: computed(() => !!hackathonId.value) } })
 
 const participants = computed(() => participantsData.value?.participants ?? [])
 const teams = computed(() => teamsData.value?.teams ?? [])

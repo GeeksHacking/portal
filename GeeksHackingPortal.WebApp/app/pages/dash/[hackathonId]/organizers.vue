@@ -27,10 +27,7 @@ const toast = useToast()
 const queryClient = useQueryClient()
 const hackathonId = computed(() => (route.params.hackathonId as string | undefined) ?? '')
 
-const { data: organizersData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListEndpoint(
-  hackathonId,
-  { query: { enabled: computed(() => !!hackathonId.value) } },
-)
+const { data: organizersData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) }, { query: { enabled: computed(() => !!hackathonId.value) } })
 
 const organizers = computed(() => organizersData.value?.organizers ?? [])
 
@@ -72,8 +69,8 @@ function openInviteModal() {
 async function handleGenerateInvite() {
   try {
     const result = await inviteMutation.mutateAsync({
-      hackathonId: hackathonId.value,
-      data: {
+      path: { hackathonId: hackathonId.value },
+      body: {
         type: inviteForm.value.type,
         maxUses: inviteForm.value.maxUses ?? undefined,
       },
@@ -140,9 +137,9 @@ async function revokeInvite(inviteId: string) {
 
 async function handleDelete(userId: string) {
   try {
-    await deleteMutation.mutateAsync({ hackathonId: hackathonId.value, userId })
+    await deleteMutation.mutateAsync({ path: { hackathonId: hackathonId.value, userId: userId } })
     await queryClient.invalidateQueries({
-      queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListEndpointQueryKey(hackathonId.value),
+      queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListEndpointQueryKey({ path: { hackathonId: hackathonId.value } }),
     })
     toast.add({ title: 'Organizer removed', color: 'success' })
   }

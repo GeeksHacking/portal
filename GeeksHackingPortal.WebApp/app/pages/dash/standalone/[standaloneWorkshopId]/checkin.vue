@@ -34,23 +34,12 @@ const checkOutMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonVen
 const queryClient = useQueryClient()
 
 // Fetch participant details when we have a scanned user ID
-const { data: participantDetail } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpoint(
-  computed(() => standaloneWorkshopId.value),
-  computed(() => scannedUserId.value),
-  { query: { enabled: computed(() => !!standaloneWorkshopId.value && !!scannedUserId.value) } },
-)
+const { data: participantDetail } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpoint({ path: computed(() => ({ standaloneWorkshopId: standaloneWorkshopId.value, userId: scannedUserId.value })) }, { query: { enabled: computed(() => !!standaloneWorkshopId.value && !!scannedUserId.value) } })
 
-const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2(
-  standaloneWorkshopId,
-  selectedParticipantUserId,
-  { query: { enabled: computed(() => !!selectedParticipantUserId.value && !!standaloneWorkshopId.value) } },
-)
+const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2({ path: computed(() => ({ activityId: standaloneWorkshopId.value, participantUserId: selectedParticipantUserId.value })) }, { query: { enabled: computed(() => !!selectedParticipantUserId.value && !!standaloneWorkshopId.value) } })
 
 // Live check-in history
-const { data: venueOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint2(
-  standaloneWorkshopId,
-  { query: { enabled: computed(() => !!standaloneWorkshopId.value) } },
-)
+const { data: venueOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint2({ path: computed(() => ({ activityId: standaloneWorkshopId.value })) }, { query: { enabled: computed(() => !!standaloneWorkshopId.value) } })
 
 const historySearchQuery = ref('')
 
@@ -122,14 +111,11 @@ function formatEventTime(timestamp: Date | string | null | undefined) {
 
 function refreshOverview() {
   queryClient.invalidateQueries({
-    queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint2QueryKey(standaloneWorkshopId.value),
+    queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint2QueryKey({ path: { activityId: standaloneWorkshopId.value } }),
   })
   if (selectedParticipantUserId.value) {
     queryClient.invalidateQueries({
-      queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryKey(
-        standaloneWorkshopId.value,
-        selectedParticipantUserId.value,
-      ),
+      queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint2QueryKey({ path: { activityId: standaloneWorkshopId.value, participantUserId: selectedParticipantUserId.value } }),
     })
   }
 }
@@ -268,7 +254,7 @@ async function handleCheckIn() {
   scanResult.value = null
 
   try {
-    const result = await checkInMutation.mutateAsync({ activityId: standaloneWorkshopId.value, participantUserId: selectedParticipantUserId.value })
+    const result = await checkInMutation.mutateAsync({ path: { activityId: standaloneWorkshopId.value, participantUserId: selectedParticipantUserId.value } })
     const participantName = selectedParticipantName.value || participantDetail.value?.name || 'Unknown'
 
     scanResult.value = {
@@ -298,7 +284,7 @@ async function handleCheckOut() {
     return
   scanResult.value = null
   try {
-    const result = await checkOutMutation.mutateAsync({ activityId: standaloneWorkshopId.value, participantUserId: selectedParticipantUserId.value })
+    const result = await checkOutMutation.mutateAsync({ path: { activityId: standaloneWorkshopId.value, participantUserId: selectedParticipantUserId.value } })
     scanResult.value = {
       success: true,
       message: `Participant checked out at ${formatCheckInTime(result.checkOutTime)}.`,
@@ -342,7 +328,7 @@ async function handleCheckInFromList(userId: string) {
     return
 
   try {
-    await checkInMutation.mutateAsync({ activityId: standaloneWorkshopId.value, participantUserId: userId })
+    await checkInMutation.mutateAsync({ path: { activityId: standaloneWorkshopId.value, participantUserId: userId } })
     refreshOverview()
   }
   catch (err) {
@@ -355,7 +341,7 @@ async function handleCheckOutFromList(userId: string) {
     return
 
   try {
-    await checkOutMutation.mutateAsync({ activityId: standaloneWorkshopId.value, participantUserId: userId })
+    await checkOutMutation.mutateAsync({ path: { activityId: standaloneWorkshopId.value, participantUserId: userId } })
     refreshOverview()
   }
   catch (err) {

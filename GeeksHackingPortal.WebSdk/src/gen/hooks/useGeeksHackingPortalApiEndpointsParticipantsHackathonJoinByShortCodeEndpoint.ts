@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointStatus200, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpoint } from '../clients/geeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointMutationKey = () => [{ url: '/participants/hackathons/join' }] as const
+
+/**
+ * @description Registers the current user as a participant in the hackathon using the hackathon's short code.
+ * @summary Join a hackathon by short code
+ * {@link /participants/hackathons/join}
+ */
+export function useGeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointStatus401>, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointStatus401>, GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointOptions, TContext>({
+    mutationFn: async({ body }) => {
+      return geeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpoint({ ...config, body: toValue<GeeksHackingPortalApiEndpointsParticipantsHackathonJoinByShortCodeEndpointOptions['body']>(body), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

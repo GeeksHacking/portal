@@ -71,28 +71,15 @@ const metricValueClass: Record<StatColor, string> = {
 const route = useRoute()
 const hackathonId = computed(() => (route.params.hackathonId as string | undefined) || '')
 
-const { data: participantsData, isLoading: isLoadingParticipants } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint(
-  computed(() => hackathonId.value),
-)
+const { data: participantsData, isLoading: isLoadingParticipants } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) })
 
-const { data: teamsData, isLoading: isLoadingTeams } = useGeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint(
-  hackathonId,
-  { query: { enabled: computed(() => !!hackathonId.value) } },
-)
+const { data: teamsData, isLoading: isLoadingTeams } = useGeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) }, { query: { enabled: computed(() => !!hackathonId.value) } })
 
-const { data: challengesData, isLoading: isLoadingChallenges } = useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint(
-  computed(() => hackathonId.value),
-)
+const { data: challengesData, isLoading: isLoadingChallenges } = useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) })
 
-const { data: venueOverviewData, isLoading: isLoadingVenueOverview } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint1(
-  hackathonId,
-  { query: { enabled: computed(() => !!hackathonId.value) } },
-)
+const { data: venueOverviewData, isLoading: isLoadingVenueOverview } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint1({ path: computed(() => ({ activityId: hackathonId.value })) }, { query: { enabled: computed(() => !!hackathonId.value) } })
 
-const { data: resourcesData, isLoading: isLoadingResources } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1(
-  hackathonId,
-  { query: { enabled: computed(() => !!hackathonId.value) } },
-)
+const { data: resourcesData, isLoading: isLoadingResources } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint1({ path: computed(() => ({ activityId: hackathonId.value })) }, { query: { enabled: computed(() => !!hackathonId.value) } })
 
 const selectedResourceStatsId = ref(ALL_RESOURCES_VALUE)
 const resourceBreakdownSearch = ref('')
@@ -121,11 +108,7 @@ const {
   isLoading: isLoadingResourceStatistics,
   refetch: refetchResourceStatistics,
   dataUpdatedAt: resourceStatisticsUpdatedAt,
-} = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1(
-  hackathonId,
-  computed(() => selectedResourceStatsResourceId.value ? { resourceId: selectedResourceStatsResourceId.value } : {}),
-  { query: { enabled: computed(() => !!hackathonId.value) } },
-)
+} = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint1({ path: computed(() => ({ activityId: hackathonId.value })), query: computed(() => selectedResourceStatsResourceId.value ? { resourceId: selectedResourceStatsResourceId.value } : {}) }, { query: { enabled: computed(() => !!hackathonId.value) } })
 
 const REVIEW_OVERDUE_DAYS = 5
 const REVIEW_OVERDUE_MS = REVIEW_OVERDUE_DAYS * 24 * 60 * 60 * 1000

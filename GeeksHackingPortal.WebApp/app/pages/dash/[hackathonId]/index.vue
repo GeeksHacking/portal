@@ -9,17 +9,11 @@ import { computed, watch } from 'vue'
 const route = useRoute()
 const hackathonIdOrShortCode = computed(() => (route.params.hackathonId as string | undefined) ?? null)
 
-const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(
-  computed(() => hackathonIdOrShortCode.value ?? ''),
-  { query: { enabled: computed(() => !!hackathonIdOrShortCode.value) } },
-)
+const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({ path: computed(() => ({ hackathonIdOrShortCode: hackathonIdOrShortCode.value ?? '' })) }, { query: { enabled: computed(() => !!hackathonIdOrShortCode.value) } })
 
 const resolvedHackathonId = computed(() => hackathon.value?.id ?? null)
 const { data: user, isLoading: isLoadingUser } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
-const { data: organizersData, isLoading: isLoadingOrganizers } = useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListEndpoint(
-  computed(() => resolvedHackathonId.value ?? ''),
-  { query: { enabled: computed(() => !!resolvedHackathonId.value) } },
-)
+const { data: organizersData, isLoading: isLoadingOrganizers } = useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListEndpoint({ path: computed(() => ({ hackathonId: resolvedHackathonId.value ?? '' })) }, { query: { enabled: computed(() => !!resolvedHackathonId.value) } })
 
 const isOrganizer = computed(() => {
   if (!user.value?.id)

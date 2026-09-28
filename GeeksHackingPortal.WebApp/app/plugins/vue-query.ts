@@ -10,7 +10,7 @@ import {
 } from '@tanstack/vue-query'
 
 export default defineNuxtPlugin((nuxt) => {
-  const vueQueryState = useState<DehydratedState | null>('vue-query')
+  const vueQueryState = useState<DehydratedState | null>('vue-query', () => null)
 
   const queryClient = new QueryClient({
     defaultOptions: { queries: { staleTime: 5000 } },
@@ -25,7 +25,7 @@ export default defineNuxtPlugin((nuxt) => {
     })
   }
 
-  if (import.meta.client) {
+  if (import.meta.client && vueQueryState.value) {
     hydrate(queryClient, vueQueryState.value)
   }
 })

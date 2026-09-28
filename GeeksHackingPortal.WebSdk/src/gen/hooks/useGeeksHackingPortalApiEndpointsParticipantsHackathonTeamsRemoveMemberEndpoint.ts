@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpointStatus200, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpointStatus401, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpoint } from '../clients/geeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpointMutationKey = () => [{ url: '/participants/hackathons/:hackathonId/teams/:teamId/members/:userId' }] as const
+
+/**
+ * @description Allows the team member to remove another member from the team. Cannot remove yourself (use leave endpoint instead). If no members remain after removal, the team will be deleted.
+ * @summary Remove a member from the team
+ * {@link /participants/hackathons/:hackathonId/teams/:teamId/members/:userId}
+ */
+export function useGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpointOptions, TContext>({
+    mutationFn: async({ path }) => {
+      return geeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsRemoveMemberEndpointOptions['path']>(path), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

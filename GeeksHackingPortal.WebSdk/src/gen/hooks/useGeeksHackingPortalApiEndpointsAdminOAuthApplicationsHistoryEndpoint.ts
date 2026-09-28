@@ -5,9 +5,10 @@
 
 import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
 import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointOptions, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint'
+import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from '@tanstack/vue-query'
 import type { MaybeRefOrGetter } from 'vue'
 import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint } from '../clients/geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint'
-import { queryOptions } from '@tanstack/vue-query'
+import { queryOptions, useQuery } from '@tanstack/vue-query'
 import { toValue } from 'vue'
 
 export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointQueryKey = ({ path }: { path: MaybeRefOrGetter<Omit<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointOptions, 'headers'>['path']> }) => [{ url: '/admin/oauth-applications/:id/history', params: path }] as const
@@ -22,4 +23,28 @@ export function geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpo
       return geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint({ ...config, path: toValue(path), signal: config.signal ?? signal, throwOnError: true }).unwrap()
    },
   })
+}
+
+/**
+ * @description Gets recent sign in history for a specific OAuth application owned by the current admin.
+ * @summary Get OAuth application sign in history
+ * {@link /admin/oauth-applications/:id/history}
+ */
+export function useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint<TData = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200, TQueryData = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointQueryKey>({ path }: { path: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointOptions['path']> }, options: {
+  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus403>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>
+} = {}) {
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointQueryKey({ path })
+
+  const queryResult = useQuery({
+   ...geeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointQueryOptions({ path }, config),
+   ...resolvedOptions,
+   queryKey
+  } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus403>, TData, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus200, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpointStatus403>> & { queryKey: TQueryKey }
+
+  queryResult.queryKey = queryKey as TQueryKey
+
+  return queryResult
 }

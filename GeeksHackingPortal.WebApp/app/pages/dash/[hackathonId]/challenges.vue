@@ -20,16 +20,12 @@ const hackathonId = computed(() => props.hackathonId || (route.params.hackathonI
 
 const queryClient = useQueryClient()
 
-const { data: challengesData, isLoading: isLoadingChallenges } = useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint(
-  computed(() => hackathonId.value),
-)
+const { data: challengesData, isLoading: isLoadingChallenges } = useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) })
 
 const challenges = computed(() => challengesData.value?.challenges ?? [])
 
 // Fetch participant challenges list for team counts
-const { data: participantChallengesData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint(
-  computed(() => hackathonId.value),
-)
+const { data: participantChallengesData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) })
 
 const teamCountByChallengeId = computed(() => {
   const map = new Map<string, number>()
@@ -93,22 +89,21 @@ function openEditModal(challenge: typeof challenges.value[number]) {
 async function handleSubmit() {
   if (isEditing.value && editingChallengeId.value) {
     await updateMutation.mutateAsync({
-      hackathonId: hackathonId.value,
-      challengeId: editingChallengeId.value,
-      data: form.value,
+      path: { hackathonId: hackathonId.value, challengeId: editingChallengeId.value },
+      body: form.value,
     })
   }
   else {
-    await createMutation.mutateAsync({ hackathonId: hackathonId.value, data: form.value })
+    await createMutation.mutateAsync({ path: { hackathonId: hackathonId.value }, body: form.value })
   }
-  await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpointQueryKey(hackathonId.value) })
+  await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpointQueryKey({ path: { hackathonId: hackathonId.value } }) })
   isModalOpen.value = false
   resetForm()
 }
 
 async function handleDelete(challengeId: string) {
-  await deleteMutation.mutateAsync({ hackathonId: hackathonId.value, challengeId })
-  await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpointQueryKey(hackathonId.value) })
+  await deleteMutation.mutateAsync({ path: { hackathonId: hackathonId.value, challengeId: challengeId } })
+  await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpointQueryKey({ path: { hackathonId: hackathonId.value } }) })
 }
 
 const isSubmitting = computed(() => createMutation.isPending.value || updateMutation.isPending.value)

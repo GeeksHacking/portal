@@ -5,10 +5,7 @@ import { computed } from 'vue'
 const route = useRoute()
 const hackathonIdOrShortCode = computed(() => route.params.hackathonId as string | undefined)
 
-const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(
-  hackathonIdOrShortCode,
-  { query: { enabled: computed(() => !!hackathonIdOrShortCode.value) } },
-)
+const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({ path: computed(() => ({ hackathonIdOrShortCode: hackathonIdOrShortCode.value ?? '' })) }, { query: { enabled: computed(() => !!hackathonIdOrShortCode.value) } })
 
 const resolvedHackathonId = computed(() => hackathon.value?.id ?? null)
 </script>

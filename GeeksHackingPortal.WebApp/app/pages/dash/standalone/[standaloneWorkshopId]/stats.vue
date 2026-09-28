@@ -8,10 +8,7 @@ const route = useRoute()
 const standaloneWorkshopId = computed(() => (route.params.standaloneWorkshopId as string | undefined) ?? '')
 
 const { data: eventsData } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint()
-const { data: analytics, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint(
-  standaloneWorkshopId,
-  { query: { enabled: computed(() => !!standaloneWorkshopId.value) } },
-)
+const { data: analytics, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpoint({ path: computed(() => ({ standaloneWorkshopId: standaloneWorkshopId.value })) }, { query: { enabled: computed(() => !!standaloneWorkshopId.value) } })
 
 const event = computed(() => eventsData.value?.standaloneWorkshops?.find(item => item.id === standaloneWorkshopId.value))
 

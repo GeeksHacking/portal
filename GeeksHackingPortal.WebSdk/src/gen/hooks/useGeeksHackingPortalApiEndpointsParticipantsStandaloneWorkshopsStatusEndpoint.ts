@@ -5,9 +5,10 @@
 
 import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
 import type { GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus200, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint'
+import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from '@tanstack/vue-query'
 import type { MaybeRefOrGetter } from 'vue'
 import { geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint } from '../clients/geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint'
-import { queryOptions } from '@tanstack/vue-query'
+import { queryOptions, useQuery } from '@tanstack/vue-query'
 import { toValue } from 'vue'
 
 export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointQueryKey = ({ path }: { path: MaybeRefOrGetter<Omit<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointOptions, 'headers'>['path']> }) => [{ url: '/participants/standalone-workshops/:standaloneWorkshopId/status', params: path }] as const
@@ -22,4 +23,28 @@ export function geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsSta
       return geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint({ ...config, path: toValue(path), signal: config.signal ?? signal, throwOnError: true }).unwrap()
    },
   })
+}
+
+/**
+ * @description Returns the current user's registration status for a standalone workshop.
+ * @summary Get my standalone workshop status
+ * {@link /participants/standalone-workshops/:standaloneWorkshopId/status}
+ */
+export function useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint<TData = GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus200, TQueryData = GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus200, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointQueryKey>({ path }: { path: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointOptions['path']> }, options: {
+  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus401>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>
+} = {}) {
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointQueryKey({ path })
+
+  const queryResult = useQuery({
+   ...geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointQueryOptions({ path }, config),
+   ...resolvedOptions,
+   queryKey
+  } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus401>, TData, GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus200, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointStatus401>> & { queryKey: TQueryKey }
+
+  queryResult.queryKey = queryKey as TQueryKey
+
+  return queryResult
 }

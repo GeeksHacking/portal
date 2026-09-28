@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointStatus200, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpoint } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointMutationKey = () => [{ url: '/organizers/hackathons/:hackathonId/judges' }] as const
+
+/**
+ * @description Creates a new judge for the hackathon. Returns the judge secret that should be shared with the judge for authentication.
+ * @summary Create a judge
+ * {@link /organizers/hackathons/:hackathonId/judges}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointStatus403>, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointStatus403>, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointOptions, TContext>({
+    mutationFn: async({ path, body }) => {
+      return geeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointOptions['path']>(path), body: toValue<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesCreateEndpointOptions['body']>(body), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

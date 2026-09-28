@@ -37,22 +37,12 @@ const checkOutMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonVen
 const queryClient = useQueryClient()
 
 // Fetch participant details when we have a scanned user ID
-const { data: participantDetail } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint(
-  computed(() => hackathonId.value),
-  computed(() => scannedUserId.value),
-)
+const { data: participantDetail } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value, userId: scannedUserId.value })) })
 
-const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint1(
-  hackathonId,
-  selectedParticipantUserId,
-  { query: { enabled: computed(() => !!selectedParticipantUserId.value && !!hackathonId.value) } },
-)
+const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueHistoryEndpoint1({ path: computed(() => ({ activityId: hackathonId.value, participantUserId: selectedParticipantUserId.value })) }, { query: { enabled: computed(() => !!selectedParticipantUserId.value && !!hackathonId.value) } })
 
 // Live check-in history
-const { data: venueOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint1(
-  hackathonId,
-  { query: { enabled: computed(() => !!hackathonId.value) } },
-)
+const { data: venueOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueOverviewEndpoint1({ path: computed(() => ({ activityId: hackathonId.value })) }, { query: { enabled: computed(() => !!hackathonId.value) } })
 
 const historySearchQuery = ref('')
 
@@ -240,7 +230,7 @@ async function handleCheckIn() {
   scanResult.value = null
 
   try {
-    const result = await checkInMutation.mutateAsync({ activityId: hackathonId.value, participantUserId: selectedParticipantUserId.value })
+    const result = await checkInMutation.mutateAsync({ path: { activityId: hackathonId.value, participantUserId: selectedParticipantUserId.value } })
     const participantName = selectedParticipantName.value || participantDetail.value?.name || 'Unknown'
 
     scanResult.value = {
@@ -270,7 +260,7 @@ async function handleCheckOut() {
     return
   scanResult.value = null
   try {
-    const result = await checkOutMutation.mutateAsync({ activityId: hackathonId.value, participantUserId: selectedParticipantUserId.value })
+    const result = await checkOutMutation.mutateAsync({ path: { activityId: hackathonId.value, participantUserId: selectedParticipantUserId.value } })
     scanResult.value = {
       success: true,
       message: `Participant checked out at ${formatCheckInTime(result.checkOutTime)}.`,
@@ -311,7 +301,7 @@ function openHistory(userId: string, name: string) {
 
 async function handleCheckInFromList(userId: string) {
   try {
-    await checkInMutation.mutateAsync({ activityId: hackathonId.value, participantUserId: userId })
+    await checkInMutation.mutateAsync({ path: { activityId: hackathonId.value, participantUserId: userId } })
     refreshOverview()
   }
   catch (err) {
@@ -321,7 +311,7 @@ async function handleCheckInFromList(userId: string) {
 
 async function handleCheckOutFromList(userId: string) {
   try {
-    await checkOutMutation.mutateAsync({ activityId: hackathonId.value, participantUserId: userId })
+    await checkOutMutation.mutateAsync({ path: { activityId: hackathonId.value, participantUserId: userId } })
     refreshOverview()
   }
   catch (err) {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type {
   GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse,
-  GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus,
+  GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusKey,
   GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse,
 } from '@geekshacking/portal-sdk'
 import {
@@ -150,8 +150,8 @@ async function handleHackathonSubmit() {
   try {
     if (isEditingHackathon.value && editingHackathonId.value) {
       await updateHackathonMutation.mutateAsync({
-        hackathonId: editingHackathonId.value,
-        data: {
+        path: { hackathonId: editingHackathonId.value },
+        body: {
           name: formData.name,
           description: formData.description,
           venue: formData.venue,
@@ -171,7 +171,7 @@ async function handleHackathonSubmit() {
       toast.add({ title: 'Hackathon updated', color: 'success' })
     }
     else {
-      await createMutation.mutateAsync({ data: formData })
+      await createMutation.mutateAsync({ body: formData })
       toast.add({ title: 'Hackathon created', color: 'success' })
     }
     await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryKey() })
@@ -350,8 +350,8 @@ async function handleStandaloneEventSubmit() {
   try {
     if (isEditingStandaloneEvent.value && editingStandaloneEventId.value) {
       await updateStandaloneEventMutation.mutateAsync({
-        standaloneWorkshopId: editingStandaloneEventId.value,
-        data: {
+        path: { standaloneWorkshopId: editingStandaloneEventId.value },
+        body: {
           title: formData.title,
           description: formData.description,
           startTime: formData.startTime,
@@ -369,7 +369,7 @@ async function handleStandaloneEventSubmit() {
     }
     else {
       await createStandaloneEventMutation.mutateAsync({
-        data: {
+        body: {
           ...formData,
           homepageUri: formData.homepageUri,
         },
@@ -446,7 +446,7 @@ const standaloneEvents = computed(() => standaloneEventsData.value?.standaloneWo
 
 const standaloneEventAnalyticsQueries = useQueries({
   queries: computed(() => standaloneEvents.value.map(event => ({
-    ...geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryOptions(event.id ?? ''),
+    ...geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsAnalyticsEndpointQueryOptions({ path: { standaloneWorkshopId: event.id ?? '' } }),
     enabled: !!event.id,
   }))),
 })
@@ -458,7 +458,10 @@ function standaloneEventAnalyticsForIndex(index: number): StandaloneEventAnalyti
 // Fetch participation status per hackathon
 const statusQueries = useQueries({
   queries: computed(() =>
-    hackathons.value.map(hackathon => geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryOptions(hackathon.id ?? '')),
+    hackathons.value.map(hackathon => ({
+      ...geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryOptions({ path: { hackathonId: hackathon.id ?? '' } }),
+      enabled: !!hackathon.id,
+    })),
   ),
 })
 
@@ -469,7 +472,7 @@ const submissionQueries = useQueries({
       const status = statusQueries.value[hackathons.value.indexOf(hackathon)]?.data as GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse | undefined
       const isParticipant = status?.isParticipant === true
       return {
-        ...geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListEndpointQueryOptions(hackathon.id ?? ''),
+        ...geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListEndpointQueryOptions({ path: { hackathonId: hackathon.id ?? '' } }),
         enabled: !!hackathon.id && isParticipant,
       }
     }),
@@ -491,8 +494,8 @@ function isRegistrationComplete(index: number): boolean {
 
 async function joinHackathon(hackathon: { id: string, shortCode: string }) {
   try {
-    await joinMutation.mutateAsync({ hackathonId: hackathon.id })
-    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryKey(hackathon.id) })
+    await joinMutation.mutateAsync({ path: { hackathonId: hackathon.id } })
+    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryKey({ path: { hackathonId: hackathon.id } }) })
     await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryKey() })
     navigateTo(`/${hackathon.shortCode}/registration`)
   }
@@ -506,7 +509,7 @@ async function joinHackathon(hackathon: { id: string, shortCode: string }) {
   }
 }
 
-function formatParticipantStatus(status: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus | null | undefined, isParticipant?: boolean | null) {
+function formatParticipantStatus(status: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusKey | null | undefined, isParticipant?: boolean | null) {
   if (!isParticipant)
     return { label: 'Not joined', color: 'neutral' as const }
   switch (status) {

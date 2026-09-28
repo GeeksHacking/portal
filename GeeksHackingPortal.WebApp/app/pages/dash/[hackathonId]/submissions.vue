@@ -19,26 +19,19 @@ const props = withDefaults(defineProps<{
 const route = useRoute()
 const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
-const { data: submissionsData, isLoading: isLoadingSubmissions } = useGeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpoint(
-  computed(() => hackathonId.value),
-)
+const { data: submissionsData, isLoading: isLoadingSubmissions } = useGeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) })
 
 const submissions = computed(() => submissionsData.value?.submissions ?? [])
 
 // Fetch challenges for filter
-const { data: challengesData } = useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint(
-  computed(() => hackathonId.value),
-)
+const { data: challengesData } = useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) })
 const challenges = computed(() => challengesData.value?.challenges ?? [])
 
 // Fetch submission details for each submission via organizer endpoint
 const submissionDetailQueries = useQueries({
   queries: computed(() =>
     submissions.value.map(s =>
-      geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointQueryOptions(
-        hackathonId.value,
-        s.id ?? '',
-      ),
+      geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpointQueryOptions({ path: { hackathonId: hackathonId.value, submissionId: s.id ?? '' } }),
     ),
   ),
 })
@@ -136,10 +129,7 @@ const {
 const isDetailOpen = ref(false)
 const selectedSubmissionId = ref<string | null>(null)
 
-const { data: submissionDetail, isLoading: isLoadingDetail } = useGeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpoint(
-  computed(() => hackathonId.value),
-  computed(() => selectedSubmissionId.value ?? ''),
-)
+const { data: submissionDetail, isLoading: isLoadingDetail } = useGeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsGetEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value, submissionId: selectedSubmissionId.value ?? '' })) })
 
 function openDetail(submissionId: string) {
   selectedSubmissionId.value = submissionId

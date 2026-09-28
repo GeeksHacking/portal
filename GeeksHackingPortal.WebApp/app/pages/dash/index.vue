@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type {
   GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListResponse,
-  GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus,
+  GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusKey,
   GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse,
 } from '@geekshacking/portal-sdk'
 import {
@@ -44,7 +44,10 @@ const publishedStandaloneEvents = computed(() =>
 
 const statusQueries = useQueries({
   queries: computed(() =>
-    hackathons.value.map(hackathon => geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryOptions(hackathon.id ?? '')),
+    hackathons.value.map(hackathon => ({
+      ...geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryOptions({ path: { hackathonId: hackathon.id ?? '' } }),
+      enabled: !!hackathon.id,
+    })),
   ),
 })
 
@@ -53,7 +56,7 @@ const submissionQueries = useQueries({
     hackathons.value.map((hackathon, index) => {
       const status = statusQueries.value[index]?.data as GeeksHackingPortalApiEndpointsParticipantsHackathonStatusResponse | undefined
       return {
-        ...geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListEndpointQueryOptions(hackathon.id ?? ''),
+        ...geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListEndpointQueryOptions({ path: { hackathonId: hackathon.id ?? '' } }),
         enabled: !!hackathon.id && status?.isParticipant === true,
       }
     }),
@@ -72,7 +75,7 @@ function isRegistrationComplete(index: number) {
   return submissionsDataForIndex(index)?.requiredQuestionsRemaining === 0
 }
 
-function formatParticipantStatus(status: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatus | null | undefined, isParticipant?: boolean | null) {
+function formatParticipantStatus(status: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusKey | null | undefined, isParticipant?: boolean | null) {
   if (!isParticipant)
     return { label: 'Open', color: 'success' as const }
 
@@ -88,8 +91,8 @@ function formatParticipantStatus(status: GeeksHackingPortalApiEndpointsParticipa
 
 async function joinHackathon(hackathon: { id: string, shortCode: string }) {
   try {
-    await joinMutation.mutateAsync({ hackathonId: hackathon.id })
-    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryKey(hackathon.id) })
+    await joinMutation.mutateAsync({ path: { hackathonId: hackathon.id } })
+    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryKey({ path: { hackathonId: hackathon.id } }) })
     await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryKey() })
     navigateTo(`/${hackathon.shortCode}/registration`)
   }

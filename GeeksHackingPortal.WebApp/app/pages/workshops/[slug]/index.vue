@@ -3,7 +3,7 @@ import type {
   GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto,
   GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto,
 } from '@geekshacking/portal-sdk'
-import { Comark } from '@comark/vue'
+import { Markdown } from '@comark/vue'
 import {
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint,
@@ -26,7 +26,7 @@ const toast = useToast()
 
 const slug = computed(() => (route.params.slug as string | undefined) ?? '')
 
-const { data: workshop, isLoading: isLoadingWorkshop, error: workshopError } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint(slug)
+const { data: workshop, isLoading: isLoadingWorkshop, error: workshopError } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint({ path: computed(() => ({ standaloneWorkshopIdOrShortCode: slug.value })) })
 const { data: user, isSuccess: authResolved, isError: authErrored } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint({
   query: {
     retry: false,
@@ -37,20 +37,11 @@ const { data: user, isSuccess: authResolved, isError: authErrored } = useGeeksHa
 
 const workshopId = computed(() => workshop.value?.id ?? '')
 
-const { data: statusData, isLoading: isLoadingStatus } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint(
-  workshopId,
-  { query: { enabled: computed(() => !!workshopId.value && !!user.value) } },
-)
+const { data: statusData, isLoading: isLoadingStatus } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint({ path: computed(() => ({ standaloneWorkshopId: workshopId.value })) }, { query: { enabled: computed(() => !!workshopId.value && !!user.value) } })
 
-const { data: questionsData, isLoading: isLoadingQuestions } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListEndpoint(
-  workshopId,
-  { query: { enabled: computed(() => !!workshopId.value && statusData.value?.isRegistered === true) } },
-)
+const { data: questionsData, isLoading: isLoadingQuestions } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListEndpoint({ path: computed(() => ({ standaloneWorkshopId: workshopId.value })) }, { query: { enabled: computed(() => !!workshopId.value && statusData.value?.isRegistered === true) } })
 
-const { data: submissionsData, isLoading: isLoadingSubmissions } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint(
-  workshopId,
-  { query: { enabled: computed(() => !!workshopId.value && statusData.value?.isRegistered === true) } },
-)
+const { data: submissionsData, isLoading: isLoadingSubmissions } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint({ path: computed(() => ({ standaloneWorkshopId: workshopId.value })) }, { query: { enabled: computed(() => !!workshopId.value && statusData.value?.isRegistered === true) } })
 
 const joinMutation = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint()
 
@@ -135,7 +126,7 @@ async function startRegistration() {
     return
 
   try {
-    await joinMutation.mutateAsync({ standaloneWorkshopId: workshopId.value })
+    await joinMutation.mutateAsync({ path: { standaloneWorkshopId: workshopId.value } })
     await Promise.all([
       queryClient.invalidateQueries({
         queryKey: standaloneWorkshopStatusQueryKey(workshopId.value),
@@ -456,8 +447,8 @@ const totalQuestionsCount = computed(() => {
                 </h1>
                 <div class="max-w-3xl text-sm leading-7 text-(--ui-text-muted) sm:text-base lg:text-lg">
                   <Suspense>
-                    <Comark
-                      :markdown="workshop.description"
+                    <Markdown
+                      :value="workshop.description"
                       :options="{ autoClose: true, autoUnwrap: true }"
                       class="workshop-markdown"
                     />

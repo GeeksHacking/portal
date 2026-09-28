@@ -14,7 +14,7 @@ definePageMeta({
 const route = useRoute()
 const config = useRuntimeConfig()
 const routeHackathonId = computed(() => (route.params.hackathonId as string) ?? '')
-const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(routeHackathonId)
+const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({ path: computed(() => ({ hackathonIdOrShortCode: routeHackathonId.value })) })
 const resolvedHackathonId = computed(() => hackathon.value?.id ?? '')
 
 // Track if we should show the page
@@ -30,16 +30,10 @@ const { data: user, isLoading: isLoadingUser, isError } = useGeeksHackingPortalA
 })
 
 // Check participation status
-const { data: statusData, isLoading: isLoadingStatus } = useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint(
-  resolvedHackathonId,
-  { query: { enabled: computed(() => !!resolvedHackathonId.value && !!user.value) } },
-)
+const { data: statusData, isLoading: isLoadingStatus } = useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint({ path: computed(() => ({ hackathonId: resolvedHackathonId.value })) }, { query: { enabled: computed(() => !!resolvedHackathonId.value && !!user.value) } })
 
 // Check registration submissions
-const { data: submissionsData, isLoading: isLoadingSubmissions } = useGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListEndpoint(
-  resolvedHackathonId,
-  { query: { enabled: computed(() => !!resolvedHackathonId.value && statusData.value?.isParticipant === true) } },
-)
+const { data: submissionsData, isLoading: isLoadingSubmissions } = useGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListEndpoint({ path: computed(() => ({ hackathonId: resolvedHackathonId.value })) }, { query: { enabled: computed(() => !!resolvedHackathonId.value && statusData.value?.isParticipant === true) } })
 
 const isLoading = computed(() => isLoadingUser.value || isLoadingStatus.value || (statusData.value?.isParticipant && isLoadingSubmissions.value))
 

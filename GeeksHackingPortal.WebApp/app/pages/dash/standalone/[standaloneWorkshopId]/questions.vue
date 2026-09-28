@@ -3,7 +3,7 @@ import type {
   GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateCreateOptionDto,
   GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto,
   GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDto,
-  GeeksHackingPortalApiEntitiesQuestionType,
+  GeeksHackingPortalApiEntitiesQuestionTypeKey,
 } from '@geekshacking/portal-sdk'
 import {
   geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint2QueryKey,
@@ -16,7 +16,7 @@ import {
 import { useQueryClient } from '@tanstack/vue-query'
 
 type Question = GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto
-type QuestionType = GeeksHackingPortalApiEntitiesQuestionType
+type QuestionType = GeeksHackingPortalApiEntitiesQuestionTypeKey
 
 const questionTypeValues = {
   Text: 'Text',
@@ -38,9 +38,7 @@ const toast = useToast()
 
 const standaloneWorkshopId = computed(() => (route.params.standaloneWorkshopId as string | undefined) ?? '')
 
-const { data: questionsData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint2(
-  standaloneWorkshopId,
-)
+const { data: questionsData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint2({ path: computed(() => ({ activityId: standaloneWorkshopId.value })) })
 
 const questions = computed(() => questionsData.value?.questions ?? [])
 const sortedQuestions = computed(() =>
@@ -94,9 +92,7 @@ const initMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegist
 
 async function invalidateQuestions() {
   await queryClient.invalidateQueries({
-    queryKey: geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint2QueryKey(
-      standaloneWorkshopId.value,
-    ),
+    queryKey: geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint2QueryKey({ path: { activityId: standaloneWorkshopId.value } }),
   })
 }
 
@@ -106,7 +102,7 @@ async function initializeDefaultQuestions() {
 
   try {
     const result = await initMutation.mutateAsync({
-      activityId: standaloneWorkshopId.value,
+      path: { activityId: standaloneWorkshopId.value },
     })
 
     await invalidateQuestions()
@@ -214,8 +210,8 @@ async function saveQuestion() {
 
   if (isCreating.value) {
     await createMutation.mutateAsync({
-      activityId: standaloneWorkshopId.value,
-      data: {
+      path: { activityId: standaloneWorkshopId.value },
+      body: {
         questionText: editForm.value.questionText,
         questionKey: editForm.value.questionKey || undefined,
         helpText: editForm.value.helpText || null,
@@ -232,9 +228,8 @@ async function saveQuestion() {
   }
   else if (editingId.value) {
     await updateMutation.mutateAsync({
-      activityId: standaloneWorkshopId.value,
-      questionId: editingId.value,
-      data: {
+      path: { activityId: standaloneWorkshopId.value, questionId: editingId.value },
+      body: {
         questionText: editForm.value.questionText || null,
         helpText: editForm.value.helpText || null,
         isRequired: editForm.value.isRequired,
@@ -260,8 +255,7 @@ async function deleteQuestion(questionId: string) {
     return
 
   await deleteMutation.mutateAsync({
-    activityId: standaloneWorkshopId.value,
-    questionId,
+    path: { activityId: standaloneWorkshopId.value, questionId: questionId },
   })
 
   await invalidateQuestions()
@@ -277,8 +271,7 @@ async function deleteAllQuestions() {
   for (const question of sortedQuestions.value) {
     if (question.id) {
       await deleteMutation.mutateAsync({
-        activityId: standaloneWorkshopId.value,
-        questionId: question.id,
+        path: { activityId: standaloneWorkshopId.value, questionId: question.id },
       })
     }
   }
@@ -295,9 +288,8 @@ async function updateQuestionOrder(question: Question, displayOrder: number) {
     return
 
   await updateMutation.mutateAsync({
-    activityId: standaloneWorkshopId.value,
-    questionId: question.id,
-    data: { displayOrder },
+    path: { activityId: standaloneWorkshopId.value, questionId: question.id },
+    body: { displayOrder },
   })
 }
 

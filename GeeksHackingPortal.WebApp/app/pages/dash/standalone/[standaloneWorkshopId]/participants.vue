@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type {
-  GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantItem,
-  GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantResponse,
-  GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsRegistrationSubmissionItem,
+  GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem,
+  GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse,
+  GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetRegistrationSubmissionItem,
 } from '@geekshacking/portal-sdk'
 import {
   geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpointQueryKey,
@@ -14,9 +14,9 @@ import {
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
 
-type ParticipantItem = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantItem
-type ParticipantDetail = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsParticipantResponse
-type RegistrationSubmission = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsRegistrationSubmissionItem
+type ParticipantItem = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem
+type ParticipantDetail = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse
+type RegistrationSubmission = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetRegistrationSubmissionItem
 type FilterStatus = 'all' | 'active' | 'withdrawn'
 
 const route = useRoute()
@@ -30,17 +30,14 @@ const selectedUserId = ref<string | null>(null)
 const isDetailOpen = ref(false)
 
 const { data: eventsData } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint()
-const { data: participantsData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListEndpoint(
-  standaloneWorkshopId,
-)
+const { data: participantsData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListEndpoint({ path: computed(() => ({ standaloneWorkshopId: standaloneWorkshopId.value })) })
 const withdrawMutation = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsWithdrawEndpoint()
 
 const event = computed(() => eventsData.value?.standaloneWorkshops?.find(item => item.id === standaloneWorkshopId.value))
 const participants = computed<ParticipantItem[]>(() => participantsData.value?.participants ?? [])
 
 const { data: participantDetail, isLoading: isLoadingDetail } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpoint(
-  standaloneWorkshopId,
-  computed(() => selectedUserId.value ?? undefined),
+  { path: computed(() => ({ standaloneWorkshopId: standaloneWorkshopId.value, userId: selectedUserId.value ?? '' })) },
   { query: { enabled: computed(() => !!standaloneWorkshopId.value && !!selectedUserId.value) } },
 )
 
@@ -138,15 +135,12 @@ function closeParticipant() {
 
 async function invalidateParticipants() {
   await queryClient.invalidateQueries({
-    queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListEndpointQueryKey(standaloneWorkshopId.value),
+    queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListEndpointQueryKey({ path: { standaloneWorkshopId: standaloneWorkshopId.value } }),
   })
 
   if (selectedUserId.value) {
     await queryClient.invalidateQueries({
-      queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpointQueryKey(
-        standaloneWorkshopId.value,
-        selectedUserId.value,
-      ),
+      queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpointQueryKey({ path: { standaloneWorkshopId: standaloneWorkshopId.value, userId: selectedUserId.value } }),
     })
   }
 }
@@ -160,8 +154,7 @@ async function withdrawParticipant(participant: ParticipantItem) {
 
   try {
     await withdrawMutation.mutateAsync({
-      standaloneWorkshopId: standaloneWorkshopId.value,
-      userId: participant.userId,
+      path: { standaloneWorkshopId: standaloneWorkshopId.value, userId: participant.userId },
     })
     await invalidateParticipants()
     toast.add({

@@ -10,23 +10,18 @@ import { computed, ref } from 'vue'
 
 const route = useRoute()
 const routeHackathonId = computed(() => (route.params.hackathonId as string) ?? '')
-const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(routeHackathonId)
+const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({ path: computed(() => ({ hackathonIdOrShortCode: routeHackathonId.value })) })
 const hackathonId = computed(() => hackathon.value?.id ?? '')
 
 // Fetch challenges list for the hackathon
-const { data: challengesData, isLoading } = useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint(
-  computed(() => hackathonId.value ?? ''),
-)
+const { data: challengesData, isLoading } = useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value ?? '' })) })
 const challenges = computed(() => [...(challengesData.value?.challenges ?? [])].reverse())
 
 // Prefetch all challenge details on load for instant display when selected
 const detailsQueries = useQueries({
   queries: computed(() =>
     challenges.value.map(challenge =>
-      geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryOptions(
-        hackathonId.value ?? '',
-        challenge.id ?? '',
-      ),
+      geeksHackingPortalApiEndpointsParticipantsHackathonChallengesGetEndpointQueryOptions({ path: { hackathonId: hackathonId.value ?? '', challengeId: challenge.id ?? '' } }),
     ),
   ),
 })

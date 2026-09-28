@@ -3,4 +3,31 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointStatus200, GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointStatus400, GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointStatus401, GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpoint } from '../clients/geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointMutationKey = () => [{ url: '/participants/hackathons/:hackathonId/teams/:teamId/submissions' }] as const
+
+/**
+ * {@link /participants/hackathons/:hackathonId/teams/:teamId/submissions}
+ */
+export function useGeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointStatus400 | GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointStatus400 | GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointOptions, TContext>({
+    mutationFn: async({ path, body }) => {
+      return geeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointOptions['path']>(path), body: toValue<GeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpointOptions['body']>(body), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

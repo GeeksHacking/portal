@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpointStatus204, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpoint } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpointMutationKey = () => [{ url: '/organizers/hackathons/:hackathonId/workshops/:workshopId' }] as const
+
+/**
+ * @description Deletes an existing workshop.
+ * @summary Delete a workshop
+ * {@link /organizers/hackathons/:hackathonId/workshops/:workshopId}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpointStatus204, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpointStatus403>, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpointStatus204, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpointStatus403>, GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpointOptions, TContext>({
+    mutationFn: async({ path }) => {
+      return geeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsOrganizersHackathonWorkshopsDeleteEndpointOptions['path']>(path), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

@@ -38,6 +38,7 @@ public class ApplyCommand(
         logger.LogInformation("OpenIddict database migrations were applied.");
 
         cancellationToken.ThrowIfCancellationRequested();
+        SchemaDiffTempTableCleaner.DropLeftoverTables(sql, logger);
         var report = SchemaDifferenceInspector.Inspect(sql);
         logger.LogInformation(
             "Collected SqlSugar schema differences for {EntityCount} entities.",

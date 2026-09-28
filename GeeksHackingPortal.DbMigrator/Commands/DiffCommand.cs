@@ -18,6 +18,7 @@ public class DiffCommand(ILogger<DiffCommand> logger, ISqlSugarClient sql)
         logger.LogInformation("Inspecting pending database schema differences.");
         cancellationToken.ThrowIfCancellationRequested();
 
+        SchemaDiffTempTableCleaner.DropLeftoverTables(sql, logger);
         var report = SchemaDifferenceInspector.Inspect(sql);
         logger.LogInformation(
             "Collected SqlSugar schema differences for {EntityCount} entities.",

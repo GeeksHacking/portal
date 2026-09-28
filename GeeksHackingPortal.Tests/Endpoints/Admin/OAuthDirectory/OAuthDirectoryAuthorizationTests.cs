@@ -270,16 +270,17 @@ public class OAuthDirectoryAuthorizationTests
         return client;
     }
 
-    // "gunnicorn" is listed under Admin:AdminGitHubLogins in appsettings.Development.json.
+    // "gunnicorn" is listed under Admin:AdminGitHubLogins in appsettings.Development.json and is
+    // seeded by the DbMigrator with this GitHubId, so impersonation resolves the existing account.
     private static async Task<AuthenticatedHttpClientDataClass> CreateOtherRootClientAsync()
     {
         var client = new AuthenticatedHttpClientDataClass
         {
-            GitHubId = 424242,
+            GitHubId = 47025159,
             GitHubLogin = "gunnicorn",
-            FirstName = "Other",
-            LastName = "Root",
-            Email = "other-root@example.com",
+            FirstName = "gunnicorn",
+            LastName = "",
+            Email = "anggunq@hotmail.com",
         };
 
         await client.InitializeAsync();

@@ -54,7 +54,7 @@ public class OAuthDirectoryService(
 
         var authorizationStats = await openIddictDbContext
             .Set<OpenIddictEntityFrameworkCoreAuthorization>()
-            .Where(a => a.Application != null && applicationIds.Contains(a.Application.Id))
+            .Where(a => a.Application != null && applicationIds.Contains(a.Application.Id!))
             .GroupBy(a => a.Application!.Id)
             .Select(g => new
             {
@@ -68,7 +68,7 @@ public class OAuthDirectoryService(
 
         var tokenStats = await openIddictDbContext
             .Set<OpenIddictEntityFrameworkCoreToken>()
-            .Where(t => t.Application != null && applicationIds.Contains(t.Application.Id))
+            .Where(t => t.Application != null && applicationIds.Contains(t.Application.Id!))
             .GroupBy(t => t.Application!.Id)
             .Select(g => new
             {

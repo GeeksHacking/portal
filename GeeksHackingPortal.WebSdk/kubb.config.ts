@@ -1,5 +1,4 @@
 import { defineConfig } from 'kubb/config'
-import { pluginClient } from '@kubb/plugin-client'
 import { pluginFetch } from '@kubb/plugin-fetch'
 import { pluginFaker } from '@kubb/plugin-faker'
 import { pluginMsw } from '@kubb/plugin-msw'
@@ -26,13 +25,13 @@ export default defineConfig({
   plugins: [
     pluginOas(),
     pluginTs(),
-    pluginClient(),
     pluginFetch(),
     pluginVueQuery({
+      client: 'fetch',
       mutation: {
         importPath: '../../useMutation.ts',
       },
-      hooks: true
+      hooks: true,
     }),
     pluginMsw(),
     pluginFaker(),

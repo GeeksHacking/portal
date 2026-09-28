@@ -63,10 +63,8 @@
     "postinstall": "tsdown"
   },
   "dependencies": {
-    "@kubb/plugin-client": "^4.39.3",
     "@kubb/plugin-fetch": "^5.5.1",
-    "@tanstack/query-core": "^5.104.0",
-    "axios": "^1.20.0"
+    "@tanstack/query-core": "^5.104.0"
   },
   "devDependencies": {
     "@kubb/cli": "^5.3.19",

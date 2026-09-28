@@ -8,16 +8,13 @@ import {
 const route = useRoute()
 const config = useRuntimeConfig()
 const routeHackathonId = computed(() => (route.params.hackathonId as string) ?? '')
-const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(routeHackathonId)
+const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({ path: computed(() => ({ hackathonIdOrShortCode: routeHackathonId.value })) })
 const resolvedHackathonId = computed(() => hackathon.value?.id ?? '')
 
 useHead({ title: 'Team Portal | GeeksHacking Event Portal' })
 
 const { data: user, isLoading: authLoading } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
-const { data: status, isLoading: statusLoading } = useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint(
-  resolvedHackathonId,
-  { query: { enabled: computed(() => !!resolvedHackathonId.value) } },
-)
+const { data: status, isLoading: statusLoading } = useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint({ path: computed(() => ({ hackathonId: resolvedHackathonId.value })) }, { query: { enabled: computed(() => !!resolvedHackathonId.value) } })
 
 watch(
   [() => user.value, authLoading, () => status.value, statusLoading, hackathon],

@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointStatus200, GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointStatus401, GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint } from '../clients/geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointMutationKey = () => [{ url: '/participants/hackathons/:hackathonId/workshops/:workshopId/attendance' }] as const
+
+/**
+ * @description Mark attendance for a workshop that the participant has joined.
+ * @summary Mark attendance
+ * {@link /participants/hackathons/:hackathonId/workshops/:workshopId/attendance}
+ */
+export function useGeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointOptions, TContext>({
+    mutationFn: async({ path }) => {
+      return geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsMarkAttendanceEndpointOptions['path']>(path), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointStatus200, GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpoint } from '../clients/geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointMutationKey = () => [{ url: '/participants/teams/join' }] as const
+
+/**
+ * @description Joins the current user to a team using only the team's join code. If the user is not already a participant in the hackathon, they will be automatically registered.
+ * @summary Join a team by join code
+ * {@link /participants/teams/join}
+ */
+export function useGeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointStatus401>, GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointStatus401>, GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointOptions, TContext>({
+    mutationFn: async({ body }) => {
+      return geeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpoint({ ...config, body: toValue<GeeksHackingPortalApiEndpointsParticipantsTeamsJoinByCodeEndpointOptions['body']>(body), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

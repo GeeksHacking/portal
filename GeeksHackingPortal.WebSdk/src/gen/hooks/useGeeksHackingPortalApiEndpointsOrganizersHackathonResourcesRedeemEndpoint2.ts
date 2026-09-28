@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Options, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Status200, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Status401, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Status403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2 } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2MutationKey = () => [{ url: '/organizers/standalone-workshops/:activityId/participants/:participantUserId/resources/:resourceId/redemptions' }] as const
+
+/**
+ * @description Creates a redemption record for an activity resource on behalf of a participant.
+ * @summary Redeem a resource for a participant
+ * {@link /organizers/standalone-workshops/:activityId/participants/:participantUserId/resources/:resourceId/redemptions}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Status200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Status401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Status403>, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Options, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2MutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Status200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Status401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Status403>, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Options, TContext>({
+    mutationFn: async({ path }) => {
+      return geeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2({ ...config, path: toValue<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2Options['path']>(path), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

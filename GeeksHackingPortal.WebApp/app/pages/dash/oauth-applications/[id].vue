@@ -5,7 +5,7 @@ import { computed } from 'vue'
 const route = useRoute()
 const applicationId = computed(() => route.params.id as string)
 
-const { data: historyData, isLoading } = useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint(applicationId)
+const { data: historyData, isLoading } = useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsHistoryEndpoint({ path: computed(() => ({ id: applicationId.value })) })
 
 const columns = [
   { id: 'userName', accessorKey: 'userName', header: 'Name' },

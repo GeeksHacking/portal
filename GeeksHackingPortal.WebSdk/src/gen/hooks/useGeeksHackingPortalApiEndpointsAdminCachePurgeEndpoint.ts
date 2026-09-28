@@ -3,4 +3,32 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus200, GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus401, GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsAdminCachePurgeEndpoint } from '../clients/geeksHackingPortalApiEndpointsAdminCachePurgeEndpoint'
+
 export const geeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationKey = () => [{ url: '/admin/cache/purge' }] as const
+
+/**
+ * @description Clears the in-process SqlSugar data cache used by the API server.
+ * @summary Purge server cache
+ * {@link /admin/cache/purge}
+ */
+export function useGeeksHackingPortalApiEndpointsAdminCachePurgeEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus403>, undefined, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsAdminCachePurgeEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus403>, undefined, TContext>({
+    mutationFn: async() => {
+      return geeksHackingPortalApiEndpointsAdminCachePurgeEndpoint({ ...config, throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

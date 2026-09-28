@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpoint200 } from '@geekshacking/portal-sdk'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpointStatus200 } from '@geekshacking/portal-sdk'
 import {
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint,
@@ -12,12 +12,12 @@ import { getApiValidationErrors } from '~/utils/api-errors'
 
 const props = defineProps<{
   hackathonId: string
-  questions: GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpoint200
+  questions: GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpointStatus200
 }>()
 
 const router = useRouter()
 const route = useRoute()
-const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(computed(() => props.hackathonId))
+const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({ path: computed(() => ({ hackathonIdOrShortCode: props.hackathonId })) })
 const queryClient = useQueryClient()
 
 const registrationPath = computed(() => hackathon.value ? `/${hackathon.value.shortCode}/registration` : `/${props.hackathonId}/registration`)
@@ -242,7 +242,7 @@ async function onSubmit() {
     const lastName = String(state.last_name ?? '').trim()
     if (firstName && lastName) {
       await updateUserMutation.mutateAsync({
-        data: {
+        body: {
           firstName,
           lastName,
         },
@@ -251,7 +251,7 @@ async function onSubmit() {
 
     fieldErrors.value = {}
     submissionError.value = false
-    await submitRegistrationMutation.mutateAsync({ hackathonId: props.hackathonId, data: { submissions } })
+    await submitRegistrationMutation.mutateAsync({ path: { hackathonId: props.hackathonId }, body: { submissions } })
 
     // Remove cached submissions so status page fetches fresh data
     queryClient.removeQueries({

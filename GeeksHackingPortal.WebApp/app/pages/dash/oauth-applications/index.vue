@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type {
-  GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform,
+  GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformKey,
   GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse,
 } from '@geekshacking/portal-sdk'
 import {
@@ -17,7 +17,7 @@ import { computed, ref } from 'vue'
 import { getApiErrorMessage } from '~/utils/api-errors'
 
 type OAuthApplication = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse
-type OAuthApplicationPlatform = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatform
+type OAuthApplicationPlatform = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformKey
 
 interface ApplicationForm {
   clientId: string
@@ -145,13 +145,13 @@ async function handleSubmit() {
   try {
     const response = isEditing.value && editingApplicationId.value
       ? await updateMutation.mutateAsync({
-          id: editingApplicationId.value,
-          data: {
+          path: { id: editingApplicationId.value },
+          body: {
             ...payload,
             rotateClientSecret: form.value.platform === 'Web' && form.value.rotateClientSecret,
           },
         })
-      : await createMutation.mutateAsync({ data: payload })
+      : await createMutation.mutateAsync({ body: payload })
 
     issuedSecret.value = response.clientSecret ?? null
     await queryClient.invalidateQueries({
@@ -182,7 +182,7 @@ async function confirmDelete() {
     return
 
   try {
-    await deleteMutation.mutateAsync({ id: pendingDeleteApplication.value.id })
+    await deleteMutation.mutateAsync({ path: { id: pendingDeleteApplication.value.id } })
     await queryClient.invalidateQueries({
       queryKey: geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryKey(),
     })

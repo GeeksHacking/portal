@@ -15,18 +15,11 @@ const props = withDefaults(defineProps<{
 const route = useRoute()
 const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
-const { data: teamsData, isLoading: isLoadingTeams } = useGeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint(
-  hackathonId,
-  { query: { enabled: computed(() => !!hackathonId.value) } },
-)
+const { data: teamsData, isLoading: isLoadingTeams } = useGeeksHackingPortalApiEndpointsOrganizersHackathonTeamsListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) }, { query: { enabled: computed(() => !!hackathonId.value) } })
 
-const { data: participantsData } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint(
-  computed(() => hackathonId.value),
-)
+const { data: participantsData } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) })
 
-const { data: challengesData } = useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint(
-  computed(() => hackathonId.value),
-)
+const { data: challengesData } = useGeeksHackingPortalApiEndpointsOrganizersHackathonChallengesListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) })
 
 const teams = computed(() => teamsData.value?.teams ?? [])
 const teamSearchQuery = ref('')

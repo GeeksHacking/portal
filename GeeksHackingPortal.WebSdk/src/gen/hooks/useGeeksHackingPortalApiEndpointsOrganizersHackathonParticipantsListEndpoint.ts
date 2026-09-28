@@ -5,9 +5,10 @@
 
 import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
 import type { GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointStatus200, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint'
+import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from '@tanstack/vue-query'
 import type { MaybeRefOrGetter } from 'vue'
 import { geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint'
-import { queryOptions } from '@tanstack/vue-query'
+import { queryOptions, useQuery } from '@tanstack/vue-query'
 import { toValue } from 'vue'
 
 export const geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointQueryKey = ({ path }: { path: MaybeRefOrGetter<Omit<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointOptions, 'headers'>['path']> }) => [{ url: '/organizers/hackathons/:hackathonId/participants', params: path }] as const
@@ -22,4 +23,28 @@ export function geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsLis
       return geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint({ ...config, path: toValue(path), signal: config.signal ?? signal, throwOnError: true }).unwrap()
    },
   })
+}
+
+/**
+ * @description Retrieves all participants for a hackathon with their review status.
+ * @summary List all participants
+ * {@link /organizers/hackathons/:hackathonId/participants}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint<TData = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointStatus200, TQueryData = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointStatus200, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointQueryKey>({ path }: { path: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointOptions['path']> }, options: {
+  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointStatus403>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>
+} = {}) {
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointQueryKey({ path })
+
+  const queryResult = useQuery({
+   ...geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointQueryOptions({ path }, config),
+   ...resolvedOptions,
+   queryKey
+  } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointStatus403>, TData, GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointStatus200, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointStatus403>> & { queryKey: TQueryKey }
+
+  queryResult.queryKey = queryKey as TQueryKey
+
+  return queryResult
 }

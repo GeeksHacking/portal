@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type {
-  GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus,
+  GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusKey,
   GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem,
-  GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatus,
+  GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatusKey,
   GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem,
   GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto,
 } from '@geekshacking/portal-sdk'
@@ -29,13 +29,11 @@ const hackathonId = computed(() => props.hackathonId || (route.params.hackathonI
 const toast = useToast()
 const queryClient = useQueryClient()
 
-const { data: participantsData, isLoading: isLoadingParticipants } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint(
-  computed(() => hackathonId.value),
-)
+const { data: participantsData, isLoading: isLoadingParticipants } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) })
 
 type ParticipantItem = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem
-type ParticipantConcludedStatus = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatus
-type ParticipantReviewStatus = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatus
+type ParticipantConcludedStatus = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusKey
+type ParticipantReviewStatus = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatusKey
 type RegistrationQuestion = GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto
 type RegistrationSubmission = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem
 
@@ -286,15 +284,10 @@ function formatSubmissionAnswer(submission: RegistrationSubmission) {
 // Expanded participant detail
 const expandedParticipantId = ref<string | null>(null)
 
-const { data: participantDetail, isLoading: isLoadingDetail } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint(
-  computed(() => hackathonId.value),
-  computed(() => expandedParticipantId.value ?? ''),
-)
+const { data: participantDetail, isLoading: isLoadingDetail } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value, userId: expandedParticipantId.value ?? '' })) })
 
 // Fetch registration questions for ordering
-const { data: questionsData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpoint(
-  computed(() => hackathonId.value),
-)
+const { data: questionsData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) })
 
 const orderedQuestions = computed<RegistrationQuestion[]>(() => {
   const categories = questionsData.value?.categories ?? []
@@ -557,14 +550,13 @@ async function handleReview(decision: 'accept' | 'reject') {
 
   try {
     await reviewMutation.mutateAsync({
-      hackathonId: hackathonId.value,
-      participantUserId: reviewingParticipantId.value,
-      data: {
+      path: { hackathonId: hackathonId.value, participantUserId: reviewingParticipantId.value },
+      body: {
         decision,
         reason: trimmedReason,
       },
     })
-    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointQueryKey(hackathonId.value) })
+    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointQueryKey({ path: { hackathonId: hackathonId.value } }) })
     closeReviewModal()
     toast.add({
       title: 'Review submitted',
@@ -575,7 +567,7 @@ async function handleReview(decision: 'accept' | 'reject') {
   catch (error) {
     const statusCode = getErrorStatusCode(error)
     if (statusCode === 409) {
-      await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointQueryKey(hackathonId.value) })
+      await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointQueryKey({ path: { hackathonId: hackathonId.value } }) })
       closeReviewModal()
       toast.add({
         title: 'Already reviewed',

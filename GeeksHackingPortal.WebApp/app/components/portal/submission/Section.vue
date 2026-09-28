@@ -10,20 +10,15 @@ import { computed, ref } from 'vue'
 
 const route = useRoute()
 const routeHackathonId = computed(() => (route.params.hackathonId as string) ?? '')
-const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(routeHackathonId)
+const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({ path: computed(() => ({ hackathonIdOrShortCode: routeHackathonId.value })) })
 const hackathonId = computed(() => hackathon.value?.id ?? '')
 const toast = useToast()
 
 // Fetch participation status
-const { data: statusData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint(
-  computed(() => hackathonId.value ?? ''),
-)
+const { data: statusData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value ?? '' })) })
 
 // Fetch current user's team
-const { data: teamData, isLoading: isLoadingTeam } = useGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint(
-  hackathonId,
-  { query: { enabled: computed(() => !!hackathonId.value && !!statusData.value?.isParticipant) } },
-)
+const { data: teamData, isLoading: isLoadingTeam } = useGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) }, { query: { enabled: computed(() => !!hackathonId.value && !!statusData.value?.isParticipant) } })
 
 const isParticipant = computed(() => !!statusData.value?.isParticipant)
 const hasTeam = computed(() => !!teamData.value?.id)
@@ -54,10 +49,7 @@ const submissionStatus = computed(() => {
 })
 
 // Fetch existing submissions for the team
-const { data: submissionsData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsListEndpoint(
-  computed(() => hackathonId.value ?? ''),
-  computed(() => teamId.value ?? ''),
-)
+const { data: submissionsData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value ?? '', teamId: teamId.value ?? '' })) })
 
 // Check if team has any existing submissions
 const hasExistingSubmissions = computed(() => {
@@ -181,9 +173,8 @@ function confirmSubmit() {
     return
 
   createSubmissionMutation.mutate({
-    hackathonId: hackathonId.value,
-    teamId: teamId.value,
-    data: {
+    path: { hackathonId: hackathonId.value, teamId: teamId.value },
+    body: {
       challengeId: challengeId.value,
       title: title.value.trim(),
       summary: summary.value.trim() || undefined,

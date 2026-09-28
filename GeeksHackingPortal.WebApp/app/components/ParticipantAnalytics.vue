@@ -10,14 +10,11 @@ const props = defineProps<{
 const REVIEW_OVERDUE_DAYS = 5
 const REVIEW_OVERDUE_MS = REVIEW_OVERDUE_DAYS * 24 * 60 * 60 * 1000
 
-const { data: participantsData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint(
-  computed(() => props.hackathonId),
-  {
+const { data: participantsData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint({ path: computed(() => ({ hackathonId: props.hackathonId })) }, {
     query: {
       enabled: computed(() => !!props.hackathonId && props.isOrganizer),
     },
-  },
-)
+  })
 
 const stats = computed(() => {
   const all = participantsData.value?.participants ?? []

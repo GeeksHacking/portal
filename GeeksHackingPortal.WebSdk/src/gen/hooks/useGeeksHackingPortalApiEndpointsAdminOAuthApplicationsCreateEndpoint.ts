@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointOptions, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus200, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus400, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint } from '../clients/geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointMutationKey = () => [{ url: '/admin/oauth-applications' }] as const
+
+/**
+ * @description Creates an admin-owned OpenIddict OAuth client for a web or native platform application.
+ * @summary Create an OAuth application
+ * {@link /admin/oauth-applications}
+ */
+export function useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus400 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus403>, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus400 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus403>, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointOptions, TContext>({
+    mutationFn: async({ body }) => {
+      return geeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint({ ...config, body: toValue<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointOptions['body']>(body), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

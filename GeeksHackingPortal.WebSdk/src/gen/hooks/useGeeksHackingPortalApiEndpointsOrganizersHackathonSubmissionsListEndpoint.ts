@@ -5,9 +5,10 @@
 
 import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
 import type { GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointStatus200, GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpoint'
+import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from '@tanstack/vue-query'
 import type { MaybeRefOrGetter } from 'vue'
 import { geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpoint } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpoint'
-import { queryOptions } from '@tanstack/vue-query'
+import { queryOptions, useQuery } from '@tanstack/vue-query'
 import { toValue } from 'vue'
 
 export const geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointQueryKey = ({ path, query }: { path: MaybeRefOrGetter<Omit<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointOptions, 'headers'>['path']>; query?: MaybeRefOrGetter<Omit<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointOptions, 'headers'>['query']> }) => [{ url: '/organizers/hackathons/:hackathonId/submissions', params: path }, ...(query ? [query] : [])] as const
@@ -22,4 +23,28 @@ export function geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsList
       return geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpoint({ ...config, path: toValue(path), query: toValue(query), signal: config.signal ?? signal, throwOnError: true }).unwrap()
    },
   })
+}
+
+/**
+ * @description Retrieves all submissions for a hackathon. Can filter by challenge or team.
+ * @summary List all submissions
+ * {@link /organizers/hackathons/:hackathonId/submissions}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpoint<TData = GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointStatus200, TQueryData = GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointStatus200, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointQueryKey>({ path, query }: { path: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointOptions['path']>; query?: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointOptions['query']> }, options: {
+  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointStatus403>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>
+} = {}) {
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointQueryKey({ path, query })
+
+  const queryResult = useQuery({
+   ...geeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointQueryOptions({ path, query }, config),
+   ...resolvedOptions,
+   queryKey
+  } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointStatus403>, TData, GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointStatus200, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonSubmissionsListEndpointStatus403>> & { queryKey: TQueryKey }
+
+  queryResult.queryKey = queryKey as TQueryKey
+
+  return queryResult
 }

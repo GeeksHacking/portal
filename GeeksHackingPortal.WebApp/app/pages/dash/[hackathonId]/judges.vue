@@ -18,10 +18,7 @@ const hackathonId = computed(() => props.hackathonId || (route.params.hackathonI
 
 const queryClient = useQueryClient()
 
-const { data: judgesData, isLoading: isLoadingJudges } = useGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpoint(
-  hackathonId,
-  { query: { enabled: computed(() => !!hackathonId.value) } },
-)
+const { data: judgesData, isLoading: isLoadingJudges } = useGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) }, { query: { enabled: computed(() => !!hackathonId.value) } })
 
 const judges = computed(() => judgesData.value?.judges ?? [])
 
@@ -79,9 +76,8 @@ function openEditModal(judge: typeof judges.value[number]) {
 async function handleSubmit() {
   if (isEditing.value && editingJudgeId.value) {
     await updateMutation.mutateAsync({
-      hackathonId: hackathonId.value,
-      judgeId: editingJudgeId.value,
-      data: {
+      path: { hackathonId: hackathonId.value, judgeId: editingJudgeId.value },
+      body: {
         name: form.value.name,
         active: form.value.active,
         regenerateSecret: form.value.regenerateSecret,
@@ -89,7 +85,7 @@ async function handleSubmit() {
     })
   }
   else {
-    await createMutation.mutateAsync({ hackathonId: hackathonId.value, data: { name: form.value.name } })
+    await createMutation.mutateAsync({ path: { hackathonId: hackathonId.value }, body: { name: form.value.name } })
   }
   await queryClient.invalidateQueries({ queryKey: ['hackathons', hackathonId.value, 'judges'] })
   isModalOpen.value = false

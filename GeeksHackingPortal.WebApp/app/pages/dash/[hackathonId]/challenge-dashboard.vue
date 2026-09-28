@@ -10,19 +10,13 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 const route = useRoute()
 const hackathonIdOrShortCode = computed(() => (route.params.hackathonId as string | undefined) ?? null)
 
-const { data: hackathon, isLoading: isLoadingHackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(
-  computed(() => hackathonIdOrShortCode.value ?? ''),
-  { query: { enabled: computed(() => !!hackathonIdOrShortCode.value) } },
-)
+const { data: hackathon, isLoading: isLoadingHackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({ path: computed(() => ({ hackathonIdOrShortCode: hackathonIdOrShortCode.value ?? '' })) }, { query: { enabled: computed(() => !!hackathonIdOrShortCode.value) } })
 
 const resolvedHackathonId = computed(() => hackathon.value?.id ?? null)
 
 const { data: user, isLoading: isLoadingUser } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
 
-const { data: organizersData, isLoading: isLoadingOrganizers } = useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListEndpoint(
-  computed(() => resolvedHackathonId.value ?? ''),
-  { query: { enabled: computed(() => !!resolvedHackathonId.value) } },
-)
+const { data: organizersData, isLoading: isLoadingOrganizers } = useGeeksHackingPortalApiEndpointsOrganizersHackathonOrganizersListEndpoint({ path: computed(() => ({ hackathonId: resolvedHackathonId.value ?? '' })) }, { query: { enabled: computed(() => !!resolvedHackathonId.value) } })
 
 const isOrganizer = computed(() => {
   if (!user.value?.id)
@@ -41,15 +35,12 @@ watch([isOrganizer, isLoadingOrganizerCheck], ([org, loading]) => {
 })
 
 // Poll challenges every 10 seconds for live updates
-const { data: challengesData, dataUpdatedAt, isLoading: isLoadingChallenges } = useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint(
-  computed(() => resolvedHackathonId.value ?? ''),
-  {
+const { data: challengesData, dataUpdatedAt, isLoading: isLoadingChallenges } = useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint({ path: computed(() => ({ hackathonId: resolvedHackathonId.value ?? '' })) }, {
     query: {
       enabled: computed(() => !!resolvedHackathonId.value && isOrganizer.value),
       refetchInterval: 10_000,
     },
-  },
-)
+  })
 
 const challenges = computed(() => challengesData.value?.challenges ?? [])
 

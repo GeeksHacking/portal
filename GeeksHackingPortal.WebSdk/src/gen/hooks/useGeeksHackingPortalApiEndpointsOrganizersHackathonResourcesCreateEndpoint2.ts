@@ -3,4 +3,31 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Options, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Status200, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Status401, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Status403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2 } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2MutationKey = () => [{ url: '/organizers/standalone-workshops/:activityId/resources' }] as const
+
+/**
+ * {@link /organizers/standalone-workshops/:activityId/resources}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Status200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Status401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Status403>, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Options, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2MutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Status200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Status401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Status403>, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Options, TContext>({
+    mutationFn: async({ path, body }) => {
+      return geeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2({ ...config, path: toValue<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Options['path']>(path), body: toValue<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2Options['body']>(body), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

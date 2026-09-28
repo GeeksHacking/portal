@@ -5,8 +5,10 @@
 
 import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
 import type { GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200, GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint'
+import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from '@tanstack/vue-query'
 import { geeksHackingPortalApiEndpointsAuthWhoAmIEndpoint } from '../clients/geeksHackingPortalApiEndpointsAuthWhoAmIEndpoint'
-import { queryOptions } from '@tanstack/vue-query'
+import { queryOptions, useQuery } from '@tanstack/vue-query'
+import { toValue } from 'vue'
 
 export const geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryKey = () => [{ url: '/auth/whoami' }] as const
 
@@ -20,4 +22,28 @@ export function geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryOptions(con
       return geeksHackingPortalApiEndpointsAuthWhoAmIEndpoint({ ...config, signal: config.signal ?? signal, throwOnError: true }).unwrap()
    },
   })
+}
+
+/**
+ * @description Returns the current authenticated user's information including GitHub details.
+ * @summary Get current user info
+ * {@link /auth/whoami}
+ */
+export function useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint<TData = GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200, TQueryData = GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryKey>(options: {
+  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus401>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>
+} = {}) {
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryKey()
+
+  const queryResult = useQuery({
+   ...geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryOptions(config),
+   ...resolvedOptions,
+   queryKey
+  } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus401>, TData, GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus200, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAuthWhoAmIEndpointStatus401>> & { queryKey: TQueryKey }
+
+  queryResult.queryKey = queryKey as TQueryKey
+
+  return queryResult
 }

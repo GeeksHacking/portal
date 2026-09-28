@@ -29,7 +29,7 @@ const queryClient = useQueryClient()
 
 // Ensure user is a participant before attempting to load registration data.
 const { data: statusData, isLoading: isLoadingStatus, error: statusError } = useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint(
-  computed(() => hackathonId.value ?? ''),
+  { path: computed(() => ({ hackathonId: hackathonId.value ?? '' })) },
   { query: { enabled: computed(() => !!hackathonId.value) } },
 )
 
@@ -59,13 +59,13 @@ watch(
 
     try {
       const questionsResponse = await queryClient.fetchQuery(
-        geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpointQueryOptions(id),
+        geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpointQueryOptions({ path: { hackathonId: id } }),
       )
       const categories = questionsResponse?.categories ?? []
       const hasQuestions = categories.some(cat => cat.questions && cat.questions.length > 0)
 
       if (!hasQuestions)
-        await initQuestionMutation.mutateAsync({ activityId: id })
+        await initQuestionMutation.mutateAsync({ path: { activityId: id } })
 
       lastSetupHackathonId.value = id
       setupComplete.value = true
@@ -81,7 +81,7 @@ watch(
 
 // Fetch registration questions (only after setup is complete)
 const { data: questions, isLoading, error } = useQuery(computed(() => ({
-  ...geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpointQueryOptions(hackathonId.value ?? ''),
+  ...geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpointQueryOptions({ path: { hackathonId: hackathonId.value ?? '' } }),
   enabled: setupComplete.value && !!hackathonId.value,
 })))
 
@@ -90,7 +90,7 @@ async function joinHackathonFromRegistration() {
     return
 
   try {
-    await joinMutation.mutateAsync({ hackathonId: hackathonId.value })
+    await joinMutation.mutateAsync({ path: { hackathonId: hackathonId.value } })
     await queryClient.invalidateQueries({ queryKey: [{ url: '/participants/hackathons/:hackathonId/status', params: { hackathonId: hackathonId.value } }] })
     setupError.value = null
   }

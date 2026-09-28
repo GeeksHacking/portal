@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint200 } from '@geekshacking/portal-sdk'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpointStatus200 } from '@geekshacking/portal-sdk'
 import {
   useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsLeaveEndpoint,
@@ -8,7 +8,7 @@ import {
 } from '@geekshacking/portal-sdk/hooks'
 
 const props = defineProps<{
-  team: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint200
+  team: GeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpointStatus200
   hackathonId: string | null
 }>()
 
@@ -16,7 +16,7 @@ const MAX_TEAM_SIZE = 5
 
 const hackathonIdRef = computed(() => props.hackathonId)
 const teamIdRef = computed(() => props.team.id ?? null)
-const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(computed(() => hackathonIdRef.value ?? ''))
+const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({ path: computed(() => ({ hackathonIdOrShortCode: hackathonIdRef.value ?? '' })) })
 
 // State
 const isCopied = ref(false)
@@ -44,7 +44,7 @@ function openEditTeam() {
 function handleUpdateTeam() {
   if (!hackathonIdRef.value || !teamIdRef.value)
     return
-  updateTeamMutation.mutate({ hackathonId: hackathonIdRef.value, teamId: teamIdRef.value, data: { name: editTeamName.value, description: editTeamDescription.value } }, {
+  updateTeamMutation.mutate({ path: { hackathonId: hackathonIdRef.value, teamId: teamIdRef.value }, body: { name: editTeamName.value, description: editTeamDescription.value } }, {
     onSuccess() {
       showEditTeam.value = false
     },
@@ -59,7 +59,7 @@ function handleRemoveMember() {
     return
   if (!hackathonIdRef.value || !teamIdRef.value)
     return
-  removeTeamMemberMutation.mutate({ hackathonId: hackathonIdRef.value, teamId: teamIdRef.value, userId: removeConfirmUserId.value }, {
+  removeTeamMemberMutation.mutate({ path: { hackathonId: hackathonIdRef.value, teamId: teamIdRef.value, userId: removeConfirmUserId.value } }, {
     onSuccess() {
       removeConfirmUserId.value = null
     },
@@ -72,7 +72,7 @@ function handleRemoveMember() {
 function handleLeaveTeam() {
   if (!hackathonIdRef.value)
     return
-  leaveTeamMutation.mutate({ hackathonId: hackathonIdRef.value }, {
+  leaveTeamMutation.mutate({ path: { hackathonId: hackathonIdRef.value } }, {
     onSuccess() {
       showLeaveConfirm.value = false
     },

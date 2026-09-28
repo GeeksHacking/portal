@@ -5,8 +5,10 @@
 
 import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
 import type { GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus200, GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint'
+import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from '@tanstack/vue-query'
 import { geeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint'
-import { queryOptions } from '@tanstack/vue-query'
+import { queryOptions, useQuery } from '@tanstack/vue-query'
+import { toValue } from 'vue'
 
 export const geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryKey = () => [{ url: '/organizers/hackathons' }] as const
 
@@ -20,4 +22,28 @@ export function geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQue
       return geeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint({ ...config, signal: config.signal ?? signal, throwOnError: true }).unwrap()
    },
   })
+}
+
+/**
+ * @description Retrieves all hackathons the current user has organizer access to.
+ * @summary List organizer hackathons
+ * {@link /organizers/hackathons}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint<TData = GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus200, TQueryData = GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus200, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryKey>(options: {
+  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus401>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>
+} = {}) {
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryKey()
+
+  const queryResult = useQuery({
+   ...geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryOptions(config),
+   ...resolvedOptions,
+   queryKey
+  } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus401>, TData, GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus200, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonListEndpointStatus401>> & { queryKey: TQueryKey }
+
+  queryResult.queryKey = queryKey as TQueryKey
+
+  return queryResult
 }

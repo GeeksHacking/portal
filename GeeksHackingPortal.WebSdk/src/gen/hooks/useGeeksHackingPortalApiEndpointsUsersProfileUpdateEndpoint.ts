@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointOptions, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint } from '../clients/geeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationKey = () => [{ url: '/users/me' }] as const
+
+/**
+ * @description Updates the current user's first and last name.
+ * @summary Update current user profile
+ * {@link /users/me}
+ */
+export function useGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400 | GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus401>, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400 | GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus401>, GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointOptions, TContext>({
+    mutationFn: async({ body }) => {
+      return geeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint({ ...config, body: toValue<GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointOptions['body']>(body), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

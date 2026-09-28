@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type {
-  GeeksHackingPortalApiEntitiesQuestionType,
+  GeeksHackingPortalApiEntitiesQuestionTypeKey,
   GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto,
   GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListResponse,
 } from '@geekshacking/portal-sdk'
@@ -23,7 +23,7 @@ const emit = defineEmits<{
 }>()
 
 type Question = GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto
-type QuestionType = GeeksHackingPortalApiEntitiesQuestionType
+type QuestionType = GeeksHackingPortalApiEntitiesQuestionTypeKey
 
 const questionTypeValues = {
   Text: 'Text',
@@ -317,7 +317,7 @@ async function submitRegistration() {
 
     if (firstName && lastName) {
       await updateUserMutation.mutateAsync({
-        data: {
+        body: {
           firstName,
           lastName,
         },
@@ -328,8 +328,8 @@ async function submitRegistration() {
     submissionError.value = false
 
     await submitMutation.mutateAsync({
-      standaloneWorkshopId: props.standaloneWorkshopId,
-      data: { submissions },
+      path: { standaloneWorkshopId: props.standaloneWorkshopId },
+      body: { submissions },
     })
 
     await Promise.all([

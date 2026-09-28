@@ -5,9 +5,10 @@
 
 import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
 import type { GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Options, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Status200, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Status401, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Status403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1'
+import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from '@tanstack/vue-query'
 import type { MaybeRefOrGetter } from 'vue'
 import { geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1 } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1'
-import { queryOptions } from '@tanstack/vue-query'
+import { queryOptions, useQuery } from '@tanstack/vue-query'
 import { toValue } from 'vue'
 
 export const geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1QueryKey = ({ path }: { path: MaybeRefOrGetter<Omit<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Options, 'headers'>['path']> }) => [{ url: '/organizers/hackathons/:activityId/participants/:participantUserId/resources/:resourceId/history', params: path }] as const
@@ -22,4 +23,28 @@ export function geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistor
       return geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1({ ...config, path: toValue(path), signal: config.signal ?? signal, throwOnError: true }).unwrap()
    },
   })
+}
+
+/**
+ * @description Returns a participant's redemption history for a specific resource.
+ * @summary Get participant resource redemption history
+ * {@link /organizers/hackathons/:activityId/participants/:participantUserId/resources/:resourceId/history}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1<TData = GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Status200, TQueryData = GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Status200, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1QueryKey>({ path }: { path: MaybeRefOrGetter<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Options['path']> }, options: {
+  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Status200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Status401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Status403>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>
+} = {}) {
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1QueryKey({ path })
+
+  const queryResult = useQuery({
+   ...geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1QueryOptions({ path }, config),
+   ...resolvedOptions,
+   queryKey
+  } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Status200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Status401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Status403>, TData, GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Status200, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Status401 | GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint1Status403>> & { queryKey: TQueryKey }
+
+  queryResult.queryKey = queryKey as TQueryKey
+
+  return queryResult
 }

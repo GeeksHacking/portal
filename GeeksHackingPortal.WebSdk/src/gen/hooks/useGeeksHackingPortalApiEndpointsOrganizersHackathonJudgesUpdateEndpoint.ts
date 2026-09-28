@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointOptions, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus200, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus401, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationKey = () => [{ url: '/organizers/hackathons/:hackathonId/judges/:judgeId' }] as const
+
+/**
+ * @description Updates judge details. Can regenerate the secret to invalidate old links.
+ * @summary Update a judge
+ * {@link /organizers/hackathons/:hackathonId/judges/:judgeId}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus403>, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointStatus403>, GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointOptions, TContext>({
+    mutationFn: async({ path, body }) => {
+      return geeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointOptions['path']>(path), body: toValue<GeeksHackingPortalApiEndpointsOrganizersHackathonJudgesUpdateEndpointOptions['body']>(body), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

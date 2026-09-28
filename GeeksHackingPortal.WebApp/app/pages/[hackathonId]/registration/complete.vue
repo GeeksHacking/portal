@@ -16,7 +16,7 @@ useHead({
 const route = useRoute()
 const config = useRuntimeConfig()
 const routeHackathonId = computed(() => (route.params.hackathonId as string) ?? '')
-const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(routeHackathonId)
+const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({ path: computed(() => ({ hackathonIdOrShortCode: routeHackathonId.value })) })
 const resolvedHackathonId = computed(() => hackathon.value?.id ?? '')
 
 // Track if we should show the page

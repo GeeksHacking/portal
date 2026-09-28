@@ -32,6 +32,7 @@ export default defineConfig({
       mutation: {
         importPath: '../../useMutation.ts',
       },
+      hooks: true
     }),
     pluginMsw(),
     pluginFaker(),

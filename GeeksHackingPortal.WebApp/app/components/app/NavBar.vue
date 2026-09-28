@@ -29,12 +29,9 @@ const { data: user, isLoading } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEnd
 
 const route = useRoute()
 const routeHackathonId = computed(() => (route.params.hackathonId as string) ?? '')
-const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(routeHackathonId)
+const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({ path: computed(() => ({ hackathonIdOrShortCode: routeHackathonId.value })) })
 const resolvedHackathonId = computed(() => hackathon.value?.id ?? '')
-const { data: teamData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint(
-  resolvedHackathonId,
-  { query: { enabled: computed(() => !!resolvedHackathonId.value) } },
-)
+const { data: teamData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint({ path: computed(() => ({ hackathonId: resolvedHackathonId.value })) }, { query: { enabled: computed(() => !!resolvedHackathonId.value) } })
 const teamName = computed(() => teamData.value?.name ?? null)
 
 async function generateQrCode() {

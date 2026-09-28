@@ -3,7 +3,7 @@ import type {
   GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateCreateOptionDto,
   GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto,
   GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDto,
-  GeeksHackingPortalApiEntitiesQuestionType,
+  GeeksHackingPortalApiEntitiesQuestionTypeKey,
 } from '@geekshacking/portal-sdk'
 import {
   geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1QueryKey,
@@ -17,7 +17,7 @@ import { useQueryClient } from '@tanstack/vue-query'
 import { computed } from 'vue'
 
 type Question = GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListQuestionDto
-type QuestionType = GeeksHackingPortalApiEntitiesQuestionType
+type QuestionType = GeeksHackingPortalApiEntitiesQuestionTypeKey
 
 const props = withDefaults(defineProps<{
   hackathonId?: string
@@ -44,9 +44,7 @@ const hackathonId = computed(() => props.hackathonId || (route.params.hackathonI
 
 const queryClient = useQueryClient()
 
-const { data: questionsData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1(
-  computed(() => hackathonId.value),
-)
+const { data: questionsData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1({ path: computed(() => ({ activityId: hackathonId.value })) })
 
 const questions = computed(() => questionsData.value?.questions ?? [])
 const sortedQuestions = computed(() =>
@@ -98,14 +96,14 @@ const deleteMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegi
 
 async function invalidateQuestions() {
   await queryClient.invalidateQueries({
-    queryKey: geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1QueryKey(hackathonId.value),
+    queryKey: geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsListEndpoint1QueryKey({ path: { activityId: hackathonId.value } }),
   })
 }
 
 async function initializeQuestions() {
   if (!hackathonId.value)
     return
-  await initMutation.mutateAsync({ activityId: hackathonId.value })
+  await initMutation.mutateAsync({ path: { activityId: hackathonId.value } })
   await invalidateQuestions()
 }
 
@@ -197,7 +195,7 @@ async function saveQuestion() {
       validationRules: editForm.value.validationRules || null,
       options: options as typeof options & GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateCreateOptionDto[],
     }
-    await createMutation.mutateAsync({ activityId: hackathonId.value, data: createData })
+    await createMutation.mutateAsync({ path: { activityId: hackathonId.value }, body: createData })
     isCreating.value = false
   }
   else if (editingId.value) {
@@ -213,9 +211,8 @@ async function saveQuestion() {
       options: options as typeof options & GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsUpdateUpdateOptionDto[],
     }
     await updateMutation.mutateAsync({
-      activityId: hackathonId.value,
-      questionId: editingId.value,
-      data: updateData,
+      path: { activityId: hackathonId.value, questionId: editingId.value },
+      body: updateData,
     })
     editingId.value = null
   }
@@ -227,7 +224,7 @@ async function deleteQuestion(questionId: string) {
   // eslint-disable-next-line no-alert
   if (!confirm('Are you sure you want to delete this question?'))
     return
-  await deleteMutation.mutateAsync({ activityId: hackathonId.value, questionId })
+  await deleteMutation.mutateAsync({ path: { activityId: hackathonId.value, questionId: questionId } })
   await invalidateQuestions()
 }
 
@@ -239,7 +236,7 @@ async function deleteAllQuestions() {
 
   for (const question of sortedQuestions.value) {
     if (question.id) {
-      await deleteMutation.mutateAsync({ activityId: hackathonId.value, questionId: question.id })
+      await deleteMutation.mutateAsync({ path: { activityId: hackathonId.value, questionId: question.id } })
     }
   }
 
@@ -255,9 +252,8 @@ async function updateQuestionOrder(question: Question, displayOrder: number) {
     return
 
   await updateMutation.mutateAsync({
-    activityId: hackathonId.value,
-    questionId: question.id,
-    data: { displayOrder },
+    path: { activityId: hackathonId.value, questionId: question.id },
+    body: { displayOrder },
   })
 }
 

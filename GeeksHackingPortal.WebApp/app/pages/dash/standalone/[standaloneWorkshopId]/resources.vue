@@ -50,10 +50,7 @@ const resourceForm = ref({
 const queryClient = useQueryClient()
 const toast = useToast()
 
-const { data: resourcesData, isLoading: isLoadingResources } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2(
-  standaloneWorkshopId,
-  { query: { enabled: computed(() => !!standaloneWorkshopId.value) } },
-)
+const { data: resourcesData, isLoading: isLoadingResources } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2({ path: computed(() => ({ activityId: standaloneWorkshopId.value })) }, { query: { enabled: computed(() => !!standaloneWorkshopId.value) } })
 
 const resources = computed<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesListResponseResponseResource[]>(() => resourcesData.value?.resources ?? [])
 
@@ -73,24 +70,11 @@ const selectedResource = computed(() =>
   resources.value.find(resource => resource.id === selectedResourceId.value) ?? null,
 )
 
-const { data: resourceOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2(
-  standaloneWorkshopId,
-  selectedResourceId,
-  { query: { enabled: computed(() => !!standaloneWorkshopId.value && !!selectedResourceId.value) } },
-)
+const { data: resourceOverview, isLoading: isLoadingOverview, dataUpdatedAt } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2({ path: computed(() => ({ activityId: standaloneWorkshopId.value, resourceId: selectedResourceId.value })) }, { query: { enabled: computed(() => !!standaloneWorkshopId.value && !!selectedResourceId.value) } })
 
-const { data: participantDetail } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpoint(
-  computed(() => standaloneWorkshopId.value),
-  computed(() => scannedUserId.value),
-  { query: { enabled: computed(() => !!standaloneWorkshopId.value && !!scannedUserId.value) } },
-)
+const { data: participantDetail } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpoint({ path: computed(() => ({ standaloneWorkshopId: standaloneWorkshopId.value, userId: scannedUserId.value })) }, { query: { enabled: computed(() => !!standaloneWorkshopId.value && !!scannedUserId.value) } })
 
-const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint2(
-  standaloneWorkshopId,
-  selectedParticipantUserId,
-  selectedResourceId,
-  { query: { enabled: computed(() => !!standaloneWorkshopId.value && !!selectedParticipantUserId.value && !!selectedResourceId.value) } },
-)
+const { data: participantHistory, isLoading: isLoadingParticipantHistory } = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint2({ path: computed(() => ({ activityId: standaloneWorkshopId.value, participantUserId: selectedParticipantUserId.value, resourceId: selectedResourceId.value })) }, { query: { enabled: computed(() => !!standaloneWorkshopId.value && !!selectedParticipantUserId.value && !!selectedResourceId.value) } })
 
 const redeemMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesRedeemEndpoint2()
 const createResourceMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesCreateEndpoint2()
@@ -173,26 +157,19 @@ function refreshOverview() {
     return
 
   queryClient.invalidateQueries({
-    queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryKey(
-      standaloneWorkshopId.value,
-      selectedResourceId.value,
-    ),
+    queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonResourcesOverviewEndpoint2QueryKey({ path: { activityId: standaloneWorkshopId.value, resourceId: selectedResourceId.value } }),
   })
 
   if (selectedParticipantUserId.value) {
     queryClient.invalidateQueries({
-      queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint2QueryKey(
-        standaloneWorkshopId.value,
-        selectedParticipantUserId.value,
-        selectedResourceId.value,
-      ),
+      queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonResourcesHistoryEndpoint2QueryKey({ path: { activityId: standaloneWorkshopId.value, participantUserId: selectedParticipantUserId.value, resourceId: selectedResourceId.value } }),
     })
   }
 }
 
 async function refreshResources() {
   await queryClient.invalidateQueries({
-    queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2QueryKey(standaloneWorkshopId.value),
+    queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonResourcesListEndpoint2QueryKey({ path: { activityId: standaloneWorkshopId.value } }),
   })
   refreshOverview()
 }
@@ -236,9 +213,8 @@ async function saveResource() {
 
   if (editingResourceId.value) {
     await updateResourceMutation.mutateAsync({
-      activityId: standaloneWorkshopId.value,
-      resourceId: editingResourceId.value,
-      data: {
+      path: { activityId: standaloneWorkshopId.value, resourceId: editingResourceId.value },
+      body: {
         ...data,
         redemptionStmt: data.redemptionStmt ?? null,
       },
@@ -247,8 +223,8 @@ async function saveResource() {
   }
   else {
     await createResourceMutation.mutateAsync({
-      activityId: standaloneWorkshopId.value,
-      data,
+      path: { activityId: standaloneWorkshopId.value },
+      body: data,
     })
     toast.add({ title: 'Resource created', color: 'success' })
   }
@@ -263,8 +239,7 @@ async function deleteResource(resource: GeeksHackingPortalApiEndpointsOrganizers
     return
 
   await deleteResourceMutation.mutateAsync({
-    activityId: standaloneWorkshopId.value,
-    resourceId: resource.id,
+    path: { activityId: standaloneWorkshopId.value, resourceId: resource.id },
   })
 
   if (selectedResourceId.value === resource.id)
@@ -405,7 +380,7 @@ async function redeemForParticipant(userId: string, participantName: string) {
   selectedParticipantName.value = participantName
 
   try {
-    const result = await redeemMutation.mutateAsync({ activityId: standaloneWorkshopId.value, participantUserId: userId, resourceId: selectedResourceId.value })
+    const result = await redeemMutation.mutateAsync({ path: { activityId: standaloneWorkshopId.value, participantUserId: userId, resourceId: selectedResourceId.value } })
     scanResult.value = {
       success: true,
       message: `${participantName || 'Participant'} redeemed ${selectedResource.value?.name || 'resource'} at ${formatRedemptionTime(result.createdAt)}.`,

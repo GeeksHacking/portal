@@ -6,14 +6,11 @@ import {
 
 const route = useRoute()
 const routeHackathonId = computed(() => (route.params.hackathonId as string) ?? '')
-const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(routeHackathonId)
+const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({ path: computed(() => ({ hackathonIdOrShortCode: routeHackathonId.value })) })
 const resolvedHackathonId = computed(() => hackathon.value?.id ?? '')
 
 // Middleware handles authentication, just check participant status
-const { data: status, isLoading: statusLoading } = useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint(
-  resolvedHackathonId,
-  { query: { enabled: computed(() => !!resolvedHackathonId.value) } },
-)
+const { data: status, isLoading: statusLoading } = useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint({ path: computed(() => ({ hackathonId: resolvedHackathonId.value })) }, { query: { enabled: computed(() => !!resolvedHackathonId.value) } })
 
 watch(
   [() => status.value, statusLoading, hackathon],

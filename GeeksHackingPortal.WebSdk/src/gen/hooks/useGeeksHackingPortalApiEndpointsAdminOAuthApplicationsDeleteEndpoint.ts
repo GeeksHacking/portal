@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointOptions, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus204, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus401, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint } from '../clients/geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointMutationKey = () => [{ url: '/admin/oauth-applications/:id' }] as const
+
+/**
+ * @description Deletes an OpenIddict OAuth client owned by the current admin.
+ * @summary Delete an OAuth application
+ * {@link /admin/oauth-applications/:id}
+ */
+export function useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus204, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus403>, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus204, ResponseErrorConfig<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointStatus403>, GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointOptions, TContext>({
+    mutationFn: async({ path }) => {
+      return geeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpointOptions['path']>(path), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

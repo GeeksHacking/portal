@@ -5,8 +5,10 @@
 
 import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
 import type { GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200, GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401 } from '../types/GeeksHackingPortalApiEndpointsUsersProfileGetEndpoint'
+import type { QueryKey, QueryClient, UseQueryOptions, UseQueryReturnType } from '@tanstack/vue-query'
 import { geeksHackingPortalApiEndpointsUsersProfileGetEndpoint } from '../clients/geeksHackingPortalApiEndpointsUsersProfileGetEndpoint'
-import { queryOptions } from '@tanstack/vue-query'
+import { queryOptions, useQuery } from '@tanstack/vue-query'
+import { toValue } from 'vue'
 
 export const geeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryKey = () => [{ url: '/users/me' }] as const
 
@@ -20,4 +22,28 @@ export function geeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryOption
       return geeksHackingPortalApiEndpointsUsersProfileGetEndpoint({ ...config, signal: config.signal ?? signal, throwOnError: true }).unwrap()
    },
   })
+}
+
+/**
+ * @description Returns the current user's profile name information.
+ * @summary Get current user profile
+ * {@link /users/me}
+ */
+export function useGeeksHackingPortalApiEndpointsUsersProfileGetEndpoint<TData = GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200, TQueryData = GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200, TQueryKey extends QueryKey = GeeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryKey>(options: {
+  query?: Partial<UseQueryOptions<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>
+} = {}) {
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const queryKey = (resolvedOptions && 'queryKey' in resolvedOptions ? toValue(resolvedOptions.queryKey) : undefined) ?? geeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryKey()
+
+  const queryResult = useQuery({
+   ...geeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryOptions(config),
+   ...resolvedOptions,
+   queryKey
+  } as unknown as UseQueryOptions<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401>, TData, GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200, TQueryKey>, toValue(queryClient)) as UseQueryReturnType<TData, ResponseErrorConfig<GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401>> & { queryKey: TQueryKey }
+
+  queryResult.queryKey = queryKey as TQueryKey
+
+  return queryResult
 }

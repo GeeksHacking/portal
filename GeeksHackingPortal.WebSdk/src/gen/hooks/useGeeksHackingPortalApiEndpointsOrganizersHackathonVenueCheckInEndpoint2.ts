@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2Options, GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2Status200, GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2Status401, GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2Status403 } from '../types/GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2 } from '../clients/geeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2MutationKey = () => [{ url: '/organizers/standalone-workshops/:activityId/participants/:participantUserId/venue/check-in' }] as const
+
+/**
+ * @description Checks a participant into the activity venue.
+ * @summary Check in a participant to the venue
+ * {@link /organizers/standalone-workshops/:activityId/participants/:participantUserId/venue/check-in}
+ */
+export function useGeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2Status200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2Status401 | GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2Status403>, GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2Options, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2MutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2Status200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2Status401 | GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2Status403>, GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2Options, TContext>({
+    mutationFn: async({ path }) => {
+      return geeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2({ ...config, path: toValue<GeeksHackingPortalApiEndpointsOrganizersHackathonVenueCheckInEndpoint2Options['path']>(path), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

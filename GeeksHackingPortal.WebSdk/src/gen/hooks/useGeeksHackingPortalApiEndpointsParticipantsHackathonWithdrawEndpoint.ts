@@ -3,4 +3,33 @@
 * Do not edit manually.
 */
 
+import type { MutationObserverOptions, QueryClient } from '../../useMutation.ts'
+import type { RequestConfig, ResponseErrorConfig } from '../.kubb/client'
+import type { GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointOptions, GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus200, GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus401, GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus403 } from '../types/GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpoint'
+import { useMutation } from '../../useMutation.ts'
+import { geeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpoint } from '../clients/geeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpoint'
+import { toValue } from 'vue'
+
 export const geeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointMutationKey = () => [{ url: '/participants/hackathons/:hackathonId/withdraw' }] as const
+
+/**
+ * @description Withdraws the current user from the hackathon. The participant must not be in a team before withdrawing. Historical records are preserved.
+ * @summary Withdraw from a hackathon
+ * {@link /participants/hackathons/:hackathonId/withdraw}
+ */
+export function useGeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpoint<TContext>(options: {
+  mutation?: MutationObserverOptions<GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointOptions, TContext> & { client?: QueryClient },
+  client?: Partial<Omit<RequestConfig, 'path' | 'query' | 'body' | 'headers' | 'url'>>,
+} = {}) {
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions?.mutationKey ?? geeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointMutationKey()
+
+  return useMutation<GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus200, ResponseErrorConfig<GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus401 | GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointStatus403>, GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointOptions, TContext>({
+    mutationFn: async({ path }) => {
+      return geeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpoint({ ...config, path: toValue<GeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpointOptions['path']>(path), throwOnError: true }).unwrap()
+    },
+    mutationKey,
+    ...mutationOptions
+  }, queryClient)
+}

@@ -3,7 +3,7 @@ import type {
   GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto,
   GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto,
 } from '@geekshacking/portal-sdk'
-import { Comark } from '@comark/vue'
+import { Markdown } from '@comark/vue'
 import {
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint,
@@ -456,8 +456,8 @@ const totalQuestionsCount = computed(() => {
                 </h1>
                 <div class="max-w-3xl text-sm leading-7 text-(--ui-text-muted) sm:text-base lg:text-lg">
                   <Suspense>
-                    <Comark
-                      :markdown="workshop.description"
+                    <Markdown
+                      :value="workshop.description"
                       :options="{ autoClose: true, autoUnwrap: true }"
                       class="workshop-markdown"
                     />

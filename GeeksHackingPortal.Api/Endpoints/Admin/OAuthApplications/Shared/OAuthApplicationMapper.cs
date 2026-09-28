@@ -96,6 +96,12 @@ public static class OAuthApplicationMapper
         object application,
         Guid ownerUserId,
         CancellationToken ct
+    ) => await GetOwnerUserIdAsync(applicationManager, application, ct) == ownerUserId;
+
+    public static async ValueTask<Guid?> GetOwnerUserIdAsync(
+        IOpenIddictApplicationManager applicationManager,
+        object application,
+        CancellationToken ct
     )
     {
         var properties = await applicationManager.GetPropertiesAsync(application, ct);
@@ -103,7 +109,8 @@ public static class OAuthApplicationMapper
         return properties.TryGetValue(OwnerUserIdProperty, out var owner)
             && owner.ValueKind is JsonValueKind.String
             && Guid.TryParse(owner.GetString(), out var storedOwnerUserId)
-            && storedOwnerUserId == ownerUserId;
+                ? storedOwnerUserId
+                : null;
     }
 
     public static string GenerateClientSecret() =>

@@ -46,6 +46,14 @@ const links = computed<NavigationMenuItem[][]>(() => {
         open.value = false
       },
     })
+    defaultLinks.push({
+      label: 'Admin: All OAuth Apps',
+      icon: 'i-lucide-shield-check',
+      to: '/dash/admin/oauth-applications',
+      onSelect: () => {
+        open.value = false
+      },
+    })
   }
 
   const isParticipantView = (route.path.includes('/participant/') || route.path.endsWith('/participant')) || route.path.includes('/registration')

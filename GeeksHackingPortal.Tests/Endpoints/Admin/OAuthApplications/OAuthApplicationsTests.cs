@@ -78,6 +78,61 @@ public class OAuthApplicationsTests
     }
 
     [Test]
+    public async Task CreateApplication_WithMultipleRedirectUris_ReturnsEveryUri()
+    {
+        var clientId = CreateClientId("multi");
+        var request = CreateRequest(
+            clientId,
+            "Multiple redirect URIs test application",
+            "Web",
+            [
+                "https://example.com/callback",
+                "https://staging.example.com/callback",
+                "http://localhost:3000/callback",
+            ],
+            ["https://example.com/signed-out", "http://localhost:3000/signed-out"]
+        );
+
+        var createResponse = await AuthenticatedClient.HttpClient.PostAsJsonAsync(
+            "/admin/oauth-applications",
+            request
+        );
+        var created = await createResponse.Content.ReadFromJsonAsync<OAuthApplicationResponse>();
+
+        await Assert.That(createResponse.StatusCode).IsEqualTo(HttpStatusCode.Created);
+        await Assert.That(created).IsNotNull();
+
+        var getResponse = await AuthenticatedClient.HttpClient.GetAsync(
+            $"/admin/oauth-applications/{created!.Id}"
+        );
+        var fetched = await getResponse.Content.ReadFromJsonAsync<OAuthApplicationResponse>();
+
+        await Assert.That(getResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(fetched).IsNotNull();
+        await Assert.That(fetched!.RedirectUris).IsEquivalentTo(request.RedirectUris);
+        await Assert.That(fetched.PostLogoutRedirectUris)
+            .IsEquivalentTo(request.PostLogoutRedirectUris);
+
+        await AuthenticatedClient.HttpClient.DeleteAsync($"/admin/oauth-applications/{created.Id}");
+    }
+
+    [Test]
+    public async Task CreateWebApplication_WithRelativeRedirectUri_ReturnsBadRequest()
+    {
+        var response = await AuthenticatedClient.HttpClient.PostAsJsonAsync(
+            "/admin/oauth-applications",
+            CreateRequest(
+                CreateClientId("relative"),
+                "Relative redirect URI test application",
+                "Web",
+                ["https://example.com/callback", "callback"]
+            )
+        );
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+    }
+
+    [Test]
     public async Task UpdateApplication_DoesNotRequireIdInBody()
     {
         var clientId = CreateClientId("update");

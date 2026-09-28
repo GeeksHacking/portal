@@ -14,10 +14,13 @@ public class AuthenticatedHttpClientDataClass : IAsyncInitializer, IAsyncDisposa
     public string LastName { get; set; } = "Guan";
     public string Email { get; set; } = "qin-guan@outlook.com";
 
+    protected virtual bool AllowAutoRedirect => true;
+
     public async Task InitializeAsync()
     {
         var handler = new HttpClientHandler
         {
+            AllowAutoRedirect = AllowAutoRedirect,
             UseCookies = true,
             CookieContainer = new CookieContainer(),
             ServerCertificateCustomValidationCallback =

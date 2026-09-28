@@ -38,6 +38,9 @@ public class OAuthApplicationMutationValidator<TRequest> : Validator<TRequest>
             .WithMessage("Web post logout redirect URIs must use http or https.");
     }
 
+    // Relative URIs are reported by the absolute URI rules; Uri.Scheme throws for them.
     private static bool IsAllowedForPlatform(OAuthApplicationPlatform platform, Uri uri) =>
-        platform is not OAuthApplicationPlatform.Web || uri.Scheme is "http" or "https";
+        platform is not OAuthApplicationPlatform.Web
+        || !uri.IsAbsoluteUri
+        || uri.Scheme is "http" or "https";
 }

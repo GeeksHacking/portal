@@ -23,8 +23,8 @@ interface ApplicationForm {
   clientId: string
   displayName: string
   platform: OAuthApplicationPlatform
-  redirectUrisText: string
-  postLogoutRedirectUrisText: string
+  redirectUris: string[]
+  postLogoutRedirectUris: string[]
   rotateClientSecret: boolean
 }
 
@@ -69,28 +69,36 @@ const isEditing = ref(false)
 const editingApplicationId = ref<string | null>(null)
 const pendingDeleteApplication = ref<OAuthApplication | null>(null)
 const issuedSecret = ref<string | null>(null)
+const hasAttemptedSubmit = ref(false)
 
 const form = ref<ApplicationForm>({
   clientId: '',
   displayName: '',
   platform: 'Web',
-  redirectUrisText: '',
-  postLogoutRedirectUrisText: '',
+  redirectUris: [''],
+  postLogoutRedirectUris: [],
   rotateClientSecret: false,
 })
 
 const isSubmitting = computed(() => createMutation.isPending.value || updateMutation.isPending.value)
+
+const redirectUriErrors = computed(() => hasAttemptedSubmit.value ? validateUris(form.value.redirectUris, form.value.platform) : [])
+const postLogoutRedirectUriErrors = computed(() => hasAttemptedSubmit.value ? validateUris(form.value.postLogoutRedirectUris, form.value.platform) : [])
+const redirectUrisError = computed(() => hasAttemptedSubmit.value && cleanUris(form.value.redirectUris).length === 0
+  ? 'Add at least one redirect URI.'
+  : undefined)
 
 function resetForm() {
   form.value = {
     clientId: '',
     displayName: '',
     platform: 'Web',
-    redirectUrisText: '',
-    postLogoutRedirectUrisText: '',
+    redirectUris: [''],
+    postLogoutRedirectUris: [],
     rotateClientSecret: false,
   }
   issuedSecret.value = null
+  hasAttemptedSubmit.value = false
   isEditing.value = false
   editingApplicationId.value = null
 }
@@ -105,21 +113,49 @@ function openEditModal(application: OAuthApplication) {
     clientId: application.clientId ?? '',
     displayName: application.displayName ?? '',
     platform: application.platform ?? 'Web',
-    redirectUrisText: (application.redirectUris ?? []).join('\n'),
-    postLogoutRedirectUrisText: (application.postLogoutRedirectUris ?? []).join('\n'),
+    redirectUris: application.redirectUris?.length ? [...application.redirectUris] : [''],
+    postLogoutRedirectUris: [...(application.postLogoutRedirectUris ?? [])],
     rotateClientSecret: false,
   }
   issuedSecret.value = null
+  hasAttemptedSubmit.value = false
   isEditing.value = true
   editingApplicationId.value = application.id ?? null
   isEditorOpen.value = true
 }
 
-function parseUriLines(value: string) {
-  return value
-    .split(/\r?\n/)
-    .map(line => line.trim())
+function cleanUris(uris: string[]) {
+  return uris
+    .map(uri => uri.trim())
     .filter(Boolean)
+}
+
+// Mirrors the API's rules so each row can show its own error. Blank rows are ignored.
+function validateUris(uris: string[], platform: OAuthApplicationPlatform) {
+  const seen = new Set<string>()
+
+  return uris.map((uri) => {
+    const value = uri.trim()
+    if (!value)
+      return undefined
+
+    let url: URL
+    try {
+      url = new URL(value)
+    }
+    catch {
+      return 'Enter an absolute URI, such as https://app.example.com/callback.'
+    }
+
+    if (platform === 'Web' && url.protocol !== 'http:' && url.protocol !== 'https:')
+      return 'Web applications must use an http or https URI.'
+
+    if (seen.has(url.href))
+      return 'This URI is already in the list.'
+
+    seen.add(url.href)
+    return undefined
+  })
 }
 
 function buildPayload() {
@@ -127,16 +163,25 @@ function buildPayload() {
     clientId: form.value.clientId.trim(),
     displayName: form.value.displayName.trim(),
     platform: form.value.platform,
-    redirectUris: parseUriLines(form.value.redirectUrisText),
-    postLogoutRedirectUris: parseUriLines(form.value.postLogoutRedirectUrisText),
+    redirectUris: cleanUris(form.value.redirectUris),
+    postLogoutRedirectUris: cleanUris(form.value.postLogoutRedirectUris),
   }
 }
 
 async function handleSubmit() {
+  hasAttemptedSubmit.value = true
   const payload = buildPayload()
   if (!payload.clientId || !payload.displayName || payload.redirectUris.length === 0) {
     toast.add({
       title: 'Missing required fields',
+      color: 'error',
+    })
+    return
+  }
+
+  if ([...redirectUriErrors.value, ...postLogoutRedirectUriErrors.value].some(Boolean)) {
+    toast.add({
+      title: 'Fix the highlighted URIs',
       color: 'error',
     })
     return
@@ -464,24 +509,24 @@ function platformBadgeColor(platform: OAuthApplicationPlatform | null | undefine
             />
           </LazyUFormField>
 
-          <LazyUFormField
+          <LazyOauthUriListField
+            v-model="form.redirectUris"
             label="Redirect URIs"
+            description="Sign-in requests must use one of these URIs exactly."
+            item-label="redirect URI"
+            placeholder="https://app.example.com/callback"
             required
-          >
-            <LazyUTextarea
-              v-model="form.redirectUrisText"
-              :rows="4"
-              placeholder="https://app.example.com/callback"
-            />
-          </LazyUFormField>
+            :error="redirectUrisError"
+            :row-errors="redirectUriErrors"
+          />
 
-          <LazyUFormField label="Post Logout Redirect URIs">
-            <LazyUTextarea
-              v-model="form.postLogoutRedirectUrisText"
-              :rows="3"
-              placeholder="https://app.example.com/signed-out"
-            />
-          </LazyUFormField>
+          <LazyOauthUriListField
+            v-model="form.postLogoutRedirectUris"
+            label="Post Logout Redirect URIs"
+            item-label="post logout redirect URI"
+            placeholder="https://app.example.com/signed-out"
+            :row-errors="postLogoutRedirectUriErrors"
+          />
 
           <LazyUCheckbox
             v-if="isEditing && form.platform === 'Web'"

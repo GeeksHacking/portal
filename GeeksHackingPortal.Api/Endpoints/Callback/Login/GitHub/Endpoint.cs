@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using FastEndpoints;
 using FastEndpoints.Security;
 using GeeksHackingPortal.Api.Constants;
+using GeeksHackingPortal.Api.Endpoints.Auth;
 using GeeksHackingPortal.Api.Entities;
 using GeeksHackingPortal.Api.Options;
 using Microsoft.AspNetCore;
@@ -44,20 +45,8 @@ public class Endpoint(
                 openIddictResponse.ErrorDescription
             );
 
-            HttpContext.Response.Cookies.Delete(
-                "auth_redirect_uri",
-                new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = !HttpContext.Request.Host.Host.Contains("localhost"),
-                    SameSite = SameSiteMode.Lax,
-                    Path = "/",
-                }
-            );
-            await Send.RedirectAsync(
-                $"{options.Value.FrontendUrl}/login",
-                allowRemoteRedirects: true
-            );
+            DeleteRedirectCookie();
+            await RedirectToFrontendLoginAsync();
             return;
         }
 
@@ -76,17 +65,10 @@ public class Endpoint(
                 logger.LogWarning("GitHub OAuth authentication failed; redirecting to login.");
             }
 
-            HttpContext.Response.Cookies.Delete(
-                "auth_redirect_uri",
-                new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = !HttpContext.Request.Host.Host.Contains("localhost"),
-                    SameSite = SameSiteMode.Lax,
-                    Path = "/",
-                }
-            );
-            await Send.RedirectAsync("/auth/login");
+            // Never send a failed callback back to /auth/login. That endpoint always
+            // challenges GitHub, and GitHub immediately returns here — a redirect loop.
+            DeleteRedirectCookie();
+            await RedirectToFrontendLoginAsync();
             return;
         }
 
@@ -197,33 +179,48 @@ public class Endpoint(
             o.Claims.Add(new Claim(CustomClaimTypes.GitHubAccountId, githubAccountId.ToString()));
         });
 
-        // Retrieve redirect_uri from authentication properties or cookie, default to /dash
-        var redirectPath = "/dash";
-
-        // First try to get from authentication properties (state parameter)
+        // Retrieve redirect_uri from authentication properties or cookie, default to /dash.
+        // Do not use Uri.TryCreate(Relative): a query containing an absolute OAuth
+        // callback (https://...) makes that check fail, so /connect/authorize was dropped
+        // and the client started login over again.
+        string? redirectPath = null;
         if (
             result.Properties?.Items.TryGetValue("redirect_uri", out var storedRedirectUri) == true
-            && !string.IsNullOrEmpty(storedRedirectUri)
-            && storedRedirectUri.StartsWith('/')
-            && !storedRedirectUri.StartsWith("//")
-            && Uri.TryCreate(storedRedirectUri, UriKind.Relative, out _)
+            && LocalRedirect.IsAllowed(storedRedirectUri)
         )
         {
             redirectPath = storedRedirectUri;
         }
-        // Fallback to cookie if state didn't preserve the redirect_uri
+        else if (
+            result.Properties?.RedirectUri is { Length: > 0 } stateRedirectUri
+            && stateRedirectUri != "/"
+            && LocalRedirect.IsAllowed(stateRedirectUri)
+        )
+        {
+            redirectPath = stateRedirectUri;
+        }
         else if (
             HttpContext.Request.Cookies.TryGetValue("auth_redirect_uri", out var cookieRedirectUri)
-            && !string.IsNullOrEmpty(cookieRedirectUri)
-            && cookieRedirectUri.StartsWith('/')
-            && !cookieRedirectUri.StartsWith("//")
-            && Uri.TryCreate(cookieRedirectUri, UriKind.Relative, out _)
+            && LocalRedirect.IsAllowed(cookieRedirectUri)
         )
         {
             redirectPath = cookieRedirectUri;
         }
 
-        // Clear the redirect cookie
+        DeleteRedirectCookie();
+
+        var destination = LocalRedirect.Destination(redirectPath, options.Value.FrontendUrl);
+        await Send.RedirectAsync(destination, allowRemoteRedirects: !destination.StartsWith('/'));
+    }
+
+    private Task RedirectToFrontendLoginAsync() =>
+        Send.RedirectAsync(
+            $"{options.Value.FrontendUrl.TrimEnd('/')}/login?error=github",
+            allowRemoteRedirects: true
+        );
+
+    private void DeleteRedirectCookie()
+    {
         HttpContext.Response.Cookies.Delete(
             "auth_redirect_uri",
             new CookieOptions
@@ -233,11 +230,6 @@ public class Endpoint(
                 SameSite = SameSiteMode.Lax,
                 Path = "/",
             }
-        );
-
-        await Send.RedirectAsync(
-            $"{options.Value.FrontendUrl}{redirectPath}",
-            allowRemoteRedirects: true
         );
     }
 

@@ -160,11 +160,13 @@ builder
         options.UseSystemNetHttp();
         options.SetRedirectionEndpointUris("/callback/login/github");
 
-        // GitHub returns an "iss" parameter ("https://github.com/login/oauth") in its OAuth
-        // authorization responses, but OpenIddict's GitHub provider is registered with the
-        // issuer "https://github.com/" and doesn't advertise "authorization_response_iss_parameter_supported",
-        // so the built-in issuer parameter validation rejects every GitHub login callback.
-        // Since GitHub is the only registered provider, disable the validation for it.
+        // GitHub returns iss=https://github.com/login/oauth without advertising
+        // authorization_response_iss_parameter_supported, and OpenIddict 7.5 registers
+        // the provider as https://github.com/. Validation therefore rejects every callback.
+        // The callback used to send that rejection back to /auth/login, which challenged
+        // GitHub again and immediately returned here — a login callback loop.
+        // GitHub is the only client provider, so drop the check entirely.
+        options.RemoveEventHandler(OpenIddictClientHandlers.ValidateIssuerParameter.Descriptor);
         options.AddEventHandler<OpenIddictClientEvents.ProcessAuthenticationContext>(builder2 =>
         {
             builder2.SetOrder(
@@ -172,15 +174,7 @@ builder
             );
             builder2.UseInlineHandler(context =>
             {
-                if (
-                    context.Registration?.ProviderType
-                    == OpenIddict.Client.WebIntegration.OpenIddictClientWebIntegrationConstants
-                        .ProviderTypes.GitHub
-                )
-                {
-                    context.DisableIssuerParameterValidation = true;
-                }
-
+                context.DisableIssuerParameterValidation = true;
                 return default;
             });
         });
@@ -509,7 +503,15 @@ app.MapMethods(
                 )
                 ?? throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
 
-            var userId = httpContext.User.FindFirst(CustomClaimTypes.UserId)?.Value;
+            // Don't trust HttpContext.User here. OpenIddict's server handler can replace it
+            // on /connect/authorize, which made every return from GitHub look anonymous and
+            // bounce straight back to /auth/login.
+            var cookieAuth = await httpContext.AuthenticateAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme
+            );
+            var userId =
+                cookieAuth.Principal?.FindFirst(CustomClaimTypes.UserId)?.Value
+                ?? httpContext.User.FindFirst(CustomClaimTypes.UserId)?.Value;
             if (string.IsNullOrWhiteSpace(userId) || !Guid.TryParse(userId, out var parsedUserId))
             {
                 var returnUrl = httpContext.Request.PathBase

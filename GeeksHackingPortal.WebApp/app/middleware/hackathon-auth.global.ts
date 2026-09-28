@@ -5,11 +5,35 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const config = useRuntimeConfig()
   const queryClient = useQueryClient()
 
+  // Just came back from the GitHub callback. If the session still isn't visible,
+  // stop here — sending the user to /auth/login would challenge GitHub and return forever.
+  if (to.query.login_return === '1') {
+    try {
+      await queryClient.fetchQuery(geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryOptions())
+      const query = { ...to.query }
+      delete query.login_return
+      return navigateTo({ path: to.path, query, replace: true })
+    }
+    catch (error) {
+      const status = getErrorStatusCode(error)
+      if (status && status !== 401)
+        return
+
+      return navigateTo({ path: '/login', query: { error: 'session' } })
+    }
+  }
+
   // Define public routes that don't require authentication
   const publicRoutes = ['/', '/login']
   const isPublicRoute = publicRoutes.includes(to.path) || to.path.startsWith('/workshops/')
 
   if (isPublicRoute) {
+    return
+  }
+
+  // API OIDC endpoints must not be bounced back to /auth/login from the frontend.
+  // That round-trip is a login callback loop when a GitHub return lands here.
+  if (to.path === '/connect' || to.path.startsWith('/connect/')) {
     return
   }
 

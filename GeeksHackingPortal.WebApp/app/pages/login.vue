@@ -7,6 +7,8 @@ definePageMeta({
 })
 
 const config = useRuntimeConfig()
+const route = useRoute()
+const loginFailed = computed(() => route.query.error === 'github' || route.query.error === 'session')
 
 useHead({
   titleTemplate: title => (title ? `${title} - GeeksHacking Portal` : 'GeeksHacking Portal'),
@@ -64,6 +66,10 @@ const isAuthenticated = computed(() => !!user.value && !isError.value)
         >
           Login with GitHub
         </UButton>
+
+        <p v-if="loginFailed" class="text-sm text-red-600">
+          GitHub sign-in did not finish. Please try again.
+        </p>
 
         <p class="text-sm text-gray-600">
           Please ensure you are logged into GitHub first!

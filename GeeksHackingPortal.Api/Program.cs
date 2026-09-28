@@ -383,6 +383,7 @@ LogStartupPhase("fastendpoints-and-openapi-registered", startupStopwatch, ref st
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<MembershipService>();
+builder.Services.AddScoped<OAuthDirectoryService>();
 builder.Services.AddScoped<IGitHubRepositoryAutomationService, GitHubRepositoryAutomationService>();
 builder.Services.AddScoped<IJintEvaluationService, JintEvaluationService>();
 builder.Services.AddScoped<IEmailService, PostmarkEmailService>();

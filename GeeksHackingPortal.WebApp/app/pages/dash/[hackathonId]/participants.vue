@@ -17,6 +17,7 @@ import { useQueryClient } from '@tanstack/vue-query'
 import { useVirtualList } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import { registrationPageConfig } from '~/config/registration-pages'
+import { HACKATHON_TIME_ZONE, HACKATHON_TIME_ZONE_LABEL } from '~/utils/hackathon-date-time'
 
 const props = withDefaults(defineProps<{
   hackathonId?: string
@@ -224,11 +225,10 @@ function getStatusSortValue(status: ParticipantConcludedStatus | null | undefine
   return 1
 }
 
-const REVIEW_TIME_ZONE = 'Asia/Singapore'
 const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: 'medium',
   timeStyle: 'short',
-  timeZone: REVIEW_TIME_ZONE,
+  timeZone: HACKATHON_TIME_ZONE,
 })
 
 function formatDateTime(value: Date | string | null | undefined) {
@@ -237,7 +237,7 @@ function formatDateTime(value: Date | string | null | undefined) {
   const date = value instanceof Date ? value : new Date(value)
   if (Number.isNaN(date.getTime()))
     return '—'
-  return `${dateTimeFormatter.format(date)} SGT`
+  return `${dateTimeFormatter.format(date)} ${HACKATHON_TIME_ZONE_LABEL}`
 }
 
 function matchesSearch(participant: ParticipantItem, query: string) {

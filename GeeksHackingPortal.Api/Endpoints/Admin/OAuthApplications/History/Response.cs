@@ -11,6 +11,6 @@ public class OAuthApplicationHistoryItemResponse
     public string Subject { get; set; } = null!;
     public string UserName { get; set; } = null!;
     public string UserEmail { get; set; } = null!;
-    public DateTime? CreationDate { get; set; }
+    public DateTimeOffset? CreationDate { get; set; }
     public string? Scopes { get; set; }
 }

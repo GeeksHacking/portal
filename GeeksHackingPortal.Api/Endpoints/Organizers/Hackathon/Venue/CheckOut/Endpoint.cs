@@ -1,7 +1,6 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
-using GeeksHackingPortal.Api.Extensions;
 using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Organizers.Hackathon.Venue.CheckOut;
@@ -66,7 +65,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             new Response
             {
                 Id = checkIn.Id,
-                CheckOutTime = checkIn.CheckOutTime.Value.AssumeStoredAsUtc(),
+                CheckOutTime = checkIn.CheckOutTime.Value,
                 IsCheckedIn = checkIn.IsCheckedIn,
             },
             ct

@@ -4,11 +4,13 @@ using FastEndpoints.Swagger;
 using GeeksHackingPortal.Api;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Constants;
+using GeeksHackingPortal.Api.Converters;
 using GeeksHackingPortal.Api.Data;
 using GeeksHackingPortal.Api.DataProtection;
 using GeeksHackingPortal.Api.Entities;
 using GeeksHackingPortal.Api.Options;
 using GeeksHackingPortal.Api.Services;
+using GeeksHackingPortal.Api.Services.DataMigrations;
 using Google.Cloud.Diagnostics.AspNetCore3;
 using Google.Cloud.Diagnostics.Common;
 using Google.Cloud.Storage.V1;
@@ -88,20 +90,7 @@ builder.Services.AddSingleton<ISqlSugarClient>(s =>
         builder.Configuration.GetConnectionString("db")
         ?? throw new InvalidOperationException("ConnectionStrings:db is required.");
 
-    return new SqlSugarScope(
-        new ConnectionConfig
-        {
-            DbType = DbType.MySql,
-            ConnectionString = connectionString,
-            IsAutoCloseConnection = true,
-            MoreSettings = new ConnMoreSettings { IsAutoRemoveDataCache = true },
-            ConfigureExternalServices = new ConfigureExternalServices
-            {
-                DataInfoCacheService = s.GetRequiredService<ICacheService>(),
-            },
-        },
-        _ => { }
-    );
+    return SqlSugarClientFactory.Create(connectionString, s.GetRequiredService<ICacheService>());
 });
 
 var serverVersion = new MySqlServerVersion(new Version(8, 4, 6));
@@ -123,6 +112,7 @@ builder.Services.AddHttpClient();
 builder.Services.Configure<JsonOptions>(options =>
 {
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.SerializerOptions.Converters.Add(new UtcDateTimeOffsetJsonConverter());
 });
 
 builder
@@ -432,6 +422,20 @@ if (validateDatabaseSchema)
             schemaReport.EntityTypes.Count
         );
 
+        var pendingDataMigrations = DataMigrationRunner.GetPending(sql);
+        if (pendingDataMigrations.Count > 0)
+        {
+            app.Logger.LogCritical(
+                "Pending data migrations detected: {MigrationIds}. Run the database migrator workflow before starting the API.",
+                string.Join(", ", pendingDataMigrations.Select(migration => migration.Id))
+            );
+            schemaMismatchLogged = true;
+
+            throw new InvalidOperationException(
+                "Pending data migrations detected. Run the database migrator workflow before starting the API."
+            );
+        }
+
         var openIddictDbContext = scope.ServiceProvider.GetRequiredService<OpenIddictDbContext>();
         var pendingMigrations = await openIddictDbContext.Database.GetPendingMigrationsAsync();
         if (pendingMigrations.Any())
@@ -716,6 +720,7 @@ app.MapMethods(
 app.UseFastEndpoints(c =>
 {
     c.Serializer.Options.Converters.Add(new JsonStringEnumConverter());
+    c.Serializer.Options.Converters.Add(new UtcDateTimeOffsetJsonConverter());
     c.Endpoints.AllowEmptyRequestDtos = true;
 });
 app.UseSwaggerGen(options => options.Path = "/openapi/{documentName}.json");

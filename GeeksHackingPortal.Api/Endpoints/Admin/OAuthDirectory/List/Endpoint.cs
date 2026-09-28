@@ -27,7 +27,7 @@ public class Endpoint(OAuthDirectoryService oauthDirectory) : EndpointWithoutReq
             new Response
             {
                 Items = items
-                    .OrderByDescending(i => i.LastAuthorizedAt ?? DateTime.MinValue)
+                    .OrderByDescending(i => i.LastAuthorizedAt ?? DateTimeOffset.MinValue)
                     .ThenBy(i => i.DisplayName, StringComparer.OrdinalIgnoreCase)
                     .ToList(),
             },

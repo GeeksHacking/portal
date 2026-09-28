@@ -50,6 +50,14 @@ dotnet run --project GeeksHackingPortal.DbMigrator -- apply --seed-development-t
 
 `apply` will stop on potentially destructive changes unless `--allow-destructive` is specified.
 
+`apply` also runs one-off data migrations (tracked in the `DataMigrationHistory` table so each runs exactly once), and `diff` previews any that are pending.
+
+## Dates and times
+
+- The database stores every timestamp as UTC, and the API returns every timestamp as UTC (ISO 8601, e.g. `2026-03-07T01:00:00Z`), regardless of the host's `TZ`.
+- Requests may use any offset (the web app submits schedule fields with the event's `+08:00` offset); the API converts them to UTC before storing.
+- Presentation is up to the client. The web app formats timestamps in the event time zone (`Asia/Singapore`, see `app/utils/hackathon-date-time.ts`); server-rendered content such as emails uses `EventTimeZone`.
+
 ## Development
 
 Common helper tasks (see project-specific READMEs for frontend/backend details):

@@ -1,7 +1,6 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
-using GeeksHackingPortal.Api.Extensions;
 using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Organizers.Hackathon.Resources.Overview;
@@ -83,7 +82,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     UserName = userNameByParticipantId[p.Participant.Id],
                     HasRedeemed = participantRedemptions.Count > 0,
                     RedemptionCount = participantRedemptions.Count,
-                    LastRedeemedAt = participantRedemptions.FirstOrDefault()?.CreatedAt.AssumeStoredAsUtc(),
+                    LastRedeemedAt = participantRedemptions.FirstOrDefault()?.CreatedAt,
                 };
             })
             .OrderByDescending(p => p.LastRedeemedAt.HasValue)
@@ -101,7 +100,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     ParticipantId = participantId,
                     UserId = r.UserId,
                     UserName = userNameByParticipantId.GetValueOrDefault(participantId, "Unknown"),
-                    Timestamp = r.CreatedAt.AssumeStoredAsUtc(),
+                    Timestamp = r.CreatedAt,
                 };
             })
             .Take(50)

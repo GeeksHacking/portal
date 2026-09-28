@@ -10,6 +10,7 @@ import {
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
+import { HACKATHON_TIME_ZONE, HACKATHON_TIME_ZONE_LABEL, isSameHackathonDay } from '~/utils/hackathon-date-time'
 
 definePageMeta({
   auth: false,
@@ -88,7 +89,7 @@ const registeredAtLabel = computed(() => {
   return new Intl.DateTimeFormat(undefined, {
     dateStyle: 'medium',
     timeStyle: 'short',
-    timeZone: 'Asia/Singapore',
+    timeZone: HACKATHON_TIME_ZONE,
   }).format(new Date(statusData.value.registeredAt))
 })
 
@@ -102,13 +103,13 @@ const formattedDateTime = computed(() => {
 
   const start = new Date(workshop.value.startTime)
   const end = new Date(workshop.value.endTime)
-  const sameDay = start.toDateString() === end.toDateString()
+  const sameDay = isSameHackathonDay(start, end)
 
   const dateFormatter = new Intl.DateTimeFormat(undefined, {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
-    timeZone: 'Asia/Singapore',
+    timeZone: HACKATHON_TIME_ZONE,
   })
 
   const dateWithYearFormatter = new Intl.DateTimeFormat(undefined, {
@@ -116,20 +117,20 @@ const formattedDateTime = computed(() => {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
-    timeZone: 'Asia/Singapore',
+    timeZone: HACKATHON_TIME_ZONE,
   })
 
   const timeFormatter = new Intl.DateTimeFormat(undefined, {
     hour: 'numeric',
     minute: '2-digit',
-    timeZone: 'Asia/Singapore',
+    timeZone: HACKATHON_TIME_ZONE,
   })
 
   return {
     dateLabel: sameDay
       ? dateWithYearFormatter.format(start)
       : `${dateFormatter.format(start)} to ${dateWithYearFormatter.format(end)}`,
-    timeLabel: `${timeFormatter.format(start)} to ${timeFormatter.format(end)} SGT`,
+    timeLabel: `${timeFormatter.format(start)} to ${timeFormatter.format(end)} ${HACKATHON_TIME_ZONE_LABEL}`,
   }
 })
 

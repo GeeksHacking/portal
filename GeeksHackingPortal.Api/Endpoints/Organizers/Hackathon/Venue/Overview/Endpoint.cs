@@ -1,7 +1,6 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
-using GeeksHackingPortal.Api.Extensions;
 using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Organizers.Hackathon.Venue.Overview;
@@ -58,8 +57,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     UserId = p.Participant.UserId,
                     UserName = p.User.FirstName + " " + p.User.LastName,
                     IsCurrentlyCheckedIn = lastCheckIn?.IsCheckedIn ?? false,
-                    LastCheckInTime = lastCheckIn?.CheckInTime.AssumeStoredAsUtc(),
-                    LastCheckOutTime = lastCheckIn?.CheckOutTime.AssumeStoredAsUtc(),
+                    LastCheckInTime = lastCheckIn?.CheckInTime,
+                    LastCheckOutTime = lastCheckIn?.CheckOutTime,
                     TotalCheckIns = participantCheckIns.Count,
                 };
             })
@@ -84,7 +83,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                         UserId = userIdByParticipantId.GetValueOrDefault(participantId),
                         UserName = userName,
                         Action = "checked in",
-                        Timestamp = c.CheckInTime.AssumeStoredAsUtc(),
+                        Timestamp = c.CheckInTime,
                     },
                 };
 
@@ -97,7 +96,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                             UserId = userIdByParticipantId.GetValueOrDefault(participantId),
                             UserName = userName,
                             Action = "checked out",
-                            Timestamp = c.CheckOutTime.Value.AssumeStoredAsUtc(),
+                            Timestamp = c.CheckOutTime.Value,
                         }
                     );
                 }

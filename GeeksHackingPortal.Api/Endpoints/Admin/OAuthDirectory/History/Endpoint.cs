@@ -3,6 +3,7 @@ using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Data;
 using GeeksHackingPortal.Api.Entities;
+using GeeksHackingPortal.Api.Extensions;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
 using OpenIddict.EntityFrameworkCore.Models;
@@ -103,12 +104,12 @@ public class Endpoint(
                     UserId = userId,
                     UserName = user?.Name,
                     UserEmail = user?.Email,
-                    CreationDate = a.CreationDate,
+                    CreationDate = a.CreationDate.AsUtcDateTimeOffset(),
                     Status = a.Status,
                     Type = a.Type,
                     Scopes = ParseScopes(a.Scopes),
                     TokenCount = tokenStat?.TokenCount ?? 0,
-                    LastTokenIssuedAt = tokenStat?.LastTokenIssuedAt,
+                    LastTokenIssuedAt = tokenStat?.LastTokenIssuedAt.AsUtcDateTimeOffset(),
                 };
             })
             .ToList();

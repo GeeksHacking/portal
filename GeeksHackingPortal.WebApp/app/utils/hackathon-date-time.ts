@@ -1,3 +1,5 @@
+// The API stores and returns every timestamp in UTC (ISO 8601 with an explicit offset).
+// Presentation is decided here: schedule inputs and displays use the event time zone.
 export const HACKATHON_TIME_ZONE = 'Asia/Singapore'
 export const HACKATHON_TIME_ZONE_LABEL = 'SGT'
 const HACKATHON_TIME_ZONE_OFFSET = '+08:00'
@@ -41,6 +43,13 @@ export function parseHackathonDateTimeValue(value: Date | string | null | undefi
   const date = new Date(normalizedValue)
 
   return Number.isNaN(date.getTime()) ? undefined : date
+}
+
+export function isSameHackathonDay(a: Date, b: Date): boolean {
+  const first = getHackathonDateTimeParts(a)
+  const second = getHackathonDateTimeParts(b)
+
+  return first.year === second.year && first.month === second.month && first.day === second.day
 }
 
 export function formatHackathonDateTimeInput(value: Date | string | null | undefined): string {

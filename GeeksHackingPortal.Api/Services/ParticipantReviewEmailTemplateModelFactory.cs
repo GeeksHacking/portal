@@ -1,4 +1,5 @@
 using GeeksHackingPortal.Api.Entities;
+using GeeksHackingPortal.Api.Extensions;
 
 namespace GeeksHackingPortal.Api.Services;
 
@@ -26,23 +27,23 @@ public static class ParticipantReviewEmailTemplateModelFactory
             ["hackathon_venue"] = hackathon.Activity.Location,
             ["hackathon_description"] = hackathon.Activity.Description,
             ["hackathon_homepage_url"] = hackathon.HomepageUri.ToString(),
-            ["event_start_date"] = hackathon.Activity.StartTime.ToString("yyyy-MM-dd"),
-            ["event_end_date"] = hackathon.Activity.EndTime.ToString("yyyy-MM-dd"),
-            ["event_start_date_formatted"] = hackathon.Activity.StartTime.ToString("MMMM dd, yyyy"),
-            ["event_end_date_formatted"] = hackathon.Activity.EndTime.ToString("MMMM dd, yyyy"),
-            ["submissions_start_date"] = hackathon.SubmissionsStartDate.ToString("yyyy-MM-dd"),
-            ["submissions_end_date"] = hackathon.SubmissionsEndDate.ToString("yyyy-MM-dd"),
-            ["submissions_start_date_formatted"] = hackathon.SubmissionsStartDate.ToString(
+            ["event_start_date"] = hackathon.Activity.StartTime.ToEventTime().ToString("yyyy-MM-dd"),
+            ["event_end_date"] = hackathon.Activity.EndTime.ToEventTime().ToString("yyyy-MM-dd"),
+            ["event_start_date_formatted"] = hackathon.Activity.StartTime.ToEventTime().ToString("MMMM dd, yyyy"),
+            ["event_end_date_formatted"] = hackathon.Activity.EndTime.ToEventTime().ToString("MMMM dd, yyyy"),
+            ["submissions_start_date"] = hackathon.SubmissionsStartDate.ToEventTime().ToString("yyyy-MM-dd"),
+            ["submissions_end_date"] = hackathon.SubmissionsEndDate.ToEventTime().ToString("yyyy-MM-dd"),
+            ["submissions_start_date_formatted"] = hackathon.SubmissionsStartDate.ToEventTime().ToString(
                 "MMMM dd, yyyy"
             ),
-            ["submissions_end_date_formatted"] = hackathon.SubmissionsEndDate.ToString(
+            ["submissions_end_date_formatted"] = hackathon.SubmissionsEndDate.ToEventTime().ToString(
                 "MMMM dd, yyyy"
             ),
             ["reason"] = reason ?? string.Empty,
             ["has_reason"] = !string.IsNullOrWhiteSpace(reason),
             ["review_status"] = reviewStatus,
-            ["joined_at"] = participant.JoinedAt.ToString("yyyy-MM-dd"),
-            ["joined_at_formatted"] = participant.JoinedAt.ToString("MMMM dd, yyyy"),
+            ["joined_at"] = participant.JoinedAt.ToEventTime().ToString("yyyy-MM-dd"),
+            ["joined_at_formatted"] = participant.JoinedAt.ToEventTime().ToString("MMMM dd, yyyy"),
         };
     }
 }

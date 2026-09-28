@@ -73,7 +73,7 @@ public class Endpoint(
             Subject = a.Subject!,
             UserName = userMap.TryGetValue(a.Subject!, out var u) ? u.Name : "Unknown",
             UserEmail = userMap.TryGetValue(a.Subject!, out var ue) ? ue.Email : "Unknown",
-            CreationDate = a.CreationDate,
+            CreationDate = a.CreationDate.AsUtcDateTimeOffset(),
             Scopes = a.Scopes
         }).ToList();
 

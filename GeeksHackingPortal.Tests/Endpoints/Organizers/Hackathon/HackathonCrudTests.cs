@@ -52,6 +52,42 @@ public class HackathonCrudTests
     }
 
     [Test]
+    public async Task CreateHackathon_WithNonUtcOffsets_ReturnsSameInstantsInUtc()
+    {
+        // Arrange - the web app submits schedule fields with the event's +08:00 offset; other clients may use any offset
+        var singapore = TimeSpan.FromHours(8);
+        var newYork = TimeSpan.FromHours(-5);
+        var request = CreateValidHackathonRequest(Guid.NewGuid().ToString()[..8]);
+        request.EventStartDate = new DateTimeOffset(2030, 1, 5, 7, 30, 0, singapore);
+        request.EventEndDate = new DateTimeOffset(2030, 1, 6, 18, 0, 0, singapore);
+        request.SubmissionsStartDate = new DateTimeOffset(2030, 1, 5, 9, 0, 0, singapore);
+        request.SubmissionsEndDate = new DateTimeOffset(2030, 1, 6, 12, 0, 0, singapore);
+        request.JudgingStartDate = new DateTimeOffset(2030, 1, 6, 13, 0, 0, singapore).ToOffset(newYork);
+        request.JudgingEndDate = new DateTimeOffset(2030, 1, 6, 17, 0, 0, singapore).ToOffset(newYork);
+
+        // Act
+        var createResponse = await Client.HttpClient.PostAsJsonAsync("/organizers/hackathons", request);
+        var created = await createResponse.Content.ReadFromJsonAsync<HackathonResponse>();
+        var fetched = await Client.HttpClient.GetFromJsonAsync<HackathonResponse>(
+            $"/organizers/hackathons/{created!.Id}"
+        );
+
+        // Assert - same instants, always expressed in UTC
+        await Assert.That(createResponse.StatusCode).IsEqualTo(HttpStatusCode.Created);
+        foreach (var result in new[] { created, fetched! })
+        {
+            await Assert.That(result.EventStartDate).IsEqualTo(request.EventStartDate);
+            await Assert.That(result.EventEndDate).IsEqualTo(request.EventEndDate);
+            await Assert.That(result.SubmissionsStartDate).IsEqualTo(request.SubmissionsStartDate);
+            await Assert.That(result.SubmissionsEndDate).IsEqualTo(request.SubmissionsEndDate);
+            await Assert.That(result.JudgingStartDate).IsEqualTo(request.JudgingStartDate);
+            await Assert.That(result.JudgingEndDate).IsEqualTo(request.JudgingEndDate);
+            await Assert.That(result.EventStartDate.Offset).IsEqualTo(TimeSpan.Zero);
+            await Assert.That(result.JudgingEndDate.Offset).IsEqualTo(TimeSpan.Zero);
+        }
+    }
+
+    [Test]
     public async Task CreateHackathon_WithoutAuthentication_ReturnsUnauthorized()
     {
         // Arrange

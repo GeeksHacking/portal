@@ -1,7 +1,6 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
-using GeeksHackingPortal.Api.Extensions;
 using Jint;
 using SqlSugar;
 
@@ -127,7 +126,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 RedemptionId = redemption.Id,
                 ResourceId = redemption.ResourceId,
                 ActivityId = redemption.ActivityId,
-                CreatedAt = redemption.CreatedAt.AssumeStoredAsUtc(),
+                CreatedAt = redemption.CreatedAt,
             },
             ct
         );

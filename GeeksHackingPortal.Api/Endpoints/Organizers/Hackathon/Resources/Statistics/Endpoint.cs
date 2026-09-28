@@ -1,7 +1,6 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
-using GeeksHackingPortal.Api.Extensions;
 using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Organizers.Hackathon.Resources.Statistics;
@@ -123,8 +122,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                             .Select(item => item.ResourceId)
                             .Distinct()
                             .Count(),
-                        FirstRedeemedAt = firstRedemption?.CreatedAt.AssumeStoredAsUtc(),
-                        LastRedeemedAt = latestRedemption?.CreatedAt.AssumeStoredAsUtc(),
+                        FirstRedeemedAt = firstRedemption?.CreatedAt,
+                        LastRedeemedAt = latestRedemption?.CreatedAt,
                         Redemptions =
                         [
                             .. orderedRedemptions.Select(redemption => new ParticipantRedemptionEventItem
@@ -133,7 +132,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                                 ResourceId = redemption.ResourceId,
                                 ResourceName =
                                     resourceById.GetValueOrDefault(redemption.ResourceId)?.Name ?? "Unknown resource",
-                                Timestamp = redemption.CreatedAt.AssumeStoredAsUtc(),
+                                Timestamp = redemption.CreatedAt,
                             }),
                         ],
                     },
@@ -195,7 +194,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     IsPublished = resource.IsPublished,
                     TotalRedemptions = resourceRedemptions.Count,
                     UniqueRedeemers = resourceRedemptions.Select(item => item.UserId).Distinct().Count(),
-                    LastRedeemedAt = latestRedemption?.CreatedAt.AssumeStoredAsUtc(),
+                    LastRedeemedAt = latestRedemption?.CreatedAt,
                 };
             })
             .OrderByDescending(item => item.TotalRedemptions)
@@ -224,7 +223,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     UserName = BuildUserName(participant.FirstName, participant.LastName),
                     TeamId = teamId,
                     TeamName = teamName,
-                    Timestamp = redemption.CreatedAt.AssumeStoredAsUtc(),
+                    Timestamp = redemption.CreatedAt,
                 };
             })
             .OfType<RecentRedemptionItem>()
@@ -252,8 +251,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     participantsWithRedemptions == 0
                         ? 0
                         : Math.Round((decimal)redemptions.Count / participantsWithRedemptions, 2),
-                FirstRedeemedAt = redemptions.MinBy(item => item.CreatedAt)?.CreatedAt.AssumeStoredAsUtc(),
-                LastRedeemedAt = redemptions.MaxBy(item => item.CreatedAt)?.CreatedAt.AssumeStoredAsUtc(),
+                FirstRedeemedAt = redemptions.MinBy(item => item.CreatedAt)?.CreatedAt,
+                LastRedeemedAt = redemptions.MaxBy(item => item.CreatedAt)?.CreatedAt,
                 ResourceSummaries = resourceSummaries,
                 TeamBreakdown = teamBreakdown,
                 RecentActivity = recentActivity,

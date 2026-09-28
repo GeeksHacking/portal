@@ -10,7 +10,6 @@ using GeeksHackingPortal.Api.DataProtection;
 using GeeksHackingPortal.Api.Entities;
 using GeeksHackingPortal.Api.Options;
 using GeeksHackingPortal.Api.Services;
-using GeeksHackingPortal.Api.Services.DataMigrations;
 using Google.Cloud.Diagnostics.AspNetCore3;
 using Google.Cloud.Diagnostics.Common;
 using Google.Cloud.Storage.V1;
@@ -421,20 +420,6 @@ if (validateDatabaseSchema)
             "Database schema validation passed for {EntityCount} entities.",
             schemaReport.EntityTypes.Count
         );
-
-        var pendingDataMigrations = DataMigrationRunner.GetPending(sql);
-        if (pendingDataMigrations.Count > 0)
-        {
-            app.Logger.LogCritical(
-                "Pending data migrations detected: {MigrationIds}. Run the database migrator workflow before starting the API.",
-                string.Join(", ", pendingDataMigrations.Select(migration => migration.Id))
-            );
-            schemaMismatchLogged = true;
-
-            throw new InvalidOperationException(
-                "Pending data migrations detected. Run the database migrator workflow before starting the API."
-            );
-        }
 
         var openIddictDbContext = scope.ServiceProvider.GetRequiredService<OpenIddictDbContext>();
         var pendingMigrations = await openIddictDbContext.Database.GetPendingMigrationsAsync();

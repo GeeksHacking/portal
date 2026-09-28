@@ -2,7 +2,6 @@ using ConsoleAppFramework;
 using GeeksHackingPortal.Api.Data;
 using GeeksHackingPortal.Api.Entities;
 using GeeksHackingPortal.Api.Services;
-using GeeksHackingPortal.Api.Services.DataMigrations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SqlSugar;
@@ -67,10 +66,6 @@ public class ApplyCommand(
 
         cancellationToken.ThrowIfCancellationRequested();
         BackfillActivities(sql, logger, cancellationToken);
-
-        // Data migrations must run before seeding so freshly seeded data is never rewritten.
-        cancellationToken.ThrowIfCancellationRequested();
-        DataMigrationRunner.ApplyPending(sql, logger, cancellationToken);
 
         if (seedDevelopmentTemplate)
         {

@@ -50,8 +50,6 @@ dotnet run --project GeeksHackingPortal.DbMigrator -- apply --seed-development-t
 
 `apply` will stop on potentially destructive changes unless `--allow-destructive` is specified.
 
-`apply` also runs one-off data migrations (tracked in the `DataMigrationHistory` table so each runs exactly once), and `diff` previews any that are pending.
-
 ## Dates and times
 
 - The database stores every timestamp as UTC, and the API returns every timestamp as UTC (ISO 8601, e.g. `2026-03-07T01:00:00Z`), regardless of the host's `TZ`.

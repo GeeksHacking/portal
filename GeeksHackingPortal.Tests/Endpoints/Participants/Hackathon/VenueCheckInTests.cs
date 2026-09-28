@@ -63,6 +63,36 @@ public class VenueCheckInTests
     }
 
     [Test]
+    public async Task CheckIn_History_ReturnsCurrentTimeInUtc()
+    {
+        var hackathonRequest = CreateValidHackathonRequest(Guid.NewGuid().ToString()[..8]);
+        var hackathonResponse = await Client.HttpClient.PostAsJsonAsync(
+            "/organizers/hackathons",
+            hackathonRequest
+        );
+        var hackathon = await hackathonResponse.Content.ReadFromJsonAsync<HackathonResponse>();
+        await Client.HttpClient.PostAsync($"/participants/hackathons/{hackathon!.Id}/join", null);
+        var participantUserId = await GetCurrentUserIdAsync(Client.HttpClient);
+
+        var before = DateTimeOffset.UtcNow.AddMinutes(-1);
+        await Client.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{hackathon.Id}/participants/{participantUserId}/venue/check-in",
+            new { }
+        );
+        var after = DateTimeOffset.UtcNow.AddMinutes(1);
+
+        // The history is read back from the database rather than echoed from the request.
+        var history = await Client.HttpClient.GetFromJsonAsync<OrganizerVenueHistoryResponse>(
+            $"/organizers/hackathons/{hackathon.Id}/participants/{participantUserId}/venue/history"
+        );
+
+        var checkInTime = history!.History.Single().CheckInTime;
+        await Assert.That(checkInTime.Offset).IsEqualTo(TimeSpan.Zero);
+        await Assert.That(checkInTime).IsGreaterThanOrEqualTo(before);
+        await Assert.That(checkInTime).IsLessThanOrEqualTo(after);
+    }
+
+    [Test]
     public async Task CheckOut_ShouldSucceed()
     {
         var hackathonRequest = CreateValidHackathonRequest(Guid.NewGuid().ToString()[..8]);

@@ -15,6 +15,7 @@ import {
   useGeeksHackingPortalApiEndpointsParticipantsHackathonWithdrawEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { computed, ref } from 'vue'
+import { HACKATHON_TIME_ZONE, HACKATHON_TIME_ZONE_LABEL } from '~/utils/hackathon-date-time'
 
 const route = useRoute()
 const toast = useToast()
@@ -190,7 +191,7 @@ async function joinHackathon() {
 
 const reviewedDateFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: 'medium',
-  timeZone: 'Asia/Singapore',
+  timeZone: HACKATHON_TIME_ZONE,
 })
 
 function formatReviewedDate(value: Date | string | null | undefined) {
@@ -199,7 +200,7 @@ function formatReviewedDate(value: Date | string | null | undefined) {
   const parsed = value instanceof Date ? value : new Date(value)
   if (Number.isNaN(parsed.getTime()))
     return '—'
-  return `${reviewedDateFormatter.format(parsed)} SGT`
+  return `${reviewedDateFormatter.format(parsed)} ${HACKATHON_TIME_ZONE_LABEL}`
 }
 
 function formatParticipantStatus(status: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusKey | null | undefined, isParticipant?: boolean | null) {

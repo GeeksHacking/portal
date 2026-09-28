@@ -13,6 +13,7 @@ import {
   useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsWithdrawEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
+import { HACKATHON_TIME_ZONE } from '~/utils/hackathon-date-time'
 
 type ParticipantItem = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem
 type ParticipantDetail = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse
@@ -105,7 +106,7 @@ function formatDateTime(value: string | null | undefined) {
   return new Intl.DateTimeFormat(undefined, {
     dateStyle: 'medium',
     timeStyle: 'short',
-    timeZone: 'Asia/Singapore',
+    timeZone: HACKATHON_TIME_ZONE,
   }).format(date)
 }
 

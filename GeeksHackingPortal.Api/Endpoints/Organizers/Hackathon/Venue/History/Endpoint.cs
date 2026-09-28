@@ -1,7 +1,6 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
-using GeeksHackingPortal.Api.Extensions;
 using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Organizers.Hackathon.Venue.History;
@@ -56,8 +55,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 [
                     .. history.Select(v => new HistoryItemDto
                     {
-                        CheckInTime = v.CheckInTime.AssumeStoredAsUtc(),
-                        CheckOutTime = v.CheckOutTime.AssumeStoredAsUtc(),
+                        CheckInTime = v.CheckInTime,
+                        CheckOutTime = v.CheckOutTime,
                         IsCheckedIn = v.IsCheckedIn,
                     }),
                 ],

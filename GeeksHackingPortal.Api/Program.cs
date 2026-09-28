@@ -4,6 +4,7 @@ using FastEndpoints.Swagger;
 using GeeksHackingPortal.Api;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Constants;
+using GeeksHackingPortal.Api.Converters;
 using GeeksHackingPortal.Api.Data;
 using GeeksHackingPortal.Api.DataProtection;
 using GeeksHackingPortal.Api.Entities;
@@ -88,20 +89,7 @@ builder.Services.AddSingleton<ISqlSugarClient>(s =>
         builder.Configuration.GetConnectionString("db")
         ?? throw new InvalidOperationException("ConnectionStrings:db is required.");
 
-    return new SqlSugarScope(
-        new ConnectionConfig
-        {
-            DbType = DbType.MySql,
-            ConnectionString = connectionString,
-            IsAutoCloseConnection = true,
-            MoreSettings = new ConnMoreSettings { IsAutoRemoveDataCache = true },
-            ConfigureExternalServices = new ConfigureExternalServices
-            {
-                DataInfoCacheService = s.GetRequiredService<ICacheService>(),
-            },
-        },
-        _ => { }
-    );
+    return SqlSugarClientFactory.Create(connectionString, s.GetRequiredService<ICacheService>());
 });
 
 var serverVersion = new MySqlServerVersion(new Version(8, 4, 6));
@@ -123,6 +111,7 @@ builder.Services.AddHttpClient();
 builder.Services.Configure<JsonOptions>(options =>
 {
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.SerializerOptions.Converters.Add(new UtcDateTimeOffsetJsonConverter());
 });
 
 builder
@@ -716,6 +705,7 @@ app.MapMethods(
 app.UseFastEndpoints(c =>
 {
     c.Serializer.Options.Converters.Add(new JsonStringEnumConverter());
+    c.Serializer.Options.Converters.Add(new UtcDateTimeOffsetJsonConverter());
     c.Endpoints.AllowEmptyRequestDtos = true;
 });
 app.UseSwaggerGen(options => options.Path = "/openapi/{documentName}.json");

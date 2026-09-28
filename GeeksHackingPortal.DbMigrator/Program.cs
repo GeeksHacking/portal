@@ -20,19 +20,7 @@ var app = ConsoleApp.Create()
             configuration.GetConnectionString("openiddict")
             ?? throw new InvalidOperationException("ConnectionStrings:openiddict is required.");
 
-        services.AddSingleton<ISqlSugarClient>(s =>
-        {
-            return new SqlSugarScope(
-                new ConnectionConfig
-                {
-                    DbType = DbType.MySql,
-                    ConnectionString = connectionString,
-                    IsAutoCloseConnection = true,
-                    MoreSettings = new ConnMoreSettings { IsAutoRemoveDataCache = true },
-                },
-                _ => { }
-            );
-        });
+        services.AddSingleton<ISqlSugarClient>(_ => SqlSugarClientFactory.Create(connectionString));
 
         services.AddDbContext<OpenIddictDbContext>(options =>
             options

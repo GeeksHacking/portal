@@ -2,6 +2,7 @@ using GeeksHackingPortal.Api.Data;
 using GeeksHackingPortal.Api.Endpoints.Admin.OAuthApplications.Shared;
 using GeeksHackingPortal.Api.Endpoints.Admin.OAuthDirectory.Shared;
 using GeeksHackingPortal.Api.Entities;
+using GeeksHackingPortal.Api.Extensions;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
 using OpenIddict.EntityFrameworkCore.Models;
@@ -116,8 +117,8 @@ public class OAuthDirectoryService(
                     ValidAuthorizations = authorizationStat?.ValidAuthorizations ?? 0,
                     UniqueUsers = authorizationStat?.UniqueUsers ?? 0,
                     TotalTokens = tokenStat?.TotalTokens ?? 0,
-                    LastAuthorizedAt = authorizationStat?.LastAuthorizedAt,
-                    LastTokenIssuedAt = tokenStat?.LastTokenIssuedAt,
+                    LastAuthorizedAt = authorizationStat?.LastAuthorizedAt.AsUtcDateTimeOffset(),
+                    LastTokenIssuedAt = tokenStat?.LastTokenIssuedAt.AsUtcDateTimeOffset(),
                 };
             })
             .ToList();

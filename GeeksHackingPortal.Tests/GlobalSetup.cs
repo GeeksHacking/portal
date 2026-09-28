@@ -36,6 +36,13 @@ public class GlobalHooks
             "UseVolumes=false", // We do not want DB data to be persisted and conflict with local development data
         ]);
 
+        // Production runs with a non-UTC host time zone. Mirror it so that timestamps are verified to be stored
+        // and returned in UTC regardless of the host's local time zone.
+        foreach (var resourceName in new[] { "api", "db-migrator" })
+        {
+            appHost.CreateResourceBuilder<ProjectResource>(resourceName).WithEnvironment("TZ", "Asia/Singapore");
+        }
+
         appHost.Services.ConfigureHttpClientDefaults(clientBuilder =>
         {
             clientBuilder.ConfigurePrimaryHttpMessageHandler(() =>

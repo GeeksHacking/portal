@@ -1,18 +1,29 @@
+using GeeksHackingPortal.Api.Constants;
+
 namespace GeeksHackingPortal.Api.Extensions;
 
 public static class DateTimeOffsetExtensions
 {
     /// <summary>
-    /// MySQL datetime columns do not preserve offsets. Backend-generated timestamps are written in UTC,
-    /// so we reinterpret the stored clock time as UTC when shaping API responses.
+    /// Converts a (UTC) timestamp to <see cref="EventTimeZone"/> for presenting it to people.
     /// </summary>
-    public static DateTimeOffset AssumeStoredAsUtc(this DateTimeOffset value)
+    public static DateTimeOffset ToEventTime(this DateTimeOffset value)
     {
-        return new DateTimeOffset(DateTime.SpecifyKind(value.DateTime, DateTimeKind.Utc));
+        return TimeZoneInfo.ConvertTime(value, EventTimeZone.Info);
     }
 
-    public static DateTimeOffset? AssumeStoredAsUtc(this DateTimeOffset? value)
+    /// <summary>
+    /// OpenIddict persists its timestamps (e.g. <c>CreationDate</c>) as UTC <see cref="DateTime"/> values, but MySQL
+    /// returns them with <see cref="DateTimeKind.Unspecified"/>, which would be serialized without an offset.
+    /// Mark them as UTC so API responses carry an explicit offset like every other timestamp.
+    /// </summary>
+    public static DateTimeOffset AsUtcDateTimeOffset(this DateTime value)
     {
-        return value?.AssumeStoredAsUtc();
+        return new DateTimeOffset(DateTime.SpecifyKind(value, DateTimeKind.Utc));
+    }
+
+    public static DateTimeOffset? AsUtcDateTimeOffset(this DateTime? value)
+    {
+        return value?.AsUtcDateTimeOffset();
     }
 }

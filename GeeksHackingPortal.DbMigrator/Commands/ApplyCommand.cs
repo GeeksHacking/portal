@@ -359,8 +359,10 @@ public class ApplyCommand(
         logger.LogInformation("Seeding development template data.");
 
         var hackathonId = new Guid("1e2beba8-0dd2-484f-b5b2-4b1b71a084e4");
-        var eventStart = new DateTimeOffset(2026, 3, 13, 9, 0, 0, TimeSpan.Zero);
-        var eventEnd = new DateTimeOffset(2026, 3, 15, 18, 0, 0, TimeSpan.Zero);
+        // Schedule times are expressed in Singapore time; they are stored as UTC.
+        var singaporeOffset = TimeSpan.FromHours(8);
+        var eventStart = new DateTimeOffset(2026, 3, 13, 9, 0, 0, singaporeOffset);
+        var eventEnd = new DateTimeOffset(2026, 3, 15, 18, 0, 0, singaporeOffset);
 
         var activity = new Activity
         {
@@ -388,11 +390,11 @@ public class ApplyCommand(
             LegacyEventEndDate = activity.EndTime,
             HomepageUri = new Uri("https://hackomania.geekshacking.com/2026"),
             ShortCode = "HACKO26",
-            SubmissionsStartDate = new DateTimeOffset(2026, 3, 13, 10, 0, 0, TimeSpan.Zero),
-            ChallengeSelectionEndDate = new DateTimeOffset(2026, 3, 14, 12, 0, 0, TimeSpan.Zero),
-            SubmissionsEndDate = new DateTimeOffset(2026, 3, 15, 12, 0, 0, TimeSpan.Zero),
-            JudgingStartDate = new DateTimeOffset(2026, 3, 15, 13, 0, 0, TimeSpan.Zero),
-            JudgingEndDate = new DateTimeOffset(2026, 3, 15, 18, 0, 0, TimeSpan.Zero),
+            SubmissionsStartDate = new DateTimeOffset(2026, 3, 13, 10, 0, 0, singaporeOffset),
+            ChallengeSelectionEndDate = new DateTimeOffset(2026, 3, 14, 12, 0, 0, singaporeOffset),
+            SubmissionsEndDate = new DateTimeOffset(2026, 3, 15, 12, 0, 0, singaporeOffset),
+            JudgingStartDate = new DateTimeOffset(2026, 3, 15, 13, 0, 0, singaporeOffset),
+            JudgingEndDate = new DateTimeOffset(2026, 3, 15, 18, 0, 0, singaporeOffset),
         };
         sql.Insertable(hackathon).ExecuteCommand();
 

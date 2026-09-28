@@ -13,10 +13,10 @@ public class OAuthDirectoryHistoryItemResponse
     public Guid? UserId { get; set; }
     public string? UserName { get; set; }
     public string? UserEmail { get; set; }
-    public DateTime? CreationDate { get; set; }
+    public DateTimeOffset? CreationDate { get; set; }
     public string? Status { get; set; }
     public string? Type { get; set; }
     public required IReadOnlyList<string> Scopes { get; set; }
     public required int TokenCount { get; set; }
-    public DateTime? LastTokenIssuedAt { get; set; }
+    public DateTimeOffset? LastTokenIssuedAt { get; set; }
 }

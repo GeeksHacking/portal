@@ -19,6 +19,6 @@ public class OAuthDirectoryApplicationResponse
     public required int ValidAuthorizations { get; set; }
     public required int UniqueUsers { get; set; }
     public required int TotalTokens { get; set; }
-    public DateTime? LastAuthorizedAt { get; set; }
-    public DateTime? LastTokenIssuedAt { get; set; }
+    public DateTimeOffset? LastAuthorizedAt { get; set; }
+    public DateTimeOffset? LastTokenIssuedAt { get; set; }
 }

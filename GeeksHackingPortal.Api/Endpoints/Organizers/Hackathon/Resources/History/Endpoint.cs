@@ -1,7 +1,6 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
-using GeeksHackingPortal.Api.Extensions;
 using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Organizers.Hackathon.Resources.History;
@@ -79,7 +78,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                     .. history.Select(r => new HistoryItemDto
                     {
                         RedemptionId = r.Id,
-                        CreatedAt = r.CreatedAt.AssumeStoredAsUtc(),
+                        CreatedAt = r.CreatedAt,
                     }),
                 ],
             },

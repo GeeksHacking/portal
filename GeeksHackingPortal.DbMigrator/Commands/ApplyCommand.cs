@@ -17,7 +17,7 @@ public class ApplyCommand(
     /// <summary>
     /// Apply pending SqlSugar schema changes after diff review.
     /// </summary>
-    /// <param name="allowDestructive">Allow column deletions when applying schema changes.</param>
+    /// <param name="allowDestructive">Allow column deletions when applying schema changes, and drop leftover SqlSugar TempDiff tables.</param>
     /// <param name="seedDevelopmentTemplate">Seed the development template data after applying schema changes.</param>
     /// <param name="cancellationToken"></param>
     [Command("apply")]
@@ -38,7 +38,7 @@ public class ApplyCommand(
         logger.LogInformation("OpenIddict database migrations were applied.");
 
         cancellationToken.ThrowIfCancellationRequested();
-        SchemaDiffTempTableCleaner.DropLeftoverTables(sql, logger);
+        SchemaDiffTempTableCleaner.CleanUp(sql, logger, allowDestructive);
         var report = SchemaDifferenceInspector.Inspect(sql);
         logger.LogInformation(
             "Collected SqlSugar schema differences for {EntityCount} entities.",

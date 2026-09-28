@@ -16,7 +16,10 @@ namespace GeeksHackingPortal.DbMigrator;
 /// </remarks>
 public static partial class SchemaDiffTempTableCleaner
 {
-    public static void DropLeftoverTables(ISqlSugarClient sql, ILogger logger)
+    /// <summary>
+    /// Drops leftover <c>TempDiff*</c> tables when <paramref name="allowDestructive"/> is set; otherwise only reports them.
+    /// </summary>
+    public static void CleanUp(ISqlSugarClient sql, ILogger logger, bool allowDestructive)
     {
         var tableNames = sql.DbMaintenance.GetTableInfoList(false)
             .Select(table => table.Name)
@@ -25,6 +28,16 @@ public static partial class SchemaDiffTempTableCleaner
 
         if (tableNames.Length == 0)
         {
+            return;
+        }
+
+        if (!allowDestructive)
+        {
+            logger.LogWarning(
+                "Found {TableCount} leftover SqlSugar schema diff table(s): {TableNames}. Run apply with --allow-destructive to drop them.",
+                tableNames.Length,
+                string.Join(", ", tableNames)
+            );
             return;
         }
 

@@ -1,5 +1,6 @@
 using GeeksHackingPortal.Api.Data;
 using GeeksHackingPortal.Api.Endpoints.Admin.OAuthApplications.Shared;
+using GeeksHackingPortal.Api.Endpoints.Admin.OAuthDirectory.Shared;
 using GeeksHackingPortal.Api.Entities;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
@@ -7,40 +8,48 @@ using OpenIddict.EntityFrameworkCore.Models;
 using SqlSugar;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace GeeksHackingPortal.Api.Endpoints.Admin.OAuthDirectory.Shared;
+namespace GeeksHackingPortal.Api.Services;
 
 /// <summary>
-/// Builds root-wide views of OAuth applications regardless of which admin owns them.
+/// Root-wide view of OAuth applications regardless of which admin owns them.
 /// </summary>
-public static class OAuthDirectoryQueries
+public class OAuthDirectoryService(
+    IOpenIddictApplicationManager applicationManager,
+    OpenIddictDbContext openIddictDbContext,
+    ISqlSugarClient sql
+)
 {
-    public static async Task<List<OAuthDirectoryApplicationResponse>> ToResponsesAsync(
-        IOpenIddictApplicationManager applicationManager,
-        OpenIddictDbContext openIddictDbContext,
-        ISqlSugarClient sql,
-        IReadOnlyList<object> applications,
+    public async Task<List<OAuthDirectoryApplicationResponse>> ListApplicationsAsync(CancellationToken ct)
+    {
+        var summaries = new List<ApplicationSummary>();
+
+        await foreach (var application in applicationManager.ListAsync(cancellationToken: ct))
+        {
+            summaries.Add(await SummarizeAsync(application, ct));
+        }
+
+        return await ToResponsesAsync(summaries, ct);
+    }
+
+    public async Task<OAuthDirectoryApplicationResponse> GetApplicationAsync(object application, CancellationToken ct)
+    {
+        var responses = await ToResponsesAsync([await SummarizeAsync(application, ct)], ct);
+        return responses.Single();
+    }
+
+    private async Task<ApplicationSummary> SummarizeAsync(object application, CancellationToken ct) =>
+        new(
+            await OAuthApplicationMapper.ToResponseAsync(applicationManager, application, clientSecret: null, ct),
+            await OAuthApplicationMapper.GetOwnerUserIdAsync(applicationManager, application, ct),
+            await applicationManager.GetClientTypeAsync(application, ct),
+            await applicationManager.GetConsentTypeAsync(application, ct)
+        );
+
+    private async Task<List<OAuthDirectoryApplicationResponse>> ToResponsesAsync(
+        List<ApplicationSummary> summaries,
         CancellationToken ct
     )
     {
-        var summaries = new List<(OAuthApplicationResponse Application, Guid? OwnerUserId, string? ClientType, string? ConsentType)>();
-
-        foreach (var application in applications)
-        {
-            summaries.Add(
-                (
-                    await OAuthApplicationMapper.ToResponseAsync(
-                        applicationManager,
-                        application,
-                        clientSecret: null,
-                        ct
-                    ),
-                    await OAuthApplicationMapper.GetOwnerUserIdAsync(applicationManager, application, ct),
-                    await applicationManager.GetClientTypeAsync(application, ct),
-                    await applicationManager.GetConsentTypeAsync(application, ct)
-                )
-            );
-        }
-
         var applicationIds = summaries.Select(s => s.Application.Id).ToList();
 
         var authorizationStats = await openIddictDbContext
@@ -113,4 +122,11 @@ public static class OAuthDirectoryQueries
             })
             .ToList();
     }
+
+    private sealed record ApplicationSummary(
+        OAuthApplicationResponse Application,
+        Guid? OwnerUserId,
+        string? ClientType,
+        string? ConsentType
+    );
 }

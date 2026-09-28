@@ -1,17 +1,10 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
-using GeeksHackingPortal.Api.Data;
-using GeeksHackingPortal.Api.Endpoints.Admin.OAuthDirectory.Shared;
-using OpenIddict.Abstractions;
-using SqlSugar;
+using GeeksHackingPortal.Api.Services;
 
 namespace GeeksHackingPortal.Api.Endpoints.Admin.OAuthDirectory.List;
 
-public class Endpoint(
-    IOpenIddictApplicationManager applicationManager,
-    OpenIddictDbContext openIddictDbContext,
-    ISqlSugarClient sql
-) : EndpointWithoutRequest<Response>
+public class Endpoint(OAuthDirectoryService oauthDirectory) : EndpointWithoutRequest<Response>
 {
     public override void Configure()
     {
@@ -28,20 +21,7 @@ public class Endpoint(
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var applications = new List<object>();
-
-        await foreach (var application in applicationManager.ListAsync(cancellationToken: ct))
-        {
-            applications.Add(application);
-        }
-
-        var items = await OAuthDirectoryQueries.ToResponsesAsync(
-            applicationManager,
-            openIddictDbContext,
-            sql,
-            applications,
-            ct
-        );
+        var items = await oauthDirectory.ListApplicationsAsync(ct);
 
         await Send.OkAsync(
             new Response

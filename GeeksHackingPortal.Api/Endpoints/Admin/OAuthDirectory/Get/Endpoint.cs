@@ -1,17 +1,12 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
-using GeeksHackingPortal.Api.Data;
-using GeeksHackingPortal.Api.Endpoints.Admin.OAuthDirectory.Shared;
+using GeeksHackingPortal.Api.Services;
 using OpenIddict.Abstractions;
-using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Admin.OAuthDirectory.Get;
 
-public class Endpoint(
-    IOpenIddictApplicationManager applicationManager,
-    OpenIddictDbContext openIddictDbContext,
-    ISqlSugarClient sql
-) : Endpoint<Request, Response>
+public class Endpoint(IOpenIddictApplicationManager applicationManager, OAuthDirectoryService oauthDirectory)
+    : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -36,20 +31,10 @@ public class Endpoint(
             return;
         }
 
-        var summary = (
-            await OAuthDirectoryQueries.ToResponsesAsync(
-                applicationManager,
-                openIddictDbContext,
-                sql,
-                [application],
-                ct
-            )
-        ).Single();
-
         await Send.OkAsync(
             new Response
             {
-                Application = summary,
+                Application = await oauthDirectory.GetApplicationAsync(application, ct),
                 Permissions = (await applicationManager.GetPermissionsAsync(application, ct))
                     .Order(StringComparer.Ordinal)
                     .ToList(),

@@ -7,7 +7,8 @@ public static class LocalRedirect
         if (string.IsNullOrEmpty(value) || !value.StartsWith('/') || value.StartsWith("//") || value.StartsWith("/\\"))
             return false;
 
-        if (value.Contains('\\') || value.IndexOfAny(['\r', '\n', '\0']) >= 0)
+        // Browsers drop tabs and newlines from URLs, so "/\t/evil.com" would become "//evil.com".
+        if (value.Contains('\\') || value.Any(char.IsControl))
             return false;
 
         var queryIndex = value.IndexOf('?');

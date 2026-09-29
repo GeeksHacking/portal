@@ -15,7 +15,7 @@ public static class SqlSugarLockExtensions
     public static async Task<bool> LockRowAsync<T>(this ISqlSugarClient sql, Guid id)
     {
         var ids = await sql.Queryable<T>()
-            .Where("Id = @id", new SugarParameter("@id", id))
+            .Where("Id = @id", new { id })
             .TranLock(DbLockType.Wait)
             .Select<Guid>("Id")
             .ToListAsync();

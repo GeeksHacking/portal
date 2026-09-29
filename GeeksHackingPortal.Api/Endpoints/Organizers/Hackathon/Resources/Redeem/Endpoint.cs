@@ -1,6 +1,7 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
+using GeeksHackingPortal.Api.Extensions;
 using Jint;
 using SqlSugar;
 
@@ -32,6 +33,12 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             await Send.NotFoundAsync(ct);
             return;
         }
+
+        // Lock the resource before counting redemptions so concurrent requests cannot all
+        // pass the redemption limits before any of them is recorded. Disposing without
+        // commit rolls back.
+        using var tran = sql.Ado.UseTran();
+        await sql.LockRowAsync<Resource>(req.ResourceId);
 
         var resource = await sql.Queryable<Resource>()
             .Includes(r => r.Redemptions)
@@ -119,6 +126,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         };
 
         await sql.Insertable(redemption).ExecuteCommandAsync(ct);
+
+        tran.CommitTran();
 
         await Send.OkAsync(
             new Response

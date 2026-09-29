@@ -39,7 +39,6 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         // Get workshop
         var workshop = await sql.Queryable<Workshop>()
             .Includes(w => w.Activity)
-            .Includes(w => w.Participants)
             .FirstAsync(w => w.Id == workshopId && w.HackathonId == hackathonId, ct);
 
         if (workshop is null)
@@ -47,6 +46,11 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             await Send.NotFoundAsync(ct);
             return;
         }
+
+        // Serialize joins per workshop so the capacity check and insert are atomic.
+        // Disposing without commit rolls back.
+        using var tran = sql.Ado.UseTran();
+        await sql.LockRowAsync<Workshop>(workshop.Id);
 
         // Check if already joined
         var existingParticipant = await sql.Queryable<WorkshopParticipant>()
@@ -71,7 +75,9 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         }
 
         // Check capacity
-        if (workshop.Participants.Count >= workshop.MaxParticipants)
+        var joinedCount = await sql.Queryable<WorkshopParticipant>()
+            .CountAsync(wp => wp.WorkshopId == workshopId, ct);
+        if (joinedCount >= workshop.MaxParticipants)
         {
             AddError("Workshop is full");
             await Send.ErrorsAsync(400, ct);
@@ -87,6 +93,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         };
 
         await sql.Insertable(workshopParticipant).ExecuteCommandAsync(ct);
+
+        tran.CommitTran();
 
         await Send.OkAsync(
             new Response

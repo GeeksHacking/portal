@@ -70,8 +70,19 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
 
         await sql.Insertable(team).ExecuteCommandAsync(ct);
 
-        participant.TeamId = team.Id;
-        await sql.Updateable(participant).ExecuteCommandAsync(ct);
+        // Conditional update: only succeeds if the participant is still teamless, so two
+        // concurrent creates cannot both pass the check above. Disposing without commit
+        // rolls back the team insert.
+        var assigned = await sql.Updateable<Participant>()
+            .SetColumns(p => p.TeamId == team.Id)
+            .Where(p => p.Id == participant.Id && p.TeamId == null)
+            .ExecuteCommandAsync(ct);
+        if (assigned == 0)
+        {
+            AddError(r => r.Name, "You are already in a team for this hackathon.");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
 
         tran.CommitTran();
 

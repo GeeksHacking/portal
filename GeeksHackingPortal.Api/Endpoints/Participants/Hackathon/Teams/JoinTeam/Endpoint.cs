@@ -73,8 +73,18 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
             return;
         }
 
-        participant.TeamId = team.Id;
-        await sql.Updateable(participant).ExecuteCommandAsync(ct);
+        // Conditional update: only succeeds if the participant is still teamless, so two
+        // concurrent joins cannot both pass the check above.
+        var joined = await sql.Updateable<Participant>()
+            .SetColumns(p => p.TeamId == team.Id)
+            .Where(p => p.Id == participant.Id && p.TeamId == null)
+            .ExecuteCommandAsync(ct);
+        if (joined == 0)
+        {
+            AddError(r => r.JoinCode, "You are already in a team for this hackathon.");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
 
         await Send.OkAsync(new Response { TeamId = team.Id, HackathonId = hackathon.Id }, ct);
     }

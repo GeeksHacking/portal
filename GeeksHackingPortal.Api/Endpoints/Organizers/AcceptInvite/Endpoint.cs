@@ -51,6 +51,11 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             return;
         }
 
+        // Serialize redemptions of this invite so concurrent requests cannot all pass the
+        // MaxUses check before any of them records a use. Disposing without commit rolls back.
+        using var tran = sql.Ado.UseTran();
+        await sql.LockRowAsync<ActivityOrganizerInvite>(invite.Id);
+
         if (invite.MaxUses is not null)
         {
             var useCount = await sql.Queryable<ActivityOrganizerInviteUse>()
@@ -110,28 +115,22 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             UsedAt = now,
         };
 
-        var transactionResult = await sql.Ado.UseTranAsync(async () =>
+        if (activity.Kind == ActivityKind.Hackathon)
         {
-            if (activity.Kind == ActivityKind.Hackathon)
+            var organizer = new Organizer
             {
-                var organizer = new Organizer
-                {
-                    Id = activityOrganizerId,
-                    HackathonId = invite.ActivityId,
-                    UserId = userId.Value,
-                    Type = invite.Type,
-                };
-                await sql.Insertable(organizer).ExecuteCommandAsync(ct);
-            }
-
-            await sql.Insertable(activityOrganizer).ExecuteCommandAsync(ct);
-            await sql.Insertable(inviteUse).ExecuteCommandAsync(ct);
-        });
-
-        if (!transactionResult.IsSuccess)
-        {
-            throw transactionResult.ErrorException!;
+                Id = activityOrganizerId,
+                HackathonId = invite.ActivityId,
+                UserId = userId.Value,
+                Type = invite.Type,
+            };
+            await sql.Insertable(organizer).ExecuteCommandAsync(ct);
         }
+
+        await sql.Insertable(activityOrganizer).ExecuteCommandAsync(ct);
+        await sql.Insertable(inviteUse).ExecuteCommandAsync(ct);
+
+        tran.CommitTran();
 
         await Send.OkAsync(
             new Response { ActivityId = invite.ActivityId, Type = invite.Type },

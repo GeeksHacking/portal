@@ -1,6 +1,7 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
+using GeeksHackingPortal.Api.Extensions;
 using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Organizers.Hackathon.Venue.CheckIn;
@@ -40,6 +41,11 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             return;
         }
 
+        // Serialize check-ins per registration so concurrent scans cannot create duplicates.
+        // Disposing without commit rolls back.
+        using var tran = sql.Ado.UseTran();
+        await sql.LockRowAsync<ActivityRegistration>(participant.Id);
+
         // Check if already checked in (not checked out)
         var existingCheckIn = await sql.Queryable<VenueCheckIn>()
             .Where(v => v.ActivityRegistrationId == participant.Id && v.ActivityId == req.ActivityId && v.IsCheckedIn)
@@ -70,6 +76,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
         };
 
         await sql.Insertable(checkIn).ExecuteCommandAsync(ct);
+
+        tran.CommitTran();
 
         await Send.OkAsync(
             new Response

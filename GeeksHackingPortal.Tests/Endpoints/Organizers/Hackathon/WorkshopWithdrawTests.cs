@@ -201,6 +201,39 @@ public class WorkshopWithdrawTests
     }
 
     [Test]
+    public async Task ParticipantWithdraw_AfterWorkshopEnded_IsBlocked()
+    {
+        var hackathonId = await CreateHackathonAsync();
+        var workshopId = await CreateWorkshopAsync(hackathonId);
+        await using var participant = await CreateParticipantClientAsync();
+        await JoinHackathonAndWorkshopAsync(participant, hackathonId, workshopId);
+
+        // Move the workshop into the past now that the participant has joined
+        var updateResponse = await Client.HttpClient.PutAsJsonAsync(
+            $"/organizers/hackathons/{hackathonId}/workshops/{workshopId}",
+            new
+            {
+                Title = "Withdraw Test Workshop",
+                Description = "A workshop to withdraw from",
+                StartTime = DateTimeOffset.UtcNow.AddDays(-2),
+                EndTime = DateTimeOffset.UtcNow.AddDays(-1),
+                Location = "Room 101",
+                MaxParticipants = 50,
+                IsPublished = true,
+            }
+        );
+        await Assert.That(updateResponse.IsSuccessStatusCode).IsTrue();
+
+        var response = await participant.HttpClient.PostAsync(
+            $"/participants/hackathons/{hackathonId}/workshops/{workshopId}/withdraw",
+            null
+        );
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+        await Assert.That(await IsJoinedAsync(participant, hackathonId, workshopId)).IsTrue();
+    }
+
+    [Test]
     public async Task ParticipantWithdraw_WithUnknownWorkshop_ReturnsNotFound()
     {
         var hackathonId = await CreateHackathonAsync();

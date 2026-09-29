@@ -14,6 +14,7 @@ import {
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
 import QRCode from 'qrcode'
+import { useProfileName } from '~/composables/useProfileName'
 import { HACKATHON_TIME_ZONE, HACKATHON_TIME_ZONE_LABEL, isSameHackathonDay } from '~/utils/hackathon-date-time'
 
 definePageMeta({
@@ -45,6 +46,9 @@ const { data: questionsData, isLoading: isLoadingQuestions } = useGeeksHackingPo
 const { data: submissionsData, isLoading: isLoadingSubmissions } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint({ path: computed(() => ({ standaloneWorkshopId: workshopId.value })) }, { query: { enabled: computed(() => !!workshopId.value && statusData.value?.isRegistered === true) } })
 
 const joinMutation = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsJoinEndpoint()
+
+// The name lives on the user profile and is confirmed when joining, not in the workshop's registration answers
+const { profileName, isProfileNameValid, saveProfileName, isSavingProfileName } = useProfileName(user)
 
 useHead(() => ({
   title: workshop.value?.title ? `${workshop.value.title} - GeeksHacking` : 'Workshop - GeeksHacking',
@@ -123,10 +127,11 @@ const formattedDateTime = computed(() => {
 })
 
 async function startRegistration() {
-  if (!workshopId.value)
+  if (!workshopId.value || !isProfileNameValid.value)
     return
 
   try {
+    await saveProfileName()
     await joinMutation.mutateAsync({ path: { standaloneWorkshopId: workshopId.value } })
     await Promise.all([
       queryClient.invalidateQueries({
@@ -697,11 +702,37 @@ const totalQuestionsCount = computed(() => {
                     <p class="text-sm leading-6 text-(--ui-text-muted)">
                       You’re signed in. Start registration to unlock the workshop questions and save your spot.
                     </p>
+                    <div class="grid gap-3">
+                      <UFormField
+                        label="First name"
+                        required
+                      >
+                        <UInput
+                          v-model="profileName.firstName"
+                          autocomplete="given-name"
+                          class="w-full"
+                        />
+                      </UFormField>
+                      <UFormField
+                        label="Last name"
+                        required
+                      >
+                        <UInput
+                          v-model="profileName.lastName"
+                          autocomplete="family-name"
+                          class="w-full"
+                        />
+                      </UFormField>
+                    </div>
+                    <p class="text-xs leading-5 text-(--ui-text-muted)">
+                      This is your GeeksHacking profile name. Organizers of every hackathon and workshop you join see it, and changing it here updates it everywhere.
+                    </p>
                     <UButton
                       block
                       size="lg"
                       icon="i-lucide-ticket"
-                      :loading="joinMutation.isPending.value"
+                      :loading="joinMutation.isPending.value || isSavingProfileName"
+                      :disabled="!isProfileNameValid"
                       @click="startRegistration"
                     >
                       Start registration

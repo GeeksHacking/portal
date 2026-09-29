@@ -4,9 +4,9 @@ import {
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint,
-  useGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
+import { useProfileName } from '~/composables/useProfileName'
 import { registrationPageConfig } from '~/config/registration-pages'
 import { getApiValidationErrors } from '~/utils/api-errors'
 
@@ -24,6 +24,9 @@ const registrationPath = computed(() => hackathon.value ? `/${hackathon.value.sh
 
 // Get authenticated user data for prefilling
 const { data: userData } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
+
+// The name lives on the user profile, not in this hackathon's registration answers
+const { profileName, isProfileNameValid, saveProfileName, isSavingProfileName } = useProfileName(userData)
 
 const allQuestions = computed(() =>
   props.questions.categories?.flatMap(cat => cat.questions ?? []) ?? [],
@@ -120,25 +123,6 @@ function isQuestionVisible(conditionalLogic: string | null | undefined): boolean
   }
 }
 
-// Prefill first name and last name from user data
-watch(userData, (user) => {
-  if (user && state.first_name === undefined) {
-    // If firstName is available, use it; otherwise fallback to name
-    if (user.firstName) {
-      state.first_name = user.firstName
-    }
-    else if (user.name) {
-      state.first_name = user.name
-    }
-    else {
-      state.first_name = ''
-    }
-  }
-  if (user && state.last_name === undefined) {
-    state.last_name = user.lastName ?? ''
-  }
-}, { immediate: true })
-
 // PREFILL github profile if sign up with github
 watch([() => props.questions, userData], ([newVal]) => {
   if (newVal?.categories) {
@@ -186,10 +170,7 @@ watch([() => props.questions, userData], ([newVal]) => {
 const fieldErrors = ref<Record<string, string>>({})
 const submissionError = ref(false)
 const submitRegistrationMutation = useGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint()
-const isSubmitting = submitRegistrationMutation.isPending
-
-// User profile update mutation
-const updateUserMutation = useGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint()
+const isSubmitting = computed(() => submitRegistrationMutation.isPending.value || isSavingProfileName.value)
 
 async function onSubmit() {
   const submissions = Object.entries(state)
@@ -237,17 +218,7 @@ async function onSubmit() {
     .filter((s): s is NonNullable<typeof s> => s !== null)
 
   try {
-    // Update user profile with first name and last name
-    const firstName = String(state.first_name ?? '').trim()
-    const lastName = String(state.last_name ?? '').trim()
-    if (firstName && lastName) {
-      await updateUserMutation.mutateAsync({
-        body: {
-          firstName,
-          lastName,
-        },
-      })
-    }
+    await saveProfileName()
 
     fieldErrors.value = {}
     submissionError.value = false
@@ -333,12 +304,7 @@ const isFormValid = computed(() => {
   if (!props.questions?.categories)
     return false
 
-  // Validate First Name and Last Name are filled
-  const firstName = state.first_name as string
-  const lastName = state.last_name as string
-  if (!firstName || firstName.trim() === '')
-    return false
-  if (!lastName || lastName.trim() === '')
+  if (!isProfileNameValid.value)
     return false
 
   // Only validate required questions that are currently visible
@@ -423,13 +389,13 @@ const isFormValid = computed(() => {
                 </h2>
               </div>
 
-              <!-- First Name and Last Name fields (in Personal Details section) -->
+              <!-- Profile name fields (in Personal Details section) -->
               <div
                 v-if="section.sectionIndex === 0"
                 class="grid grid-cols-1 md:grid-cols-2 gap-6"
               >
                 <UFormField
-                  name="first_name"
+                  name="profile_first_name"
                   class="col-span-1"
                 >
                   <template #label>
@@ -438,15 +404,16 @@ const isFormValid = computed(() => {
                     </span>
                   </template>
                   <UInput
-                    v-model="state.first_name as string"
+                    v-model="profileName.firstName"
                     type="text"
+                    autocomplete="given-name"
                     class="w-full"
                     size="lg"
                   />
                 </UFormField>
 
                 <UFormField
-                  name="last_name"
+                  name="profile_last_name"
                   class="col-span-1"
                 >
                   <template #label>
@@ -455,12 +422,17 @@ const isFormValid = computed(() => {
                     </span>
                   </template>
                   <UInput
-                    v-model="state.last_name as string"
+                    v-model="profileName.lastName"
                     type="text"
+                    autocomplete="family-name"
                     class="w-full"
                     size="lg"
                   />
                 </UFormField>
+
+                <p class="md:col-span-2 -mt-3 text-sm text-(--ui-text-muted)">
+                  This is your GeeksHacking profile name. Organizers of every hackathon and workshop you join see it, and changing it here updates it everywhere.
+                </p>
               </div>
 
               <!-- Single continuous grid for all categories in section -->

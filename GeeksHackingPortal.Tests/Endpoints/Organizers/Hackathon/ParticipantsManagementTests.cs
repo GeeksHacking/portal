@@ -310,6 +310,50 @@ public class ParticipantsManagementTests
     }
 
     [Test]
+    public async Task ParticipantName_AfterProfileUpdate_IsShownToOrganizersOfEveryHackathon()
+    {
+        // Arrange - One user joins two hackathons
+        var firstHackathonId = await CreateHackathonAsync(OrganizerClient);
+        var secondHackathonId = await CreateHackathonAsync(OrganizerClient);
+        await using var participantClient = await CreateParticipantClientAsync();
+        var participantWhoAmI = await participantClient.HttpClient.GetFromJsonAsync<WhoAmIResponse>(
+            "/auth/whoami"
+        );
+        await Assert.That(participantWhoAmI).IsNotNull();
+
+        foreach (var hackathonId in new[] { firstHackathonId, secondHackathonId })
+        {
+            var joinResponse = await participantClient.HttpClient.PostAsync(
+                $"/participants/hackathons/{hackathonId}/join",
+                null
+            );
+            await Assert.That(joinResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        }
+
+        // Act - The name is edited once, on the user profile
+        var updateResponse = await participantClient.HttpClient.PatchAsJsonAsync(
+            "/users/me",
+            new { FirstName = "  Renamed ", LastName = " Participant  " }
+        );
+        await Assert.That(updateResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+
+        // Assert - Every organizer view reads the profile name, in the same format
+        foreach (var hackathonId in new[] { firstHackathonId, secondHackathonId })
+        {
+            var list = await OrganizerClient.HttpClient.GetFromJsonAsync<ParticipantsListResponse>(
+                $"/organizers/hackathons/{hackathonId}/participants"
+            );
+            var detail = await OrganizerClient.HttpClient.GetFromJsonAsync<ParticipantItem>(
+                $"/organizers/hackathons/{hackathonId}/participants/{participantWhoAmI!.Id}"
+            );
+
+            var listed = list!.Participants!.Single(p => p.Id == participantWhoAmI.Id);
+            await Assert.That(listed.Name).IsEqualTo("Renamed Participant");
+            await Assert.That(detail!.Name).IsEqualTo("Renamed Participant");
+        }
+    }
+
+    [Test]
     public async Task BatchEmail_WithInvalidHackathonId_ReturnsNotFound()
     {
         // Arrange

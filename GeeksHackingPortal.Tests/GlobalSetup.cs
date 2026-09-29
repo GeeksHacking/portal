@@ -68,7 +68,10 @@ public class GlobalHooks
         ApiClient = App.CreateHttpClient("api", "https");
 
         ServerLogs = new ServerLogCollector();
-        ServerLogs.Start(App.Services.GetRequiredService<ResourceLoggerService>(), "api");
+        var apiResource = App.Services
+            .GetRequiredService<DistributedApplicationModel>()
+            .Resources.First(r => r.Name == "api");
+        ServerLogs.Start(App.Services.GetRequiredService<ResourceLoggerService>(), apiResource);
     }
 
     [BeforeEvery(Test)]

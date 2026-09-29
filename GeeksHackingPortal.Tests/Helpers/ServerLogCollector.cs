@@ -22,13 +22,17 @@ public sealed partial class ServerLogCollector : IAsyncDisposable
     [GeneratedRegex(@"\b(fail|crit|warn)\b:|exception|\berror\b", RegexOptions.IgnoreCase)]
     private static partial Regex Interesting();
 
-    public void Start(ResourceLoggerService loggers, string resourceName)
+    /// <remarks>
+    /// Takes the resource rather than its name: Aspire keys logs by the resource's instance name
+    /// (for example <c>api-a1b2c3</c>), and only the <see cref="IResource"/> overload resolves it.
+    /// </remarks>
+    public void Start(ResourceLoggerService loggers, IResource resource)
     {
         _pump = Task.Run(async () =>
         {
             try
             {
-                await foreach (var batch in loggers.WatchAsync(resourceName).WithCancellation(_cts.Token))
+                await foreach (var batch in loggers.WatchAsync(resource).WithCancellation(_cts.Token))
                 {
                     var now = DateTimeOffset.UtcNow;
                     lock (_gate)

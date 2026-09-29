@@ -1,12 +1,27 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
-import { useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint } from '@geekshacking/portal-sdk/hooks'
+import {
+  useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
+  useGeeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint,
+  useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint,
+} from '@geekshacking/portal-sdk/hooks'
 
 useHead({
   titleTemplate: title => (title ? `${title} - GeeksHacking` : 'GeeksHacking'),
 })
 
 const { data: user, isLoading: userIsLoading } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
+
+const { data: organizerHackathons } = useGeeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint({
+  query: { enabled: computed(() => !!user.value?.id) },
+})
+const { data: organizerWorkshops } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint({
+  query: { enabled: computed(() => !!user.value?.id) },
+})
+const isOrganizer = computed(() =>
+  (organizerHackathons.value?.hackathons?.length ?? 0) > 0
+  || (organizerWorkshops.value?.standaloneWorkshops?.length ?? 0) > 0,
+)
 
 const open = ref(false)
 const route = useRoute()
@@ -26,7 +41,7 @@ const links = computed<NavigationMenuItem[][]>(() => {
     },
   ]
 
-  if (user.value?.id) {
+  if (user.value?.id && isOrganizer.value) {
     defaultLinks.push({
       label: 'Organizer Workspace',
       icon: 'i-lucide-settings-2',
@@ -39,20 +54,27 @@ const links = computed<NavigationMenuItem[][]>(() => {
 
   if (user.value?.isRoot) {
     defaultLinks.push({
-      label: 'OAuth Apps',
-      icon: 'i-lucide-key-round',
-      to: '/dash/oauth-applications',
-      onSelect: () => {
-        open.value = false
-      },
-    })
-    defaultLinks.push({
-      label: 'Admin: All OAuth Apps',
+      label: 'Admin',
       icon: 'i-lucide-shield-check',
-      to: '/dash/admin/oauth-applications',
-      onSelect: () => {
-        open.value = false
-      },
+      defaultOpen: true,
+      children: [
+        {
+          label: 'OAuth Apps',
+          icon: 'i-lucide-key-round',
+          to: '/dash/oauth-applications',
+          onSelect: () => {
+            open.value = false
+          },
+        },
+        {
+          label: 'All OAuth Apps',
+          icon: 'i-lucide-app-window',
+          to: '/dash/admin/oauth-applications',
+          onSelect: () => {
+            open.value = false
+          },
+        },
+      ],
     })
   }
 

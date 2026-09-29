@@ -3,12 +3,15 @@ import type {
   GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto,
   GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto,
 } from '@geekshacking/portal-sdk'
+import { useQueryClient } from '@tanstack/vue-query'
 import {
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint,
+  useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint,
+  geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointQueryKey,
 } from '@geekshacking/portal-sdk/hooks'
 import { HACKATHON_TIME_ZONE, HACKATHON_TIME_ZONE_LABEL, isSameHackathonDay } from '~/utils/hackathon-date-time'
 
@@ -17,6 +20,8 @@ definePageMeta({
 })
 
 const route = useRoute()
+const toast = useToast()
+const queryClient = useQueryClient()
 const config = useRuntimeConfig()
 
 const slug = computed(() => (route.params.slug as string | undefined) ?? '')
@@ -45,6 +50,38 @@ const { data: statusData, isLoading: isLoadingStatus } = useGeeksHackingPortalAp
 const { data: questionsData, isLoading: isLoadingQuestions } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListEndpoint({ path: computed(() => ({ standaloneWorkshopId: workshopId.value })) }, { query: { enabled: computed(() => !!workshopId.value && statusData.value?.isRegistered === true) } })
 
 const { data: submissionsData, isLoading: isLoadingSubmissions } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint({ path: computed(() => ({ standaloneWorkshopId: workshopId.value })) }, { query: { enabled: computed(() => !!workshopId.value && statusData.value?.isRegistered === true) } })
+
+const withdrawMutation = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint()
+const isWithdrawModalOpen = ref(false)
+
+const canWithdraw = computed(() =>
+  !!workshop.value?.endTime && new Date(workshop.value.endTime).getTime() > Date.now(),
+)
+
+async function withdrawFromWorkshop() {
+  if (!workshopId.value)
+    return
+
+  try {
+    await withdrawMutation.mutateAsync({ path: { standaloneWorkshopId: workshopId.value } })
+    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointQueryKey({ path: { standaloneWorkshopId: workshopId.value } }) })
+    isWithdrawModalOpen.value = false
+    toast.add({
+      title: 'Withdrawn',
+      description: 'You have withdrawn from this workshop.',
+      color: 'success',
+    })
+    await navigateTo(registrationPath.value, { replace: true })
+  }
+  catch (error) {
+    console.error('Failed to withdraw from workshop', error)
+    toast.add({
+      title: 'Could not withdraw',
+      description: 'Please try again in a moment.',
+      color: 'error',
+    })
+  }
+}
 
 useHead(() => ({
   title: workshop.value?.title ? `Registration Complete - ${workshop.value.title}` : 'Registration Complete - GeeksHacking',
@@ -499,6 +536,15 @@ const totalQuestionsCount = computed(() => {
                 >
                   Visit event site
                 </UButton>
+                <UButton
+                  v-if="canWithdraw"
+                  color="error"
+                  variant="soft"
+                  icon="i-lucide-user-minus"
+                  @click="isWithdrawModalOpen = true"
+                >
+                  Withdraw
+                </UButton>
               </div>
 
               <div
@@ -612,5 +658,34 @@ const totalQuestionsCount = computed(() => {
         </div>
       </div>
     </div>
+
+    <UModal
+      v-model:open="isWithdrawModalOpen"
+      title="Withdraw from workshop"
+      description="This cancels your registration for this workshop."
+    >
+      <template #content>
+        <UCard>
+          <p class="text-sm text-(--ui-text-muted)">
+            Are you sure you want to withdraw? You can register again later if spots are still available.
+          </p>
+          <div class="mt-4 flex justify-end gap-2">
+            <UButton
+              variant="ghost"
+              @click="isWithdrawModalOpen = false"
+            >
+              Cancel
+            </UButton>
+            <UButton
+              color="error"
+              :loading="withdrawMutation.isPending.value"
+              @click="withdrawFromWorkshop"
+            >
+              Withdraw
+            </UButton>
+          </div>
+        </UCard>
+      </template>
+    </UModal>
   </div>
 </template>

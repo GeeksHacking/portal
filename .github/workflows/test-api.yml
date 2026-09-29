@@ -60,3 +60,11 @@ jobs:
 
       - name: Run tests
         run: dotnet test --no-build --configuration Release
+
+      - name: Upload API server log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-server-log
+          path: GeeksHackingPortal.Tests/bin/Release/net10.0/TestResults/api-server.log
+          if-no-files-found: ignore

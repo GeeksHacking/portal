@@ -14,11 +14,11 @@ public static class SqlSugarLockExtensions
     /// <returns>True if the row exists.</returns>
     public static async Task<bool> LockRowAsync<T>(this ISqlSugarClient sql, Guid id)
     {
-        var table = sql.EntityMaintenance.GetEntityInfo<T>().DbTableName;
-        var result = await sql.Ado.GetScalarAsync(
-            $"SELECT `Id` FROM `{table}` WHERE `Id` = @id FOR UPDATE",
-            new SugarParameter("@id", id)
-        );
-        return result is not null and not DBNull;
+        var ids = await sql.Queryable<T>()
+            .Where("Id = @id", new SugarParameter("@id", id))
+            .TranLock(DbLockType.Wait)
+            .Select<Guid>("Id")
+            .ToListAsync();
+        return ids.Count > 0;
     }
 }

@@ -3,6 +3,7 @@
 // You can use attributes at the assembly level to apply to all tests in the assembly
 
 using Aspire.Hosting;
+using GeeksHackingPortal.Tests.Helpers;
 using Projects;
 using System.Diagnostics.CodeAnalysis;
 
@@ -16,6 +17,7 @@ public class GlobalHooks
     public static DistributedApplication? App { get; private set; }
     public static ResourceNotificationService? NotificationService { get; private set; }
     public static HttpClient? ApiClient { get; private set; }
+    public static ServerLogCollector? ServerLogs { get; private set; }
 
     [Before(TestSession)]
     public static async Task SetUp()
@@ -64,11 +66,45 @@ public class GlobalHooks
             .WaitAsync(TimeSpan.FromSeconds(60));
 
         ApiClient = App.CreateHttpClient("api", "https");
+
+        ServerLogs = new ServerLogCollector();
+        var apiResource = App.Services
+            .GetRequiredService<DistributedApplicationModel>()
+            .Resources.First(r => r.Name == "api");
+        ServerLogs.Start(App.Services.GetRequiredService<ResourceLoggerService>(), apiResource);
+    }
+
+    [BeforeEvery(Test)]
+    public static void MarkServerLogStart(TestContext context) => ServerLogs?.MarkTestStart(context);
+
+    /// <summary>
+    /// Adds server-side warnings, errors and stack traces logged while the test ran to the test's output,
+    /// so failures such as HTTP 500 responses show their cause in the test report.
+    /// </summary>
+    [AfterEvery(Test)]
+    public static void AttachServerLogs(TestContext context)
+    {
+        var logs = ServerLogs?.GetInterestingSince(context);
+        if (!string.IsNullOrWhiteSpace(logs))
+        {
+            context.Output.WriteLine("--- Server log (warnings/errors during this test; may include concurrent tests) ---");
+            context.Output.WriteLine(logs);
+        }
     }
 
     [After(TestSession)]
     public static async Task CleanUp()
     {
+        if (ServerLogs is not null)
+        {
+            // Give the log stream a moment to flush the final lines before snapshotting.
+            await Task.Delay(TimeSpan.FromSeconds(1));
+            var directory = Path.Combine(AppContext.BaseDirectory, "TestResults");
+            Directory.CreateDirectory(directory);
+            ServerLogs.WriteToFile(Path.Combine(directory, "api-server.log"));
+            await ServerLogs.DisposeAsync();
+        }
+
         if (App is not null)
         {
             await App.DisposeAsync();

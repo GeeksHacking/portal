@@ -76,7 +76,17 @@ public class Endpoint(ISqlSugarClient sql, IWebHostEnvironment env) : Endpoint<R
 
             if (!transactionResult.IsSuccess)
             {
-                throw transactionResult.ErrorException!;
+                // A concurrent join for the same user may have won the race (unique index on
+                // activity + user); treat that as an idempotent success.
+                var winner = await sql.Queryable<Participant>()
+                    .Where(p => p.HackathonId == hackathon.Id && p.UserId == userId.Value)
+                    .FirstAsync(ct);
+                if (winner is null)
+                {
+                    throw transactionResult.ErrorException!;
+                }
+
+                existing = winner;
             }
         }
         else if (existing.WithdrawnAt is not null)

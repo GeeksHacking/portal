@@ -35,6 +35,11 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             return;
         }
 
+        // Serialize joins per workshop so the capacity check and write are atomic.
+        // Disposing without commit rolls back.
+        using var tran = sql.Ado.UseTran();
+        await sql.LockRowAsync<StandaloneWorkshop>(workshop.Id);
+
         var registration = await sql.Queryable<ActivityRegistration>()
             .FirstAsync(r => r.ActivityId == workshop.Id && r.UserId == userId.Value, ct);
 
@@ -80,6 +85,8 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             registration.WithdrawnAt = null;
             await sql.Updateable(registration).ExecuteCommandAsync(ct);
         }
+
+        tran.CommitTran();
 
         await Send.OkAsync(
             new Response

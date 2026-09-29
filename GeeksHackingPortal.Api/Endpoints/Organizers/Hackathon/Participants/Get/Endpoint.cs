@@ -48,7 +48,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             .Where(e => e.ParticipantId == participant.Id)
             .OrderByDescending(e => e.SentAt)
             .ToListAsync(ct);
-        var userName = user is null ? "Unknown" : $"{user.FirstName} {user.LastName}";
+        var userName = user?.Name ?? "Unknown";
 
         var concludedStatus = participant.ConcludedStatus switch
         {

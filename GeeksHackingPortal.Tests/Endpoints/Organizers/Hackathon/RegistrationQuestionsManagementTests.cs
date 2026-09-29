@@ -133,6 +133,35 @@ public class RegistrationQuestionsManagementTests
     }
 
     [Test]
+    [Arguments("first_name")]
+    [Arguments("last_name")]
+    [Arguments(" First_Name ")]
+    public async Task CreateRegistrationQuestion_WithProfileNameKey_ReturnsBadRequest(string questionKey)
+    {
+        // Arrange
+        var hackathonId = await CreateHackathonAsync(Client);
+        var request = new
+        {
+            QuestionText = "What is your name?",
+            QuestionKey = questionKey,
+            Type = "Text",
+            DisplayOrder = 1,
+            IsRequired = true,
+        };
+
+        // Act
+        var response = await Client.HttpClient.PostAsJsonAsync(
+            $"/organizers/hackathons/{hackathonId}/registration/questions",
+            request
+        );
+        var body = await response.Content.ReadAsStringAsync();
+
+        // Assert
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+        await Assert.That(body).Contains("profile");
+    }
+
+    [Test]
     public async Task UpdateRegistrationQuestion_WhenOptionInsertFails_RollsBackQuestionAndOptions()
     {
         // Arrange

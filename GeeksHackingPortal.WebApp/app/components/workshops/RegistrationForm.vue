@@ -7,7 +7,6 @@ import type {
 import {
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsSubmitEndpoint,
-  useGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
 import { getApiValidationErrors } from '~/utils/api-errors'
@@ -51,7 +50,6 @@ const { data: userData } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint({
 })
 
 const submitMutation = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsSubmitEndpoint()
-const updateUserMutation = useGeeksHackingPortalApiEndpointsUsersProfileUpdateEndpoint()
 
 const state = reactive<Record<string, string | string[]>>({})
 const followUpState = reactive<Record<string, string>>({})
@@ -149,18 +147,6 @@ function seedQuestionState() {
 }
 
 watch([allQuestions, userData], seedQuestionState, { immediate: true, deep: true })
-
-watch(userData, (user) => {
-  if (!user)
-    return
-
-  if (state.first_name === undefined) {
-    state.first_name = user.firstName ?? user.name ?? ''
-  }
-  if (state.last_name === undefined) {
-    state.last_name = user.lastName ?? ''
-  }
-}, { immediate: true })
 
 function isQuestionVisible(conditionalLogic: string | null | undefined): boolean {
   if (!conditionalLogic)
@@ -312,18 +298,6 @@ async function submitRegistration() {
     .filter((submission): submission is NonNullable<typeof submission> => submission !== null)
 
   try {
-    const firstName = typeof state.first_name === 'string' ? state.first_name.trim() : ''
-    const lastName = typeof state.last_name === 'string' ? state.last_name.trim() : ''
-
-    if (firstName && lastName) {
-      await updateUserMutation.mutateAsync({
-        body: {
-          firstName,
-          lastName,
-        },
-      })
-    }
-
     fieldErrors.value = {}
     submissionError.value = false
 
@@ -500,7 +474,7 @@ async function submitRegistration() {
             size="lg"
             icon="i-lucide-arrow-right"
             trailing
-            :loading="submitMutation.isPending.value || updateUserMutation.isPending.value"
+            :loading="submitMutation.isPending.value"
             :disabled="!isFormValid"
             class="w-full justify-center"
           >

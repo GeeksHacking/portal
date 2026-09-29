@@ -430,7 +430,10 @@ async function onQuestionDrop(targetQuestion: Question) {
                   />
                 </UFormField>
 
-                <UFormField label="Question Key">
+                <UFormField
+                  label="Question Key"
+                  help="Names come from each participant's profile, so first_name and last_name are reserved."
+                >
                   <UInput
                     v-model="editForm.questionKey"
                     size="sm"

@@ -1,1 +1,1 @@
-$file:/workspace/portal/GeeksHackingPortal.WebApp/app/pages/workshops/[slug]/index.vue
+$file:/workspace/agent-tools/index-full.txt

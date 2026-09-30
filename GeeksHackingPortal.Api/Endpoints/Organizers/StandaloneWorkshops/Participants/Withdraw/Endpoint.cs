@@ -23,7 +23,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 && r.UserId == req.UserId
                 && r.Status == ActivityRegistrationStatus.Registered
             )
-            .Select((r, a) => r)
+            .Select((r, a) => new { Registration = r, a.EndTime })
             .FirstAsync(ct);
         if (registration is null)
         {
@@ -31,9 +31,16 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             return;
         }
 
-        registration.Status = ActivityRegistrationStatus.Withdrawn;
-        registration.WithdrawnAt = DateTimeOffset.UtcNow;
-        await sql.Updateable(registration).ExecuteCommandAsync(ct);
+        if (registration.EndTime < DateTimeOffset.UtcNow)
+        {
+            AddError("You cannot withdraw a participant after the workshop has ended");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
+
+        registration.Registration.Status = ActivityRegistrationStatus.Withdrawn;
+        registration.Registration.WithdrawnAt = DateTimeOffset.UtcNow;
+        await sql.Updateable(registration.Registration).ExecuteCommandAsync(ct);
 
         await Send.OkAsync(
             new Response

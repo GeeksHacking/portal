@@ -72,6 +72,34 @@ const registrationState = computed(() => {
   return 'incomplete'
 })
 
+// Registration journey shown as a stepper: sign in -> confirm name -> answer questions -> done
+const registrationSteps = [
+  { label: 'Sign in', icon: 'i-lucide-log-in' },
+  { label: 'Confirm details', icon: 'i-lucide-user-round' },
+  { label: 'Answer questions', icon: 'i-lucide-clipboard-pen-line' },
+  { label: 'Registered', icon: 'i-lucide-ticket-check' },
+]
+
+// Index of the step the participant is currently on (steps before it are complete)
+const currentStepIndex = computed(() => {
+  switch (registrationState.value) {
+    case 'registered':
+      return 3
+    case 'incomplete':
+    case 'loading-registration':
+      return 2
+    case 'ready-to-join':
+    case 'checking-status':
+      return 1
+    default:
+      return 0
+  }
+})
+
+const hasEnded = computed(() =>
+  !!workshop.value?.endTime && new Date(workshop.value.endTime).getTime() <= Date.now(),
+)
+
 function standaloneWorkshopStatusQueryKey(standaloneWorkshopId: string) {
   return [{ url: '/participants/standalone-workshops/:standaloneWorkshopId/status', params: { standaloneWorkshopId } }] as const
 }
@@ -353,24 +381,58 @@ const totalQuestionsCount = computed(() => {
 <template>
   <div class="min-h-screen bg-(--ui-bg) text-(--ui-text)">
     <div class="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-6 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between border-b border-(--ui-border) pb-4">
-        <NuxtLink
-          to="/"
-          class="text-sm font-medium tracking-[0.18em] text-(--ui-text-muted) uppercase transition-colors hover:text-(--ui-text-highlighted)"
-        >
-          GeeksHacking
-        </NuxtLink>
+      <div class="flex items-center justify-between gap-3 border-b border-(--ui-border) pb-4">
+        <div class="flex min-w-0 items-center gap-3">
+          <NuxtLink
+            to="/"
+            class="text-sm font-medium tracking-[0.18em] text-(--ui-text-muted) uppercase transition-colors hover:text-(--ui-text-highlighted)"
+          >
+            GeeksHacking
+          </NuxtLink>
+          <span
+            class="hidden text-(--ui-text-dimmed) sm:inline"
+            aria-hidden="true"
+          >/</span>
+          <NuxtLink
+            to="/dash"
+            class="hidden items-center gap-1 text-sm text-(--ui-text-muted) transition-colors hover:text-(--ui-text-highlighted) sm:inline-flex"
+          >
+            <UIcon
+              name="i-lucide-compass"
+              class="size-4"
+            />
+            Explore events
+          </NuxtLink>
+        </div>
         <div class="flex items-center gap-3">
           <UBadge
-            v-if="workshop?.isPublished"
+            v-if="workshop?.isPublished && !hasEnded"
             size="sm"
             color="success"
             variant="subtle"
           >
             Open for registration
           </UBadge>
+          <UBadge
+            v-else-if="hasEnded"
+            size="sm"
+            color="neutral"
+            variant="subtle"
+          >
+            Event ended
+          </UBadge>
           <UButton
-            v-if="!user && (authResolved || authErrored)"
+            v-if="user"
+            to="/dash"
+            size="sm"
+            variant="outline"
+            color="neutral"
+            icon="i-lucide-layout-dashboard"
+          >
+            Dashboard
+          </UButton>
+          <UButton
+            v-else-if="authResolved || authErrored"
             :to="loginUrl"
             external
             size="sm"
@@ -419,13 +481,18 @@ const totalQuestionsCount = computed(() => {
         class="flex flex-1 justify-center py-6 lg:py-8"
       >
         <div class="w-full max-w-6xl space-y-5 lg:space-y-6">
-          <section class="reveal-up reveal-delay-1 overflow-hidden rounded-[2rem] border border-(--ui-border) bg-(--ui-bg-elevated) shadow-sm backdrop-blur transition-transform duration-300 ease-out hover:-translate-y-0.5">
-            <div class="grid gap-5 p-5 sm:p-7 lg:gap-6 lg:p-10">
-              <div class="flex flex-wrap items-center gap-3">
+          <section class="reveal-up reveal-delay-1 overflow-hidden rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) shadow-sm">
+            <div
+              class="h-28 bg-linear-to-br from-primary/25 via-info/15 to-warning/20 sm:h-40"
+              aria-hidden="true"
+            />
+            <div class="grid gap-5 p-5 sm:p-7 lg:p-9">
+              <div class="flex flex-wrap items-center gap-2">
                 <UBadge
-                  color="warning"
-                  variant="soft"
+                  color="info"
+                  variant="outline"
                   size="sm"
+                  icon="i-lucide-brain-circuit"
                 >
                   Workshop
                 </UBadge>
@@ -435,7 +502,7 @@ const totalQuestionsCount = computed(() => {
                   variant="subtle"
                   size="sm"
                 >
-                  Registered
+                  You're registered
                 </UBadge>
                 <UBadge
                   v-else-if="registrationState === 'incomplete'"
@@ -447,19 +514,51 @@ const totalQuestionsCount = computed(() => {
                 </UBadge>
               </div>
 
-              <div class="space-y-4">
-                <h1 class="max-w-4xl text-3xl font-semibold tracking-tight text-(--ui-text-highlighted) sm:text-5xl">
-                  {{ workshop.title }}
-                </h1>
-                <div class="max-w-3xl text-sm leading-7 text-(--ui-text-muted) sm:text-base lg:text-lg">
-                  <Suspense>
-                    <Markdown
-                      :value="workshop.description"
-                      :options="{ autoClose: true, autoUnwrap: true }"
-                      class="workshop-markdown"
-                    />
-                  </Suspense>
+              <h1 class="max-w-4xl text-3xl font-semibold tracking-tight text-(--ui-text-highlighted) sm:text-4xl lg:text-5xl">
+                {{ workshop.title }}
+              </h1>
+
+              <div class="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
+                <div class="flex items-start gap-3">
+                  <UIcon
+                    name="i-lucide-calendar-days"
+                    class="mt-0.5 size-5 shrink-0 text-primary"
+                  />
+                  <div>
+                    <p class="font-medium text-(--ui-text-highlighted)">
+                      {{ formattedDateTime.dateLabel }}
+                    </p>
+                    <p class="text-(--ui-text-muted)">
+                      {{ formattedDateTime.timeLabel }}
+                    </p>
+                  </div>
                 </div>
+                <div class="flex items-start gap-3">
+                  <UIcon
+                    name="i-lucide-map-pin"
+                    class="mt-0.5 size-5 shrink-0 text-primary"
+                  />
+                  <div>
+                    <p class="font-medium text-(--ui-text-highlighted)">
+                      {{ workshop.location || 'Location to be announced' }}
+                    </p>
+                    <p class="text-(--ui-text-muted)">
+                      In person
+                    </p>
+                  </div>
+                </div>
+                <UButton
+                  v-if="workshop.homepageUri"
+                  :to="workshop.homepageUri"
+                  external
+                  target="_blank"
+                  color="neutral"
+                  variant="link"
+                  icon="i-lucide-arrow-up-right"
+                  class="justify-start self-start px-0"
+                >
+                  Visit event site
+                </UButton>
               </div>
             </div>
           </section>
@@ -469,55 +568,22 @@ const totalQuestionsCount = computed(() => {
             :class="registrationState === 'registered' ? 'lg:grid-cols-1' : 'lg:grid-cols-[minmax(0,0.82fr)_minmax(22rem,0.64fr)]'"
           >
             <div class="space-y-5 lg:space-y-6">
-              <div class="grid gap-3 sm:grid-cols-2">
-                <UCard
-                  :ui="{ body: 'p-4' }"
-                  class="reveal-up reveal-delay-2 border-(--ui-border) bg-(--ui-bg-elevated) transition-all duration-300 ease-out hover:-translate-y-0.5"
-                >
-                  <p class="text-xs font-medium tracking-[0.14em] text-(--ui-text-muted) uppercase">
-                    Date / time
-                  </p>
-                  <p class="mt-2 text-sm font-semibold leading-6 text-(--ui-text-highlighted)">
-                    {{ formattedDateTime.dateLabel }}
-                  </p>
-                  <p class="mt-1 text-sm leading-6 text-(--ui-text-muted)">
-                    {{ formattedDateTime.timeLabel }}
-                  </p>
-                </UCard>
-
-                <UCard
-                  :ui="{ body: 'p-4' }"
-                  class="reveal-up reveal-delay-2 border-(--ui-border) bg-(--ui-bg-elevated) transition-all duration-300 ease-out hover:-translate-y-0.5"
-                >
-                  <p class="text-xs font-medium tracking-[0.14em] text-(--ui-text-muted) uppercase">
-                    Location
-                  </p>
-                  <p class="mt-2 text-sm font-medium leading-6 text-(--ui-text-highlighted)">
-                    {{ workshop.location || 'To be announced' }}
-                  </p>
-                </UCard>
-              </div>
-
-              <div class="flex flex-wrap gap-3">
-                <UButton
-                  v-if="workshop.homepageUri"
-                  :to="workshop.homepageUri"
-                  external
-                  target="_blank"
-                  size="lg"
-                  color="neutral"
-                  variant="outline"
-                  icon="i-lucide-arrow-up-right"
-                >
-                  Visit event site
-                </UButton>
-                <div
-                  v-if="registrationState !== 'registered'"
-                  class="rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) px-4 py-3 text-sm leading-6 text-(--ui-text-muted)"
-                >
-                  Sign in with GitHub to complete registration. Details are locked after signup.
+              <section
+                class="reveal-up reveal-delay-2 rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) p-5 sm:p-7"
+              >
+                <h2 class="mb-3 text-lg font-semibold text-(--ui-text-highlighted)">
+                  About this workshop
+                </h2>
+                <div class="max-w-3xl text-sm leading-7 text-(--ui-text-muted) sm:text-base">
+                  <Suspense>
+                    <Markdown
+                      :value="workshop.description"
+                      :options="{ autoClose: true, autoUnwrap: true }"
+                      class="workshop-markdown"
+                    />
+                  </Suspense>
                 </div>
-              </div>
+              </section>
 
               <section
                 v-if="registrationState === 'registered'"
@@ -660,9 +726,57 @@ const totalQuestionsCount = computed(() => {
                       Reserve your spot
                     </h2>
                     <p class="text-sm leading-6 text-(--ui-text-muted)">
-                      Complete the signup form with your GitHub account. Your progress is saved when you submit.
+                      Free to join. Sign in, confirm your name and answer a few questions. Answers are locked once you submit.
                     </p>
                   </div>
+
+                  <ol
+                    class="grid grid-cols-4 gap-2"
+                    aria-label="Registration progress"
+                  >
+                    <li
+                      v-for="(step, index) in registrationSteps"
+                      :key="step.label"
+                      class="space-y-2"
+                      :aria-current="index === currentStepIndex ? 'step' : undefined"
+                    >
+                      <div
+                        class="h-1.5 rounded-full transition-colors"
+                        :class="index < currentStepIndex ? 'bg-success' : index === currentStepIndex ? 'bg-primary' : 'bg-(--ui-border)'"
+                      />
+                      <div class="flex items-center gap-1 text-xs leading-4">
+                        <UIcon
+                          :name="index < currentStepIndex ? 'i-lucide-check' : step.icon"
+                          class="size-3.5 shrink-0"
+                          :class="index < currentStepIndex ? 'text-success' : index === currentStepIndex ? 'text-primary' : 'text-(--ui-text-dimmed)'"
+                        />
+                        <span
+                          class="hidden sm:inline"
+                          :class="index === currentStepIndex ? 'font-medium text-(--ui-text-highlighted)' : 'text-(--ui-text-muted)'"
+                        >{{ step.label }}</span>
+                      </div>
+                    </li>
+                  </ol>
+
+                  <UAlert
+                    v-if="hasEnded"
+                    color="neutral"
+                    variant="soft"
+                    icon="i-lucide-calendar-x"
+                    title="This workshop has ended"
+                    description="Registration is closed. Browse other events on the portal."
+                  >
+                    <template #actions>
+                      <UButton
+                        to="/dash"
+                        size="sm"
+                        color="neutral"
+                        variant="outline"
+                      >
+                        Explore events
+                      </UButton>
+                    </template>
+                  </UAlert>
 
                   <div
                     v-if="registrationState === 'checking-auth' || registrationState === 'checking-status' || registrationState === 'loading-registration'"
@@ -673,16 +787,18 @@ const totalQuestionsCount = computed(() => {
                         name="i-lucide-loader-circle"
                         class="size-5 animate-spin text-primary"
                       />
-                      <span>Preparing your registration experience...</span>
+                      <span>Loading your registration...</span>
                     </div>
                   </div>
+
+                  <template v-else-if="hasEnded && registrationState !== 'incomplete'" />
 
                   <div
                     v-else-if="registrationState === 'signed-out'"
                     class="space-y-4 rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) p-5 shadow-lg shadow-black/5"
                   >
                     <p class="text-sm leading-6 text-(--ui-text-muted)">
-                      You can review the workshop details without signing in. To register, sign in first and we’ll bring you straight back here.
+                      Step 1 of 3: sign in with GitHub. You can read the details without an account, and we’ll bring you straight back here afterwards.
                     </p>
                     <UButton
                       :to="loginUrl"
@@ -700,7 +816,7 @@ const totalQuestionsCount = computed(() => {
                     class="space-y-4 rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) p-5 shadow-lg shadow-black/5"
                   >
                     <p class="text-sm leading-6 text-(--ui-text-muted)">
-                      You’re signed in. Start registration to unlock the workshop questions and save your spot.
+                      Step 2 of 3: confirm the name organizers will see, then continue to the workshop questions.
                     </p>
                     <div class="grid gap-3">
                       <UFormField
@@ -730,12 +846,13 @@ const totalQuestionsCount = computed(() => {
                     <UButton
                       block
                       size="lg"
-                      icon="i-lucide-ticket"
+                      icon="i-lucide-arrow-right"
+                      trailing
                       :loading="joinMutation.isPending.value || isSavingProfileName"
                       :disabled="!isProfileNameValid"
                       @click="startRegistration"
                     >
-                      Start registration
+                      Continue to questions
                     </UButton>
                   </div>
 

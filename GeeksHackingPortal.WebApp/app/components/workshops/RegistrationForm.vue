@@ -1,1 +1,1 @@
-$file:/workspace/portal/GeeksHackingPortal.WebApp/app/components/workshops/RegistrationForm.vue
+$file:/workspace/agent-tools/regform-content.txt

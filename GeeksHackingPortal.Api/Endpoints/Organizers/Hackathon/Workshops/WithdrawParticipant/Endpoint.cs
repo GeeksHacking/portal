@@ -25,10 +25,18 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var workshop = await sql.Queryable<Workshop>()
+            .Includes(w => w.Activity)
             .FirstAsync(w => w.Id == req.WorkshopId && w.HackathonId == req.HackathonId, ct);
         if (workshop is null)
         {
             await Send.NotFoundAsync(ct);
+            return;
+        }
+
+        if (workshop.Activity.EndTime < DateTimeOffset.UtcNow)
+        {
+            AddError("You cannot withdraw a participant after the workshop has ended");
+            await Send.ErrorsAsync(cancellation: ct);
             return;
         }
 

@@ -75,3 +75,11 @@ export function formatHackathonDate(value: Date | string | null | undefined): st
 
   return hackathonDateFormatter.format(date)
 }
+
+export function hasEventEnded(endTime: Date | string | null | undefined, now = Date.now()): boolean {
+  const date = parseHackathonDateTimeValue(endTime)
+  if (!date)
+    return false
+
+  return date.getTime() <= now
+}

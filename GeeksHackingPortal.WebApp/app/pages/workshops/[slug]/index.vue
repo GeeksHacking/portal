@@ -1,1 +1,1 @@
-PLACEHOLDER_LOAD_FROM_DISK_1
+$file:/workspace/portal/GeeksHackingPortal.WebApp/app/pages/workshops/[slug]/index.vue

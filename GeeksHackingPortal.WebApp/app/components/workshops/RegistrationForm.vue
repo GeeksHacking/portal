@@ -1,1 +1,1 @@
-@/tmp/regform-raw.vue
+$file:/workspace/portal/GeeksHackingPortal.WebApp/app/components/workshops/RegistrationForm.vue

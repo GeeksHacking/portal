@@ -465,7 +465,7 @@ async function submitRegistration() {
     <div class="rounded-[1.5rem] border border-(--ui-border) bg-(--ui-bg) px-4 py-4 shadow-xl shadow-black/8 ring-1 ring-(--ui-border) sm:px-5 sm:py-5">
       <div class="flex flex-col gap-4">
         <div class="text-sm leading-6 text-(--ui-text-muted)">
-          Review your answers before submitting. You will not be able to modify them after signup is complete.
+          Step 3 of 3: review your answers before submitting. They cannot be changed after signup is complete.
         </div>
 
         <div class="flex flex-col items-stretch gap-2">
@@ -478,7 +478,7 @@ async function submitRegistration() {
             :disabled="!isFormValid"
             class="w-full justify-center"
           >
-            Save Registration
+            Complete registration
           </UButton>
 
           <p

@@ -36,7 +36,7 @@ const isDirty = computed(() =>
 
 const isSubmitting = computed(() => updateProfileMutation.isPending.value)
 
-async function handleSubmit() {
+function handleSubmit() {
   if (!isValid.value) {
     toast.add({
       title: 'Name is required',
@@ -49,34 +49,35 @@ async function handleSubmit() {
   if (!isDirty.value)
     return
 
-  const firstName = form.firstName.trim()
-  const lastName = form.lastName.trim()
-
-  try {
-    await updateProfileMutation.mutateAsync({ body: { firstName, lastName } })
-    await Promise.all([
+  updateProfileMutation.mutate({
+    body: {
+      firstName: form.firstName.trim(),
+      lastName: form.lastName.trim(),
+    },
+  }, {
+    onSuccess() {
       queryClient.invalidateQueries({
         queryKey: geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryKey(),
-      }),
+      })
       queryClient.invalidateQueries({
         queryKey: geeksHackingPortalApiEndpointsUsersProfileGetEndpointQueryKey(),
-      }),
-    ])
+      })
 
-    toast.add({
-      title: 'Profile updated',
-      description: 'Your name will be used across registrations, emails, and organizer views.',
-      color: 'success',
-    })
-  }
-  catch (error) {
-    console.error('Failed to update profile', error)
-    toast.add({
-      title: 'Could not update profile',
-      description: 'Please try again in a moment.',
-      color: 'error',
-    })
-  }
+      toast.add({
+        title: 'Profile updated',
+        description: 'Your name will be used across registrations, emails, and organizer views.',
+        color: 'success',
+      })
+    },
+    onError(error) {
+      console.error('Failed to update profile', error)
+      toast.add({
+        title: 'Could not update profile',
+        description: 'Please try again in a moment.',
+        color: 'error',
+      })
+    },
+  })
 }
 </script>
 

@@ -1,1 +1,1 @@
-/workspace/portal/GeeksHackingPortal.WebApp/app/components/workshops/RegistrationForm.vue
+dGVzdA==

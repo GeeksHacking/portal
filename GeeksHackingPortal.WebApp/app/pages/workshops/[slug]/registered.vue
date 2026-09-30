@@ -420,3 +420,420 @@ async function showParticipantIdQrCode() {
 }
 
 </script>
+
+<template>
+  <div class="min-h-screen bg-default text-default">
+    <WorkshopsPageHeader
+      :login-url="loginUrl"
+      :show-sign-in="!user && !isLoadingUser"
+      :signed-in-as="user?.gitHubLogin"
+      badge-label="Registered"
+      badge-color="success"
+    />
+
+    <div class="mx-auto flex min-h-[calc(100vh-3.5rem)] w-full max-w-5xl flex-col px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <div
+        v-if="isLoading"
+        class="flex flex-1 items-center justify-center"
+      >
+        <div class="w-full max-w-md space-y-4 text-center">
+          <UIcon
+            name="i-lucide-loader-circle"
+            class="mx-auto size-8 animate-spin text-primary"
+          />
+          <div class="space-y-1">
+            <p class="text-sm font-medium text-default">
+              Loading your registration
+            </p>
+            <p class="text-sm text-muted">
+              Confirming your workshop signup details…
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        v-else-if="workshopError || !workshop"
+        class="flex flex-1 items-center justify-center py-10"
+      >
+        <UCard class="w-full max-w-lg shadow-none ring-0 bg-elevated/40">
+          <div class="space-y-4 text-center">
+            <div class="mx-auto flex size-12 items-center justify-center rounded-full bg-elevated">
+              <UIcon
+                name="i-lucide-search-x"
+                class="size-5 text-muted"
+              />
+            </div>
+            <div class="space-y-1">
+              <p class="text-lg font-semibold tracking-tight text-default">
+                Workshop not found
+              </p>
+              <p class="text-sm leading-6 text-muted">
+                This workshop may no longer be public, or the link may be incorrect.
+              </p>
+            </div>
+            <UButton
+              to="/dash"
+              icon="i-lucide-layout-grid"
+              size="sm"
+            >
+              Explore events
+            </UButton>
+          </div>
+        </UCard>
+      </div>
+
+      <div
+        v-else
+        class="flex flex-1 justify-center"
+      >
+        <div class="w-full space-y-6">
+          <UCard
+            :ui="{ body: 'p-5 sm:p-7', header: 'px-5 py-4 sm:px-7' }"
+            class="bg-elevated/50 shadow-none ring-0"
+          >
+            <template #header>
+              <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
+                <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-success/15 text-success">
+                  <UIcon
+                    name="i-lucide-check"
+                    class="size-6"
+                  />
+                </div>
+                <div class="min-w-0 space-y-2">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <UBadge
+                      color="success"
+                      variant="subtle"
+                      size="sm"
+                    >
+                      Signup successful
+                    </UBadge>
+                    <UBadge
+                      color="info"
+                      variant="outline"
+                      size="sm"
+                    >
+                      Workshop
+                    </UBadge>
+                  </div>
+                  <h1 class="text-2xl font-semibold tracking-tight text-default sm:text-3xl">
+                    You’re registered for {{ workshop.title }}
+                  </h1>
+                  <p class="max-w-2xl text-sm leading-6 text-muted">
+                    Your signup is complete. A copy of your submitted details is below for reference.
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            <div class="space-y-5">
+              <UAlert
+                color="success"
+                variant="subtle"
+                icon="i-lucide-check-circle-2"
+                title="Your spot is confirmed"
+                description="No further action is needed unless organizers email you. Keep this page or your calendar invite handy."
+              />
+
+              <div class="grid gap-3 sm:grid-cols-2">
+                <div class="rounded-lg bg-default/70 p-4">
+                  <p class="text-xs font-medium tracking-[0.12em] text-muted uppercase">
+                    Registered
+                  </p>
+                  <p class="mt-2 text-sm font-semibold text-default">
+                    {{ registeredAtLabel }}
+                  </p>
+                </div>
+
+                <div class="rounded-lg bg-default/70 p-4">
+                  <p class="text-xs font-medium tracking-[0.12em] text-muted uppercase">
+                    Answers saved
+                  </p>
+                  <p class="mt-2 text-sm font-semibold text-default">
+                    {{ savedAnswersCount }} of {{ totalQuestionsCount }}
+                  </p>
+                </div>
+
+                <div class="rounded-lg bg-default/70 p-4">
+                  <div class="flex items-start gap-3">
+                    <UIcon
+                      name="i-lucide-calendar-days"
+                      class="mt-0.5 size-4 text-primary"
+                    />
+                    <div>
+                      <p class="text-xs font-medium tracking-[0.12em] text-muted uppercase">
+                        Date / time
+                      </p>
+                      <p class="mt-1 text-sm font-semibold leading-6 text-default">
+                        {{ formattedDateTime.dateLabel }}
+                      </p>
+                      <p class="mt-0.5 text-sm leading-6 text-muted">
+                        {{ formattedDateTime.timeLabel }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="rounded-lg bg-default/70 p-4">
+                  <div class="flex items-start gap-3">
+                    <UIcon
+                      name="i-lucide-map-pin"
+                      class="mt-0.5 size-4 text-primary"
+                    />
+                    <div>
+                      <p class="text-xs font-medium tracking-[0.12em] text-muted uppercase">
+                        Location
+                      </p>
+                      <p class="mt-1 text-sm font-semibold leading-6 text-default">
+                        {{ workshop.location || 'To be announced' }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="space-y-3 rounded-lg bg-default/70 p-4">
+                <p class="text-sm font-semibold text-default">
+                  What to do next
+                </p>
+                <ol class="space-y-2 text-sm leading-6 text-muted">
+                  <li class="flex gap-2">
+                    <span class="font-semibold text-default">1.</span>
+                    <span>Add the workshop to your calendar so you do not miss it.</span>
+                  </li>
+                  <li class="flex gap-2">
+                    <span class="font-semibold text-default">2.</span>
+                    <span>Save your check-in QR code — organizers may scan it on the day.</span>
+                  </li>
+                  <li class="flex gap-2">
+                    <span class="font-semibold text-default">3.</span>
+                    <span>Return anytime via Explore events → this workshop.</span>
+                  </li>
+                </ol>
+              </div>
+
+              <div
+                v-if="calendarEvent"
+                class="flex flex-col gap-3 rounded-lg bg-default/70 p-4 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div class="space-y-1">
+                  <p class="text-sm font-semibold text-default">
+                    Add to calendar
+                  </p>
+                  <p class="text-sm leading-6 text-muted">
+                    {{ formattedDateTime.dateLabel }} · {{ formattedDateTime.timeLabel }}
+                  </p>
+                </div>
+
+                <div class="flex flex-col gap-2 sm:flex-row">
+                  <UButton
+                    :to="googleCalendarUrl"
+                    external
+                    target="_blank"
+                    color="neutral"
+                    variant="outline"
+                    icon="i-lucide-calendar-plus"
+                  >
+                    Google Calendar
+                  </UButton>
+                  <UButton
+                    color="neutral"
+                    variant="soft"
+                    icon="i-lucide-download"
+                    @click="downloadCalendarFile"
+                  >
+                    Download .ics
+                  </UButton>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-3 rounded-lg bg-default/70 p-4 sm:flex-row sm:items-center">
+                <div class="min-w-0 flex-1">
+                  <p class="text-sm font-semibold text-default">
+                    Check-in QR code
+                  </p>
+                  <p class="text-sm leading-6 text-muted">
+                    Show this when an organizer needs to verify your registration.
+                  </p>
+                </div>
+                <UButton
+                  icon="i-lucide-qr-code"
+                  color="primary"
+                  :disabled="!participantId"
+                  @click="showParticipantIdQrCode"
+                >
+                  Show QR code
+                </UButton>
+              </div>
+
+              <div class="flex flex-wrap gap-2">
+                <UButton
+                  to="/dash"
+                  icon="i-lucide-layout-grid"
+                >
+                  Back to Explore events
+                </UButton>
+                <UButton
+                  color="neutral"
+                  variant="outline"
+                  icon="i-lucide-arrow-left"
+                  @click="goToWorkshopDetails"
+                >
+                  Workshop details
+                </UButton>
+                <UButton
+                  v-if="workshop.homepageUri"
+                  :to="workshop.homepageUri"
+                  external
+                  target="_blank"
+                  color="neutral"
+                  variant="ghost"
+                  icon="i-lucide-external-link"
+                >
+                  Event site
+                </UButton>
+                <UButton
+                  v-if="canWithdraw"
+                  color="error"
+                  variant="soft"
+                  icon="i-lucide-user-minus"
+                  @click="isWithdrawModalOpen = true"
+                >
+                  Withdraw
+                </UButton>
+              </div>
+            </div>
+          </UCard>
+
+          <div
+            v-if="answerGroups.length"
+            class="space-y-4"
+          >
+            <UCard
+              v-for="group in answerGroups"
+              :key="group.name"
+              :ui="{ body: 'p-5 sm:p-6', header: 'px-5 py-4 sm:px-6' }"
+              class="bg-elevated/40 shadow-none ring-0"
+            >
+              <template #header>
+                <h2 class="text-base font-semibold text-default">
+                  {{ group.name }}
+                </h2>
+              </template>
+
+              <div class="divide-y divide-default">
+                <div
+                  v-for="detail in group.details"
+                  :key="detail.key"
+                  class="grid gap-3 py-4 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] sm:gap-6"
+                >
+                  <p class="text-sm font-medium leading-6 text-default">
+                    {{ detail.question }}
+                  </p>
+                  <div class="space-y-2">
+                    <div class="grid gap-2">
+                      <div
+                        v-for="answer in detail.answers"
+                        :key="answer"
+                        class="rounded-md bg-default/70 px-3 py-2 text-sm leading-6 text-default"
+                      >
+                        {{ answer }}
+                      </div>
+                    </div>
+
+                    <div
+                      v-if="detail.followUps.length"
+                      class="space-y-2"
+                    >
+                      <div
+                        v-for="followUp in detail.followUps"
+                        :key="`${detail.key}-${followUp.label}`"
+                        class="rounded-md bg-default/70 p-3"
+                      >
+                        <p class="text-xs font-medium text-muted">
+                          {{ followUp.label }}
+                        </p>
+                        <p class="mt-1 text-sm leading-6 text-default">
+                          {{ followUp.value }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </UCard>
+          </div>
+
+          <UAlert
+            v-else
+            color="neutral"
+            variant="soft"
+            icon="i-lucide-info"
+            title="No question responses"
+            description="This workshop did not require any registration questions."
+          />
+        </div>
+      </div>
+    </div>
+
+
+    <UModal
+      v-model:open="isParticipantIdOpen"
+      title="Participant QR Code"
+      description="Show this to an organizer when they need to scan your workshop registration."
+    >
+      <template #body>
+        <div class="space-y-4">
+          <div class="rounded-lg bg-elevated/60 p-4 text-center">
+            <p class="text-xs font-medium tracking-[0.14em] text-muted uppercase">
+              {{ workshop?.title }}
+            </p>
+            <div class="mt-4 flex justify-center">
+              <img
+                v-if="participantQrCodeDataUrl"
+                :src="participantQrCodeDataUrl"
+                alt="Participant registration QR code"
+                class="size-72 max-w-full rounded-md bg-white p-3"
+              >
+              <div
+                v-else
+                class="flex size-72 max-w-full items-center justify-center rounded-md border border-dashed border-default text-sm text-muted"
+              >
+                QR code unavailable
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </UModal>
+    <UModal
+      v-model:open="isWithdrawModalOpen"
+      title="Withdraw from workshop"
+      description="This cancels your registration for this workshop."
+    >
+      <template #content>
+        <UCard>
+          <p class="text-sm text-muted">
+            Are you sure you want to withdraw? You can register again later if spots are still available.
+          </p>
+          <div class="mt-4 flex justify-end gap-2">
+            <UButton
+              variant="ghost"
+              @click="isWithdrawModalOpen = false"
+            >
+              Cancel
+            </UButton>
+            <UButton
+              color="error"
+              :loading="withdrawMutation.isPending.value"
+              @click="withdrawFromWorkshop"
+            >
+              Withdraw
+            </UButton>
+          </div>
+        </UCard>
+      </template>
+    </UModal>
+  </div>
+</template>

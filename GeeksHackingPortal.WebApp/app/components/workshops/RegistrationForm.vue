@@ -1,1 +1,6 @@
-PLACEHOLDER_LOAD_FROM_DISK_0
+<script setup lang="ts">
+const x = 1
+</script>
+<template>
+  <div />
+</template>

@@ -1,6 +1,1 @@
-<script setup lang="ts">
-const x = 1
-</script>
-<template>
-  <div />
-</template>
+/workspace/portal/GeeksHackingPortal.WebApp/app/components/workshops/RegistrationForm.vue

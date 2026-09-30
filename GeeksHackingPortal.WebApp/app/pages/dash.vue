@@ -39,6 +39,14 @@ const links = computed<NavigationMenuItem[][]>(() => {
         open.value = false
       },
     },
+    {
+      label: 'Profile',
+      icon: 'i-lucide-user',
+      to: '/dash/profile',
+      onSelect: () => {
+        open.value = false
+      },
+    },
   ]
 
   if (user.value?.id && isOrganizer.value) {
@@ -177,7 +185,13 @@ const links = computed<NavigationMenuItem[][]>(() => {
           <div class="p-4 text-sm text-center">
             Logged in as
             <span v-if="userIsLoading">Loading...</span>
-            <span v-else>{{ user?.gitHubLogin }}</span>
+            <NuxtLink
+              v-else
+              to="/dash/profile"
+              class="font-medium hover:underline"
+            >
+              {{ user?.gitHubLogin }}
+            </NuxtLink>
           </div>
         </template>
       </UDashboardSidebar>

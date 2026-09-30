@@ -59,6 +59,7 @@ dotnet run --project GeeksHackingPortal.DbMigrator -- apply --seed-development-t
 ## Participant names
 
 - A participant's name belongs to their user profile (`User.FirstName` / `User.LastName`), not to a hackathon or workshop registration. It is first taken from the GitHub display name and changed with `PATCH /users/me`.
+- Users can view and update their profile name at `/dash/profile`.
 - Signing up confirms the profile name: the hackathon registration form and the workshop "Start registration" step show it, require both parts, and save any edit back to the profile, so the change applies everywhere (see `app/composables/useProfileName.ts`).
 - Organizer views, participant emails and OIDC `given_name` / `family_name` claims all read the profile name.
 - Names are never registration answers: the `first_name` and `last_name` question keys are reserved.
@@ -74,4 +75,3 @@ Common helper tasks (see project-specific READMEs for frontend/backend details):
 ## Contributing
 
 Open issues or PRs against this repository. Include migration diffs when proposing schema changes.
-

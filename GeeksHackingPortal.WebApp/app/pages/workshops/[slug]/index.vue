@@ -1,1 +1,3 @@
-$file:/workspace/agent-tools/index-full.txt
+<script setup lang="ts">
+// probe
+</script>

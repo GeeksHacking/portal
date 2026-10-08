@@ -75,6 +75,12 @@ function isRegistrationComplete(index: number) {
   return submissionsDataForIndex(index)?.requiredQuestionsRemaining === 0
 }
 
+const statusBadgeClass = {
+  success: 'border-transparent bg-success/10 text-success',
+  error: 'border-transparent bg-error/10 text-error',
+  warning: 'border-transparent bg-warning/10 text-warning',
+}
+
 function formatParticipantStatus(status: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusKey | null | undefined, isParticipant?: boolean | null) {
   if (!isParticipant)
     return { label: 'Open', color: 'success' as const }
@@ -236,12 +242,9 @@ function eventDateRange(start?: string | null, end?: string | null) {
       <div class="mx-auto flex w-full max-w-7xl flex-col gap-8">
         <section class="space-y-5 py-2">
           <div class="flex flex-wrap items-center gap-2">
-            <UBadge
-              color="primary"
-              variant="subtle"
-            >
+            <Badge class="border-transparent bg-primary/10 text-primary">
               GeeksHacking Portal
-            </UBadge>
+            </Badge>
             <span class="text-xs text-muted">
               {{ user?.gitHubLogin ? `Signed in as @${user.gitHubLogin}` : 'Event discovery' }}
             </span>
@@ -258,41 +261,41 @@ function eventDateRange(start?: string | null, end?: string | null) {
 
           <div class="rounded-lg bg-elevated/45 p-3">
             <div class="grid gap-3 lg:grid-cols-[minmax(260px,1fr)_auto] lg:items-center">
-              <UInput
-                v-model="searchQuery"
-                icon="i-lucide-search"
-                placeholder="Search events, venues, or short codes"
-                size="lg"
-              />
+              <div class="relative">
+                <Icon name="i-lucide-search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  v-model="searchQuery"
+                  placeholder="Search events, venues, or short codes"
+                  class="h-10 pl-9"
+                />
+              </div>
 
               <div class="grid gap-2 sm:grid-cols-2 lg:flex lg:items-center lg:justify-end">
                 <div class="grid grid-cols-3 gap-1 rounded-md bg-elevated p-1">
-                  <UButton
+                  <Button
                     v-for="filter in eventTypeFilters"
                     :key="filter.value"
-                    :icon="filter.icon"
                     size="sm"
-                    :color="activeEventType === filter.value ? 'primary' : 'neutral'"
-                    :variant="activeEventType === filter.value ? 'soft' : 'ghost'"
-                    class="justify-center"
+                    :variant="activeEventType === filter.value ? 'secondary' : 'ghost'"
+                    :class="['justify-center', activeEventType === filter.value && 'text-primary']"
                     @click="activeEventType = filter.value"
                   >
+                    <Icon :name="filter.icon" />
                     {{ filter.label }}
-                  </UButton>
+                  </Button>
                 </div>
 
                 <div class="grid grid-cols-3 gap-1 rounded-md bg-elevated p-1">
-                  <UButton
+                  <Button
                     v-for="filter in audienceFilters"
                     :key="filter.value"
                     size="sm"
-                    :color="activeAudience === filter.value ? 'primary' : 'neutral'"
-                    :variant="activeAudience === filter.value ? 'soft' : 'ghost'"
-                    class="justify-center"
+                    :variant="activeAudience === filter.value ? 'secondary' : 'ghost'"
+                    :class="['justify-center', activeAudience === filter.value && 'text-primary']"
                     @click="activeAudience = filter.value"
                   >
                     {{ filter.label }}
-                  </UButton>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -306,10 +309,7 @@ function eventDateRange(start?: string | null, end?: string | null) {
             >
               <div class="flex items-center justify-between gap-3">
                 <span class="text-sm font-medium text-muted">{{ stat.label }}</span>
-                <UIcon
-                  :name="stat.icon"
-                  class="size-4 text-primary"
-                />
+                <Icon :name="stat.icon" class="size-4 text-primary" />
               </div>
               <div class="mt-3 text-2xl font-semibold text-default">
                 {{ stat.value }}
@@ -335,101 +335,82 @@ function eventDateRange(start?: string | null, end?: string | null) {
             v-if="isLoadingUser || isLoadingHackathons"
             class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
           >
-            <UCard
+            <Card
               v-for="index in 3"
               :key="index"
-              class="bg-elevated/40 shadow-none ring-0"
+              class="bg-muted/40 shadow-none"
             >
-              <div class="space-y-3">
-                <USkeleton class="h-5 w-2/3" />
-                <USkeleton class="h-16 w-full" />
-                <USkeleton class="h-9 w-32" />
-              </div>
-            </UCard>
+              <CardContent class="space-y-3">
+                <Skeleton class="h-5 w-2/3" />
+                <Skeleton class="h-16 w-full" />
+                <Skeleton class="h-9 w-32" />
+              </CardContent>
+            </Card>
           </div>
 
-          <UAlert
-            v-else-if="!visibleHackathonCards.length"
-            color="neutral"
-            variant="soft"
-            icon="i-lucide-search-x"
-            title="No matching hackathons"
-            description="Try a different search term or filter."
-          />
+          <Alert
+            v-else-if="!visibleHackathonCards.length">
+            <Icon name="i-lucide-search-x" />
+            <AlertTitle>No matching hackathons</AlertTitle>
+            <AlertDescription>Try a different search term or filter.</AlertDescription>
+          </Alert>
 
           <div
             v-else
             class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
           >
-            <UCard
+            <Card
               v-for="{ hackathon, index, status, registrationComplete } in visibleHackathonCards"
               :key="hackathon.id ?? index"
-              class="bg-transparent shadow-none ring-0 transition hover:bg-elevated/45"
+              class="bg-transparent shadow-none transition hover:bg-muted/45"
             >
-              <template #header>
+              <CardHeader>
                 <div class="flex items-start justify-between gap-3">
                   <div class="min-w-0">
                     <div class="flex items-center gap-2">
-                      <UIcon
-                        name="i-lucide-trophy"
-                        class="size-4 shrink-0 text-primary"
-                      />
+                      <Icon name="i-lucide-trophy" class="size-4 shrink-0 text-primary" />
                       <h3 class="truncate text-base font-semibold text-default">
                         {{ hackathon.name }}
                       </h3>
                     </div>
                     <div class="mt-2 flex flex-wrap items-center gap-2">
-                      <UBadge
-                        :color="formatParticipantStatus(status?.status ?? null, status?.isParticipant).color"
-                        variant="subtle"
-                        size="sm"
+                      <Badge
+                        :class="statusBadgeClass[formatParticipantStatus(status?.status ?? null, status?.isParticipant).color]"
                       >
                         {{ formatParticipantStatus(status?.status ?? null, status?.isParticipant).label }}
-                      </UBadge>
-                      <UBadge
-                        color="neutral"
-                        variant="outline"
-                        size="sm"
-                      >
+                      </Badge>
+                      <Badge variant="outline">
                         Hackathon
-                      </UBadge>
+                      </Badge>
                     </div>
                   </div>
                 </div>
-              </template>
+              </CardHeader>
 
-              <div class="space-y-4">
+              <CardContent class="space-y-4">
                 <p class="line-clamp-3 min-h-16 text-sm leading-6 text-muted">
                   {{ hackathon.description || 'Details are being prepared by the organizers.' }}
                 </p>
 
                 <div class="grid gap-2 text-sm text-muted">
                   <div class="flex items-center gap-2">
-                    <UIcon
-                      name="i-lucide-calendar-days"
-                      class="size-4"
-                    />
+                    <Icon name="i-lucide-calendar-days" class="size-4" />
                     <span>{{ eventDateRange(hackathon.eventStartDate, hackathon.eventEndDate) }}</span>
                   </div>
                   <div
                     v-if="hackathon.venue"
                     class="flex items-center gap-2"
                   >
-                    <UIcon
-                      name="i-lucide-map-pin"
-                      class="size-4"
-                    />
+                    <Icon name="i-lucide-map-pin" class="size-4" />
                     <span class="truncate">{{ hackathon.venue }}</span>
                   </div>
                 </div>
 
-                <UAlert
-                  v-if="status?.status === 'Rejected' && status.reviewReason"
-                  color="error"
-                  variant="soft"
-                  icon="i-lucide-circle-alert"
-                  :description="`Reason: ${status.reviewReason}`"
-                />
+                <Alert variant="destructive"
+            v-if="status?.status === 'Rejected' && status.reviewReason">
+            <Icon name="i-lucide-circle-alert" />
+            <AlertDescription>{{ `Reason: ${status.reviewReason}` }}</AlertDescription>
+          </Alert>
 
                 <div
                   v-if="status?.isParticipant && !registrationComplete"
@@ -445,55 +426,59 @@ function eventDateRange(start?: string | null, end?: string | null) {
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2">
-                  <UButton
+                  <Button
                     v-if="!status?.isParticipant"
-                    icon="i-lucide-user-plus"
                     size="sm"
-                    :loading="joinMutation.isPending.value"
+                    :disabled="joinMutation.isPending.value"
                     @click="joinHackathon({ id: hackathon.id!, shortCode: hackathon.shortCode! })"
                   >
+                    <Icon name="i-lucide-user-plus" />
                     Join event
-                  </UButton>
-                  <UButton
+                  </Button>
+                  <Button
                     v-else-if="!registrationComplete"
-                    :to="`/${hackathon.shortCode}/registration`"
-                    icon="i-lucide-clipboard-pen-line"
                     size="sm"
+                    as-child
                   >
+                    <NuxtLink :to="`/${hackathon.shortCode}/registration`">
+                      <Icon name="i-lucide-clipboard-pen-line" />
                     Continue registration
-                  </UButton>
-                  <UButton
+                    </NuxtLink>
+                  </Button>
+                  <Button
                     v-else-if="status?.status !== 'Accepted'"
-                    :to="`/dash/${hackathon.id}/participant`"
-                    icon="i-lucide-file-check"
                     size="sm"
+                    as-child
                   >
+                    <NuxtLink :to="`/dash/${hackathon.id}/participant`">
+                      <Icon name="i-lucide-file-check" />
                     View status
-                  </UButton>
-                  <UButton
+                    </NuxtLink>
+                  </Button>
+                  <Button
                     v-else
-                    :to="`/${hackathon.shortCode}/team`"
-                    icon="i-lucide-arrow-right"
-                    trailing
                     size="sm"
+                    as-child
                   >
-                    Open event portal
-                  </UButton>
+                    <NuxtLink :to="`/${hackathon.shortCode}/team`">
+                      Open event portal <Icon name="i-lucide-arrow-right" />
+                    </NuxtLink>
+                  </Button>
 
-                  <UButton
+                  <Button
                     v-if="hackathon.homepageUri"
-                    :to="hackathon.homepageUri"
-                    target="_blank"
-                    color="neutral"
                     variant="outline"
-                    icon="i-lucide-external-link"
                     size="sm"
+                    as-child
                   >
+                    <NuxtLink :to="hackathon.homepageUri" target="_blank" rel="noopener">
+                      <Icon name="i-lucide-external-link" />
                     Website
-                  </UButton>
+                    </NuxtLink>
+                  </Button>
                 </div>
-              </div>
-            </UCard>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
@@ -514,126 +499,107 @@ function eventDateRange(start?: string | null, end?: string | null) {
             v-if="isLoadingUser || (!!user?.id && isLoadingStandaloneEvents)"
             class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
           >
-            <UCard
+            <Card
               v-for="index in 3"
               :key="index"
-              class="bg-elevated/40 shadow-none ring-0"
+              class="bg-muted/40 shadow-none"
             >
-              <div class="space-y-3">
-                <USkeleton class="h-5 w-2/3" />
-                <USkeleton class="h-16 w-full" />
-                <USkeleton class="h-9 w-32" />
-              </div>
-            </UCard>
+              <CardContent class="space-y-3">
+                <Skeleton class="h-5 w-2/3" />
+                <Skeleton class="h-16 w-full" />
+                <Skeleton class="h-9 w-32" />
+              </CardContent>
+            </Card>
           </div>
 
-          <UAlert
-            v-else-if="!user?.id"
-            color="neutral"
-            variant="soft"
-            icon="i-lucide-log-in"
-            title="Sign in to explore workshops"
-            description="Workshop discovery is available after sign-in."
-          />
+          <Alert
+            v-else-if="!user?.id">
+            <Icon name="i-lucide-log-in" />
+            <AlertTitle>Sign in to explore workshops</AlertTitle>
+            <AlertDescription>Workshop discovery is available after sign-in.</AlertDescription>
+          </Alert>
 
-          <UAlert
-            v-else-if="!visibleStandaloneEvents.length"
-            color="neutral"
-            variant="soft"
-            icon="i-lucide-search-x"
-            title="No matching workshops"
-            description="Try a different search term or filter."
-          />
+          <Alert
+            v-else-if="!visibleStandaloneEvents.length">
+            <Icon name="i-lucide-search-x" />
+            <AlertTitle>No matching workshops</AlertTitle>
+            <AlertDescription>Try a different search term or filter.</AlertDescription>
+          </Alert>
 
           <div
             v-else
             class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
           >
-            <UCard
+            <Card
               v-for="event in visibleStandaloneEvents"
               :key="event.id"
-              class="bg-transparent shadow-none ring-0 transition hover:bg-elevated/45"
+              class="bg-transparent shadow-none transition hover:bg-muted/45"
             >
-              <template #header>
+              <CardHeader>
                 <div class="flex items-start justify-between gap-3">
                   <div class="min-w-0">
                     <div class="flex items-center gap-2">
-                      <UIcon
-                        name="i-lucide-brain-circuit"
-                        class="size-4 shrink-0 text-info"
-                      />
+                      <Icon name="i-lucide-brain-circuit" class="size-4 shrink-0 text-info" />
                       <h3 class="truncate text-base font-semibold text-default">
                         {{ event.title }}
                       </h3>
                     </div>
                     <div class="mt-2 flex flex-wrap items-center gap-2">
-                      <UBadge
-                        color="success"
-                        variant="subtle"
-                        size="sm"
-                      >
+                      <Badge :class="statusBadgeClass.success">
                         Open
-                      </UBadge>
-                      <UBadge
-                        color="info"
-                        variant="outline"
-                        size="sm"
-                      >
+                      </Badge>
+                      <Badge variant="outline" class="border-info/40 text-info">
                         Workshop
-                      </UBadge>
+                      </Badge>
                     </div>
                   </div>
                 </div>
-              </template>
+              </CardHeader>
 
-              <div class="space-y-4">
+              <CardContent class="space-y-4">
                 <p class="line-clamp-3 min-h-16 text-sm leading-6 text-muted">
                   {{ event.description || 'Workshop details are being prepared.' }}
                 </p>
 
                 <div class="grid gap-2 text-sm text-muted">
                   <div class="flex items-center gap-2">
-                    <UIcon
-                      name="i-lucide-calendar-days"
-                      class="size-4"
-                    />
+                    <Icon name="i-lucide-calendar-days" class="size-4" />
                     <span>{{ eventDateRange(event.startTime, event.endTime) }}</span>
                   </div>
                   <div
                     v-if="event.location"
                     class="flex items-center gap-2"
                   >
-                    <UIcon
-                      name="i-lucide-map-pin"
-                      class="size-4"
-                    />
+                    <Icon name="i-lucide-map-pin" class="size-4" />
                     <span class="truncate">{{ event.location }}</span>
                   </div>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2">
-                  <UButton
+                  <Button
                     v-if="event.shortCode"
-                    :to="`/workshops/${event.shortCode}`"
-                    icon="i-lucide-clipboard-pen-line"
                     size="sm"
+                    as-child
                   >
+                    <NuxtLink :to="`/workshops/${event.shortCode}`">
+                      <Icon name="i-lucide-clipboard-pen-line" />
                     Register
-                  </UButton>
-                  <UButton
+                    </NuxtLink>
+                  </Button>
+                  <Button
                     v-if="event.homepageUri"
-                    :to="event.homepageUri"
-                    target="_blank"
-                    color="neutral"
                     variant="outline"
-                    icon="i-lucide-external-link"
                     size="sm"
+                    as-child
                   >
+                    <NuxtLink :to="event.homepageUri" target="_blank" rel="noopener">
+                      <Icon name="i-lucide-external-link" />
                     Website
-                  </UButton>
+                    </NuxtLink>
+                  </Button>
                 </div>
-              </div>
-            </UCard>
+              </CardContent>
+            </Card>
           </div>
         </section>
       </div>

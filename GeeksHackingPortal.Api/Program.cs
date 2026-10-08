@@ -258,7 +258,7 @@ builder.Services.PostConfigure<OpenIddict.Client.AspNetCore.OpenIddictClientAspN
     if (builder.Environment.IsProduction())
     {
         options.CookieBuilder.Domain = ".geekshacking.com";
-        options.CookieBuilder.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+        options.CookieBuilder.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
     }
 });
 
@@ -270,7 +270,8 @@ builder
             if (builder.Environment.IsProduction())
             {
                 options.Cookie.Domain = ".geekshacking.com";
-                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             }
             else
             {
@@ -324,7 +325,9 @@ builder.Services.AddCors(options =>
                     [
                         "https://portal.geekshacking.com",
                         "https://portal.dev-d73.workers.dev",
-                        "https://*-portal.dev-d73.workers.dev"
+                        "https://*-portal.dev-d73.workers.dev",
+                        "https://portal.geekshacking.workers.dev",
+                        "https://*-portal.geekshacking.workers.dev"
                     ]
             )
             .SetIsOriginAllowedToAllowWildcardSubdomains();

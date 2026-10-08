@@ -24,6 +24,8 @@ public class Endpoint(IOptions<AppOptions> options) : EndpointWithoutRequest
         if (!LocalRedirect.IsAllowed(redirectUri))
             redirectUri = null;
 
+        var returnOrigin = LocalRedirect.OriginFromReferer(HttpContext.Request.Headers.Referer.ToString());
+
         // Already signed in: resume the return URL instead of challenging GitHub again.
         // Re-challenging here is what turns a failed or repeated callback into a loop.
         var existing = await HttpContext.AuthenticateAsync(
@@ -37,10 +39,19 @@ public class Endpoint(IOptions<AppOptions> options) : EndpointWithoutRequest
         )
         {
             DeleteRedirectCookie();
-            var destination = LocalRedirect.Destination(redirectUri, options.Value.FrontendUrl);
+            var destination = LocalRedirect.Destination(redirectUri, options.Value.FrontendUrl, returnOrigin);
             await Send.RedirectAsync(destination, allowRemoteRedirects: !destination.StartsWith('/'));
             return;
         }
+
+        if (returnOrigin is not null)
+            HttpContext.Response.Cookies.Append(
+                LocalRedirect.ReturnOriginCookie,
+                returnOrigin,
+                RedirectCookieOptions()
+            );
+        else
+            HttpContext.Response.Cookies.Delete(LocalRedirect.ReturnOriginCookie, RedirectCookieOptions());
 
         var properties = new AuthenticationProperties { RedirectUri = redirectUri ?? "/" };
 

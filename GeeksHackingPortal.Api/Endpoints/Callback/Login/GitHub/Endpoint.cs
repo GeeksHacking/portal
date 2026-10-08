@@ -207,9 +207,10 @@ public class Endpoint(
             redirectPath = cookieRedirectUri;
         }
 
+        HttpContext.Request.Cookies.TryGetValue(LocalRedirect.ReturnOriginCookie, out var returnOrigin);
         DeleteRedirectCookie();
 
-        var destination = LocalRedirect.Destination(redirectPath, options.Value.FrontendUrl);
+        var destination = LocalRedirect.Destination(redirectPath, options.Value.FrontendUrl, returnOrigin);
         await Send.RedirectAsync(destination, allowRemoteRedirects: !destination.StartsWith('/'));
     }
 
@@ -221,6 +222,16 @@ public class Endpoint(
 
     private void DeleteRedirectCookie()
     {
+        HttpContext.Response.Cookies.Delete(
+            LocalRedirect.ReturnOriginCookie,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = !HttpContext.Request.Host.Host.Contains("localhost"),
+                SameSite = SameSiteMode.Lax,
+                Path = "/",
+            }
+        );
         HttpContext.Response.Cookies.Delete(
             "auth_redirect_uri",
             new CookieOptions

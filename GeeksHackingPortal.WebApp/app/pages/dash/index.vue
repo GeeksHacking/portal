@@ -265,6 +265,7 @@ function eventDateRange(start?: string | null, end?: string | null) {
                 <Icon name="i-lucide-search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   v-model="searchQuery"
+                  aria-label="Search events, venues, or short codes"
                   placeholder="Search events, venues, or short codes"
                   class="h-10 pl-9"
                 />

@@ -1,7 +1,7 @@
 /* eslint-disable node/prefer-global/process */
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/hints', '@nuxt/image', '@nuxt/scripts', '@nuxt/test-utils', '@nuxt/ui', '@vite-pwa/nuxt'],
+  modules: ['@nuxt/hints', '@nuxt/image', '@nuxt/scripts', '@nuxt/test-utils', '@nuxt/ui', '@vite-pwa/nuxt', 'shadcn-nuxt'],
 
   ssr: false,
 
@@ -19,6 +19,11 @@ export default defineNuxtConfig({
         },
       },
     },
+  },
+
+  shadcn: {
+    prefix: '',
+    componentDir: './app/components/ui',
   },
 
   css: ['~/assets/css/main.css'],

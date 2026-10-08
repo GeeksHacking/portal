@@ -6,6 +6,8 @@ definePageMeta({
   auth: false,
 })
 
+import { LoaderCircle } from 'lucide-vue-next'
+
 const config = useRuntimeConfig()
 const route = useRoute()
 const loginFailed = computed(() => route.query.error === 'github' || route.query.error === 'session')
@@ -43,7 +45,7 @@ const isAuthenticated = computed(() => !!user.value && !isError.value)
       <p class="text-sm font-medium text-gray-600 animate-pulse">
         {{ isAuthenticated ? 'Redirecting to dashboard...' : 'Checking your session...' }}
       </p>
-      <UIcon name="i-lucide-loader-circle" class="w-8 h-8 animate-spin text-primary" />
+      <LoaderCircle class="w-8 h-8 animate-spin text-primary" />
     </div>
 
     <div v-else-if="isError" class="text-center max-w-md px-6">
@@ -57,15 +59,12 @@ const isAuthenticated = computed(() => !!user.value && !isError.value)
           </p>
         </div>
 
-        <UButton
-          :to="loginUrl"
-          external
-          size="lg"
-          icon="i-simple-icons-github"
-          color="neutral"
-        >
-          Login with GitHub
-        </UButton>
+        <Button as-child size="lg">
+          <a :href="loginUrl">
+            <Icon name="i-simple-icons-github" />
+            Login with GitHub
+          </a>
+        </Button>
 
         <p v-if="loginFailed" class="text-sm text-red-600">
           GitHub sign-in did not finish. Please try again.

@@ -252,7 +252,7 @@ function eventDateRange(start?: string | null, end?: string | null) {
 
           <div class="max-w-4xl">
             <h1 class="text-3xl font-semibold tracking-tight text-default sm:text-4xl">
-              Explore hackathons and workshops from GeeksHacking.
+              Explore hackathons and workshops from GeeksHacking
             </h1>
             <p class="mt-3 text-base leading-7 text-muted">
               Find programs to join, continue registrations already in progress, and jump back into event portals once you are accepted.

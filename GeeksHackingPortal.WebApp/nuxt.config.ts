@@ -34,8 +34,6 @@ export default defineNuxtConfig({
     },
   },
 
-  compatibilityDate: 'latest',
-
   nitro: {
     cloudflare: {
       wrangler: {

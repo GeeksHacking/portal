@@ -28,8 +28,33 @@ public static class LocalRedirect
             || pathOnly.EndsWith("/connect/logout", StringComparison.OrdinalIgnoreCase);
     }
 
-    public static string Destination(string? redirectPath, string frontendUrl)
+    public const string ReturnOriginCookie = "auth_return_origin";
+
+    // Preview deployments (https://<id>-portal.geekshacking.workers.dev) use the production API.
+    public static bool IsAllowedFrontendOrigin(string? origin) =>
+        Uri.TryCreate(origin, UriKind.Absolute, out var uri)
+        && uri.Scheme == Uri.UriSchemeHttps
+        && uri.IsDefaultPort
+        && uri.AbsolutePath == "/"
+        && (
+            uri.Host.Equals("portal.geekshacking.workers.dev", StringComparison.OrdinalIgnoreCase)
+            || (
+                uri.Host.EndsWith("-portal.geekshacking.workers.dev", StringComparison.OrdinalIgnoreCase)
+                && uri.Host.Length > "-portal.geekshacking.workers.dev".Length
+            )
+        );
+
+    public static string? OriginFromReferer(string? referer) =>
+        Uri.TryCreate(referer, UriKind.Absolute, out var uri)
+        && IsAllowedFrontendOrigin(uri.GetLeftPart(UriPartial.Authority))
+            ? uri.GetLeftPart(UriPartial.Authority)
+            : null;
+
+    public static string Destination(string? redirectPath, string frontendUrl, string? returnOrigin = null)
     {
+        if (IsAllowedFrontendOrigin(returnOrigin))
+            frontendUrl = returnOrigin!;
+
         if (!IsAllowed(redirectPath))
             redirectPath = "/dash";
 

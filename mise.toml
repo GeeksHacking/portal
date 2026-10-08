@@ -2,7 +2,7 @@
 node = "24"
 pnpm = "latest"
 dotnet = "10.0.401"
-aspire = "latest"
+aspire = "13.6.1"
 
 [tasks.dev]
 description = "Runs the dev server"

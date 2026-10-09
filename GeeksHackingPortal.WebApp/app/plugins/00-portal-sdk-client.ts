@@ -32,7 +32,9 @@ export default defineNuxtPlugin(async () => {
   client.interceptors.request.use((request) => {
     if (request.credentials == null)
       request.credentials = 'include'
-    applyPreviewSession(request.headers)
+    const headers = new Headers(request.headers)
+    applyPreviewSession(headers)
+    request.headers = Object.fromEntries(headers.entries())
     return request
   })
 
@@ -84,16 +86,24 @@ function installFetchBridge(api: string) {
   const bridged = (input: RequestInfo | URL, init?: RequestInit) => {
     const token = readPreviewSession()
     const url = input instanceof Request ? input.url : String(input)
-    if (!token || !url.startsWith(api))
+    if (!token || !isApiOriginRequest(api, url))
       return nativeFetch(input, init)
 
-    const headers = new Headers(init?.headers ?? (input instanceof Request ? input.headers : undefined))
+    const request = new Request(input, init)
+    const headers = new Headers(request.headers)
     if (!headers.has('Authorization'))
       headers.set('Authorization', `Bearer ${token}`)
-    if (input instanceof Request)
-      return nativeFetch(new Request(input, { headers }))
-    return nativeFetch(input, { ...init, headers })
+    return nativeFetch(new Request(request, { headers }))
   }
   bridged.__previewSession = true
   window.fetch = bridged
+}
+
+function isApiOriginRequest(api: string, requestUrl: string) {
+  try {
+    return new URL(requestUrl, window.location.href).origin === new URL(api, window.location.href).origin
+  }
+  catch {
+    return false
+  }
 }

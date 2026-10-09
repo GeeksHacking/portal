@@ -74,7 +74,10 @@ public static class LocalRedirect
         if (string.IsNullOrEmpty(handoff) || destination.StartsWith('/'))
             return destination;
 
-        var separator = destination.Contains('?') ? '&' : '?';
-        return $"{destination}{separator}{PreviewSessionTickets.HandoffQuery}={Uri.EscapeDataString(handoff)}";
+        var fragmentIndex = destination.IndexOf('#');
+        var fragment = fragmentIndex >= 0 ? destination[fragmentIndex..] : "";
+        var url = fragmentIndex >= 0 ? destination[..fragmentIndex] : destination;
+        var separator = url.EndsWith('?') || url.EndsWith('&') ? "" : url.Contains('?') ? '&' : '?';
+        return $"{url}{separator}{PreviewSessionTickets.HandoffQuery}={Uri.EscapeDataString(handoff)}{fragment}";
     }
 }

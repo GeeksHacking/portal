@@ -9,7 +9,7 @@ using static OpenIddict.Client.WebIntegration.OpenIddictClientWebIntegrationCons
 
 namespace GeeksHackingPortal.Api.Endpoints.Auth.Login;
 
-public class Endpoint(IOptions<AppOptions> options) : EndpointWithoutRequest
+public class Endpoint(IOptions<AppOptions> options, PreviewSessionTickets tickets) : EndpointWithoutRequest
 {
     public override void Configure()
     {
@@ -33,13 +33,17 @@ public class Endpoint(IOptions<AppOptions> options) : EndpointWithoutRequest
         );
         if (
             existing.Succeeded
+            && existing.Principal is not null
             && !string.IsNullOrWhiteSpace(
-                existing.Principal?.FindFirst(CustomClaimTypes.UserId)?.Value
+                existing.Principal.FindFirst(CustomClaimTypes.UserId)?.Value
             )
         )
         {
             DeleteRedirectCookie();
-            var destination = LocalRedirect.Destination(redirectUri, options.Value.FrontendUrl, returnOrigin);
+            var destination = LocalRedirect.AppendHandoff(
+                LocalRedirect.Destination(redirectUri, options.Value.FrontendUrl, returnOrigin),
+                tickets.CreateHandoff(existing.Principal, returnOrigin)
+            );
             await Send.RedirectAsync(destination, allowRemoteRedirects: !destination.StartsWith('/'));
             return;
         }

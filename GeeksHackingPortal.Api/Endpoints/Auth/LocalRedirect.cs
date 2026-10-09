@@ -4,7 +4,7 @@ public static class LocalRedirect
 {
     public static bool IsAllowed(string? value)
     {
-        if (string.IsNullOrEmpty(value) || !value.StartsWith('/') || value.StartsWith("//") || value.StartsWith("/\\"))
+        if (string.IsNullOrEmpty(value) || !value.StartsWith('/') || value.StartsWith("//") || value.StartsWith("/\\\\"))
             return false;
 
         // Browsers drop tabs and newlines from URLs, so "/\t/evil.com" would become "//evil.com".
@@ -67,5 +67,14 @@ public static class LocalRedirect
         // sending the browser back through /auth/login and the GitHub callback.
         var separator = redirectPath.Contains('?') ? '&' : '?';
         return $"{frontendUrl.TrimEnd('/')}{redirectPath}{separator}login_return=1";
+    }
+
+    public static string AppendHandoff(string destination, string? handoff)
+    {
+        if (string.IsNullOrEmpty(handoff) || destination.StartsWith('/'))
+            return destination;
+
+        var separator = destination.Contains('?') ? '&' : '?';
+        return $"{destination}{separator}{PreviewSessionTickets.HandoffQuery}={Uri.EscapeDataString(handoff)}";
     }
 }

@@ -320,7 +320,8 @@ bool IsAllowedCorsOrigin(string? origin)
         return false;
 
     if (builder.Environment.IsDevelopment())
-        return origin is "http://localhost:3000" or "https://localhost:3000";
+        return origin is "http://localhost:3000" or "https://localhost:3000"
+            || LocalRedirect.IsAllowedFrontendOrigin(origin);
 
     if (origin.Equals("https://portal.geekshacking.com", StringComparison.OrdinalIgnoreCase))
         return true;
@@ -386,6 +387,9 @@ builder.Services.SwaggerDocument(options =>
 LogStartupPhase("fastendpoints-and-openapi-registered", startupStopwatch, ref startupPhaseTimestamp);
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<PreviewSessionTickets>();
+builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
+builder.Services.AddSingleton<IPreviewSessionHandoffStore, SqlSugarPreviewSessionHandoffStore>();
 
 builder.Services.AddScoped<MembershipService>();
 builder.Services.AddScoped<OAuthDirectoryService>();
@@ -530,6 +534,7 @@ app.Use(
 );
 
 app.UseAuthentication();
+app.UseMiddleware<PreviewSessionMiddleware>();
 app.UseAuthorization();
 
 app.MapMethods(

@@ -9,6 +9,7 @@ definePageMeta({
 const config = useRuntimeConfig()
 const route = useRoute()
 const loginFailed = computed(() => route.query.error === 'github' || route.query.error === 'session')
+const sessionMissing = computed(() => route.query.error === 'session')
 
 useHead({
   titleTemplate: title => (title ? `${title} - GeeksHacking Portal` : 'GeeksHacking Portal'),
@@ -67,7 +68,10 @@ const isAuthenticated = computed(() => !!user.value && !isError.value)
           Login with GitHub
         </UButton>
 
-        <p v-if="loginFailed" class="text-sm text-red-600">
+        <p v-if="sessionMissing" class="text-sm text-red-600">
+          Sign-in finished, but this preview could not keep the session. Please try again.
+        </p>
+        <p v-else-if="loginFailed" class="text-sm text-red-600">
           GitHub sign-in did not finish. Please try again.
         </p>
 

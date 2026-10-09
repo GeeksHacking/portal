@@ -68,4 +68,16 @@ public static class LocalRedirect
         var separator = redirectPath.Contains('?') ? '&' : '?';
         return $"{frontendUrl.TrimEnd('/')}{redirectPath}{separator}login_return=1";
     }
+
+    public static string AppendHandoff(string destination, string? handoff)
+    {
+        if (string.IsNullOrEmpty(handoff) || destination.StartsWith('/'))
+            return destination;
+
+        var fragmentIndex = destination.IndexOf('#');
+        var fragment = fragmentIndex >= 0 ? destination[fragmentIndex..] : "";
+        var url = fragmentIndex >= 0 ? destination[..fragmentIndex] : destination;
+        var separator = url.EndsWith('?') || url.EndsWith('&') ? "" : url.Contains('?') ? "&" : "?";
+        return $"{url}{separator}{PreviewSessionTickets.HandoffQuery}={Uri.EscapeDataString(handoff)}{fragment}";
+    }
 }

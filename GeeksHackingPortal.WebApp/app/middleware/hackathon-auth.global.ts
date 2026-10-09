@@ -12,6 +12,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
       await queryClient.fetchQuery(geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryOptions())
       const query = { ...to.query }
       delete query.login_return
+      delete query.login_handoff
       return navigateTo({ path: to.path, query, replace: true })
     }
     catch (error) {

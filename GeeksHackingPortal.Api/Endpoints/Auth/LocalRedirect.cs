@@ -77,7 +77,7 @@ public static class LocalRedirect
         var fragmentIndex = destination.IndexOf('#');
         var fragment = fragmentIndex >= 0 ? destination[fragmentIndex..] : "";
         var url = fragmentIndex >= 0 ? destination[..fragmentIndex] : destination;
-        var separator = url.EndsWith('?') || url.EndsWith('&') ? "" : url.Contains('?') ? '&' : '?';
+        var separator = url.EndsWith('?') || url.EndsWith('&') ? "" : url.Contains('?') ? "&" : "?";
         return $"{url}{separator}{PreviewSessionTickets.HandoffQuery}={Uri.EscapeDataString(handoff)}{fragment}";
     }
 }

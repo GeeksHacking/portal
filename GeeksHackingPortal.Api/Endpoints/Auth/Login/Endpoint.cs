@@ -42,7 +42,7 @@ public class Endpoint(IOptions<AppOptions> options, PreviewSessionTickets ticket
             DeleteRedirectCookie();
             var destination = LocalRedirect.AppendHandoff(
                 LocalRedirect.Destination(redirectUri, options.Value.FrontendUrl, returnOrigin),
-                tickets.CreateHandoff(existing.Principal, returnOrigin)
+                await tickets.CreateHandoffAsync(existing.Principal, returnOrigin, ct)
             );
             await Send.RedirectAsync(destination, allowRemoteRedirects: !destination.StartsWith('/'));
             return;

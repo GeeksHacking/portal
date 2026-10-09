@@ -224,7 +224,11 @@ public class Endpoint(
             handoffIdentity.AddClaim(new Claim(CustomClaimTypes.GitHubAccountId, githubAccountId.ToString()));
             destination = LocalRedirect.AppendHandoff(
                 destination,
-                tickets.CreateHandoff(new ClaimsPrincipal(handoffIdentity), returnOrigin)
+                await tickets.CreateHandoffAsync(
+                    new ClaimsPrincipal(handoffIdentity),
+                    returnOrigin,
+                    ct
+                )
             );
         }
 

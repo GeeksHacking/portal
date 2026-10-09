@@ -24,7 +24,7 @@ public class Endpoint(PreviewSessionTickets tickets) : Endpoint<Request, Respons
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var origin = HttpContext.Request.Headers.Origin.ToString();
-        var token = tickets.Redeem(req.Code, origin);
+        var token = await tickets.RedeemAsync(req.Code, origin, ct);
         if (token is null)
         {
             await Send.UnauthorizedAsync(ct);

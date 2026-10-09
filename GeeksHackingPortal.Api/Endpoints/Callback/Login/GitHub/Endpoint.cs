@@ -20,7 +20,8 @@ public class Endpoint(
     ILogger<Endpoint> logger,
     IOptions<AppOptions> options,
     ISqlSugarClient db,
-    IHttpClientFactory httpClientFactory
+    IHttpClientFactory httpClientFactory,
+    PreviewSessionTickets tickets
 ) : EndpointWithoutRequest
 {
     public override void Configure()
@@ -213,6 +214,20 @@ public class Endpoint(
         DeleteRedirectCookie();
 
         var destination = LocalRedirect.Destination(redirectPath, options.Value.FrontendUrl, returnOrigin);
+        if (returnOrigin is not null)
+        {
+            var handoffIdentity = new ClaimsIdentity(
+                result.Principal.Claims,
+                "Cookies"
+            );
+            handoffIdentity.AddClaim(new Claim(CustomClaimTypes.UserId, accountUser.Id.ToString()));
+            handoffIdentity.AddClaim(new Claim(CustomClaimTypes.GitHubAccountId, githubAccountId.ToString()));
+            destination = LocalRedirect.AppendHandoff(
+                destination,
+                tickets.CreateHandoff(new ClaimsPrincipal(handoffIdentity), returnOrigin)
+            );
+        }
+
         await Send.RedirectAsync(destination, allowRemoteRedirects: !destination.StartsWith('/'));
     }
 

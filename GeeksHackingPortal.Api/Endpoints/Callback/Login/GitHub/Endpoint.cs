@@ -45,8 +45,9 @@ public class Endpoint(
                 openIddictResponse.ErrorDescription
             );
 
+            var failedReturnOrigin = ReadReturnOrigin();
             DeleteRedirectCookie();
-            await RedirectToFrontendLoginAsync();
+            await RedirectToFrontendLoginAsync(failedReturnOrigin);
             return;
         }
 
@@ -67,8 +68,9 @@ public class Endpoint(
 
             // Never send a failed callback back to /auth/login. That endpoint always
             // challenges GitHub, and GitHub immediately returns here — a redirect loop.
+            var failedReturnOrigin = ReadReturnOrigin();
             DeleteRedirectCookie();
-            await RedirectToFrontendLoginAsync();
+            await RedirectToFrontendLoginAsync(failedReturnOrigin);
             return;
         }
 
@@ -207,16 +209,22 @@ public class Endpoint(
             redirectPath = cookieRedirectUri;
         }
 
-        HttpContext.Request.Cookies.TryGetValue(LocalRedirect.ReturnOriginCookie, out var returnOrigin);
+        var returnOrigin = ReadReturnOrigin();
         DeleteRedirectCookie();
 
         var destination = LocalRedirect.Destination(redirectPath, options.Value.FrontendUrl, returnOrigin);
         await Send.RedirectAsync(destination, allowRemoteRedirects: !destination.StartsWith('/'));
     }
 
-    private Task RedirectToFrontendLoginAsync() =>
+    private string? ReadReturnOrigin() =>
+        HttpContext.Request.Cookies.TryGetValue(LocalRedirect.ReturnOriginCookie, out var origin)
+        && LocalRedirect.IsAllowedFrontendOrigin(origin)
+            ? origin
+            : null;
+
+    private Task RedirectToFrontendLoginAsync(string? returnOrigin) =>
         Send.RedirectAsync(
-            $"{options.Value.FrontendUrl.TrimEnd('/')}/login?error=github",
+            $"{(returnOrigin ?? options.Value.FrontendUrl).TrimEnd('/')}/login?error=github",
             allowRemoteRedirects: true
         );
 
@@ -228,7 +236,7 @@ public class Endpoint(
             {
                 HttpOnly = true,
                 Secure = !HttpContext.Request.Host.Host.Contains("localhost"),
-                SameSite = SameSiteMode.Lax,
+                SameSite = HttpContext.Request.Host.Host.Contains("localhost") ? SameSiteMode.Lax : SameSiteMode.None,
                 Path = "/",
             }
         );
@@ -238,7 +246,7 @@ public class Endpoint(
             {
                 HttpOnly = true,
                 Secure = !HttpContext.Request.Host.Host.Contains("localhost"),
-                SameSite = SameSiteMode.Lax,
+                SameSite = HttpContext.Request.Host.Host.Contains("localhost") ? SameSiteMode.Lax : SameSiteMode.None,
                 Path = "/",
             }
         );

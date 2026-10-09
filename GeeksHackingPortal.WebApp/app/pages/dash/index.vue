@@ -431,10 +431,11 @@ function eventDateRange(start?: string | null, end?: string | null) {
                     v-if="!status?.isParticipant"
                     size="sm"
                     :disabled="joinMutation.isPending.value"
+                    :aria-busy="joinMutation.isPending.value"
                     @click="joinHackathon({ id: hackathon.id!, shortCode: hackathon.shortCode! })"
                   >
-                    <Icon name="i-lucide-user-plus" />
-                    Join event
+                    <Icon :name="joinMutation.isPending.value ? 'i-lucide-loader-circle' : 'i-lucide-user-plus'" :class="joinMutation.isPending.value && 'animate-spin'" />
+                    {{ joinMutation.isPending.value ? 'Joining…' : 'Join event' }}
                   </Button>
                   <Button
                     v-else-if="!registrationComplete"

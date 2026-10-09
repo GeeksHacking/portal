@@ -30,7 +30,8 @@ export default defineNuxtPlugin(async () => {
   // Preview origins cannot rely on that cookie (third-party blocking), so also
   // attach the bearer minted by /auth/handoff.
   client.interceptors.request.use((request) => {
-    request.credentials ?? = 'include'
+    if (request.credentials == null)
+      request.credentials = 'include'
     applyPreviewSession(request.headers)
     return request
   })
@@ -75,7 +76,8 @@ function applyPreviewSession(headers: Headers) {
 }
 
 function installFetchBridge(api: string) {
-  if ((window.fetch as { __previewSession?: boolean }).__previewSession)
+  const fetchWithSession = window.fetch as typeof window.fetch & { __previewSession?: boolean }
+  if (fetchWithSession.__previewSession)
     return
 
   const nativeFetch = window.fetch.bind(window)

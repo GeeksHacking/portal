@@ -4,7 +4,7 @@ public static class LocalRedirect
 {
     public static bool IsAllowed(string? value)
     {
-        if (string.IsNullOrEmpty(value) || !value.StartsWith('/') || value.StartsWith("//") || value.StartsWith("/\\\\"))
+        if (string.IsNullOrEmpty(value) || !value.StartsWith('/') || value.StartsWith("//") || value.StartsWith("/\\"))
             return false;
 
         // Browsers drop tabs and newlines from URLs, so "/\t/evil.com" would become "//evil.com".

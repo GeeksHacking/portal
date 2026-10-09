@@ -1,3 +1,4 @@
+using GeeksHackingPortal.Api.Endpoints.Auth;
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
@@ -313,25 +314,37 @@ builder
         policy => policy.Requirements.Add(new CreateActivityRequirement())
     );
 
+bool IsAllowedCorsOrigin(string? origin)
+{
+    if (string.IsNullOrEmpty(origin))
+        return false;
+
+    if (builder.Environment.IsDevelopment())
+        return origin is "http://localhost:3000" or "https://localhost:3000";
+
+    if (origin.Equals("https://portal.geekshacking.com", StringComparison.OrdinalIgnoreCase))
+        return true;
+
+    if (LocalRedirect.IsAllowedFrontendOrigin(origin))
+        return true;
+
+    return Uri.TryCreate(origin, UriKind.Absolute, out var uri)
+        && uri.Scheme == Uri.UriSchemeHttps
+        && uri.IsDefaultPort
+        && (
+            uri.Host.Equals("portal.dev-d73.workers.dev", StringComparison.OrdinalIgnoreCase)
+            || (
+                uri.Host.EndsWith("-portal.dev-d73.workers.dev", StringComparison.OrdinalIgnoreCase)
+                && uri.Host.Length > "-portal.dev-d73.workers.dev".Length
+            )
+        );
+}
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy
-            .WithOrigins(
-                builder.Environment.IsDevelopment()
-                    ? ["http://localhost:3000", "https://localhost:3000"]
-                    :
-                    [
-                        "https://portal.geekshacking.com",
-                        "https://portal.dev-d73.workers.dev",
-                        "https://*-portal.dev-d73.workers.dev",
-                        "https://portal.geekshacking.workers.dev",
-                        "https://*-portal.geekshacking.workers.dev"
-                    ]
-            )
-            .SetIsOriginAllowedToAllowWildcardSubdomains();
-
+        policy.SetIsOriginAllowed(IsAllowedCorsOrigin);
         policy.AllowAnyHeader().AllowAnyMethod().AllowCredentials();
     });
 });
@@ -481,6 +494,40 @@ app.Use(async (context, next) =>
 );
 
 app.UseCors();
+
+// The auth cookie is SameSite=None, so cookie-authenticated unsafe requests must come
+// from a trusted origin. OAuth/OIDC endpoints are called by third parties and exempt.
+app.Use(
+    async (context, next) =>
+    {
+        var request = context.Request;
+        var path = request.Path;
+        if (
+            !HttpMethods.IsGet(request.Method)
+            && !HttpMethods.IsHead(request.Method)
+            && !HttpMethods.IsOptions(request.Method)
+            && !HttpMethods.IsTrace(request.Method)
+            && !path.StartsWithSegments("/callback")
+            && !path.StartsWithSegments("/connect")
+        )
+        {
+            var origin = request.Headers.Origin.ToString();
+            var secFetchSite = request.Headers["Sec-Fetch-Site"].ToString();
+            var allowed = !string.IsNullOrEmpty(origin)
+                ? IsAllowedCorsOrigin(origin)
+                    || (Uri.TryCreate(origin, UriKind.Absolute, out var o)
+                        && o.Authority.Equals(request.Host.Value, StringComparison.OrdinalIgnoreCase))
+                : !secFetchSite.Equals("cross-site", StringComparison.OrdinalIgnoreCase);
+            if (!allowed)
+            {
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                return;
+            }
+        }
+
+        await next();
+    }
+);
 
 app.UseAuthentication();
 app.UseAuthorization();

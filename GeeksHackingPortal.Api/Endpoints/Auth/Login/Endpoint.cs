@@ -84,7 +84,7 @@ public class Endpoint(IOptions<AppOptions> options) : EndpointWithoutRequest
         {
             HttpOnly = true,
             Secure = !HttpContext.Request.Host.Host.Contains("localhost"),
-            SameSite = SameSiteMode.Lax,
+            SameSite = HttpContext.Request.Host.Host.Contains("localhost") ? SameSiteMode.Lax : SameSiteMode.None,
             MaxAge = TimeSpan.FromMinutes(10),
             Path = "/",
         };

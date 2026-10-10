@@ -231,9 +231,10 @@ function eventDateRange(start?: string | null, end?: string | null) {
                 :icon="filter.icon"
                 size="md"
                 class="rounded-full"
-                :color="activeEventType === filter.value ? 'primary' : 'neutral'"
-                :variant="activeEventType === filter.value ? 'solid' : 'outline'"
-                @click="activeEventType = filter.value"
+:aria-pressed="activeEventType === filter.value"
+:color="activeEventType === filter.value ? 'primary' : 'neutral'"
+:variant="activeEventType === filter.value ? 'solid' : 'outline'"
+@click="activeEventType = filter.value"
               >
                 {{ filter.label }}
                 <span

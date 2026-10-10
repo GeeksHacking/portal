@@ -6,13 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastEndpoints" Version="8.1.0" />
-    <PackageReference Include="FastEndpoints.Generator" Version="8.1.0">
+    <PackageReference Include="FastEndpoints" Version="8.4.0-beta.21" />
+    <PackageReference Include="FastEndpoints.Generator" Version="8.4.0-beta.21">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="FastEndpoints.Swagger" Version="8.1.0" />
-    <PackageReference Include="FastEndpoints.Security" Version="8.1.0" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="8.4.0-beta.21" />
+    <PackageReference Include="FastEndpoints.Security" Version="8.4.0-beta.21" />
+    <PackageReference Include="FastEndpoints.Mcp" Version="1.0.0-beta.5" />
+    <PackageReference Include="FastEndpoints.A2A" Version="1.0.0-beta.5" />
     <PackageReference Include="Google.Cloud.Diagnostics.AspNetCore3" Version="5.3.0" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="4.14.0" />
     <PackageReference Include="Jint" Version="4.9.3" />

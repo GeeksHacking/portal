@@ -59,6 +59,9 @@ public class Endpoint(IOptions<AppOptions> options, PreviewSessionTickets ticket
 
         var properties = new AuthenticationProperties { RedirectUri = redirectUri ?? "/" };
 
+        if (returnOrigin is not null)
+            properties.Items[LocalRedirect.ReturnOriginProperty] = returnOrigin;
+
         if (redirectUri is not null)
         {
             properties.Items["redirect_uri"] = redirectUri;

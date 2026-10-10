@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authentication;
@@ -12,10 +13,11 @@ namespace GeeksHackingPortal.Api.Endpoints.Auth;
 /// drop the <c>.geekshacking.com</c> session cookie on credentialed fetches, so a
 /// successful login redirect still looks anonymous. The login navigation mints a
 /// short-lived handoff; the preview exchanges it for a bearer the API accepts.
+/// The handoff is a data-protected ticket. Single-use is tracked in memory so login
+/// does not depend on a database table.
 /// </summary>
 public sealed class PreviewSessionTickets(
     IDataProtectionProvider dataProtection,
-    IPreviewSessionHandoffStore handoffStore,
     TimeProvider timeProvider
 )
 {
@@ -27,50 +29,62 @@ public sealed class PreviewSessionTickets(
         dataProtection.CreateProtector("GeeksHackingPortal.PreviewSession.v1")
     );
 
-    public async Task<string?> CreateHandoffAsync(
+    // Nonce hash → expiry unix milliseconds. The ticket itself is the credential, so a
+    // restart only allows a second redeem until the two-minute handoff expires.
+    private readonly ConcurrentDictionary<string, long> _consumedNonces = new();
+
+    public Task<string?> CreateHandoffAsync(
         ClaimsPrincipal principal,
         string? origin,
         CancellationToken cancellationToken = default
     )
     {
+        cancellationToken.ThrowIfCancellationRequested();
         if (!LocalRedirect.IsAllowedFrontendOrigin(origin))
-            return null;
+            return Task.FromResult<string?>(null);
 
         var nonce = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
         var expiresAt = timeProvider.GetUtcNow().AddMinutes(2);
-        var token = Protect(principal, origin!, HandoffPurpose, expiresAt, nonce);
-        await handoffStore.RegisterAsync(HashNonce(nonce), origin!, expiresAt, cancellationToken);
-        return token;
+        return Task.FromResult<string?>(Protect(principal, origin!, HandoffPurpose, expiresAt, nonce));
     }
 
-    public async Task<string?> RedeemAsync(
+    public Task<string?> RedeemAsync(
         string? code,
         string? origin,
         CancellationToken cancellationToken = default
     )
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var ticket = Unprotect(code, origin, HandoffPurpose);
         if (ticket is null)
-            return null;
+            return Task.FromResult<string?>(null);
 
         if (
             !ticket.Properties.Items.TryGetValue("nonce", out var nonce)
             || string.IsNullOrWhiteSpace(nonce)
-            || !await handoffStore.TryConsumeAsync(
-                HashNonce(nonce),
-                origin!,
-                timeProvider.GetUtcNow(),
-                cancellationToken
-            )
+            || ticket.Properties.ExpiresUtc is not { } expiresAt
+            || !TryConsumeNonce(nonce, expiresAt)
         )
-            return null;
+            return Task.FromResult<string?>(null);
 
-        return Protect(
-            ticket.Principal,
-            origin!,
-            SessionPurpose,
-            timeProvider.GetUtcNow().AddDays(7)
+        return Task.FromResult<string?>(
+            Protect(ticket.Principal, origin!, SessionPurpose, timeProvider.GetUtcNow().AddDays(7))
         );
+    }
+
+    private bool TryConsumeNonce(string nonce, DateTimeOffset expiresAt)
+    {
+        var now = timeProvider.GetUtcNow().ToUnixTimeMilliseconds();
+        if (_consumedNonces.Count > 64)
+        {
+            foreach (var entry in _consumedNonces)
+            {
+                if (entry.Value <= now)
+                    _consumedNonces.TryRemove(entry);
+            }
+        }
+
+        return _consumedNonces.TryAdd(HashNonce(nonce), expiresAt.ToUnixTimeMilliseconds());
     }
 
     public ClaimsPrincipal? ReadSession(string? token, string? origin)

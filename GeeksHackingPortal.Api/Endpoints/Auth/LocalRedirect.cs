@@ -30,6 +30,10 @@ public static class LocalRedirect
 
     public const string ReturnOriginCookie = "auth_return_origin";
 
+    // Carried in the OpenIddict state token so the GitHub callback still knows the
+    // preview origin when Brave drops the return-origin cookie on the bounce.
+    public const string ReturnOriginProperty = "return_origin";
+
     // Preview deployments (https://<id>-portal.geekshacking.workers.dev) use the production API.
     public static bool IsAllowedFrontendOrigin(string? origin) =>
         Uri.TryCreate(origin, UriKind.Absolute, out var uri)

@@ -1,24 +1,12 @@
 import { client, setConfig } from '@geekshacking/portal-sdk/client'
-
-const previewSessionKey = 'gh-preview-session'
-
-export function readPreviewSession(): string | null {
-  if (!import.meta.client)
-    return null
-  try {
-    return sessionStorage.getItem(previewSessionKey)
-  }
-  catch {
-    return null
-  }
-}
+import { readPreviewSession, storePreviewSession, trackPreviewSession } from '~/utils/preview-session'
 
 export default defineNuxtPlugin(async () => {
   const runtimeConfig = useRuntimeConfig()
   const api = runtimeConfig.public.api
 
-  if (import.meta.client)
-    await consumeLoginHandoff(api)
+  const handoff = import.meta.client ? consumeLoginHandoff(api) : Promise.resolve()
+  await trackPreviewSession(handoff)
 
   setConfig({
     baseURL: api,
@@ -48,9 +36,6 @@ async function consumeLoginHandoff(api: string) {
   if (!code)
     return
 
-  url.searchParams.delete('login_handoff')
-  window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`)
-
   try {
     const response = await fetch(`${api}/auth/handoff`, {
       method: 'POST',
@@ -63,8 +48,12 @@ async function consumeLoginHandoff(api: string) {
     if (!response.ok)
       return
     const body = await response.json() as { token?: string }
-    if (body.token)
-      sessionStorage.setItem(previewSessionKey, body.token)
+    if (!body.token)
+      return
+
+    storePreviewSession(body.token)
+    url.searchParams.delete('login_handoff')
+    window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`)
   }
   catch {
     // whoami will fail and the login page will show the session error

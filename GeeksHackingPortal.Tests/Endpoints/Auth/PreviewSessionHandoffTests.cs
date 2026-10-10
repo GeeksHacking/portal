@@ -85,7 +85,6 @@ public class PreviewSessionHandoffTests
         var clock = new TestTimeProvider(DateTimeOffset.UtcNow);
         var tickets = new PreviewSessionTickets(
             services.GetRequiredService<IDataProtectionProvider>(),
-            new InMemoryHandoffStore(),
             clock
         );
         var principal = new ClaimsPrincipal(
@@ -144,44 +143,6 @@ public class PreviewSessionHandoffTests
     private sealed class HandoffResponse
     {
         public string Token { get; init; } = "";
-    }
-
-    private sealed class InMemoryHandoffStore : IPreviewSessionHandoffStore
-    {
-        private readonly Dictionary<string, (string Origin, DateTimeOffset ExpiresAt)> _handoffs = [];
-
-        public Task RegisterAsync(
-            string nonceHash,
-            string origin,
-            DateTimeOffset expiresAt,
-            CancellationToken cancellationToken
-        )
-        {
-            lock (_handoffs)
-                _handoffs.Add(nonceHash, (origin, expiresAt));
-            return Task.CompletedTask;
-        }
-
-        public Task<bool> TryConsumeAsync(
-            string nonceHash,
-            string origin,
-            DateTimeOffset now,
-            CancellationToken cancellationToken
-        )
-        {
-            lock (_handoffs)
-            {
-                if (
-                    !_handoffs.TryGetValue(nonceHash, out var handoff)
-                    || handoff.Origin != origin
-                    || handoff.ExpiresAt <= now
-                )
-                    return Task.FromResult(false);
-
-                _handoffs.Remove(nonceHash);
-                return Task.FromResult(true);
-            }
-        }
     }
 
     private sealed class TestTimeProvider(DateTimeOffset now) : TimeProvider

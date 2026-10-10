@@ -46,7 +46,7 @@ public class Endpoint(
                 openIddictResponse.ErrorDescription
             );
 
-            var failedReturnOrigin = ReadReturnOrigin();
+            var failedReturnOrigin = ReadReturnOrigin(properties: null);
             DeleteRedirectCookie();
             await RedirectToFrontendLoginAsync(failedReturnOrigin);
             return;
@@ -69,7 +69,7 @@ public class Endpoint(
 
             // Never send a failed callback back to /auth/login. That endpoint always
             // challenges GitHub, and GitHub immediately returns here — a redirect loop.
-            var failedReturnOrigin = ReadReturnOrigin();
+            var failedReturnOrigin = ReadReturnOrigin(result.Properties);
             DeleteRedirectCookie();
             await RedirectToFrontendLoginAsync(failedReturnOrigin);
             return;
@@ -210,7 +210,7 @@ public class Endpoint(
             redirectPath = cookieRedirectUri;
         }
 
-        var returnOrigin = ReadReturnOrigin();
+        var returnOrigin = ReadReturnOrigin(result.Properties);
         DeleteRedirectCookie();
 
         var destination = LocalRedirect.Destination(redirectPath, options.Value.FrontendUrl, returnOrigin);
@@ -235,11 +235,19 @@ public class Endpoint(
         await Send.RedirectAsync(destination, allowRemoteRedirects: !destination.StartsWith('/'));
     }
 
-    private string? ReadReturnOrigin() =>
-        HttpContext.Request.Cookies.TryGetValue(LocalRedirect.ReturnOriginCookie, out var origin)
-        && LocalRedirect.IsAllowedFrontendOrigin(origin)
-            ? origin
-            : null;
+    private string? ReadReturnOrigin(AuthenticationProperties? properties)
+    {
+        if (
+            properties?.Items.TryGetValue(LocalRedirect.ReturnOriginProperty, out var fromState) == true
+            && LocalRedirect.IsAllowedFrontendOrigin(fromState)
+        )
+            return fromState;
+
+        return HttpContext.Request.Cookies.TryGetValue(LocalRedirect.ReturnOriginCookie, out var origin)
+            && LocalRedirect.IsAllowedFrontendOrigin(origin)
+                ? origin
+                : null;
+    }
 
     private Task RedirectToFrontendLoginAsync(string? returnOrigin) =>
         Send.RedirectAsync(

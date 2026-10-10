@@ -389,7 +389,6 @@ LogStartupPhase("fastendpoints-and-openapi-registered", startupStopwatch, ref st
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<PreviewSessionTickets>();
 builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
-builder.Services.AddSingleton<IPreviewSessionHandoffStore, SqlSugarPreviewSessionHandoffStore>();
 
 builder.Services.AddScoped<MembershipService>();
 builder.Services.AddScoped<OAuthDirectoryService>();

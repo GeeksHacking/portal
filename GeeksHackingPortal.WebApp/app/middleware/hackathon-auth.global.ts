@@ -1,5 +1,9 @@
-import { geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryOptions } from '@geekshacking/portal-sdk/hooks'
+import {
+  geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryKey,
+  geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryOptions,
+} from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
+import { whenPreviewSessionReady } from '~/utils/preview-session'
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const config = useRuntimeConfig()
@@ -9,6 +13,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
   // stop here — sending the user to /auth/login would challenge GitHub and return forever.
   if (to.query.login_return === '1') {
     try {
+      // Brave drops the cross-site session cookie. Wait until the one-time
+      // login_handoff has been exchanged for the bearer whoami will send.
+      await whenPreviewSessionReady()
+      queryClient.removeQueries({
+        queryKey: geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryKey(),
+      })
       await queryClient.fetchQuery(geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryOptions())
       const query = { ...to.query }
       delete query.login_return

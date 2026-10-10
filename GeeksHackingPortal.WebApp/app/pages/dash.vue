@@ -118,15 +118,23 @@ const links = computed<NavigationMenuItem[][]>(() => {
         class="bg-elevated/25"
         :ui="{ footer: 'border-t border-default' }"
       >
-        <template #header>
-          GeeksHacking Portal
+        <template #header="{ collapsed }">
+          <UIcon
+            v-if="collapsed"
+            name="i-lucide-code-xml"
+            class="mx-auto size-5 text-primary"
+          />
+          <span
+            v-else
+            class="truncate font-semibold"
+          >GeeksHacking Portal</span>
         </template>
         <template #default="{ collapsed }">
           <UNavigationMenu
             v-for="(group, index) in links"
             :key="index"
             :collapsed="collapsed"
-            :items="group"
+            :items="collapsed ? group.filter(item => item.type !== 'label') : group"
             orientation="vertical"
             tooltip
             popover
@@ -146,7 +154,7 @@ const links = computed<NavigationMenuItem[][]>(() => {
             variant="ghost"
             block
             :square="collapsed"
-            class="justify-start"
+            class="justify-start overflow-hidden"
             :avatar="{ src: user?.gitHubLogin ? `https://github.com/${user.gitHubLogin}.png` : undefined, alt: user?.gitHubLogin ?? 'Profile' }"
             :label="collapsed ? undefined : (user?.gitHubLogin ?? 'Profile')"
             @click="open = false"

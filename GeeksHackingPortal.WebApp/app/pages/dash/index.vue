@@ -222,7 +222,7 @@ function eventDateRange(start?: string | null, end?: string | null) {
               icon="i-lucide-search"
               placeholder="Search events, venues, or short codes"
               size="xl"
-              class="w-full lg:max-w-md"
+class="w-full lg:flex-1"
             />
             <div class="flex flex-wrap gap-2 lg:ml-auto">
               <UButton

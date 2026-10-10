@@ -309,7 +309,7 @@ class="w-full lg:flex-1"
             <UCard
               v-for="{ hackathon, index, status, registrationComplete } in visibleHackathonCards"
               :key="hackathon.id ?? index"
-              class="overflow-hidden bg-elevated/40 shadow-none ring-1 ring-default transition hover:-translate-y-0.5 hover:bg-elevated/70 hover:ring-primary/40"
+class="overflow-hidden bg-elevated/40 shadow-none ring-1 ring-default motion-safe:transition motion-safe:hover:-translate-y-0.5 hover:bg-elevated/70 hover:ring-primary/40"
             >
               <template #header>
                 <div class="flex items-start justify-between gap-3">

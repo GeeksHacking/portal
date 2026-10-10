@@ -562,9 +562,14 @@ app.MapMethods(
                                 + httpContext.Request.Path
                                 + httpContext.Request.QueryString;
 
-                return Results.Redirect(
-                    $"/auth/login?redirect_uri={Uri.EscapeDataString(returnUrl)}"
+                var loginUrl = $"/auth/login?redirect_uri={Uri.EscapeDataString(returnUrl)}";
+                var returnOrigin = LocalRedirect.OriginFromReferer(
+                    httpContext.Request.Headers.Referer.ToString()
                 );
+                if (returnOrigin is not null)
+                    loginUrl += $"&{LocalRedirect.ReturnOriginQuery}={Uri.EscapeDataString(returnOrigin)}";
+
+                return Results.Redirect(loginUrl);
             }
 
             var user = await sql.Queryable<User>().Where(u => u.Id == parsedUserId).FirstAsync();

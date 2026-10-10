@@ -3,6 +3,7 @@ import {
   geeksHackingPortalApiEndpointsAuthWhoAmIEndpointQueryOptions,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
+import { githubLoginUrl } from '~/utils/login-url'
 import { whenPreviewSessionReady } from '~/utils/preview-session'
 
 export default defineNuxtRouteMiddleware(async (to) => {
@@ -69,7 +70,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     }
 
     // User is not authenticated, redirect to login with return URL
-    const loginUrl = `${config.public.api}/auth/login?redirect_uri=${encodeURIComponent(to.fullPath)}`
+    const loginUrl = githubLoginUrl(config.public.api, to.fullPath)
     return navigateTo(loginUrl, { external: true })
   }
 })

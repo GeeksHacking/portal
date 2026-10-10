@@ -29,6 +29,7 @@ public static class LocalRedirect
     }
 
     public const string ReturnOriginCookie = "auth_return_origin";
+    public const string ReturnOriginQuery = "return_origin";
 
     // Carried in the OpenIddict state token so the GitHub callback still knows the
     // preview origin when Brave drops the return-origin cookie on the bounce.
@@ -52,6 +53,16 @@ public static class LocalRedirect
         Uri.TryCreate(referer, UriKind.Absolute, out var uri)
         && IsAllowedFrontendOrigin(uri.GetLeftPart(UriPartial.Authority))
             ? uri.GetLeftPart(UriPartial.Authority)
+            : null;
+
+    // Login links are cross-site and Nuxt marks them noreferrer, so Referer is often missing.
+    // An explicit allowlisted origin wins; anything else is ignored so this cannot open-redirect.
+    public static string? ResolveReturnOrigin(string? explicitOrigin, string? referer) =>
+        NormalizeAllowedOrigin(explicitOrigin) ?? OriginFromReferer(referer);
+
+    public static string? NormalizeAllowedOrigin(string? origin) =>
+        IsAllowedFrontendOrigin(origin)
+            ? new Uri(origin!, UriKind.Absolute).GetLeftPart(UriPartial.Authority)
             : null;
 
     public static string Destination(string? redirectPath, string frontendUrl, string? returnOrigin = null)

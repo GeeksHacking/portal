@@ -99,6 +99,62 @@ public class PreviewSessionHandoffTests
     }
 
     [Test]
+    public async Task Login_WhenSignedIn_WithExplicitWorkersOrigin_ReturnsThere()
+    {
+        const string origin = "https://portal.geekshacking.workers.dev";
+        using var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"/auth/login?redirect_uri=%2Fdash&return_origin={Uri.EscapeDataString(origin)}"
+        );
+        using var response = await AuthenticatedClient.HttpClient.SendAsync(request);
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Redirect);
+        var location = response.Headers.Location;
+        await Assert.That(location).IsNotNull();
+        await Assert.That(location!.GetLeftPart(UriPartial.Authority)).IsEqualTo(origin);
+        await Assert.That(location.AbsolutePath).IsEqualTo("/dash");
+    }
+
+    [Test]
+    public async Task Login_WhenSignedIn_WithDisallowedReturnOrigin_UsesFrontendUrl()
+    {
+        using var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"/auth/login?redirect_uri=%2Fdash&return_origin={Uri.EscapeDataString("https://evil.example")}"
+        );
+        using var response = await AuthenticatedClient.HttpClient.SendAsync(request);
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Redirect);
+        var location = response.Headers.Location;
+        await Assert.That(location).IsNotNull();
+        await Assert.That(location!.GetLeftPart(UriPartial.Authority)).IsEqualTo("http://localhost:3000");
+    }
+
+    [Test]
+    public async Task ResolveReturnOrigin_PrefersAllowlistedQueryAndIgnoresOthers()
+    {
+        await Assert.That(LocalRedirect.ResolveReturnOrigin(
+            "https://portal.geekshacking.workers.dev",
+            "https://other-portal.geekshacking.workers.dev/login"
+        )).IsEqualTo("https://portal.geekshacking.workers.dev");
+
+        await Assert.That(LocalRedirect.ResolveReturnOrigin(
+            "https://portal.geekshacking.workers.dev.evil.com",
+            null
+        )).IsNull();
+
+        await Assert.That(LocalRedirect.ResolveReturnOrigin(
+            "https://evil.example",
+            "https://82b24e93-portal.geekshacking.workers.dev/dash"
+        )).IsEqualTo("https://82b24e93-portal.geekshacking.workers.dev");
+
+        await Assert.That(LocalRedirect.ResolveReturnOrigin(
+            "https://portal.geekshacking.workers.dev/dash",
+            null
+        )).IsNull();
+    }
+
+    [Test]
     public async Task AppendHandoff_PlacesQueryBeforeFragment()
     {
         var destination = LocalRedirect.AppendHandoff(

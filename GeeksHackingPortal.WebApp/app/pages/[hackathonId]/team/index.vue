@@ -4,6 +4,7 @@ import {
   useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
+import { githubLoginUrl } from '~/utils/login-url'
 
 const route = useRoute()
 const config = useRuntimeConfig()
@@ -22,7 +23,7 @@ watch(
     if (authIsLoading)
       return
     if (!userData) {
-      navigateTo(`${config.public.api}/auth/login?redirect_uri=${encodeURIComponent(route.fullPath)}`, { external: true })
+      navigateTo(githubLoginUrl(config.public.api, route.fullPath), { external: true })
       return
     }
     if (statusIsLoading || !hackathonData)

@@ -3,6 +3,7 @@ import {
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
+import { githubLoginUrl } from '~/utils/login-url'
 
 definePageMeta({
   // Explicitly mark as public route
@@ -26,6 +27,10 @@ const { data: user, isLoading, isSuccess } = useGeeksHackingPortalApiEndpointsAu
     gcTime: 0,
   },
 })
+
+const loginUrl = computed(() =>
+  githubLoginUrl(config.public.api, route.fullPath.replace('/registration', '/registration/form')),
+)
 
 // Only redirect to form if query succeeded and we have user data
 watchEffect(() => {
@@ -67,8 +72,9 @@ watchEffect(() => {
         >
         <div class="flex justify-center mt-8 w-full">
           <UButton
-            :to="`${config.public.api}/auth/login?redirect_uri=${encodeURIComponent(route.fullPath.replace('/registration', '/registration/form'))}`"
+            :to="loginUrl"
             external
+            rel="noopener"
             variant="outline"
             color="neutral"
             size="xl"

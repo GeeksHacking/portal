@@ -14,6 +14,7 @@ import {
   geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointQueryKey,
 } from '@geekshacking/portal-sdk/hooks'
 import { HACKATHON_TIME_ZONE, HACKATHON_TIME_ZONE_LABEL, isSameHackathonDay } from '~/utils/hackathon-date-time'
+import { githubLoginUrl } from '~/utils/login-url'
 
 definePageMeta({
   auth: false,
@@ -26,9 +27,7 @@ const config = useRuntimeConfig()
 
 const slug = computed(() => (route.params.slug as string | undefined) ?? '')
 const registrationPath = computed(() => `/workshops/${slug.value}`)
-const loginUrl = computed(() =>
-  `${config.public.api}/auth/login?redirect_uri=${encodeURIComponent(route.fullPath)}`,
-)
+const loginUrl = computed(() => githubLoginUrl(config.public.api, route.fullPath))
 
 function goToWorkshopDetails() {
   navigateTo(registrationPath.value)

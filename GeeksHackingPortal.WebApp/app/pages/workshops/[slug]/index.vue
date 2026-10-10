@@ -16,6 +16,7 @@ import { useQueryClient } from '@tanstack/vue-query'
 import QRCode from 'qrcode'
 import { useProfileName } from '~/composables/useProfileName'
 import { HACKATHON_TIME_ZONE, HACKATHON_TIME_ZONE_LABEL, isSameHackathonDay } from '~/utils/hackathon-date-time'
+import { githubLoginUrl } from '~/utils/login-url'
 
 definePageMeta({
   auth: false,
@@ -188,9 +189,7 @@ async function startRegistration() {
   }
 }
 
-const loginUrl = computed(() =>
-  `${config.public.api}/auth/login?redirect_uri=${encodeURIComponent(route.fullPath)}`,
-)
+const loginUrl = computed(() => githubLoginUrl(config.public.api, route.fullPath))
 
 const isParticipantIdOpen = ref(false)
 const participantQrCodeDataUrl = ref('')
@@ -435,6 +434,7 @@ const totalQuestionsCount = computed(() => {
             v-else-if="authResolved || authErrored"
             :to="loginUrl"
             external
+            rel="noopener"
             size="sm"
             variant="outline"
             color="neutral"
@@ -803,6 +803,7 @@ const totalQuestionsCount = computed(() => {
                     <UButton
                       :to="loginUrl"
                       external
+                      rel="noopener"
                       block
                       size="lg"
                       icon="i-lucide-github"

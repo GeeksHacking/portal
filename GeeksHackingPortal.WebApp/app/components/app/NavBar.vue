@@ -5,6 +5,7 @@ import {
   useGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import QRCode from 'qrcode'
+import { githubLoginUrl } from '~/utils/login-url'
 
 const items = [
   { label: 'home', target: 'home' },
@@ -23,7 +24,7 @@ function scrollTo(targetId: string) {
   expanded.value = false
 }
 const config = useRuntimeConfig()
-const loginUrl = `${config.public.api}/auth/login`
+const loginUrl = githubLoginUrl(config.public.api)
 
 const { data: user, isLoading } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
 
@@ -79,7 +80,7 @@ function closeQrModal() {
           </button>
           <span>{{ user.gitHubLogin }}</span>
         </template>
-        <NuxtLink v-else :to="loginUrl" external>
+        <NuxtLink v-else :to="loginUrl" external rel="noopener">
           log in
         </NuxtLink>
       </div>
@@ -112,7 +113,7 @@ function closeQrModal() {
           <span>{{ user.gitHubLogin }}</span>
         </div>
       </template>
-      <NuxtLink v-else :to="loginUrl" external>
+      <NuxtLink v-else :to="loginUrl" external rel="noopener">
         log in
       </NuxtLink>
     </div>

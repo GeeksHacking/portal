@@ -3,6 +3,7 @@ import {
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
+import { githubLoginUrl } from '~/utils/login-url'
 
 definePageMeta({
   // Explicitly mark as public route
@@ -49,7 +50,7 @@ watchEffect(() => {
       showPage.value = true
     }
     else if (resolvedHackathonId.value) {
-      navigateTo(`${config.public.api}/auth/login?redirect_uri=${encodeURIComponent(route.fullPath)}`, { external: true })
+      navigateTo(githubLoginUrl(config.public.api, route.fullPath), { external: true })
     }
   }
 })

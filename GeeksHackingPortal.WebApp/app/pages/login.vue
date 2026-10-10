@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint } from '@geekshacking/portal-sdk/hooks'
+import { githubLoginUrl } from '~/utils/login-url'
 
 definePageMeta({
   // Explicitly mark as public route
@@ -31,9 +32,7 @@ watch(user, (userData) => {
   }
 })
 
-const loginUrl = computed(() => {
-  return `${config.public.api}/auth/login?redirect_uri=/dash`
-})
+const loginUrl = computed(() => githubLoginUrl(config.public.api, '/dash'))
 
 const isAuthenticated = computed(() => !!user.value && !isError.value)
 </script>
@@ -61,6 +60,7 @@ const isAuthenticated = computed(() => !!user.value && !isError.value)
         <UButton
           :to="loginUrl"
           external
+          rel="noopener"
           size="lg"
           icon="i-simple-icons-github"
           color="neutral"

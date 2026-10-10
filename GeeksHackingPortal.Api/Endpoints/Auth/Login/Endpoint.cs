@@ -24,7 +24,10 @@ public class Endpoint(IOptions<AppOptions> options, PreviewSessionTickets ticket
         if (!LocalRedirect.IsAllowed(redirectUri))
             redirectUri = null;
 
-        var returnOrigin = LocalRedirect.OriginFromReferer(HttpContext.Request.Headers.Referer.ToString());
+        var returnOrigin = LocalRedirect.ResolveReturnOrigin(
+            Query<string>(LocalRedirect.ReturnOriginQuery, isRequired: false),
+            HttpContext.Request.Headers.Referer.ToString()
+        );
 
         // Already signed in: resume the return URL instead of challenging GitHub again.
         // Re-challenging here is what turns a failed or repeated callback into a loop.

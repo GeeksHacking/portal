@@ -29,123 +29,81 @@ const hackathonId = computed(() => route.params.hackathonId as string | undefine
 const standaloneWorkshopId = computed(() => route.params.standaloneWorkshopId as string | undefined)
 
 const links = computed<NavigationMenuItem[][]>(() => {
-  const defaultLinks: NavigationMenuItem[] = [
-    {
-      label: 'Explore Events',
-      icon: 'i-lucide-house',
-      exact: true,
-      to: '/dash',
-      onSelect: () => {
-        open.value = false
-      },
-    },
-    {
-      label: 'Profile',
-      icon: 'i-lucide-user',
-      to: '/dash/profile',
-      onSelect: () => {
-        open.value = false
-      },
-    },
+  const close = () => {
+    open.value = false
+  }
+  const withClose = (items: NavigationMenuItem[]) => items.map(link => ({ ...link, onSelect: close }))
+
+  const groups: NavigationMenuItem[][] = [
+    withClose([
+      { label: 'Explore', icon: 'i-lucide-compass', exact: true, to: '/dash' },
+    ]),
   ]
-
-  if (user.value?.id && isOrganizer.value) {
-    defaultLinks.push({
-      label: 'Organizer Workspace',
-      icon: 'i-lucide-settings-2',
-      to: '/dash/manage',
-      onSelect: () => {
-        open.value = false
-      },
-    })
-  }
-
-  if (user.value?.isRoot) {
-    defaultLinks.push({
-      label: 'Admin',
-      icon: 'i-lucide-shield-check',
-      defaultOpen: true,
-      children: [
-        {
-          label: 'OAuth Apps',
-          icon: 'i-lucide-key-round',
-          to: '/dash/oauth-applications',
-          onSelect: () => {
-            open.value = false
-          },
-        },
-        {
-          label: 'All OAuth Apps',
-          icon: 'i-lucide-app-window',
-          to: '/dash/admin/oauth-applications',
-          onSelect: () => {
-            open.value = false
-          },
-        },
-      ],
-    })
-  }
 
   const isParticipantView = (route.path.includes('/participant/') || route.path.endsWith('/participant')) || route.path.includes('/registration')
 
-  if (standaloneWorkshopId.value) {
-    const standaloneLinks: NavigationMenuItem[] = [
-      { label: 'Check Ins', icon: 'i-lucide-qr-code', to: `/dash/standalone/${standaloneWorkshopId.value}/checkin` },
-      { label: 'Resources', icon: 'i-lucide-gift', to: `/dash/standalone/${standaloneWorkshopId.value}/resources` },
-      { label: 'Stats', icon: 'i-lucide-chart-pie', to: `/dash/standalone/${standaloneWorkshopId.value}/stats` },
-      { label: 'Participants', icon: 'i-lucide-users', to: `/dash/standalone/${standaloneWorkshopId.value}/participants` },
-      { label: 'Organizers', icon: 'i-lucide-user-cog', to: `/dash/standalone/${standaloneWorkshopId.value}/organizers` },
-      { label: 'Data Export', icon: 'i-lucide-file-down', to: `/dash/standalone/${standaloneWorkshopId.value}/infopack` },
-      { label: 'Questions', icon: 'i-lucide-circle-help', to: `/dash/standalone/${standaloneWorkshopId.value}/questions` },
-      { label: 'Settings', icon: 'i-lucide-settings-2', to: `/dash/standalone/${standaloneWorkshopId.value}/settings` },
+  if (user.value?.id && isOrganizer.value) {
+    const organizerGroup: NavigationMenuItem[] = [
+      { label: 'Organizer', type: 'label' },
+      ...withClose([{ label: 'Workspace', icon: 'i-lucide-layout-dashboard', exact: true, to: '/dash/manage' }]),
     ]
 
-    return [
-      defaultLinks,
-      standaloneLinks.map(link => ({
-        ...link,
-        onSelect: () => {
-          open.value = false
+    if (standaloneWorkshopId.value) {
+      const base = `/dash/standalone/${standaloneWorkshopId.value}`
+      organizerGroup.push(...withClose([
+        { label: 'Check Ins', icon: 'i-lucide-qr-code', to: `${base}/checkin` },
+        { label: 'Resources', icon: 'i-lucide-gift', to: `${base}/resources` },
+        { label: 'Stats', icon: 'i-lucide-chart-pie', to: `${base}/stats` },
+        { label: 'Participants', icon: 'i-lucide-users', to: `${base}/participants` },
+        { label: 'Organizers', icon: 'i-lucide-user-cog', to: `${base}/organizers` },
+        { label: 'Data Export', icon: 'i-lucide-file-down', to: `${base}/infopack` },
+        { label: 'Questions', icon: 'i-lucide-circle-help', to: `${base}/questions` },
+        { label: 'Settings', icon: 'i-lucide-settings-2', to: `${base}/settings` },
+      ]))
+    }
+    else if (hackathonId.value && !isParticipantView) {
+      const base = `/dash/${hackathonId.value}`
+      organizerGroup.push(
+        ...withClose([
+          { label: 'Check Ins', icon: 'i-lucide-qr-code', to: `${base}/checkin` },
+          { label: 'Resources', icon: 'i-lucide-gift', to: `${base}/resources` },
+          { label: 'Stats', icon: 'i-lucide-chart-pie', to: `${base}/stats` },
+          { label: 'Participants', icon: 'i-lucide-users', to: `${base}/participants` },
+          { label: 'Teams', icon: 'i-lucide-user-round-plus', to: `${base}/teams` },
+        ]),
+        {
+          label: 'Challenges',
+          icon: 'i-lucide-trophy',
+          children: withClose([
+            { label: 'Challenges', to: `${base}/challenges` },
+            { label: 'Analytics', to: `${base}/challenge-dashboard` },
+          ]),
         },
-      })),
-    ]
+        ...withClose([
+          { label: 'Submissions', icon: 'i-lucide-file-text', to: `${base}/submissions` },
+          { label: 'Judges', icon: 'i-lucide-scale', to: `${base}/judges` },
+          { label: 'Organizers', icon: 'i-lucide-user-cog', to: `${base}/organizers` },
+          { label: 'Questions', icon: 'i-lucide-circle-help', to: `${base}/questions` },
+          { label: 'Settings', icon: 'i-lucide-settings-2', to: `${base}/settings` },
+          { label: 'Data Export', icon: 'i-lucide-file-down', to: `${base}/infopack` },
+        ]),
+      )
+    }
+
+    groups.push(organizerGroup)
   }
 
-  if (!hackathonId.value || isParticipantView) {
-    return [defaultLinks, []]
+  if (user.value?.isRoot) {
+    groups.push([
+      { label: 'Admin', type: 'label' },
+      ...withClose([
+        { label: 'My OAuth Apps', icon: 'i-lucide-key-round', to: '/dash/oauth-applications' },
+        { label: 'All OAuth Apps', icon: 'i-lucide-app-window', to: '/dash/admin/oauth-applications' },
+      ]),
+    ])
   }
 
-  const organizerLinks: NavigationMenuItem[] = [
-    { label: 'Check Ins', icon: 'i-lucide-qr-code', to: `/dash/${hackathonId.value}/checkin` },
-    { label: 'Resources', icon: 'i-lucide-gift', to: `/dash/${hackathonId.value}/resources` },
-    { label: 'Stats', icon: 'i-lucide-chart-pie', to: `/dash/${hackathonId.value}/stats` },
-    { label: 'Participants', icon: 'i-lucide-users', to: `/dash/${hackathonId.value}/participants` },
-    { label: 'Teams', icon: 'i-lucide-user-round-plus', to: `/dash/${hackathonId.value}/teams` },
-    {
-      label: 'Challenges',
-      icon: 'i-lucide-trophy',
-      children: [
-        { label: 'Challenges', to: `/dash/${hackathonId.value}/challenges` },
-        { label: 'Analytics', to: `/dash/${hackathonId.value}/challenge-dashboard` },
-      ],
-    },
-    { label: 'Submissions', icon: 'i-lucide-file-text', to: `/dash/${hackathonId.value}/submissions` },
-    { label: 'Judges', icon: 'i-lucide-scale', to: `/dash/${hackathonId.value}/judges` },
-    { label: 'Organizers', icon: 'i-lucide-user-cog', to: `/dash/${hackathonId.value}/organizers` },
-    { label: 'Questions', icon: 'i-lucide-circle-help', to: `/dash/${hackathonId.value}/questions` },
-    { label: 'Settings', icon: 'i-lucide-settings-2', to: `/dash/${hackathonId.value}/settings` },
-    { label: 'Data Export', icon: 'i-lucide-file-down', to: `/dash/${hackathonId.value}/infopack` },
-  ]
-
-  return [
-    defaultLinks,
-    organizerLinks.map(link => ({
-      ...link,
-      onSelect: () => {
-        open.value = false
-      },
-    })),
-  ]
+  return groups
 })
 </script>
 
@@ -158,41 +116,49 @@ const links = computed<NavigationMenuItem[][]>(() => {
         collapsible
         resizable
         class="bg-elevated/25"
-        :ui="{ footer: 'lg:border-t lg:border-default' }"
+        :ui="{ footer: 'border-t border-default' }"
       >
-        <template #header>
-          GeeksHacking Portal
+        <template #header="{ collapsed }">
+          <UIcon
+            v-if="collapsed"
+            name="i-lucide-code-xml"
+            class="mx-auto size-5 text-primary"
+          />
+          <span
+            v-else
+            class="truncate font-semibold"
+          >GeeksHacking Portal</span>
         </template>
         <template #default="{ collapsed }">
           <UNavigationMenu
+            v-for="(group, index) in links"
+            :key="index"
             :collapsed="collapsed"
-            :items="links[0]"
+            :items="collapsed ? group.filter(item => item.type !== 'label') : group"
             orientation="vertical"
             tooltip
             popover
-          />
-
-          <UNavigationMenu
-            :collapsed="collapsed"
-            :items="links[1]"
-            orientation="vertical"
-            tooltip
-            class="mt-3"
+            :class="index > 0 ? 'mt-4' : ''"
           />
         </template>
 
-        <template #footer>
-          <div class="p-4 text-sm text-center">
-            Logged in as
-            <span v-if="userIsLoading">Loading...</span>
-            <NuxtLink
-              v-else
-              to="/dash/profile"
-              class="font-medium hover:underline"
-            >
-              {{ user?.gitHubLogin }}
-            </NuxtLink>
-          </div>
+        <template #footer="{ collapsed }">
+          <USkeleton
+            v-if="userIsLoading"
+            class="h-10 w-full"
+          />
+          <UButton
+            v-else
+            to="/dash/profile"
+            color="neutral"
+            variant="ghost"
+            block
+            :square="collapsed"
+            class="justify-start overflow-hidden"
+            :avatar="{ src: user?.gitHubLogin ? `https://github.com/${user.gitHubLogin}.png` : undefined, alt: user?.gitHubLogin ?? 'Profile' }"
+            :label="collapsed ? undefined : (user?.gitHubLogin ?? 'Profile')"
+            @click="open = false"
+          />
         </template>
       </UDashboardSidebar>
 

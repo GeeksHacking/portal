@@ -117,7 +117,7 @@ const eventTypeFilters = [
 ]
 
 const audienceFilters = [
-  { label: 'Explore', value: 'all' as const },
+  { label: 'Everything', value: 'all' as const },
   { label: 'Open now', value: 'open' as const },
   { label: 'Joined', value: 'joined' as const },
 ]
@@ -189,34 +189,6 @@ const visibleStandaloneEvents = computed(() => {
   )
 })
 
-const discoverStats = computed(() => {
-  const joinedHackathons = hackathonCards.value.filter(({ status }) => status?.isParticipant).length
-  const openHackathons = hackathonCards.value.filter(({ status }) => !status?.isParticipant).length
-
-  return [
-    {
-      label: 'Hackathons',
-      value: hackathons.value.length,
-      icon: 'i-lucide-trophy',
-    },
-    {
-      label: 'Workshops',
-      value: publishedStandaloneEvents.value.length,
-      icon: 'i-lucide-brain-circuit',
-    },
-    {
-      label: 'Open to join',
-      value: openHackathons + publishedStandaloneEvents.value.length,
-      icon: 'i-lucide-sparkles',
-    },
-    {
-      label: 'Joined hackathons',
-      value: joinedHackathons,
-      icon: 'i-lucide-user-check',
-    },
-  ]
-})
-
 function eventDateRange(start?: string | null, end?: string | null) {
   return `${formatHackathonDate(start)} to ${formatHackathonDate(end)}`
 }
@@ -225,7 +197,7 @@ function eventDateRange(start?: string | null, end?: string | null) {
 <template>
   <UDashboardPanel id="dashboard">
     <template #header>
-      <UDashboardNavbar title="Explore events">
+      <UDashboardNavbar title="Explore">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
@@ -234,93 +206,66 @@ function eventDateRange(start?: string | null, end?: string | null) {
 
     <template #body>
       <div class="mx-auto flex w-full max-w-7xl flex-col gap-8">
-        <section class="space-y-5 py-2">
-          <div class="flex flex-wrap items-center gap-2">
-            <UBadge
-              color="primary"
-              variant="subtle"
-            >
-              GeeksHacking Portal
-            </UBadge>
-            <span class="text-xs text-muted">
-              {{ user?.gitHubLogin ? `Signed in as @${user.gitHubLogin}` : 'Event discovery' }}
-            </span>
-          </div>
-
-          <div class="max-w-4xl">
+        <section class="space-y-6 py-2">
+          <div>
             <h1 class="text-3xl font-semibold tracking-tight text-default sm:text-4xl">
-              Explore hackathons and workshops from GeeksHacking.
+              {{ user?.gitHubLogin ? `Welcome back, ${user.gitHubLogin}` : 'Explore' }}
             </h1>
-            <p class="mt-3 text-base leading-7 text-muted">
-              Find programs to join, continue registrations already in progress, and jump back into event portals once you are accepted.
+            <p class="mt-2 text-base text-muted">
+              Discover hackathons and workshops, pick up where you left off, and jump into your events.
             </p>
           </div>
 
-          <div class="rounded-lg bg-elevated/45 p-3">
-            <div class="grid gap-3 lg:grid-cols-[minmax(260px,1fr)_auto] lg:items-center">
-              <UInput
-                v-model="searchQuery"
-                icon="i-lucide-search"
-                placeholder="Search events, venues, or short codes"
-                size="lg"
+          <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
+            <UInput
+              v-model="searchQuery"
+              icon="i-lucide-search"
+              placeholder="Search events, venues, or short codes"
+              size="xl"
+class="w-full lg:flex-1"
+            />
+            <div class="flex flex-wrap gap-2 lg:ml-auto">
+              <UButton
+                v-for="filter in eventTypeFilters"
+                :key="filter.value"
+                :icon="filter.icon"
+                size="md"
+                class="rounded-full"
+:aria-pressed="activeEventType === filter.value"
+:color="activeEventType === filter.value ? 'primary' : 'neutral'"
+:variant="activeEventType === filter.value ? 'solid' : 'outline'"
+@click="activeEventType = filter.value"
+              >
+                {{ filter.label }}
+                <span
+                  v-if="filter.value !== 'all'"
+                  class="text-xs opacity-70"
+                >
+                  {{ filter.value === 'hackathons' ? hackathons.length : publishedStandaloneEvents.length }}
+                </span>
+              </UButton>
+              <USeparator
+                orientation="vertical"
+                class="mx-1 hidden h-8 lg:block"
               />
-
-              <div class="grid gap-2 sm:grid-cols-2 lg:flex lg:items-center lg:justify-end">
-                <div class="grid grid-cols-3 gap-1 rounded-md bg-elevated p-1">
-                  <UButton
-                    v-for="filter in eventTypeFilters"
-                    :key="filter.value"
-                    :icon="filter.icon"
-                    size="sm"
-                    :color="activeEventType === filter.value ? 'primary' : 'neutral'"
-                    :variant="activeEventType === filter.value ? 'soft' : 'ghost'"
-                    class="justify-center"
-                    @click="activeEventType = filter.value"
-                  >
-                    {{ filter.label }}
-                  </UButton>
-                </div>
-
-                <div class="grid grid-cols-3 gap-1 rounded-md bg-elevated p-1">
-                  <UButton
-                    v-for="filter in audienceFilters"
-                    :key="filter.value"
-                    size="sm"
-                    :color="activeAudience === filter.value ? 'primary' : 'neutral'"
-                    :variant="activeAudience === filter.value ? 'soft' : 'ghost'"
-                    class="justify-center"
-                    @click="activeAudience = filter.value"
-                  >
-                    {{ filter.label }}
-                  </UButton>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <div
-              v-for="stat in discoverStats"
-              :key="stat.label"
-              class="rounded-md bg-elevated/60 p-4"
-            >
-              <div class="flex items-center justify-between gap-3">
-                <span class="text-sm font-medium text-muted">{{ stat.label }}</span>
-                <UIcon
-                  :name="stat.icon"
-                  class="size-4 text-primary"
-                />
-              </div>
-              <div class="mt-3 text-2xl font-semibold text-default">
-                {{ stat.value }}
-              </div>
+              <UButton
+                v-for="filter in audienceFilters"
+                :key="filter.value"
+                size="md"
+                class="rounded-full"
+                :color="activeAudience === filter.value ? 'primary' : 'neutral'"
+                :variant="activeAudience === filter.value ? 'soft' : 'ghost'"
+                @click="activeAudience = filter.value"
+              >
+                {{ filter.label }}
+              </UButton>
             </div>
           </div>
         </section>
 
         <section
           v-if="activeEventType !== 'workshops'"
-          class="space-y-3"
+          class="space-y-4"
         >
           <div>
             <h2 class="text-lg font-semibold text-default">
@@ -364,7 +309,7 @@ function eventDateRange(start?: string | null, end?: string | null) {
             <UCard
               v-for="{ hackathon, index, status, registrationComplete } in visibleHackathonCards"
               :key="hackathon.id ?? index"
-              class="bg-transparent shadow-none ring-0 transition hover:bg-elevated/45"
+class="overflow-hidden bg-elevated/40 shadow-none ring-1 ring-default motion-safe:transition motion-safe:hover:-translate-y-0.5 hover:bg-elevated/70 hover:ring-primary/40"
             >
               <template #header>
                 <div class="flex items-start justify-between gap-3">
@@ -552,7 +497,7 @@ function eventDateRange(start?: string | null, end?: string | null) {
             <UCard
               v-for="event in visibleStandaloneEvents"
               :key="event.id"
-              class="bg-transparent shadow-none ring-0 transition hover:bg-elevated/45"
+              class="overflow-hidden bg-elevated/40 shadow-none ring-1 ring-default transition hover:-translate-y-0.5 hover:bg-elevated/70 hover:ring-primary/40"
             >
               <template #header>
                 <div class="flex items-start justify-between gap-3">

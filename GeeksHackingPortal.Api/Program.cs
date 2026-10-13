@@ -2,6 +2,8 @@ using GeeksHackingPortal.Api.Endpoints.Auth;
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
+using FastEndpoints.Mcp;
+using FastEndpoints.A2A;
 using GeeksHackingPortal.Api;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Constants;
@@ -351,7 +353,22 @@ builder.Services.AddCors(options =>
 });
 LogStartupPhase("platform-services-registered", startupStopwatch, ref startupPhaseTimestamp);
 
-builder.Services.AddFastEndpoints(o => o.SourceGeneratorDiscoveredTypes = DiscoveredTypes.All);
+builder.Services.AddFastEndpoints(o => o.SourceGeneratorDiscoveredTypes = DiscoveredTypes.All)
+    .AddMcp(o =>
+    {
+        // Default is authenticated callers only. Explicit for clarity.
+        // Adjust to check specific claims (e.g. scope:agents) if needed.
+        o.ToolVisibilityFilter = (def, user, ctx) =>
+            user.Identity?.IsAuthenticated == true;
+    })
+    .AddA2A(o =>
+    {
+        o.AgentName = "geekshacking-portal";
+        o.Description = "GeeksHacking Portal agent for hackathon and event management.";
+        o.Version = "1.0.0";
+        o.SkillVisibilityFilter = (def, user, ctx) =>
+            user.Identity?.IsAuthenticated == true;
+    });
 builder.Services.SwaggerDocument(options =>
 {
     options.EnableJWTBearerAuth = false;
@@ -766,7 +783,15 @@ app.UseFastEndpoints(c =>
     c.Serializer.Options.Converters.Add(new JsonStringEnumConverter());
     c.Serializer.Options.Converters.Add(new UtcDateTimeOffsetJsonConverter());
     c.Endpoints.AllowEmptyRequestDtos = true;
-});
+})
+.UseMcp(
+    pattern: "/mcp",
+    configureRoute: route => route.RequireAuthorization()
+)
+.UseA2A(
+    configureRpcRoute: route => route.RequireAuthorization(),
+    configureCardRoute: route => route.RequireAuthorization()
+);
 app.UseSwaggerGen(options => options.Path = "/openapi/{documentName}.json");
 app.MapScalarApiReference();
 app.MapDefaultEndpoints();

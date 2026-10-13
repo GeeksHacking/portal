@@ -25,10 +25,10 @@ export function createGeeksHackingPortalApiEndpointsOrganizersHackathonCreateReq
   judgingEndDate: faker.date.anytime().toISOString(),
   isPublished: faker.datatype.boolean(),
   emailTemplates: {},
-  gitHubRepositorySettings: faker.helpers.arrayElement([createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequest<object>()]),
+  gitHubRepositorySettings: faker.helpers.arrayElement([createGeeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequest()]),
 }
   return {
     ...defaultFakeData,
     ...(data || {}),
-  } as Omit<typeof defaultFakeData, keyof TData> & TData
+  } as Omit<typeof defaultFakeData, keyof NoInfer<TData>> & NoInfer<TData>
 }

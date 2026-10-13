@@ -27,4 +27,4 @@ export type GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponses = {
 /**
  * @description Union of all possible responses
 */
-export type GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponse = (GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus200 | GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus403);
+export type GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointResponse = GeeksHackingPortalApiEndpointsAdminCachePurgeEndpointStatus200;

@@ -6,7 +6,7 @@
 import * as z from 'zod'
 
 export const fastEndpointsErrorResponseSchema = z.strictObject({
-  statusCode: z.int32().optional().default(400),
-  message: z.string().optional().default('One or more errors occurred!'),
-  errors: z.object({}).catchall(z.array(z.string())).optional(),
-})
+  statusCode: z.int32().optional().default(400).describe('the http status code sent to the client. default is 400.'),
+  message: z.string().optional().default('One or more errors occurred!').describe('the message for the error response'),
+  errors: z.record(z.string(), z.array(z.string())).optional().describe('the collection of errors for the current context'),
+}).describe('the dto used to send an error response to the client')

@@ -5,7 +5,7 @@
 
 import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthDirectoryHistoryOAuthDirectoryHistoryItemResponseSchema = z.object({
+export const geeksHackingPortalApiEndpointsAdminOAuthDirectoryHistoryOAuthDirectoryHistoryItemResponseSchema = z.strictObject({
   id: z.string().optional(),
   subject: z.string().optional(),
   userId: z.string().nullish(),

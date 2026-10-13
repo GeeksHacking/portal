@@ -17,7 +17,7 @@ export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResources
   return {
     ...defaultFakeData,
     ...(data || {}),
-  } as Omit<typeof defaultFakeData, keyof TData> & TData
+  } as Omit<typeof defaultFakeData, keyof NoInfer<TData>> & NoInfer<TData>
 }
 
 /**

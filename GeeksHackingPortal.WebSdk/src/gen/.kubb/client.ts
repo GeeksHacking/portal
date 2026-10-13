@@ -358,8 +358,21 @@ export class ResponseError<TError = unknown, TRequest = Request, TResponse = Res
   request: TRequest
   response: TResponse
 
-  constructor(config: { data: TError; status: number; statusText: string; contentType?: string; request: TRequest; response: TResponse }) {
-    super(`Request failed with status ${config.status}${config.statusText ? ` ${config.statusText}` : ''}`)
+  constructor(config: {
+    data: TError
+    status: number
+    statusText: string
+    contentType?: string
+    request: TRequest
+    response: TResponse
+    method?: string
+    url?: string
+  }) {
+    // The query and hash are left out: sensitive query parameters or fragments must not reach logs.
+    const cleanUrl = config.url?.split(/[?#]/)[0]
+    const target = [config.method, cleanUrl].filter(Boolean).join(' ')
+    const statusText = config.statusText?.trim()
+    super(`${target ? `${target} failed` : 'Request failed'} with status ${config.status}${statusText ? ` ${statusText}` : ''}`)
     this.name = 'ResponseError'
     this.data = config.data
     this.status = config.status
@@ -367,6 +380,13 @@ export class ResponseError<TError = unknown, TRequest = Request, TResponse = Res
     this.contentType = config.contentType
     this.request = config.request
     this.response = config.response
+  }
+
+  /**
+   * Matches on `name`, not `instanceof`: every generated client bundles its own `ResponseError` class.
+   */
+  static is(error: unknown): error is ResponseError<unknown, unknown, unknown> {
+    return error instanceof Error && error.name === 'ResponseError'
   }
 }
 
@@ -681,6 +701,8 @@ async function settleResult<TRequest, TResponse>({
       contentType,
       request: result.request,
       response: result.response,
+      method: request.method,
+      url: request.url,
     })
     await errorInterceptors.run(responseError, requestConfig)
     throw responseError

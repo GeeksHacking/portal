@@ -39,4 +39,5 @@ export type GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetResp
      * @type integer | undefined
     */
     maxParticipants?: number;
+    bannerUrl?: string | null;
 };

@@ -12,4 +12,9 @@ public class Response
     public required DateTimeOffset StartTime { get; init; }
     public required DateTimeOffset EndTime { get; init; }
     public required int MaxParticipants { get; init; }
+
+    /// <summary>
+    /// Time-limited URL of the banner image, or null when the workshop has no banner.
+    /// </summary>
+    public string? BannerUrl { get; init; }
 }

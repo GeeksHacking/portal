@@ -24,4 +24,4 @@ export type GeeksHackingPortalApiEndpointsUsersProfileGetEndpointResponses = {
 /**
  * @description Union of all possible responses
 */
-export type GeeksHackingPortalApiEndpointsUsersProfileGetEndpointResponse = (GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200 | GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus401);
+export type GeeksHackingPortalApiEndpointsUsersProfileGetEndpointResponse = GeeksHackingPortalApiEndpointsUsersProfileGetEndpointStatus200;

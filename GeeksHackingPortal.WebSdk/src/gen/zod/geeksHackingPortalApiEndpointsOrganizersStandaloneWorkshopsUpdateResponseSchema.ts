@@ -16,5 +16,5 @@ export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateRe
   shortCode: z.string().optional(),
   maxParticipants: z.int32().optional(),
   isPublished: z.boolean().optional(),
-  emailTemplates: z.object({}).catchall(z.string()).optional(),
+  emailTemplates: z.record(z.string(), z.string()).optional(),
 })

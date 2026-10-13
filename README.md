@@ -50,6 +50,15 @@ dotnet run --project GeeksHackingPortal.DbMigrator -- apply --seed-development-t
 
 `apply` will stop on potentially destructive changes unless `--allow-destructive` is specified.
 
+## File storage
+
+Activity banners and file attachments (for hackathons, hackathon workshops and standalone workshops) are stored in an S3-compatible bucket through the AWS SDK.
+
+- Locally, the AppHost starts a [RustFS](https://rustfs.com) container (`fs`) and the API creates the `geekshacking-portal` bucket on startup. The RustFS console is linked from the Aspire dashboard (default credentials `rustfsadmin` / `rustfsadmin`).
+- In production the bucket is Cloudflare R2. Create the bucket and an R2 API token with object read and write access, then add a version to the `storage-connection-string` secret: `Endpoint=https://<account-id>.r2.cloudflarestorage.com;AccessKey=<access-key-id>;SecretKey=<secret-access-key>;Bucket=<bucket>;Region=auto`.
+- Uploads go through the API (banners up to 10 MB, PNG/JPEG/GIF/WebP; attachments up to 25 MB). Downloads use short-lived presigned URLs, so the bucket stays private and file bytes never pass through the API.
+- Banners are public with their activity. Attachments are listed publicly once the activity is published.
+
 ## Dates and times
 
 - The database stores every timestamp as UTC, and the API returns every timestamp as UTC (ISO 8601, e.g. `2026-03-07T01:00:00Z`), regardless of the host's `TZ`.

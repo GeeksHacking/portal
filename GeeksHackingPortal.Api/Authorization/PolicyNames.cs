@@ -30,6 +30,7 @@ public static class PolicyNames
     /// <summary>
     /// Requires the user to be an organizer for the activity specified by
     /// - {ActivityId}
+    /// - {WorkshopId} (a hackathon workshop, organized by its hackathon's organizers)
     /// - {StandaloneWorkshopId}
     /// - {HackathonId}
     /// in the route.
@@ -46,7 +47,7 @@ public static class PolicyNames
     public const string ParticipantForHackathon = nameof(ParticipantForHackathon);
 
     /// <summary>
-    /// Requires the user to be registered for the activity specified by {ActivityId},
+    /// Requires the user to be registered for the activity specified by {ActivityId}, {WorkshopId},
     /// {StandaloneWorkshopId}, or {HackathonId} in the route. Activity organizers and root users also pass.
     /// </summary>
     public const string ParticipantForActivity = nameof(ParticipantForActivity);

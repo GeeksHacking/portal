@@ -22,10 +22,10 @@ export function createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistr
   conditionalLogic: faker.string.alpha(),
   validationRules: faker.string.alpha(),
   options: faker.helpers.multiple(() => (createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListOptionDto())),
-  currentSubmission: faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDto<object>()]),
+  currentSubmission: faker.helpers.arrayElement([createGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListSubmissionDto()]),
 }
   return {
     ...defaultFakeData,
     ...(data || {}),
-  } as Omit<typeof defaultFakeData, keyof TData> & TData
+  } as Omit<typeof defaultFakeData, keyof NoInfer<TData>> & NoInfer<TData>
 }

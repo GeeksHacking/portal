@@ -6,7 +6,7 @@
 import * as z from 'zod'
 import { geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema } from './geeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformSchema'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthDirectorySharedOAuthDirectoryApplicationResponseSchema = z.object({
+export const geeksHackingPortalApiEndpointsAdminOAuthDirectorySharedOAuthDirectoryApplicationResponseSchema = z.strictObject({
   id: z.string().optional(),
   clientId: z.string().optional(),
   displayName: z.string().optional(),

@@ -12,6 +12,7 @@ public static class HttpContextRouteExtensions
         public Guid? GetActivityIdFromRoute()
         {
             return httpContext.GetGuidFromRoute("ActivityId")
+                ?? httpContext.GetGuidFromRoute("WorkshopId")
                 ?? httpContext.GetGuidFromRoute("StandaloneWorkshopId")
                 ?? httpContext.GetHackathonIdFromRoute();
         }

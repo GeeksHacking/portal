@@ -10,7 +10,7 @@ import { geeksHackingPortalApiEndpointsUsersProfileUpdateResponseSchema } from '
 
 export const geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200Schema = geeksHackingPortalApiEndpointsUsersProfileUpdateResponseSchema
 
-export const geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400Schema = fastEndpointsErrorResponseSchema
+export const geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400Schema = fastEndpointsErrorResponseSchema.describe('the dto used to send an error response to the client')
 
 export const geeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus401Schema = z.unknown()
 

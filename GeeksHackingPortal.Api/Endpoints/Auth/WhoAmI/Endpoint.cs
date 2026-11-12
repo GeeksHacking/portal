@@ -1,4 +1,6 @@
 using FastEndpoints;
+using FastEndpoints.Mcp;
+using FastEndpoints.A2A;
 using GeeksHackingPortal.Api.Constants;
 using GeeksHackingPortal.Api.Entities;
 using GeeksHackingPortal.Api.Services;
@@ -19,6 +21,26 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
             s.Description =
                 "Returns the current authenticated user's information including GitHub details.";
         });
+
+        this.McpTool(
+            name: "whoami",
+            description: "Returns the current authenticated user's profile and GitHub identity.",
+            configure: tool =>
+            {
+                tool.Title = "Who Am I";
+                tool.Hints.ReadOnly = true;
+                tool.Hints.Idempotent = true;
+            });
+
+        this.A2ASkill(
+            id: "whoami",
+            tags: ["auth", "identity", "read"],
+            configure: skill =>
+            {
+                skill.Name = "Who Am I";
+                skill.Description = "Returns the current authenticated user's profile and GitHub identity.";
+                skill.Examples = ["Who am I?", "What is my user info?"];
+            });
     }
 
     public override async Task HandleAsync(CancellationToken ct)

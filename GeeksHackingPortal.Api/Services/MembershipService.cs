@@ -64,8 +64,17 @@ public class MembershipService(ISqlSugarClient sql, IOptions<AppOptions> appOpti
         CancellationToken ct = default
     )
     {
-        return await sql.Queryable<ActivityOrganizer>()
-            .AnyAsync(o => o.UserId == userId && o.ActivityId == activityId, ct);
+        if (
+            await sql.Queryable<ActivityOrganizer>()
+                .AnyAsync(o => o.UserId == userId && o.ActivityId == activityId, ct)
+        )
+        {
+            return true;
+        }
+
+        // Hackathon workshops have no organizers of their own; they are run by the hackathon's organizers.
+        var workshop = await sql.Queryable<Workshop>().InSingleAsync(activityId);
+        return workshop is not null && await IsOrganizer(userId, workshop.HackathonId, ct);
     }
 
     public async Task<bool> IsOrganizerOrRoot(

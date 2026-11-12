@@ -24,9 +24,10 @@ export function createGeeksHackingPortalApiEndpointsParticipantsHackathonGetResp
   submissionsEndDate: faker.date.anytime().toISOString(),
   judgingStartDate: faker.date.anytime().toISOString(),
   judgingEndDate: faker.date.anytime().toISOString(),
+  bannerUrl: faker.string.alpha(),
 }
   return {
     ...defaultFakeData,
     ...(data || {}),
-  } as Omit<typeof defaultFakeData, keyof TData> & TData
+  } as Omit<typeof defaultFakeData, keyof NoInfer<TData>> & NoInfer<TData>
 }

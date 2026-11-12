@@ -20,6 +20,6 @@ export const geeksHackingPortalApiEndpointsOrganizersHackathonCreateRequestSchem
   judgingStartDate: z.iso.datetime().optional(),
   judgingEndDate: z.iso.datetime().optional(),
   isPublished: z.boolean().optional(),
-  emailTemplates: z.object({}).catchall(z.string()).nullish(),
+  emailTemplates: z.record(z.string(), z.string()).nullish(),
   gitHubRepositorySettings: geeksHackingPortalApiFeaturesHackathonsGitHubRepositorySettingsHackathonGitHubRepositorySettingsRequestSchema.strict().nullish(),
 })

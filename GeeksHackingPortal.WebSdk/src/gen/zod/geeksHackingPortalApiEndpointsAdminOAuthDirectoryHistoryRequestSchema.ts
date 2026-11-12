@@ -5,4 +5,4 @@
 
 import * as z from 'zod'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthDirectoryHistoryRequestSchema = z.object({})
+export const geeksHackingPortalApiEndpointsAdminOAuthDirectoryHistoryRequestSchema = z.strictObject({})

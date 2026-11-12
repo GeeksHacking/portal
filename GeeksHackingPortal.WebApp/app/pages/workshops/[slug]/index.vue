@@ -97,6 +97,12 @@ const currentStepIndex = computed(() => {
   }
 })
 
+// Banner URLs are short-lived; fall back to the placeholder if one fails to load, and retry when a fresh URL arrives
+const hasBannerError = ref(false)
+watch(() => workshop.value?.bannerUrl, () => {
+  hasBannerError.value = false
+})
+
 const hasEnded = computed(() =>
   !!workshop.value?.endTime && new Date(workshop.value.endTime).getTime() <= Date.now(),
 )
@@ -482,7 +488,16 @@ const totalQuestionsCount = computed(() => {
       >
         <div class="w-full max-w-6xl space-y-5 lg:space-y-6">
           <section class="reveal-up reveal-delay-1 overflow-hidden rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) shadow-sm">
+            <img
+              v-if="workshop.bannerUrl && !hasBannerError"
+              :src="workshop.bannerUrl"
+              :alt="`${workshop.title} banner`"
+              class="aspect-3/1 w-full bg-(--ui-bg-accented) object-cover"
+              fetchpriority="high"
+              @error="hasBannerError = true"
+            >
             <div
+              v-else
               class="h-28 bg-linear-to-br from-primary/25 via-info/15 to-warning/20 sm:h-40"
               aria-hidden="true"
             />

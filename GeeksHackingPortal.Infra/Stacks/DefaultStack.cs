@@ -143,6 +143,17 @@ public class DefaultStack : Stack
             }
         );
 
+        // Cloudflare R2 bucket for activity banners and files, as
+        // "Endpoint=https://<account-id>.r2.cloudflarestorage.com;AccessKey=...;SecretKey=...;Bucket=...;Region=auto".
+        var storageConnectionString = new SecretManager.Secret(
+            "storage-connection-string",
+            new SecretManager.SecretArgs
+            {
+                SecretId = "storage-connection-string",
+                Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
+            }
+        );
+
         var githubClientIdAccessor = new SecretManager.SecretIamMember(
             "github-client-id-accessor",
             new SecretManager.SecretIamMemberArgs
@@ -268,6 +279,16 @@ public class DefaultStack : Stack
             new SecretManager.SecretIamMemberArgs
             {
                 SecretId = postmarkServerToken.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
+        var storageConnectionStringAccessor = new SecretManager.SecretIamMember(
+            "storage-connection-string-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = storageConnectionString.SecretId,
                 Role = "roles/secretmanager.secretAccessor",
                 Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
             }
@@ -553,6 +574,19 @@ public class DefaultStack : Stack
                                             new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
                                             {
                                                 Secret = postmarkServerToken.SecretId,
+                                                Version = "latest",
+                                            },
+                                    },
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "ConnectionStrings__storage",
+                                    ValueSource = new ServiceTemplateContainerEnvValueSourceArgs
+                                    {
+                                        SecretKeyRef =
+                                            new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
+                                            {
+                                                Secret = storageConnectionString.SecretId,
                                                 Version = "latest",
                                             },
                                     },

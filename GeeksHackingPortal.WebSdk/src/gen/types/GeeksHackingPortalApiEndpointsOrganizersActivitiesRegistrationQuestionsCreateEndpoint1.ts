@@ -3,6 +3,7 @@
 * Do not edit manually.
 */
 
+import type { FastEndpointsErrorResponse } from './FastEndpointsErrorResponse'
 import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateRequest } from './GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateRequest'
 import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateResponse } from './GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateResponse'
 
@@ -16,6 +17,12 @@ export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuesti
 };
 
 export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Status200 = GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateResponse;
+
+/**
+ * @description the dto used to send an error response to the client
+ * @type object
+*/
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Status400 = FastEndpointsErrorResponse;
 
 export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Status401 = unknown;
 
@@ -32,6 +39,7 @@ export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuesti
 
 export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Responses = {
     "200": GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Status200;
+    "400": GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Status400;
     "401": GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Status401;
     "403": GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Status403;
 };
@@ -39,4 +47,4 @@ export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuesti
 /**
  * @description Union of all possible responses
 */
-export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Response = (GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Status200 | GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Status401 | GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Status403);
+export type GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Response = GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint1Status200;

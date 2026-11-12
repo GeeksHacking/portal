@@ -16,4 +16,5 @@ export const geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsListWor
   currentParticipants: z.int32().optional(),
   isJoined: z.boolean().optional(),
   hasAttended: z.boolean().optional(),
+  bannerUrl: z.string().nullish(),
 })

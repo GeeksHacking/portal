@@ -6,7 +6,7 @@
 import * as z from 'zod'
 import { geeksHackingPortalApiEndpointsAdminOAuthDirectoryHistoryOAuthDirectoryHistoryItemResponseSchema } from './geeksHackingPortalApiEndpointsAdminOAuthDirectoryHistoryOAuthDirectoryHistoryItemResponseSchema'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthDirectoryHistoryResponseSchema = z.object({
+export const geeksHackingPortalApiEndpointsAdminOAuthDirectoryHistoryResponseSchema = z.strictObject({
   totalCount: z.int32().optional(),
   items: z.array(geeksHackingPortalApiEndpointsAdminOAuthDirectoryHistoryOAuthDirectoryHistoryItemResponseSchema).optional(),
 })

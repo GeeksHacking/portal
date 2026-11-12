@@ -13,6 +13,10 @@ export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointPa
 
 export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus200 = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse;
 
+/**
+ * @description the dto used to send an error response to the client
+ * @type object
+*/
 export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus400 = FastEndpointsErrorResponse;
 
 export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus401 = unknown;
@@ -38,4 +42,4 @@ export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointRe
 /**
  * @description Union of all possible responses
 */
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointResponse = (GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus200 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus400 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus403);
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointResponse = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpointStatus200;

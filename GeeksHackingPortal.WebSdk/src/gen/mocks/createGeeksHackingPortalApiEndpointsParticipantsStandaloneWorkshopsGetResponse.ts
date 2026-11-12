@@ -20,9 +20,10 @@ export function createGeeksHackingPortalApiEndpointsParticipantsStandaloneWorksh
   startTime: faker.date.anytime().toISOString(),
   endTime: faker.date.anytime().toISOString(),
   maxParticipants: faker.number.int(),
+  bannerUrl: faker.string.alpha(),
 }
   return {
     ...defaultFakeData,
     ...(data || {}),
-  } as Omit<typeof defaultFakeData, keyof TData> & TData
+  } as Omit<typeof defaultFakeData, keyof NoInfer<TData>> & NoInfer<TData>
 }

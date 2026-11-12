@@ -33,4 +33,4 @@ export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointRespo
 /**
  * @description Union of all possible responses
 */
-export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointResponse = (GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointStatus200 | GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointStatus401);
+export type GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointResponse = GeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpointStatus200;

@@ -6,7 +6,10 @@
 import type { FastEndpointsErrorResponse } from '../types/FastEndpointsErrorResponse'
 import { fakerEN as faker } from '@faker-js/faker'
 
-export function createFastEndpointsErrorResponse<TData extends Partial<FastEndpointsErrorResponse> = object>(data?: TData)
+/**
+   * @description the dto used to send an error response to the client
+   */
+  export function createFastEndpointsErrorResponse<TData extends Partial<FastEndpointsErrorResponse> = object>(data?: TData)
 
 {
   const defaultFakeData = {
@@ -17,5 +20,5 @@ export function createFastEndpointsErrorResponse<TData extends Partial<FastEndpo
   return {
     ...defaultFakeData,
     ...(data || {}),
-  } as Omit<typeof defaultFakeData, keyof TData> & TData
+  } as Omit<typeof defaultFakeData, keyof NoInfer<TData>> & NoInfer<TData>
 }

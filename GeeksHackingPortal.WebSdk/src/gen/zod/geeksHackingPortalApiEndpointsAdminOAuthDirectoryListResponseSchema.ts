@@ -6,6 +6,6 @@
 import * as z from 'zod'
 import { geeksHackingPortalApiEndpointsAdminOAuthDirectorySharedOAuthDirectoryApplicationResponseSchema } from './geeksHackingPortalApiEndpointsAdminOAuthDirectorySharedOAuthDirectoryApplicationResponseSchema'
 
-export const geeksHackingPortalApiEndpointsAdminOAuthDirectoryListResponseSchema = z.object({
+export const geeksHackingPortalApiEndpointsAdminOAuthDirectoryListResponseSchema = z.strictObject({
   items: z.array(geeksHackingPortalApiEndpointsAdminOAuthDirectorySharedOAuthDirectoryApplicationResponseSchema).optional(),
 })

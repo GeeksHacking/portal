@@ -17,4 +17,9 @@ public class WorkshopDto
     public required int CurrentParticipants { get; set; }
     public required bool IsJoined { get; set; }
     public required bool HasAttended { get; set; }
+
+    /// <summary>
+    /// Time-limited URL of the banner image, or null when the workshop has no banner.
+    /// </summary>
+    public string? BannerUrl { get; set; }
 }

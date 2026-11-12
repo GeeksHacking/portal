@@ -63,4 +63,5 @@ export type GeeksHackingPortalApiEndpointsParticipantsHackathonGetResponse = {
      * @type string | undefined
     */
     judgingEndDate?: string;
+    bannerUrl?: string | null;
 };

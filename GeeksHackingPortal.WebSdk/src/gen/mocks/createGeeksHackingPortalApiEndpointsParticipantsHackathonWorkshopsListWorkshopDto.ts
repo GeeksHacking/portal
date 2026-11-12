@@ -20,9 +20,10 @@ export function createGeeksHackingPortalApiEndpointsParticipantsHackathonWorksho
   currentParticipants: faker.number.int(),
   isJoined: faker.datatype.boolean(),
   hasAttended: faker.datatype.boolean(),
+  bannerUrl: faker.string.alpha(),
 }
   return {
     ...defaultFakeData,
     ...(data || {}),
-  } as Omit<typeof defaultFakeData, keyof TData> & TData
+  } as Omit<typeof defaultFakeData, keyof NoInfer<TData>> & NoInfer<TData>
 }

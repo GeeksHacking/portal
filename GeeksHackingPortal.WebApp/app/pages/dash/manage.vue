@@ -23,12 +23,14 @@ import {
   useGeeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueries, useQueryClient } from '@tanstack/vue-query'
+import { useLocalStorage } from '@vueuse/core'
 import { computed, ref, unref } from 'vue'
 import { getApiErrorMessage, getApiFieldError, getApiValidationErrors, getApiValidationSummary } from '~/utils/api-errors'
 import {
   formatHackathonDate,
   formatHackathonDateTimeInput,
   HACKATHON_TIME_ZONE_LABEL,
+  parseHackathonDateTimeValue,
   serializeHackathonDateTimeInput,
 } from '~/utils/hackathon-date-time'
 
@@ -525,6 +527,11 @@ function formatParticipantStatus(status: GeeksHackingPortalApiEndpointsParticipa
 const searchQuery = ref('')
 const activeEventType = ref<'all' | 'hackathons' | 'workshops'>('all')
 const activeOpportunity = ref<'all' | 'open' | 'mine' | 'organizing'>('all')
+type Lifecycle = 'upcoming' | 'ongoing' | 'past'
+const activeLifecycle = ref<'all' | Lifecycle>('all')
+const activePublishState = ref<'all' | 'published' | 'draft'>('all')
+const activeSort = ref<'date-asc' | 'date-desc' | 'name' | 'attention'>('date-asc')
+const viewMode = useLocalStorage<'list' | 'card'>('dash-events-view', 'list')
 
 const eventTypeFilters = [
   { label: 'All', value: 'all' as const, icon: 'i-lucide-layout-grid' },
@@ -533,11 +540,49 @@ const eventTypeFilters = [
 ]
 
 const opportunityFilters = [
-  { label: 'Discover', value: 'all' as const },
+  { label: 'All events', value: 'all' as const },
   { label: 'Open to join', value: 'open' as const },
   { label: 'My events', value: 'mine' as const },
   { label: 'Organizing', value: 'organizing' as const },
 ]
+
+const lifecycleFilters = [
+  { label: 'Any time', value: 'all' as const },
+  { label: 'Upcoming', value: 'upcoming' as const },
+  { label: 'Ongoing', value: 'ongoing' as const },
+  { label: 'Past', value: 'past' as const },
+]
+
+const publishFilters = [
+  { label: 'Any state', value: 'all' as const },
+  { label: 'Published', value: 'published' as const },
+  { label: 'Draft', value: 'draft' as const },
+]
+
+const sortOptions = [
+  { label: 'Date: soonest first', value: 'date-asc' as const },
+  { label: 'Date: latest first', value: 'date-desc' as const },
+  { label: 'Name: A to Z', value: 'name' as const },
+  { label: 'Needs attention first', value: 'attention' as const },
+]
+
+const lifecycleMeta: Record<Lifecycle, { label: string, color: 'info' | 'success' | 'neutral' }> = {
+  upcoming: { label: 'Upcoming', color: 'info' },
+  ongoing: { label: 'Ongoing', color: 'success' },
+  past: { label: 'Past', color: 'neutral' },
+}
+
+function getLifecycle(start: string | null | undefined, end: string | null | undefined): Lifecycle {
+  const now = Date.now()
+  const startMs = parseHackathonDateTimeValue(start)?.getTime()
+  const endMs = parseHackathonDateTimeValue(end)?.getTime()
+
+  if (endMs !== undefined && endMs <= now)
+    return 'past'
+  if (startMs !== undefined && startMs > now)
+    return 'upcoming'
+  return startMs === undefined && endMs === undefined ? 'upcoming' : 'ongoing'
+}
 
 const hackathonCards = computed(() =>
   hackathons.value.map((hackathon, index) => ({
@@ -548,103 +593,139 @@ const hackathonCards = computed(() =>
   })),
 )
 
-const visibleHackathonCards = computed(() => {
-  if (activeEventType.value === 'workshops')
-    return []
+interface EventRow {
+  key: string
+  kind: 'hackathon' | 'workshop'
+  name: string
+  description: string
+  location: string
+  shortCode: string
+  start: string | undefined
+  end: string | undefined
+  startMs: number
+  lifecycle: Lifecycle
+  isPublished: boolean
+  needsAttention: boolean
+  isMine: boolean
+  isOrganizing: boolean
+  isOpen: boolean
+  hackathonCard?: typeof hackathonCards.value[number]
+  workshop?: typeof standaloneEvents.value[number]
+}
 
+const eventRows = computed<EventRow[]>(() => {
+  const rows: EventRow[] = []
+
+  for (const card of hackathonCards.value) {
+    const { hackathon, status, registrationComplete } = card
+    rows.push({
+      key: `h-${hackathon.id ?? card.index}`,
+      kind: 'hackathon',
+      name: hackathon.name ?? '',
+      description: hackathon.description ?? '',
+      location: hackathon.venue ?? '',
+      shortCode: hackathon.shortCode ?? '',
+      start: hackathon.eventStartDate,
+      end: hackathon.eventEndDate,
+      startMs: parseHackathonDateTimeValue(hackathon.eventStartDate)?.getTime() ?? Number.MAX_SAFE_INTEGER,
+      lifecycle: getLifecycle(hackathon.eventStartDate, hackathon.eventEndDate),
+      isPublished: hackathon.isPublished !== false,
+      needsAttention: !!status?.isParticipant && !registrationComplete,
+      isMine: !!status?.isParticipant || !!status?.isOrganizer || !!user.value?.isRoot,
+      isOrganizing: !!status?.isOrganizer || !!user.value?.isRoot,
+      isOpen: !status?.isParticipant && !status?.isOrganizer,
+      hackathonCard: card,
+    })
+  }
+
+  for (const event of standaloneEvents.value) {
+    rows.push({
+      key: `w-${event.id}`,
+      kind: 'workshop',
+      name: event.title ?? '',
+      description: event.description ?? '',
+      location: event.location ?? '',
+      shortCode: event.shortCode ?? '',
+      start: event.startTime,
+      end: event.endTime,
+      startMs: parseHackathonDateTimeValue(event.startTime)?.getTime() ?? Number.MAX_SAFE_INTEGER,
+      lifecycle: getLifecycle(event.startTime, event.endTime),
+      isPublished: !!event.isPublished,
+      needsAttention: !event.isPublished,
+      isMine: !!user.value?.id,
+      isOrganizing: !!user.value?.id,
+      isOpen: !!event.isPublished,
+      workshop: event,
+    })
+  }
+
+  return rows
+})
+
+const visibleEvents = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
 
-  return hackathonCards.value.filter(({ hackathon, status }) => {
-    const searchText = [
-      hackathon.name,
-      hackathon.description,
-      hackathon.venue,
-      hackathon.shortCode,
-    ].filter(Boolean).join(' ').toLowerCase()
-
-    if (query && !searchText.includes(query))
+  const filtered = eventRows.value.filter((row) => {
+    if (activeEventType.value === 'hackathons' && row.kind !== 'hackathon')
       return false
-
-    if (activeOpportunity.value === 'open')
-      return !status?.isParticipant && !status?.isOrganizer
-
-    if (activeOpportunity.value === 'mine')
-      return !!status?.isParticipant || !!status?.isOrganizer || !!user.value?.isRoot
-
-    if (activeOpportunity.value === 'organizing')
-      return !!status?.isOrganizer || !!user.value?.isRoot
-
+    if (activeEventType.value === 'workshops' && row.kind !== 'workshop')
+      return false
+    if (activeLifecycle.value !== 'all' && row.lifecycle !== activeLifecycle.value)
+      return false
+    if (activePublishState.value === 'published' && !row.isPublished)
+      return false
+    if (activePublishState.value === 'draft' && row.isPublished)
+      return false
+    if (activeOpportunity.value === 'open' && !row.isOpen)
+      return false
+    if (activeOpportunity.value === 'mine' && !row.isMine)
+      return false
+    if (activeOpportunity.value === 'organizing' && !row.isOrganizing)
+      return false
+    if (query && ![row.name, row.description, row.location, row.shortCode].join(' ').toLowerCase().includes(query))
+      return false
     return true
-  }).sort((a, b) => {
-    const aNeedsAttention = a.status?.isParticipant && !a.registrationComplete
-    const bNeedsAttention = b.status?.isParticipant && !b.registrationComplete
+  })
 
-    if (aNeedsAttention !== bNeedsAttention)
-      return aNeedsAttention ? -1 : 1
-
-    return new Date(a.hackathon.eventStartDate ?? 0).getTime() - new Date(b.hackathon.eventStartDate ?? 0).getTime()
+  return filtered.sort((a, b) => {
+    switch (activeSort.value) {
+      case 'date-desc':
+        return b.startMs - a.startMs
+      case 'name':
+        return a.name.localeCompare(b.name)
+      case 'attention':
+        if (a.needsAttention !== b.needsAttention)
+          return a.needsAttention ? -1 : 1
+        return a.startMs - b.startMs
+      default:
+        return a.startMs - b.startMs
+    }
   })
 })
 
-const visibleStandaloneEvents = computed(() => {
-  if (activeEventType.value === 'hackathons')
-    return []
+const hasActiveFilters = computed(() =>
+  !!searchQuery.value.trim()
+  || activeEventType.value !== 'all'
+  || activeOpportunity.value !== 'all'
+  || activeLifecycle.value !== 'all'
+  || activePublishState.value !== 'all',
+)
 
-  const query = searchQuery.value.trim().toLowerCase()
-
-  return standaloneEvents.value.filter((event) => {
-    const searchText = [
-      event.title,
-      event.description,
-      event.location,
-      event.shortCode,
-    ].filter(Boolean).join(' ').toLowerCase()
-
-    if (query && !searchText.includes(query))
-      return false
-
-    if (activeOpportunity.value === 'open')
-      return !!event.isPublished
-
-    if (activeOpportunity.value === 'mine' || activeOpportunity.value === 'organizing')
-      return !!user.value?.id
-
-    return true
-  }).sort((a, b) =>
-    new Date(a.startTime ?? 0).getTime() - new Date(b.startTime ?? 0).getTime(),
-  )
-})
+function resetFilters() {
+  searchQuery.value = ''
+  activeEventType.value = 'all'
+  activeOpportunity.value = 'all'
+  activeLifecycle.value = 'all'
+  activePublishState.value = 'all'
+}
 
 const discoverStats = computed(() => {
-  const joinedHackathons = hackathonCards.value.filter(({ status }) => status?.isParticipant).length
-  const openHackathons = hackathonCards.value.filter(({ status }) => !status?.isParticipant && !status?.isOrganizer).length
-  const organizingHackathons = hackathonCards.value.filter(({ status }) => status?.isOrganizer).length
-
+  const rows = eventRows.value
   return [
-    {
-      label: 'Hackathons',
-      value: hackathons.value.length,
-      icon: 'i-lucide-trophy',
-      tone: 'text-primary',
-    },
-    {
-      label: 'Workshops',
-      value: standaloneEvents.value.length,
-      icon: 'i-lucide-brain-circuit',
-      tone: 'text-info',
-    },
-    {
-      label: 'Open to join',
-      value: openHackathons + standaloneEvents.value.filter(event => event.isPublished).length,
-      icon: 'i-lucide-sparkles',
-      tone: 'text-success',
-    },
-    {
-      label: 'In your orbit',
-      value: joinedHackathons + organizingHackathons + standaloneEvents.value.length,
-      icon: 'i-lucide-user-check',
-      tone: 'text-warning',
-    },
+    { label: 'Total events', value: rows.length, icon: 'i-lucide-layout-grid', tone: 'text-primary' },
+    { label: 'Upcoming', value: rows.filter(r => r.lifecycle === 'upcoming').length, icon: 'i-lucide-calendar-clock', tone: 'text-info' },
+    { label: 'Ongoing', value: rows.filter(r => r.lifecycle === 'ongoing').length, icon: 'i-lucide-radio', tone: 'text-success' },
+    { label: 'Drafts / needs attention', value: rows.filter(r => r.needsAttention).length, icon: 'i-lucide-circle-alert', tone: 'text-warning' },
   ]
 })
 
@@ -745,246 +826,301 @@ function capacityPercent(event: typeof standaloneEvents.value[number]) {
           </div>
         </section>
 
-        <section class="rounded-lg border border-default bg-default p-3">
-          <div class="grid gap-3 xl:grid-cols-[minmax(260px,1fr)_auto] xl:items-center">
+        <section class="space-y-3">
+          <div class="flex flex-col gap-2 lg:flex-row lg:items-center">
             <UInput
               v-model="searchQuery"
               icon="i-lucide-search"
               placeholder="Search events, venues, or short codes"
-              size="lg"
+              class="lg:flex-1"
             />
+            <USelect
+              v-model="activeLifecycle"
+              :items="lifecycleFilters"
+              icon="i-lucide-calendar-days"
+              class="lg:w-40"
+              aria-label="Filter by time"
+            />
+            <USelect
+              v-model="activePublishState"
+              :items="publishFilters"
+              icon="i-lucide-globe"
+              class="lg:w-40"
+              aria-label="Filter by published state"
+            />
+            <USelect
+              v-model="activeOpportunity"
+              :items="opportunityFilters"
+              icon="i-lucide-user"
+              class="lg:w-40"
+              aria-label="Filter by involvement"
+            />
+            <USelect
+              v-model="activeSort"
+              :items="sortOptions"
+              icon="i-lucide-arrow-down-up"
+              class="lg:w-52"
+              aria-label="Sort events"
+            />
+          </div>
 
-            <div class="flex flex-col gap-2 lg:flex-row lg:items-center xl:justify-end">
-              <div class="flex gap-1 rounded-md bg-elevated p-1">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex gap-1">
+              <UButton
+                v-for="filter in eventTypeFilters"
+                :key="filter.value"
+                :icon="filter.icon"
+                size="sm"
+                :color="activeEventType === filter.value ? 'primary' : 'neutral'"
+                :variant="activeEventType === filter.value ? 'soft' : 'ghost'"
+                @click="activeEventType = filter.value"
+              >
+                {{ filter.label }}
+              </UButton>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-muted">
+              <span>{{ visibleEvents.length }} of {{ eventRows.length }} events</span>
+              <UButton
+                v-if="hasActiveFilters"
+                size="xs"
+                variant="link"
+                color="neutral"
+                icon="i-lucide-x"
+                @click="resetFilters"
+              >
+                Clear filters
+              </UButton>
+              <div class="flex gap-0.5">
                 <UButton
-                  v-for="filter in eventTypeFilters"
-                  :key="filter.value"
-                  :icon="filter.icon"
-                  size="sm"
-                  :color="activeEventType === filter.value ? 'primary' : 'neutral'"
-                  :variant="activeEventType === filter.value ? 'soft' : 'ghost'"
-                  @click="activeEventType = filter.value"
-                >
-                  {{ filter.label }}
-                </UButton>
-              </div>
-
-              <div class="flex gap-1 overflow-x-auto rounded-md bg-elevated p-1">
+                  size="xs"
+                  icon="i-lucide-list"
+                  aria-label="List view"
+                  :aria-pressed="viewMode === 'list'"
+                  :color="viewMode === 'list' ? 'primary' : 'neutral'"
+                  :variant="viewMode === 'list' ? 'soft' : 'ghost'"
+                  @click="viewMode = 'list'"
+                />
                 <UButton
-                  v-for="filter in opportunityFilters"
-                  :key="filter.value"
-                  size="sm"
-                  :color="activeOpportunity === filter.value ? 'primary' : 'neutral'"
-                  :variant="activeOpportunity === filter.value ? 'soft' : 'ghost'"
-                  class="shrink-0"
-                  @click="activeOpportunity = filter.value"
-                >
-                  {{ filter.label }}
-                </UButton>
+                  size="xs"
+                  icon="i-lucide-layout-grid"
+                  aria-label="Card view"
+                  :aria-pressed="viewMode === 'card'"
+                  :color="viewMode === 'card' ? 'primary' : 'neutral'"
+                  :variant="viewMode === 'card' ? 'soft' : 'ghost'"
+                  @click="viewMode = 'card'"
+                />
               </div>
             </div>
           </div>
         </section>
 
-        <section
-          v-if="activeEventType !== 'workshops'"
-          class="space-y-3"
-        >
-          <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <h2 class="text-lg font-semibold text-default">
-                Hackathons
-              </h2>
-              <p class="text-sm text-muted">
-                Join, register, or manage full hackathon programs.
-              </p>
-            </div>
-            <UButton
-              v-if="user?.isRoot"
-              icon="i-lucide-plus"
-              size="sm"
-              class="self-start sm:self-auto"
-              @click="openCreateHackathonModal"
-            >
-              Add Hackathon
-            </UButton>
-          </div>
-
+        <section :class="viewMode === 'card' ? 'grid gap-4 sm:grid-cols-2 xl:grid-cols-3' : 'space-y-2'">
           <div
-            v-if="isLoadingHackathons"
-            class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
+            v-if="isLoadingHackathons || isLoadingUser || (!!user?.id && isLoadingStandaloneEvents)"
+            class="col-span-full space-y-2"
           >
-            <UCard
-              v-for="index in 3"
+            <USkeleton
+              v-for="index in 4"
               :key="index"
-            >
-              <div class="space-y-3">
-                <USkeleton class="h-5 w-2/3" />
-                <USkeleton class="h-16 w-full" />
-                <USkeleton class="h-9 w-32" />
-              </div>
-            </UCard>
+              class="h-20 w-full"
+            />
           </div>
 
           <UAlert
-            v-else-if="!visibleHackathonCards.length"
+            v-else-if="!visibleEvents.length"
             color="neutral"
             variant="soft"
             icon="i-lucide-search-x"
-            title="No matching hackathons"
-            description="Try a different search term or filter."
+            class="col-span-full"
+            title="No matching events"
+            description="Try a different search term or clear your filters."
           />
 
-          <div
-            v-else
-            class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
-          >
-            <UCard
-              v-for="{ hackathon, index, status, registrationComplete } in visibleHackathonCards"
-              :key="hackathon.id ?? index"
-              class="transition hover:-translate-y-0.5 hover:shadow-md"
+          <template v-else>
+            <div
+              v-for="row in visibleEvents"
+              :key="row.key"
+              class="rounded-lg border border-default bg-default p-4 transition hover:border-primary/40 hover:shadow-sm"
+              :class="viewMode === 'card' ? 'flex flex-col gap-4' : 'grid gap-3 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1.4fr)_15rem] lg:items-center'"
             >
-              <template #header>
-                <div class="flex items-start justify-between gap-3">
-                  <div class="min-w-0">
-                    <div class="flex items-center gap-2">
-                      <UIcon
-                        name="i-lucide-trophy"
-                        class="size-4 shrink-0 text-primary"
-                      />
-                      <h3 class="truncate text-base font-semibold text-default">
-                        {{ hackathon.name }}
-                      </h3>
-                    </div>
-                    <div class="mt-2 flex flex-wrap items-center gap-2">
-                      <UBadge
-                        v-if="user?.isRoot"
-                        color="warning"
-                        variant="subtle"
-                        size="sm"
-                      >
-                        Admin
-                      </UBadge>
-                      <UBadge
-                        v-else-if="status?.isOrganizer"
-                        color="info"
-                        variant="subtle"
-                        size="sm"
-                      >
-                        Organizer
-                      </UBadge>
-                      <UBadge
-                        v-else-if="status"
-                        :color="formatParticipantStatus(status.status ?? null, status.isParticipant).color"
-                        variant="subtle"
-                        size="sm"
-                      >
-                        {{ formatParticipantStatus(status.status ?? null, status.isParticipant).label }}
-                      </UBadge>
-                    </div>
-                  </div>
-
+              <div class="min-w-0 space-y-1.5">
+                <div
+                  class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide"
+                  :class="row.kind === 'hackathon' ? 'text-primary' : 'text-info'"
+                >
+                  <UIcon
+                    :name="row.kind === 'hackathon' ? 'i-lucide-trophy' : 'i-lucide-brain-circuit'"
+                    class="size-3.5 shrink-0"
+                  />
+                  <span>{{ row.kind === 'hackathon' ? 'Hackathon' : 'Workshop' }}</span>
+                  <span
+                    v-if="row.shortCode"
+                    class="font-normal normal-case tracking-normal text-muted"
+                  >
+                    · #{{ row.shortCode }}
+                  </span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <h3 class="truncate text-base font-semibold text-default">
+                    {{ row.name }}
+                  </h3>
                   <UButton
                     v-if="user?.isRoot"
                     size="xs"
                     variant="ghost"
+                    color="neutral"
                     icon="i-lucide-pencil"
-                    aria-label="Edit hackathon"
-                    @click.stop="openEditHackathonModal(hackathon)"
+                    :aria-label="row.kind === 'hackathon' ? 'Edit hackathon' : 'Edit workshop'"
+                    @click.stop="row.hackathonCard ? openEditHackathonModal(row.hackathonCard.hackathon) : openEditStandaloneEventModal(row.workshop!)"
                   />
                 </div>
-              </template>
-
-              <div class="space-y-4">
-                <p class="line-clamp-3 min-h-16 text-sm leading-6 text-muted">
-                  {{ hackathon.description || 'Details are being prepared by the organizers.' }}
-                </p>
-
-                <div class="grid gap-2 text-sm text-muted">
-                  <div class="flex items-center gap-2">
-                    <UIcon
-                      name="i-lucide-calendar-days"
-                      class="size-4"
-                    />
-                    <span>{{ formatHackathonDate(hackathon.eventStartDate) }} to {{ formatHackathonDate(hackathon.eventEndDate) }}</span>
-                  </div>
-                  <div
-                    v-if="hackathon.venue"
-                    class="flex items-center gap-2"
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <UBadge
+                    v-if="row.kind === 'workshop' || row.hackathonCard?.hackathon.isPublished !== undefined"
+                    :color="row.isPublished ? 'success' : 'warning'"
+                    :icon="row.isPublished ? 'i-lucide-globe' : 'i-lucide-eye-off'"
+                    variant="subtle"
+                    size="sm"
                   >
-                    <UIcon
-                      name="i-lucide-map-pin"
-                      class="size-4"
-                    />
-                    <span class="truncate">{{ hackathon.venue }}</span>
-                  </div>
-                </div>
-
-                <UAlert
-                  v-if="status?.status === 'Rejected' && status.reviewReason"
-                  color="error"
-                  variant="soft"
-                  icon="i-lucide-circle-alert"
-                  :description="`Reason: ${status.reviewReason}`"
-                />
-
-                <div
-                  v-if="status?.isParticipant && !registrationComplete"
-                  class="rounded-lg border border-warning/30 bg-warning/10 p-3"
-                >
-                  <div class="flex items-center justify-between gap-3 text-sm">
-                    <span class="font-medium text-default">Registration progress</span>
-                    <span class="text-warning">Action needed</span>
-                  </div>
-                  <div class="mt-2 h-2 overflow-hidden rounded-full bg-muted">
-                    <div class="h-full w-1/2 rounded-full bg-warning" />
-                  </div>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-2">
-                  <template v-if="user?.isRoot">
-                    <UButton
-                      :to="`/dash/${hackathon.id}`"
-                      icon="i-lucide-settings-2"
+                    {{ row.isPublished ? 'Published' : 'Draft · not public' }}
+                  </UBadge>
+                  <UBadge
+                    :color="lifecycleMeta[row.lifecycle].color"
+                    variant="outline"
+                    size="sm"
+                  >
+                    {{ lifecycleMeta[row.lifecycle].label }}
+                  </UBadge>
+                  <template v-if="row.hackathonCard?.status && !row.isOrganizing">
+                    <UBadge
+                      :color="formatParticipantStatus(row.hackathonCard.status.status ?? null, row.hackathonCard.status.isParticipant).color"
+                      variant="subtle"
                       size="sm"
                     >
-                      Manage
-                    </UButton>
+                      {{ formatParticipantStatus(row.hackathonCard.status.status ?? null, row.hackathonCard.status.isParticipant).label }}
+                    </UBadge>
+                    <UBadge
+                      v-if="row.needsAttention"
+                      color="warning"
+                      variant="soft"
+                      size="sm"
+                    >
+                      Registration incomplete
+                    </UBadge>
                   </template>
+                </div>
+              </div>
 
-                  <template v-else-if="status?.isOrganizer">
+              <p
+                v-if="viewMode === 'card' && row.description"
+                class="line-clamp-2 text-sm text-muted"
+              >
+                {{ row.description }}
+              </p>
+
+              <div class="grid gap-1.5 text-sm text-muted">
+                <div class="flex items-center gap-2">
+                  <UIcon
+                    name="i-lucide-calendar-days"
+                    class="size-4 shrink-0"
+                  />
+                  <span>{{ formatHackathonDate(row.start) }} to {{ formatHackathonDate(row.end) }}</span>
+                </div>
+                <div
+                  v-if="row.location"
+                  class="flex items-center gap-2"
+                >
+                  <UIcon
+                    name="i-lucide-map-pin"
+                    class="size-4 shrink-0"
+                  />
+                  <span class="truncate">{{ row.location }}</span>
+                </div>
+                <div
+                  v-if="row.workshop"
+                  class="flex items-center gap-2"
+                >
+                  <UIcon
+                    name="i-lucide-users"
+                    class="size-4 shrink-0"
+                  />
+                  <span>
+                    {{ standaloneEventAnalyticsForEvent(row.workshop.id)?.registeredCount ?? '...' }} / {{ row.workshop.maxParticipants ?? 0 }} registered
+                    ({{ capacityPercent(row.workshop) }}%)
+                  </span>
+                </div>
+              </div>
+
+              <div
+                class="flex flex-wrap items-center gap-2"
+                :class="viewMode === 'card' ? 'mt-auto' : 'lg:justify-end'"
+              >
+                <template v-if="row.workshop">
+                  <UButton
+                    v-if="row.workshop.id"
+                    :to="`/dash/standalone/${row.workshop.id}`"
+                    icon="i-lucide-settings-2"
+                    size="sm"
+                  >
+                    Manage
+                  </UButton>
+                  <UButton
+                    v-if="row.workshop.shortCode"
+                    :to="`/workshops/${row.workshop.shortCode}`"
+                    color="neutral"
+                    variant="outline"
+                    icon="i-lucide-external-link"
+                    size="sm"
+                  >
+                    View page
+                  </UButton>
+                  <UButton
+                    v-else-if="row.workshop.homepageUri"
+                    :to="row.workshop.homepageUri"
+                    target="_blank"
+                    color="neutral"
+                    variant="outline"
+                    icon="i-lucide-external-link"
+                    size="sm"
+                  >
+                    Homepage
+                  </UButton>
+                </template>
+
+                <template v-else-if="row.hackathonCard">
+                  <template v-if="user?.isRoot || row.hackathonCard.status?.isOrganizer">
                     <UButton
-                      :to="`/dash/${hackathon.id}`"
+                      :to="`/dash/${row.hackathonCard.hackathon.id}`"
                       icon="i-lucide-settings-2"
                       size="sm"
                     >
                       Manage
                     </UButton>
                     <UButton
-                      :to="`/${hackathon.shortCode}/team`"
+                      :to="`/${row.hackathonCard.hackathon.shortCode}/team`"
                       color="neutral"
                       variant="outline"
                       icon="i-lucide-external-link"
                       size="sm"
                     >
-                      Portal
+                      View page
                     </UButton>
                   </template>
 
-                  <template v-else-if="!status?.isParticipant">
+                  <template v-else-if="!row.hackathonCard.status?.isParticipant">
                     <UButton
                       icon="i-lucide-user-plus"
                       size="sm"
                       :loading="joinMutation.isPending.value"
-                      @click="joinHackathon({ id: hackathon.id!, shortCode: hackathon.shortCode! })"
+                      @click="joinHackathon({ id: row.hackathonCard.hackathon.id!, shortCode: row.hackathonCard.hackathon.shortCode! })"
                     >
                       Join event
                     </UButton>
                   </template>
 
-                  <template v-else-if="!registrationComplete">
+                  <template v-else-if="!row.hackathonCard.registrationComplete">
                     <UButton
-                      :to="`/${hackathon.shortCode}/registration`"
+                      :to="`/${row.hackathonCard.hackathon.shortCode}/registration`"
                       icon="i-lucide-clipboard-pen-line"
                       size="sm"
                     >
@@ -992,9 +1128,9 @@ function capacityPercent(event: typeof standaloneEvents.value[number]) {
                     </UButton>
                   </template>
 
-                  <template v-else-if="status?.status !== 'Accepted'">
+                  <template v-else-if="row.hackathonCard.status?.status !== 'Accepted'">
                     <UButton
-                      :to="`/dash/${hackathon.id}/participant`"
+                      :to="`/dash/${row.hackathonCard.hackathon.id}/participant`"
                       icon="i-lucide-file-check"
                       size="sm"
                     >
@@ -1004,7 +1140,7 @@ function capacityPercent(event: typeof standaloneEvents.value[number]) {
 
                   <template v-else>
                     <UButton
-                      :to="`/${hackathon.shortCode}/team`"
+                      :to="`/${row.hackathonCard.hackathon.shortCode}/team`"
                       icon="i-lucide-arrow-right"
                       trailing
                       size="sm"
@@ -1012,198 +1148,10 @@ function capacityPercent(event: typeof standaloneEvents.value[number]) {
                       Open portal
                     </UButton>
                   </template>
-                </div>
+                </template>
               </div>
-            </UCard>
-          </div>
-        </section>
-
-        <section
-          v-if="activeEventType !== 'hackathons'"
-          class="space-y-3"
-        >
-          <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <h2 class="text-lg font-semibold text-default">
-                Workshops
-              </h2>
-              <p class="text-sm text-muted">
-                Discover standalone workshops and lightweight learning sessions.
-              </p>
             </div>
-            <UButton
-              v-if="user?.isRoot"
-              icon="i-lucide-plus"
-              size="sm"
-              class="self-start sm:self-auto"
-              @click="openCreateStandaloneEventModal"
-            >
-              Add Workshop
-            </UButton>
-          </div>
-
-          <div
-            v-if="isLoadingUser || (!!user?.id && isLoadingStandaloneEvents)"
-            class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
-          >
-            <UCard
-              v-for="index in 3"
-              :key="index"
-            >
-              <div class="space-y-3">
-                <USkeleton class="h-5 w-2/3" />
-                <USkeleton class="h-16 w-full" />
-                <USkeleton class="h-20 w-full" />
-              </div>
-            </UCard>
-          </div>
-
-          <UAlert
-            v-else-if="!user?.id"
-            color="neutral"
-            variant="soft"
-            icon="i-lucide-log-in"
-            title="Sign in to view workshops"
-            description="Workshop discovery is available after sign-in."
-          />
-
-          <UAlert
-            v-else-if="!visibleStandaloneEvents.length"
-            color="neutral"
-            variant="soft"
-            icon="i-lucide-search-x"
-            title="No matching workshops"
-            description="Try a different search term or filter."
-          />
-
-          <div
-            v-else
-            class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
-          >
-            <UCard
-              v-for="event in visibleStandaloneEvents"
-              :key="event.id"
-              class="transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <template #header>
-                <div class="flex items-start justify-between gap-3">
-                  <div class="min-w-0">
-                    <div class="flex items-center gap-2">
-                      <UIcon
-                        name="i-lucide-brain-circuit"
-                        class="size-4 shrink-0 text-info"
-                      />
-                      <h3 class="truncate text-base font-semibold text-default">
-                        {{ event.title }}
-                      </h3>
-                    </div>
-                    <div class="mt-2 flex flex-wrap items-center gap-2">
-                      <UBadge
-                        :color="event.isPublished ? 'success' : 'neutral'"
-                        variant="subtle"
-                        size="sm"
-                      >
-                        {{ event.isPublished ? 'Published' : 'Draft' }}
-                      </UBadge>
-                      <UBadge
-                        color="info"
-                        variant="outline"
-                        size="sm"
-                      >
-                        Workshop
-                      </UBadge>
-                    </div>
-                  </div>
-
-                  <UButton
-                    v-if="user?.isRoot"
-                    size="xs"
-                    variant="ghost"
-                    icon="i-lucide-pencil"
-                    aria-label="Edit workshop"
-                    @click.stop="openEditStandaloneEventModal(event)"
-                  />
-                </div>
-              </template>
-
-              <div class="space-y-4">
-                <p class="line-clamp-3 min-h-16 text-sm leading-6 text-muted">
-                  {{ event.description || 'Workshop details are being prepared.' }}
-                </p>
-
-                <div class="grid gap-2 text-sm text-muted">
-                  <div class="flex items-center gap-2">
-                    <UIcon
-                      name="i-lucide-calendar-days"
-                      class="size-4"
-                    />
-                    <span>{{ formatHackathonDate(event.startTime) }} to {{ formatHackathonDate(event.endTime) }}</span>
-                  </div>
-                  <div
-                    v-if="event.location"
-                    class="flex items-center gap-2"
-                  >
-                    <UIcon
-                      name="i-lucide-map-pin"
-                      class="size-4"
-                    />
-                    <span class="truncate">{{ event.location }}</span>
-                  </div>
-                </div>
-
-                <div class="rounded-lg border border-default bg-elevated/40 p-3">
-                  <div class="flex items-center justify-between gap-3 text-sm">
-                    <span class="font-medium text-default">Capacity</span>
-                    <span class="text-muted">
-                      {{ standaloneEventAnalyticsForEvent(event.id)?.registeredCount ?? '...' }} / {{ event.maxParticipants ?? 0 }}
-                    </span>
-                  </div>
-                  <div class="mt-2 h-2 overflow-hidden rounded-full bg-muted">
-                    <div
-                      class="h-full rounded-full bg-info"
-                      :style="{ width: `${capacityPercent(event)}%` }"
-                    />
-                  </div>
-                  <div class="mt-2 grid grid-cols-2 gap-2 text-xs text-muted">
-                    <span>{{ standaloneEventAnalyticsForEvent(event.id)?.currentlyCheckedInCount ?? 0 }} checked in</span>
-                    <span class="text-right">{{ standaloneEventAnalyticsForEvent(event.id)?.resourceRedemptionCount ?? 0 }} redemptions</span>
-                  </div>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-2">
-                  <UButton
-                    v-if="event.id"
-                    :to="`/dash/standalone/${event.id}`"
-                    icon="i-lucide-settings-2"
-                    size="sm"
-                  >
-                    Manage
-                  </UButton>
-                  <UButton
-                    v-if="event.shortCode"
-                    :to="`/workshops/${event.shortCode}`"
-                    color="neutral"
-                    variant="outline"
-                    icon="i-lucide-clipboard-pen-line"
-                    size="sm"
-                  >
-                    Register
-                  </UButton>
-                  <UButton
-                    v-else-if="event.homepageUri"
-                    :to="event.homepageUri"
-                    target="_blank"
-                    color="neutral"
-                    variant="outline"
-                    icon="i-lucide-external-link"
-                    size="sm"
-                  >
-                    Homepage
-                  </UButton>
-                </div>
-              </div>
-            </UCard>
-          </div>
+          </template>
         </section>
       </div>
     </template>

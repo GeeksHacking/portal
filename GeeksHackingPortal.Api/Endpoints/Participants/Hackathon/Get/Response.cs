@@ -29,4 +29,9 @@ public class Response
     public DateTimeOffset JudgingStartDate { get; set; }
 
     public DateTimeOffset JudgingEndDate { get; set; }
+
+    /// <summary>
+    /// Time-limited URL of the banner image, or null when the hackathon has no banner.
+    /// </summary>
+    public string? BannerUrl { get; set; }
 }

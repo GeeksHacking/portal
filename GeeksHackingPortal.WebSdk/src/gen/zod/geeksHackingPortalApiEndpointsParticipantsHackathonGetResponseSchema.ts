@@ -20,4 +20,5 @@ export const geeksHackingPortalApiEndpointsParticipantsHackathonGetResponseSchem
   submissionsEndDate: z.iso.datetime().optional(),
   judgingStartDate: z.iso.datetime().optional(),
   judgingEndDate: z.iso.datetime().optional(),
+  bannerUrl: z.string().nullish(),
 })

@@ -9,6 +9,10 @@ import type { GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateR
 
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateResponse;
 
+/**
+ * @description the dto used to send an error response to the client
+ * @type object
+*/
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus400 = FastEndpointsErrorResponse;
 
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus401 = unknown;
@@ -34,4 +38,4 @@ export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEnd
 /**
  * @description Union of all possible responses
 */
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus400 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus403);
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointResponse = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpointStatus200;

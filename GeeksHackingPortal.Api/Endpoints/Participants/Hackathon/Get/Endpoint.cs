@@ -1,9 +1,11 @@
 using FastEndpoints;
+using GeeksHackingPortal.Api.Features.ActivityFiles;
+using GeeksHackingPortal.Api.Storage;
 using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Participants.Hackathon.Get;
 
-public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
+public class Endpoint(ISqlSugarClient sql, ActivityFileStorage storage) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -51,6 +53,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 SubmissionsEndDate = hackathon.SubmissionsEndDate,
                 JudgingStartDate = hackathon.JudgingStartDate,
                 JudgingEndDate = hackathon.JudgingEndDate,
+                BannerUrl = await ActivityBanners.GetUrlAsync(sql, storage, hackathon.Id, ct),
             },
             ct
         );

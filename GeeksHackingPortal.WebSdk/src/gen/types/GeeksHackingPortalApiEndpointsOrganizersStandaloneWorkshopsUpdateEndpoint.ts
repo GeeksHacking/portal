@@ -18,6 +18,10 @@ export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEnd
 
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus200 = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateResponse;
 
+/**
+ * @description the dto used to send an error response to the client
+ * @type object
+*/
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus400 = FastEndpointsErrorResponse;
 
 export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus401 = unknown;
@@ -43,4 +47,4 @@ export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEnd
 /**
  * @description Union of all possible responses
 */
-export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus400 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus401 | GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus403);
+export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointResponse = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpointStatus200;

@@ -13,7 +13,7 @@ export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateRe
   location: z.string().min(0).max(240).optional(),
   homepageUri: z.url().nullish(),
   shortCode: z.string().min(3).max(16).regex(/^[A-Za-z0-9-]+$/).optional(),
-  maxParticipants: z.int32().optional(),
+  maxParticipants: z.int32().gt(0).optional(),
   isPublished: z.boolean().optional(),
-  emailTemplates: z.object({}).catchall(z.string()).nullish(),
+  emailTemplates: z.record(z.string(), z.string()).nullish(),
 })

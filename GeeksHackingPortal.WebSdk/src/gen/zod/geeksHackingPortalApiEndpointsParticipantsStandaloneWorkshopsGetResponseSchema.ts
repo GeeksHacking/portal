@@ -16,4 +16,5 @@ export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetRes
   startTime: z.iso.datetime().optional(),
   endTime: z.iso.datetime().optional(),
   maxParticipants: z.int32().optional(),
+  bannerUrl: z.string().nullish(),
 })

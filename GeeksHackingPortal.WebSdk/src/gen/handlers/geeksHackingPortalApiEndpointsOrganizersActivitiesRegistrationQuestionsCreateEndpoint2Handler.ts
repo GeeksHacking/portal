@@ -3,7 +3,7 @@
 * Do not edit manually.
 */
 
-import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Response, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Status401, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Status403, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Body } from '../types/GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2'
+import type { GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Response, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Status400, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Status401, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Status403, GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Body } from '../types/GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2'
 import type { HttpResponseResolver } from 'msw'
 import { http } from 'msw'
 
@@ -12,6 +12,15 @@ export function geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQu
     status: 200,
     headers: {
       'Content-Type': 'application/json'
+    },
+  })
+}
+
+export function geeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2HandlerResponse400(data: GeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsCreateEndpoint2Status400) {
+  return new Response(JSON.stringify(data), {
+    status: 400,
+    headers: {
+      'Content-Type': 'application/problem+json'
     },
   })
 }

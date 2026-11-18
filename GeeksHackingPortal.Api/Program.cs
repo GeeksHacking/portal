@@ -11,6 +11,7 @@ using GeeksHackingPortal.Api.DataProtection;
 using GeeksHackingPortal.Api.Entities;
 using GeeksHackingPortal.Api.Options;
 using GeeksHackingPortal.Api.Services;
+using GeeksHackingPortal.Api.Storage;
 using Google.Cloud.Diagnostics.AspNetCore3;
 using Google.Cloud.Diagnostics.Common;
 using Google.Cloud.Storage.V1;
@@ -83,6 +84,10 @@ builder.Services.AddOptions<OpenIddictOptions>().Bind(builder.Configuration.GetS
 builder.Services.AddOptions<PostmarkOptions>().Bind(builder.Configuration.GetSection("Postmark"));
 
 builder.Services.AddSingleton<ICacheService, InMemoryCacheService>();
+
+var storageSettings = S3Storage.Read(builder.Configuration);
+builder.Services.AddSingleton(storageSettings);
+builder.Services.AddSingleton<ActivityFileStorage>();
 
 builder.Services.AddSingleton<ISqlSugarClient>(s =>
 {
@@ -381,6 +386,7 @@ builder.Services.SwaggerDocument(options =>
         t["Judges"] = "Judge management and scoring";
         t["Venue"] = "Venue check-in, check-out, and history";
         t["Timeline"] = "Event timeline management and public timeline views";
+        t["Files"] = "Activity banners and file attachments";
         t["Admin"] = "Administrative and operational endpoints";
     };
 });
@@ -467,6 +473,19 @@ else
         "Database schema validation skipped during startup. Run the database migrator workflow before deployment to detect or apply schema changes."
     );
     LogStartupPhase("database-schema-validation-skipped", startupStopwatch, ref startupPhaseTimestamp);
+}
+
+if (storageSettings.CreateBucket && storageSettings.IsConfigured)
+{
+    await app.Services.GetRequiredService<ActivityFileStorage>().EnsureBucketAsync(CancellationToken.None);
+    LogStartupPhase("storage-bucket-ensured", startupStopwatch, ref startupPhaseTimestamp);
+}
+else if (!storageSettings.IsConfigured)
+{
+    app.Logger.LogWarning(
+        "Object storage is not configured; activity banner and file uploads will fail. Set the '{ConnectionString}' connection string.",
+        S3StorageSettings.ConnectionStringName
+    );
 }
 
 app.UseForwardedHeaders();

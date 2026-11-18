@@ -16,7 +16,7 @@ export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResources
   return {
     ...defaultFakeData,
     ...(data || {}),
-  } as Omit<typeof defaultFakeData, keyof TData> & TData
+  } as Omit<typeof defaultFakeData, keyof NoInfer<TData>> & NoInfer<TData>
 }
 
 export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint2Query<TData extends Partial<GeeksHackingPortalApiEndpointsOrganizersHackathonResourcesStatisticsEndpoint2Query> = object>(data?: TData)
@@ -28,7 +28,7 @@ export function createGeeksHackingPortalApiEndpointsOrganizersHackathonResources
   return {
     ...defaultFakeData,
     ...(data || {}),
-  } as Omit<typeof defaultFakeData, keyof TData> & TData
+  } as Omit<typeof defaultFakeData, keyof NoInfer<TData>> & NoInfer<TData>
 }
 
 /**

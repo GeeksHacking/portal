@@ -15,5 +15,5 @@ export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateRe
   homepageUri: z.url().nullish(),
   shortCode: z.string().min(3).max(16).regex(/^[A-Za-z0-9-]+$/).nullish(),
   maxParticipants: z.int32().nullish(),
-  emailTemplates: z.object({}).catchall(z.string()).nullish(),
+  emailTemplates: z.record(z.string(), z.string()).nullish(),
 })

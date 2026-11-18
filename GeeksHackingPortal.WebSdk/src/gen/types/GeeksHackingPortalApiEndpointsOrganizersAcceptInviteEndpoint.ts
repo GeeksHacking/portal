@@ -27,4 +27,4 @@ export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointResponse
 /**
  * @description Union of all possible responses
 */
-export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointResponse = (GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointStatus200 | GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointStatus401);
+export type GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointResponse = GeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpointStatus200;

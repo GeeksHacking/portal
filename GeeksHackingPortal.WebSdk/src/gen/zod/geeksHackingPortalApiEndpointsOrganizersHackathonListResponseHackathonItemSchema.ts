@@ -20,5 +20,5 @@ export const geeksHackingPortalApiEndpointsOrganizersHackathonListResponseHackat
   submissionsEndDate: z.iso.datetime().optional(),
   judgingStartDate: z.iso.datetime().optional(),
   judgingEndDate: z.iso.datetime().optional(),
-  emailTemplates: z.object({}).catchall(z.string()).optional(),
+  emailTemplates: z.record(z.string(), z.string()).optional(),
 })

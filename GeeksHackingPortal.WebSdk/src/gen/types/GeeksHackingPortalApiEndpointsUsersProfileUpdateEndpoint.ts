@@ -9,6 +9,10 @@ import type { GeeksHackingPortalApiEndpointsUsersProfileUpdateResponse } from '.
 
 export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200 = GeeksHackingPortalApiEndpointsUsersProfileUpdateResponse;
 
+/**
+ * @description the dto used to send an error response to the client
+ * @type object
+*/
 export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400 = FastEndpointsErrorResponse;
 
 export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus401 = unknown;
@@ -31,4 +35,4 @@ export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponses = 
 /**
  * @description Union of all possible responses
 */
-export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponse = (GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200 | GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus400 | GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus401);
+export type GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointResponse = GeeksHackingPortalApiEndpointsUsersProfileUpdateEndpointStatus200;

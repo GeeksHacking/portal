@@ -1,9 +1,11 @@
 using FastEndpoints;
+using GeeksHackingPortal.Api.Features.ActivityFiles;
+using GeeksHackingPortal.Api.Storage;
 using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Participants.StandaloneWorkshops.Get;
 
-public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
+public class Endpoint(ISqlSugarClient sql, ActivityFileStorage storage) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -46,6 +48,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 StartTime = workshop.Activity.StartTime,
                 EndTime = workshop.Activity.EndTime,
                 MaxParticipants = workshop.MaxParticipants,
+                BannerUrl = await ActivityBanners.GetUrlAsync(sql, storage, workshop.Id, ct),
             },
             ct
         );

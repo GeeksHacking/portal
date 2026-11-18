@@ -39,4 +39,5 @@ export type GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsListWork
     currentParticipants?: number;
     isJoined?: boolean;
     hasAttended?: boolean;
+    bannerUrl?: string | null;
 };

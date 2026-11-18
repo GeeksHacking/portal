@@ -9,6 +9,10 @@ import type { GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApp
 
 export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus200 = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse;
 
+/**
+ * @description the dto used to send an error response to the client
+ * @type object
+*/
 export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus400 = FastEndpointsErrorResponse;
 
 export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus401 = unknown;
@@ -34,4 +38,4 @@ export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointRe
 /**
  * @description Union of all possible responses
 */
-export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointResponse = (GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus200 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus400 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus401 | GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus403);
+export type GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointResponse = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpointStatus200;

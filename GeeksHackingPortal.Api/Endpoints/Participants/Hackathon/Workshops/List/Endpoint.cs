@@ -2,11 +2,13 @@ using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
 using GeeksHackingPortal.Api.Extensions;
+using GeeksHackingPortal.Api.Features.ActivityFiles;
+using GeeksHackingPortal.Api.Storage;
 using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Participants.Hackathon.Workshops.List;
 
-public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
+public class Endpoint(ISqlSugarClient sql, ActivityFileStorage storage) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -41,6 +43,13 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
             
             .ToListAsync(ct);
 
+        var bannerUrls = await ActivityBanners.GetUrlsAsync(
+            sql,
+            storage,
+            [.. workshops.Where(w => w.Activity.IsPublished).Select(w => w.Id)],
+            ct
+        );
+
         await Send.OkAsync(
             new Response
             {
@@ -63,6 +72,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                             CurrentParticipants = w.Participants?.Count ?? 0,
                             IsJoined = joined is not null,
                             HasAttended = joined?.HasAttended ?? false,
+                            BannerUrl = bannerUrls.GetValueOrDefault(w.Id),
                         };
                     })
                     .ToList(),

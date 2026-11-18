@@ -36,6 +36,22 @@ var api = builder
     .WaitFor(db)
     .WaitFor(openIddictDb);
 
+// Cloudflare R2 header image storage is optional locally: only wired up when
+// the r2 bucket name parameter is set (env var Parameters__r2_bucket_name, or user secrets).
+// Without it, header image uploads return 503.
+if (
+    !string.IsNullOrWhiteSpace(
+        builder.Configuration["Parameters:r2-bucket-name"] ?? builder.Configuration["Parameters:r2_bucket_name"]
+    )
+)
+{
+    api.WithEnvironment("R2:AccountId", builder.AddParameter("r2-account-id"))
+        .WithEnvironment("R2:AccessKeyId", builder.AddParameter("r2-access-key-id", secret: true))
+        .WithEnvironment("R2:SecretAccessKey", builder.AddParameter("r2-secret-access-key", secret: true))
+        .WithEnvironment("R2:BucketName", builder.AddParameter("r2-bucket-name"))
+        .WithEnvironment("R2:PublicBaseUrl", builder.AddParameter("r2-public-base-url"));
+}
+
 builder
     .AddJavaScriptApp("sdk", "../GeeksHackingPortal.WebSdk")
     .WithPnpm()

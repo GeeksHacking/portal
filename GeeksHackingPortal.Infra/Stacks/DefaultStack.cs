@@ -143,6 +143,24 @@ public class DefaultStack : Stack
             }
         );
 
+        var r2AccessKeyId = new SecretManager.Secret(
+            "r2-access-key-id",
+            new SecretManager.SecretArgs
+            {
+                SecretId = "r2-access-key-id",
+                Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
+            }
+        );
+
+        var r2SecretAccessKey = new SecretManager.Secret(
+            "r2-secret-access-key",
+            new SecretManager.SecretArgs
+            {
+                SecretId = "r2-secret-access-key",
+                Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
+            }
+        );
+
         var githubClientIdAccessor = new SecretManager.SecretIamMember(
             "github-client-id-accessor",
             new SecretManager.SecretIamMemberArgs
@@ -272,6 +290,29 @@ public class DefaultStack : Stack
                 Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
             }
         );
+
+        _ = new SecretManager.SecretIamMember(
+            "r2-access-key-id-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = r2AccessKeyId.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
+        _ = new SecretManager.SecretIamMember(
+            "r2-secret-access-key-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = r2SecretAccessKey.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
+        // Non-secret R2 settings: `pulumi config set r2:accountId|bucketName|publicBaseUrl <value>`
+        var r2Config = new Config("r2");
 
         _ = new BucketIAMMember(
             "hackomania-data-protection-access",
@@ -561,6 +602,47 @@ public class DefaultStack : Stack
                                                 Version = "latest",
                                             },
                                     },
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "R2__AccessKeyId",
+                                    ValueSource = new ServiceTemplateContainerEnvValueSourceArgs
+                                    {
+                                        SecretKeyRef =
+                                            new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
+                                            {
+                                                Secret = r2AccessKeyId.SecretId,
+                                                Version = "latest",
+                                            },
+                                    },
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "R2__SecretAccessKey",
+                                    ValueSource = new ServiceTemplateContainerEnvValueSourceArgs
+                                    {
+                                        SecretKeyRef =
+                                            new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
+                                            {
+                                                Secret = r2SecretAccessKey.SecretId,
+                                                Version = "latest",
+                                            },
+                                    },
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "R2__AccountId",
+                                    Value = r2Config.Get("accountId") ?? "",
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "R2__BucketName",
+                                    Value = r2Config.Get("bucketName") ?? "",
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "R2__PublicBaseUrl",
+                                    Value = r2Config.Get("publicBaseUrl") ?? "",
                                 },
                                 new ServiceTemplateContainerEnvArgs
                                 {

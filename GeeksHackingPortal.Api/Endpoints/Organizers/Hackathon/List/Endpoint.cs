@@ -6,7 +6,7 @@ using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Organizers.Hackathon.List;
 
-public class Endpoint(ISqlSugarClient sql, MembershipService membership)
+public class Endpoint(ISqlSugarClient sql, HeaderImageStorage storage, MembershipService membership)
     : EndpointWithoutRequest<Response>
 {
     public override void Configure()
@@ -70,6 +70,7 @@ public class Endpoint(ISqlSugarClient sql, MembershipService membership)
                     Name = h.Activity.Title,
                     Description = h.Activity.Description,
                     Venue = h.Activity.Location,
+                    HeaderImageUrl = storage.ToUrl(h.Activity.HeaderImageKey),
                     HomepageUri = h.HomepageUri,
                     ShortCode = h.ShortCode,
                     IsPublished = h.Activity.IsPublished,

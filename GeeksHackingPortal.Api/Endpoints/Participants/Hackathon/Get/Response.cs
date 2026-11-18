@@ -10,6 +10,8 @@ public class Response
 
     public required string Venue { get; set; }
 
+    public string? HeaderImageUrl { get; set; }
+
     public required Uri HomepageUri { get; set; }
 
     public required string ShortCode { get; set; }

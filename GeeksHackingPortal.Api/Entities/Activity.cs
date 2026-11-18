@@ -22,6 +22,9 @@ public class Activity
 
     public bool IsPublished { get; set; }
 
+    [SugarColumn(IsNullable = true)]
+    public string? HeaderImageKey { get; set; }
+
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;

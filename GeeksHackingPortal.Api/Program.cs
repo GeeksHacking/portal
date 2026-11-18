@@ -81,6 +81,7 @@ builder.Services.AddOptions<AppOptions>().Bind(builder.Configuration.GetSection(
 builder.Services.AddOptions<GitHubOptions>().Bind(builder.Configuration.GetSection("GitHub"));
 builder.Services.AddOptions<OpenIddictOptions>().Bind(builder.Configuration.GetSection("OpenIddict"));
 builder.Services.AddOptions<PostmarkOptions>().Bind(builder.Configuration.GetSection("Postmark"));
+builder.Services.AddOptions<R2Options>().Bind(builder.Configuration.GetSection("R2"));
 
 builder.Services.AddSingleton<ICacheService, InMemoryCacheService>();
 
@@ -389,6 +390,7 @@ LogStartupPhase("fastendpoints-and-openapi-registered", startupStopwatch, ref st
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<PreviewSessionTickets>();
 builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
+builder.Services.AddSingleton<HeaderImageStorage>();
 
 builder.Services.AddScoped<MembershipService>();
 builder.Services.AddScoped<OAuthDirectoryService>();

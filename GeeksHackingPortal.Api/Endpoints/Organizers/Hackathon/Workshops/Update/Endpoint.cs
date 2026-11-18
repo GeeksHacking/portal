@@ -1,11 +1,12 @@
 using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
+using GeeksHackingPortal.Api.Services;
 using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Organizers.Hackathon.Workshops.Update;
 
-public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
+public class Endpoint(ISqlSugarClient sql, HeaderImageStorage storage) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -70,6 +71,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 StartTime = activity.StartTime,
                 EndTime = activity.EndTime,
                 Location = activity.Location,
+                HeaderImageUrl = storage.ToUrl(activity.HeaderImageKey),
                 MaxParticipants = workshop.MaxParticipants,
                 IsPublished = activity.IsPublished,
                 UpdatedAt = activity.UpdatedAt,

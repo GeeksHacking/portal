@@ -36,6 +36,40 @@ var api = builder
     .WaitFor(db)
     .WaitFor(openIddictDb);
 
+// Header image storage: production uses Cloudflare R2; locally we run RustFS, an S3-compatible server.
+// The API creates the bucket with a public-read policy on startup, and the browser uploads to it with
+// presigned URLs, so the frontend origin must be allowed by CORS.
+const string headerImageBucket = "portal";
+var storageAccessKey = builder.AddParameter("storage-access-key", "rustfsadmin");
+var storageSecretKey = builder.AddParameter("storage-secret-key", "rustfsadmin", secret: true);
+
+var storage = builder
+    .AddContainer("storage", "rustfs/rustfs", "1.0.5")
+    .WithHttpEndpoint(targetPort: 9000, name: "s3")
+    .WithHttpEndpoint(targetPort: 9001, name: "console")
+    .WithEnvironment("RUSTFS_ACCESS_KEY", storageAccessKey)
+    .WithEnvironment("RUSTFS_SECRET_KEY", storageSecretKey)
+    .WithEnvironment("RUSTFS_CONSOLE_ENABLE", "true")
+    .WithEnvironment("RUSTFS_CORS_ALLOWED_ORIGINS", appFrontendUrl)
+    .WithHttpHealthCheck("/health", endpointName: "s3");
+if (builder.Configuration.GetValue("UseVolumes", true))
+{
+    storage.WithVolume("geekshacking-portal-rustfs", "/data");
+}
+
+var storageS3 = storage.GetEndpoint("s3");
+api.WithEnvironment("R2:ServiceUrl", storageS3)
+    .WithEnvironment(
+        "R2:WriteSecrets",
+        ReferenceExpression.Create(
+            $$"""{"accessKeyId":"{{storageAccessKey}}","secretAccessKey":"{{storageSecretKey}}"}"""
+        )
+    )
+    .WithEnvironment("R2:BucketName", headerImageBucket)
+    .WithEnvironment("R2:PublicBaseUrl", ReferenceExpression.Create($"{storageS3}/{headerImageBucket}"))
+    .WithEnvironment("R2:EnsureBucket", "true")
+    .WaitFor(storage);
+
 builder
     .AddJavaScriptApp("sdk", "../GeeksHackingPortal.WebSdk")
     .WithPnpm()

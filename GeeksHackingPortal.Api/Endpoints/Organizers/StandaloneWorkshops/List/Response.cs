@@ -16,6 +16,8 @@ public class Response
 
         public required string Location { get; set; }
 
+        public string? HeaderImageUrl { get; set; }
+
         public Uri? HomepageUri { get; set; }
 
         public required string ShortCode { get; set; }

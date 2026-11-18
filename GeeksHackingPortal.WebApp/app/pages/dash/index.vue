@@ -146,6 +146,7 @@ interface EventRow {
   kind: 'hackathon' | 'workshop'
   name: string
   description: string
+  headerImageUrl: string | null
   location: string
   shortCode: string
   homepageUri: string | null | undefined
@@ -172,6 +173,7 @@ const eventRows = computed<EventRow[]>(() => {
     rows.push({
       key: `h-${hackathon.id ?? card.index}`,
       kind: 'hackathon',
+      headerImageUrl: hackathon.headerImageUrl ?? null,
       name: hackathon.name ?? '',
       description: hackathon.description || 'Details are being prepared by the organizers.',
       location: hackathon.venue ?? '',
@@ -192,6 +194,7 @@ const eventRows = computed<EventRow[]>(() => {
     rows.push({
       key: `w-${event.id}`,
       kind: 'workshop',
+      headerImageUrl: event.headerImageUrl ?? null,
       name: event.title ?? '',
       description: event.description || 'Workshop details are being prepared.',
       location: event.location ?? '',
@@ -392,6 +395,13 @@ function eventDateRange(start?: string | null, end?: string | null) {
               class="rounded-lg border border-default bg-default p-4 transition hover:border-primary/40 hover:shadow-sm"
               :class="viewMode === 'card' ? 'flex flex-col gap-4' : 'grid gap-3 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1.4fr)_19rem] lg:items-center'"
             >
+              <img
+                v-if="viewMode === 'card' && row.headerImageUrl"
+                :src="row.headerImageUrl"
+                alt=""
+                loading="lazy"
+                class="-mx-4 -mt-4 aspect-2/1 w-[calc(100%+2rem)] max-w-none rounded-t-lg object-cover"
+              >
               <div class="min-w-0 space-y-1.5">
                 <div
                   class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide"

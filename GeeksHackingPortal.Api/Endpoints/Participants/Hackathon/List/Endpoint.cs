@@ -1,9 +1,10 @@
 using FastEndpoints;
+using GeeksHackingPortal.Api.Services;
 using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Participants.Hackathon.List;
 
-public class Endpoint(ISqlSugarClient sql) : EndpointWithoutRequest<Response>
+public class Endpoint(ISqlSugarClient sql, HeaderImageStorage storage) : EndpointWithoutRequest<Response>
 {
     public override void Configure()
     {
@@ -29,6 +30,8 @@ public class Endpoint(ISqlSugarClient sql) : EndpointWithoutRequest<Response>
                 Name = activity.Title,
                 Description = activity.Description,
                 Venue = activity.Location,
+                // Holds the storage key here; converted to a public URL below.
+                HeaderImageUrl = activity.HeaderImageKey,
                 HomepageUri = hackathon.HomepageUri,
                 ShortCode = hackathon.ShortCode,
                 IsPublished = activity.IsPublished,
@@ -41,6 +44,11 @@ public class Endpoint(ISqlSugarClient sql) : EndpointWithoutRequest<Response>
                 JudgingEndDate = hackathon.JudgingEndDate,
             })
             .ToListAsync(ct);
+
+        foreach (var hackathon in hackathons)
+        {
+            hackathon.HeaderImageUrl = storage.ToUrl(hackathon.HeaderImageUrl);
+        }
 
         await Send.OkAsync(
             new Response

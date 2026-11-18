@@ -1,9 +1,10 @@
 using FastEndpoints;
+using GeeksHackingPortal.Api.Services;
 using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Participants.StandaloneWorkshops.Get;
 
-public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
+public class Endpoint(ISqlSugarClient sql, HeaderImageStorage storage) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -40,6 +41,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 Title = workshop.Activity.Title,
                 Description = workshop.Activity.Description,
                 Location = workshop.Activity.Location,
+                HeaderImageUrl = storage.ToUrl(workshop.Activity.HeaderImageKey),
                 HomepageUri = workshop.HomepageUri,
                 ShortCode = workshop.ShortCode,
                 IsPublished = workshop.Activity.IsPublished,

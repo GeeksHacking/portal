@@ -8,6 +8,7 @@ public class Response
     public required DateTimeOffset StartTime { get; set; }
     public required DateTimeOffset EndTime { get; set; }
     public required string Location { get; set; }
+    public string? HeaderImageUrl { get; set; }
     public required int MaxParticipants { get; set; }
     public required bool IsPublished { get; set; }
     public required DateTimeOffset UpdatedAt { get; set; }

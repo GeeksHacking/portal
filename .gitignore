@@ -11,3 +11,4 @@ node_modules/
 GeeksHackingPortal.WebApp/package-lock.json
 .vs
 .dotnet
+.env.local

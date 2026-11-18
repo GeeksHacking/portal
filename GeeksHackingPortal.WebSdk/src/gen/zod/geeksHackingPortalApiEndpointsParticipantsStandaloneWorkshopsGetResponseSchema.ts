@@ -10,6 +10,7 @@ export const geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetRes
   title: z.string().optional(),
   description: z.string().optional(),
   location: z.string().optional(),
+  headerImageUrl: z.string().nullish(),
   homepageUri: z.url().nullish(),
   shortCode: z.string().optional(),
   isPublished: z.boolean().optional(),

@@ -13,6 +13,7 @@ export type GeeksHackingPortalApiEndpointsParticipantsHackathonListResponseHacka
     name?: string;
     description?: string;
     venue?: string;
+    headerImageUrl?: string | null;
     /**
      * @description
      * Format: `uri`

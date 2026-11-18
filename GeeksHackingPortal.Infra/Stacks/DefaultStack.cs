@@ -143,6 +143,15 @@ public class DefaultStack : Stack
             }
         );
 
+        var r2WriteSecrets = new SecretManager.Secret(
+            "r2-write-secrets",
+            new SecretManager.SecretArgs
+            {
+                SecretId = "r2-write-secrets",
+                Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
+            }
+        );
+
         var githubClientIdAccessor = new SecretManager.SecretIamMember(
             "github-client-id-accessor",
             new SecretManager.SecretIamMemberArgs
@@ -272,6 +281,19 @@ public class DefaultStack : Stack
                 Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
             }
         );
+
+        _ = new SecretManager.SecretIamMember(
+            "r2-write-secrets-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = r2WriteSecrets.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
+        // Non-secret R2 settings: `pulumi config set r2:accountId|bucketName|publicBaseUrl <value>`
+        var r2Config = new Config("r2");
 
         _ = new BucketIAMMember(
             "hackomania-data-protection-access",
@@ -561,6 +583,34 @@ public class DefaultStack : Stack
                                                 Version = "latest",
                                             },
                                     },
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "R2__WriteSecrets",
+                                    ValueSource = new ServiceTemplateContainerEnvValueSourceArgs
+                                    {
+                                        SecretKeyRef =
+                                            new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
+                                            {
+                                                Secret = r2WriteSecrets.SecretId,
+                                                Version = "latest",
+                                            },
+                                    },
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "R2__AccountId",
+                                    Value = r2Config.Get("accountId") ?? "",
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "R2__BucketName",
+                                    Value = r2Config.Get("bucketName") ?? "",
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "R2__PublicBaseUrl",
+                                    Value = r2Config.Get("publicBaseUrl") ?? "",
                                 },
                                 new ServiceTemplateContainerEnvArgs
                                 {

@@ -8,6 +8,7 @@ public class Response
     public required DateTimeOffset StartTime { get; init; }
     public required DateTimeOffset EndTime { get; init; }
     public required string Location { get; init; }
+    public string? HeaderImageUrl { get; init; }
     public Uri? HomepageUri { get; init; }
     public required string ShortCode { get; init; }
     public required int MaxParticipants { get; init; }

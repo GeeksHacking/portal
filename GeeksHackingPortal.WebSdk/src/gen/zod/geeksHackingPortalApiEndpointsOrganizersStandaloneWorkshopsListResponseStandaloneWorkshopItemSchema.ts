@@ -12,6 +12,7 @@ export const geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListResp
   startTime: z.iso.datetime().optional(),
   endTime: z.iso.datetime().optional(),
   location: z.string().optional(),
+  headerImageUrl: z.string().nullish(),
   homepageUri: z.url().nullish(),
   shortCode: z.string().optional(),
   maxParticipants: z.int32().optional(),

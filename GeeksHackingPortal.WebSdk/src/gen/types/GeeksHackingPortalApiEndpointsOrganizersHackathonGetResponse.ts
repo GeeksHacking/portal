@@ -15,6 +15,7 @@ export type GeeksHackingPortalApiEndpointsOrganizersHackathonGetResponse = {
     name?: string;
     description?: string;
     venue?: string;
+    headerImageUrl?: string | null;
     /**
      * @description
      * Format: `uri`

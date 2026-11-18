@@ -482,7 +482,14 @@ const totalQuestionsCount = computed(() => {
       >
         <div class="w-full max-w-6xl space-y-5 lg:space-y-6">
           <section class="reveal-up reveal-delay-1 overflow-hidden rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) shadow-sm">
+            <img
+              v-if="workshop.headerImageUrl"
+              :src="workshop.headerImageUrl"
+              alt=""
+              class="aspect-2/1 w-full object-cover"
+            >
             <div
+              v-else
               class="h-28 bg-linear-to-br from-primary/25 via-info/15 to-warning/20 sm:h-40"
               aria-hidden="true"
             />

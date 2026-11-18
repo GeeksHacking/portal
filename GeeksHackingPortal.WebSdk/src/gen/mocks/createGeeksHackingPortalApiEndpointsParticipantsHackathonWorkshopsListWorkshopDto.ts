@@ -16,6 +16,7 @@ export function createGeeksHackingPortalApiEndpointsParticipantsHackathonWorksho
   startTime: faker.date.anytime().toISOString(),
   endTime: faker.date.anytime().toISOString(),
   location: faker.string.alpha(),
+  headerImageUrl: faker.string.alpha(),
   maxParticipants: faker.number.int(),
   currentParticipants: faker.number.int(),
   isJoined: faker.datatype.boolean(),

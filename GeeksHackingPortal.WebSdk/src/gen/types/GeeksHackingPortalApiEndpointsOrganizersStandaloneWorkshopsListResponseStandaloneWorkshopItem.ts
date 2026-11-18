@@ -25,6 +25,7 @@ export type GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListRespo
     */
     endTime?: string;
     location?: string;
+    headerImageUrl?: string | null;
     /**
      * @description
      * Format: `uri`

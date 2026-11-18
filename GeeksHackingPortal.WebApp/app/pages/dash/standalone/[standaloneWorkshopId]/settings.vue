@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import {
   geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryKey,
+  useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
   useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint,
   useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
+import { emptyHeaderImageChange, useActivityHeaderImage } from '~/composables/useActivityHeaderImage'
 import { getApiErrorMessage, getApiFieldError, getApiValidationErrors, getApiValidationSummary } from '~/utils/api-errors'
 import {
   formatHackathonDateTimeInput,
@@ -19,6 +21,10 @@ const standaloneWorkshopId = computed(() => (route.params.standaloneWorkshopId a
 
 const { data: eventsData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint()
 const updateMutation = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint()
+const { data: user } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
+// Header images can only be changed by admins (enforced by the API too).
+const { saveHeaderImage, isSavingHeaderImage } = useActivityHeaderImage()
+const headerImage = ref(emptyHeaderImageChange())
 
 const event = computed(() => eventsData.value?.standaloneWorkshops?.find(item => item.id === standaloneWorkshopId.value))
 
@@ -54,11 +60,12 @@ watch(
       isPublished: value.isPublished ?? false,
       emailTemplates: value.emailTemplates ?? {},
     }
+    headerImage.value = emptyHeaderImageChange()
   },
   { immediate: true },
 )
 
-const isSubmitting = computed(() => updateMutation.isPending.value)
+const isSubmitting = computed(() => updateMutation.isPending.value || isSavingHeaderImage.value)
 
 function normalizeOptionalUrl(value: string | null | undefined) {
   const trimmed = (value ?? '').trim()
@@ -161,10 +168,19 @@ async function handleSubmit() {
       },
     })
 
+    const headerImageError = await saveHeaderImage(standaloneWorkshopId.value, headerImage.value)
+
     await queryClient.invalidateQueries({
       queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryKey(),
     })
     toast.add({ title: 'Standalone event settings updated', color: 'success' })
+    if (headerImageError) {
+      toast.add({
+        title: 'The header image could not be updated',
+        description: getApiErrorMessage(headerImageError, 'Please try again.'),
+        color: 'warning',
+      })
+    }
   }
   catch (error) {
     console.error('Failed to update standalone event settings', error)
@@ -258,6 +274,12 @@ async function handleSubmit() {
               <UInput v-model="form.homepageUri" />
             </UFormField>
           </div>
+
+          <OrganizersHeaderImageField
+            v-if="user?.isRoot"
+            v-model="headerImage"
+            :current-url="event?.headerImageUrl"
+          />
 
           <div class="grid gap-4 lg:grid-cols-2">
             <p class="text-xs text-(--ui-text-muted) lg:col-span-2">

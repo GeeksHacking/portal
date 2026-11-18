@@ -23,7 +23,7 @@ public class HeaderImageTests
     {
         var file = new ByteArrayContent(bytes);
         file.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-        return new MultipartFormDataContent { { file, "File", fileName } };
+        return new MultipartFormDataContent { { file, "file", fileName } };
     }
 
     private async Task<HackathonResponse> CreateHackathonAsync()

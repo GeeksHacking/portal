@@ -65,6 +65,7 @@ public class Endpoint(ISqlSugarClient sql, HeaderImageStorage storage, ILogger<E
         stream.Position = 0;
         var newKey = await storage.UploadAsync(
             activity.Id,
+            activity.Kind,
             stream,
             format!.Value.ContentType,
             format.Value.Extension,

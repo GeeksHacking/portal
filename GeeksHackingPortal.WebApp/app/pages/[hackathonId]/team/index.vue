@@ -47,7 +47,7 @@ watch(
       id="home"
       class="scroll-mt-12 lg:scroll-mt-18"
     >
-      <AppHeroSection />
+      <AppHeroSection :image-url="hackathon?.headerImageUrl" />
     </div>
     <div
       id="challenges"

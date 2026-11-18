@@ -1,6 +1,7 @@
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
+using GeeksHackingPortal.Api.Entities;
 using GeeksHackingPortal.Api.Options;
 using Microsoft.Extensions.Options;
 
@@ -46,13 +47,15 @@ public sealed class HeaderImageStorage : IDisposable
 
     public async Task<string> UploadAsync(
         Guid activityId,
+        ActivityKind kind,
         Stream content,
         string contentType,
         string extension,
         CancellationToken ct
     )
     {
-        var key = $"activities/{activityId}/header-{Guid.NewGuid():N}{extension}";
+        var folder = kind == ActivityKind.Hackathon ? "hackathon" : "workshops";
+        var key = $"{folder}/{activityId}/header-{Guid.NewGuid():N}{extension}";
         await Client.PutObjectAsync(
             new PutObjectRequest
             {

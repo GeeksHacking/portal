@@ -12,6 +12,7 @@ export const geeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsListWor
   startTime: z.iso.datetime().optional(),
   endTime: z.iso.datetime().optional(),
   location: z.string().optional(),
+  headerImageUrl: z.string().nullish(),
   maxParticipants: z.int32().optional(),
   currentParticipants: z.int32().optional(),
   isJoined: z.boolean().optional(),

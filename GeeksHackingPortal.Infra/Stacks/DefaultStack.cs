@@ -143,6 +143,15 @@ public class DefaultStack : Stack
             }
         );
 
+        var r2WriteSecrets = new SecretManager.Secret(
+            "r2-write-secrets",
+            new SecretManager.SecretArgs
+            {
+                SecretId = "r2-write-secrets",
+                Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
+            }
+        );
+
         var githubClientIdAccessor = new SecretManager.SecretIamMember(
             "github-client-id-accessor",
             new SecretManager.SecretIamMemberArgs
@@ -268,6 +277,16 @@ public class DefaultStack : Stack
             new SecretManager.SecretIamMemberArgs
             {
                 SecretId = postmarkServerToken.SecretId,
+                Role = "roles/secretmanager.secretAccessor",
+                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
+            }
+        );
+
+        var r2WriteSecretsAccessor = new SecretManager.SecretIamMember(
+            "r2-write-secrets-accessor",
+            new SecretManager.SecretIamMemberArgs
+            {
+                SecretId = r2WriteSecrets.SecretId,
                 Role = "roles/secretmanager.secretAccessor",
                 Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
             }
@@ -558,6 +577,19 @@ public class DefaultStack : Stack
                                             new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
                                             {
                                                 Secret = postmarkServerToken.SecretId,
+                                                Version = "latest",
+                                            },
+                                    },
+                                },
+                                new ServiceTemplateContainerEnvArgs
+                                {
+                                    Name = "R2__WriteSecrets",
+                                    ValueSource = new ServiceTemplateContainerEnvValueSourceArgs
+                                    {
+                                        SecretKeyRef =
+                                            new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
+                                            {
+                                                Secret = r2WriteSecrets.SecretId,
                                                 Version = "latest",
                                             },
                                     },

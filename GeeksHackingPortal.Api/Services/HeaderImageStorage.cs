@@ -18,10 +18,11 @@ public sealed class HeaderImageStorage : IDisposable
     public HeaderImageStorage(IOptions<R2Options> options)
     {
         _options = options.Value;
+        var (accessKeyId, secretAccessKey) = _options.ResolveCredentials();
         IsConfigured =
             !string.IsNullOrWhiteSpace(_options.AccountId)
-            && !string.IsNullOrWhiteSpace(_options.AccessKeyId)
-            && !string.IsNullOrWhiteSpace(_options.SecretAccessKey)
+            && !string.IsNullOrWhiteSpace(accessKeyId)
+            && !string.IsNullOrWhiteSpace(secretAccessKey)
             && !string.IsNullOrWhiteSpace(_options.BucketName)
             && !string.IsNullOrWhiteSpace(_options.PublicBaseUrl);
 
@@ -31,7 +32,7 @@ public sealed class HeaderImageStorage : IDisposable
         }
 
         _client = new AmazonS3Client(
-            new BasicAWSCredentials(_options.AccessKeyId, _options.SecretAccessKey),
+            new BasicAWSCredentials(accessKeyId, secretAccessKey),
             new AmazonS3Config
             {
                 ServiceURL = $"https://{_options.AccountId}.r2.cloudflarestorage.com",

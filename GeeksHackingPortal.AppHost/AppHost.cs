@@ -46,10 +46,22 @@ if (
 )
 {
     api.WithEnvironment("R2:AccountId", builder.AddParameter("r2-account-id"))
-        .WithEnvironment("R2:AccessKeyId", builder.AddParameter("r2-access-key-id", secret: true))
-        .WithEnvironment("R2:SecretAccessKey", builder.AddParameter("r2-secret-access-key", secret: true))
         .WithEnvironment("R2:BucketName", builder.AddParameter("r2-bucket-name"))
         .WithEnvironment("R2:PublicBaseUrl", builder.AddParameter("r2-public-base-url"));
+
+    if (
+        !string.IsNullOrWhiteSpace(
+            builder.Configuration["Parameters:r2-write-secrets"] ?? builder.Configuration["Parameters:r2_write_secrets"]
+        )
+    )
+    {
+        api.WithEnvironment("R2:WriteSecrets", builder.AddParameter("r2-write-secrets", secret: true));
+    }
+    else
+    {
+        api.WithEnvironment("R2:AccessKeyId", builder.AddParameter("r2-access-key-id", secret: true))
+            .WithEnvironment("R2:SecretAccessKey", builder.AddParameter("r2-secret-access-key", secret: true));
+    }
 }
 
 builder

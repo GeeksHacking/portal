@@ -1,8 +1,11 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
+using GeeksHackingPortal.Api.Options;
+using GeeksHackingPortal.Api.Services;
 using GeeksHackingPortal.Tests.Data;
 using GeeksHackingPortal.Tests.Models;
+using Microsoft.Extensions.Options;
 
 namespace GeeksHackingPortal.Tests.Endpoints.Admin.Activities;
 
@@ -148,5 +151,23 @@ public class HeaderImageTests
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
         await Assert.That(json.RootElement.TryGetProperty("headerImageUrl", out var url)).IsTrue();
         await Assert.That(url.ValueKind).IsEqualTo(JsonValueKind.Null);
+    }
+
+    [Test]
+    public async Task HeaderImageStorage_WithWriteSecretsJson_ConfiguresClient()
+    {
+        using var storage = new HeaderImageStorage(
+            Options.Create(
+                new R2Options
+                {
+                    AccountId = "acc-123",
+                    BucketName = "portal",
+                    PublicBaseUrl = "https://portal-r2.geekshacking.com",
+                    WriteSecrets = """{"accessKeyId":"key-id","secretAccessKey":"secret-key"}""",
+                }
+            )
+        );
+
+        await Assert.That(storage.IsConfigured).IsTrue();
     }
 }

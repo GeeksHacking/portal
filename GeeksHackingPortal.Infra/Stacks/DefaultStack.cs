@@ -143,20 +143,11 @@ public class DefaultStack : Stack
             }
         );
 
-        var r2AccessKeyId = new SecretManager.Secret(
-            "r2-access-key-id",
+        var r2WriteSecrets = new SecretManager.Secret(
+            "r2-write-secrets",
             new SecretManager.SecretArgs
             {
-                SecretId = "r2-access-key-id",
-                Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
-            }
-        );
-
-        var r2SecretAccessKey = new SecretManager.Secret(
-            "r2-secret-access-key",
-            new SecretManager.SecretArgs
-            {
-                SecretId = "r2-secret-access-key",
+                SecretId = "r2-write-secrets",
                 Replication = new SecretReplicationArgs { Auto = new SecretReplicationAutoArgs() },
             }
         );
@@ -292,20 +283,10 @@ public class DefaultStack : Stack
         );
 
         _ = new SecretManager.SecretIamMember(
-            "r2-access-key-id-accessor",
+            "r2-write-secrets-accessor",
             new SecretManager.SecretIamMemberArgs
             {
-                SecretId = r2AccessKeyId.SecretId,
-                Role = "roles/secretmanager.secretAccessor",
-                Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
-            }
-        );
-
-        _ = new SecretManager.SecretIamMember(
-            "r2-secret-access-key-accessor",
-            new SecretManager.SecretIamMemberArgs
-            {
-                SecretId = r2SecretAccessKey.SecretId,
+                SecretId = r2WriteSecrets.SecretId,
                 Role = "roles/secretmanager.secretAccessor",
                 Member = Output.Format($"serviceAccount:{cloudRunServiceAccount.Email}"),
             }
@@ -605,26 +586,13 @@ public class DefaultStack : Stack
                                 },
                                 new ServiceTemplateContainerEnvArgs
                                 {
-                                    Name = "R2__AccessKeyId",
+                                    Name = "R2__WriteSecrets",
                                     ValueSource = new ServiceTemplateContainerEnvValueSourceArgs
                                     {
                                         SecretKeyRef =
                                             new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
                                             {
-                                                Secret = r2AccessKeyId.SecretId,
-                                                Version = "latest",
-                                            },
-                                    },
-                                },
-                                new ServiceTemplateContainerEnvArgs
-                                {
-                                    Name = "R2__SecretAccessKey",
-                                    ValueSource = new ServiceTemplateContainerEnvValueSourceArgs
-                                    {
-                                        SecretKeyRef =
-                                            new ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs
-                                            {
-                                                Secret = r2SecretAccessKey.SecretId,
+                                                Secret = r2WriteSecrets.SecretId,
                                                 Version = "latest",
                                             },
                                     },

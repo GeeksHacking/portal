@@ -69,18 +69,17 @@ dotnet run --project GeeksHackingPortal.DbMigrator -- apply --seed-development-t
 - Hackathons, hackathon workshops and standalone workshops can have a header image, stored in a Cloudflare R2 bucket. Every list/get response for them includes `headerImageUrl` (`null` when unset).
 - Only admins (`App:AdminEmails` / `App:AdminGitHubLogins`) can upload or remove images: `PUT /admin/activities/{activityId}/header-image` (multipart field `File`; JPEG, PNG or WebP, max 5 MB) and `DELETE` on the same path.
 - The bucket is read publicly via its custom domain / r2.dev URL; the R2 API token (Object Read & Write, scoped to this bucket) lives only in the API.
-- API configuration: `R2:AccountId`, `R2:AccessKeyId`, `R2:SecretAccessKey`, `R2:BucketName`, `R2:PublicBaseUrl`. Without them, uploads return 503.
+- API configuration: `R2:AccountId`, `R2:WriteSecrets` (JSON `{"accessKeyId": "...", "secretAccessKey": "..."}`, or individual `R2:AccessKeyId` / `R2:SecretAccessKey`), `R2:BucketName`, `R2:PublicBaseUrl`. Without them, uploads return 503.
 - Locally (optional), set these before `aspire run`:
 
   ```bash
   export Parameters__r2_account_id=""
-  export Parameters__r2_access_key_id=""
-  export Parameters__r2_secret_access_key=""
+  export Parameters__r2_write_secrets='{"accessKeyId":"","secretAccessKey":""}'
   export Parameters__r2_bucket_name=""
   export Parameters__r2_public_base_url=""   # e.g. https://pub-xxxx.r2.dev
   ```
 
-- Production: the Pulumi stack reads Secret Manager secrets `r2-access-key-id` / `r2-secret-access-key` and the `r2:accountId`, `r2:bucketName`, `r2:publicBaseUrl` config in `GeeksHackingPortal.Infra/Pulumi.production.yaml`.
+- Production: the Pulumi stack reads Secret Manager secret `r2-write-secrets` (injected as `R2__WriteSecrets`) and the `r2:accountId`, `r2:bucketName`, `r2:publicBaseUrl` config in `GeeksHackingPortal.Infra/Pulumi.production.yaml`.
 
 ## Development
 

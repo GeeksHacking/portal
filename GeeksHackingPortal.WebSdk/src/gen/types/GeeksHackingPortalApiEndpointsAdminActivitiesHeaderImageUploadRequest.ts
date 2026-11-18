@@ -4,5 +4,5 @@
 */
 
 export type GeeksHackingPortalApiEndpointsAdminActivitiesHeaderImageUploadRequest = {
-    file?: Blob;
+    key?: string;
 };

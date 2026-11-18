@@ -10,7 +10,7 @@ export function createGeeksHackingPortalApiEndpointsAdminActivitiesHeaderImageUp
 
 {
   const defaultFakeData = {
-  file: faker.image.url() as unknown as Blob,
+  key: faker.string.alpha(),
 }
   return {
     ...defaultFakeData,

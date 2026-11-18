@@ -13,8 +13,8 @@ import { toValue } from 'vue'
 export const geeksHackingPortalApiEndpointsAdminActivitiesHeaderImageUploadEndpointMutationKey = () => [{ url: '/admin/activities/:activityId/header-image' }] as const
 
 /**
- * @description Uploads (or replaces) the header image of a hackathon, hackathon workshop or standalone workshop. Accepts JPEG, PNG or WebP up to 5 MB.
- * @summary Upload an activity header image
+ * @description Sets (or replaces) the header image of a hackathon, hackathon workshop or standalone workshop to an image already uploaded through POST /admin/activities/{activityId}/header-image/upload-url. The uploaded object must be a JPEG, PNG or WebP up to 5 MB, otherwise it is deleted.
+ * @summary Set an activity header image
  * {@link /admin/activities/:activityId/header-image}
  */
 export function useGeeksHackingPortalApiEndpointsAdminActivitiesHeaderImageUploadEndpoint<TContext>(options: {

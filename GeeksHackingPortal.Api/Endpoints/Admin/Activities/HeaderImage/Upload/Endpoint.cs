@@ -9,45 +9,23 @@ namespace GeeksHackingPortal.Api.Endpoints.Admin.Activities.HeaderImage.Upload;
 public class Endpoint(ISqlSugarClient sql, HeaderImageStorage storage, ILogger<Endpoint> logger)
     : Endpoint<Request, Response>
 {
-    private const long MaxBytes = 5 * 1024 * 1024;
-
     public override void Configure()
     {
         Put("admin/activities/{ActivityId:guid}/header-image");
         Policies(PolicyNames.Root);
-        AllowFileUploads();
         Description(b => b.WithTags("Admin"));
         Summary(s =>
         {
-            s.Summary = "Upload an activity header image";
+            s.Summary = "Set an activity header image";
             s.Description =
-                "Uploads (or replaces) the header image of a hackathon, hackathon workshop or standalone workshop. "
-                + "Accepts JPEG, PNG or WebP up to 5 MB.";
+                "Sets (or replaces) the header image of a hackathon, hackathon workshop or standalone workshop "
+                + "to an image already uploaded through POST /admin/activities/{activityId}/header-image/upload-url. "
+                + "The uploaded object must be a JPEG, PNG or WebP up to 5 MB, otherwise it is deleted.";
         });
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        if (req.File is null || req.File.Length == 0)
-        {
-            AddError(r => r.File, "An image file is required.");
-        }
-        else if (req.File.Length > MaxBytes)
-        {
-            AddError(r => r.File, "Image must be 5 MB or smaller.");
-        }
-
-        ThrowIfAnyErrors();
-
-        await using var stream = new MemoryStream();
-        await req.File!.CopyToAsync(stream, ct);
-        var format = DetectFormat(stream.GetBuffer().AsSpan(0, (int)stream.Length));
-        if (format is null)
-        {
-            AddError(r => r.File, "Image must be a JPEG, PNG or WebP file.");
-            ThrowIfAnyErrors();
-        }
-
         var activity = await sql.Queryable<Activity>().InSingleAsync(req.ActivityId);
         if (activity is null)
         {
@@ -62,58 +40,76 @@ public class Endpoint(ISqlSugarClient sql, HeaderImageStorage storage, ILogger<E
             return;
         }
 
-        stream.Position = 0;
-        var newKey = await storage.UploadAsync(
-            activity.Id,
-            activity.Kind,
-            stream,
-            format!.Value.ContentType,
-            format.Value.Extension,
-            ct
-        );
+        // Only accept keys this activity's upload URLs could have produced.
+        var prefix = HeaderImageStorage.KeyPrefix(activity.Id, activity.Kind);
+        if (
+            string.IsNullOrEmpty(req.Key)
+            || !req.Key.StartsWith(prefix, StringComparison.Ordinal)
+            || req.Key.AsSpan(prefix.Length).IndexOfAny('/', '\\') >= 0
+            || req.Key == activity.HeaderImageKey
+        )
+        {
+            AddError(r => r.Key, "Unknown upload key.");
+            ThrowIfAnyErrors();
+        }
+
+        var size = await storage.GetSizeAsync(req.Key, ct);
+        if (size is null)
+        {
+            AddError(r => r.Key, "The image has not been uploaded.");
+            ThrowIfAnyErrors();
+        }
+
+        string? problem = null;
+        if (size is 0 or > HeaderImageStorage.MaxBytes)
+        {
+            problem = "Image must be 5 MB or smaller.";
+        }
+        else if (!MatchesExtension(req.Key, await storage.ReadHeadAsync(req.Key, 12, ct)))
+        {
+            problem = "Image must be a JPEG, PNG or WebP file.";
+        }
+
+        if (problem is not null)
+        {
+            await TryDeleteAsync(req.Key, ct);
+            AddError(r => r.Key, problem);
+            ThrowIfAnyErrors();
+        }
 
         var oldKey = activity.HeaderImageKey;
         await sql.Updateable<Activity>()
-            .SetColumns(a => new Activity { HeaderImageKey = newKey, UpdatedAt = DateTimeOffset.UtcNow })
+            .SetColumns(a => new Activity { HeaderImageKey = req.Key, UpdatedAt = DateTimeOffset.UtcNow })
             .Where(a => a.Id == activity.Id)
             .ExecuteCommandAsync(ct);
 
         if (!string.IsNullOrEmpty(oldKey))
         {
-            try
-            {
-                await storage.DeleteAsync(oldKey, ct);
-            }
-            catch (Exception ex)
-            {
-                logger.LogWarning(ex, "Failed to delete previous header image {Key}", oldKey);
-            }
+            await TryDeleteAsync(oldKey, ct);
         }
 
-        await Send.OkAsync(new Response { HeaderImageUrl = storage.ToUrl(newKey)! }, ct);
+        await Send.OkAsync(new Response { HeaderImageUrl = storage.ToUrl(req.Key)! }, ct);
     }
 
-    private static (string ContentType, string Extension)? DetectFormat(ReadOnlySpan<byte> bytes)
+    private async Task TryDeleteAsync(string key, CancellationToken ct)
     {
-        if (bytes.StartsWith((ReadOnlySpan<byte>)[0xFF, 0xD8, 0xFF]))
+        try
         {
-            return ("image/jpeg", ".jpg");
+            await storage.DeleteAsync(key, ct);
         }
-
-        if (bytes.StartsWith((ReadOnlySpan<byte>)[0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]))
+        catch (Exception ex)
         {
-            return ("image/png", ".png");
+            logger.LogWarning(ex, "Failed to delete header image {Key}", key);
         }
-
-        if (
-            bytes.Length >= 12
-            && bytes[..4].SequenceEqual("RIFF"u8)
-            && bytes.Slice(8, 4).SequenceEqual("WEBP"u8)
-        )
-        {
-            return ("image/webp", ".webp");
-        }
-
-        return null;
     }
+
+    /// <summary>Checks the file signature matches the extension chosen from the declared content type.</summary>
+    private static bool MatchesExtension(string key, ReadOnlySpan<byte> bytes) =>
+        Path.GetExtension(key) switch
+        {
+            ".jpg" => bytes.StartsWith((ReadOnlySpan<byte>)[0xFF, 0xD8, 0xFF]),
+            ".png" => bytes.StartsWith((ReadOnlySpan<byte>)[0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]),
+            ".webp" => bytes.Length >= 12 && bytes[..4].SequenceEqual("RIFF"u8) && bytes.Slice(8, 4).SequenceEqual("WEBP"u8),
+            _ => false,
+        };
 }

@@ -8,12 +8,12 @@ import type { GeeksHackingPortalApiEndpointsAdminActivitiesHeaderImageUploadEndp
 import { client, withUnwrap } from '../.kubb/client'
 
 /**
- * @description Uploads (or replaces) the header image of a hackathon, hackathon workshop or standalone workshop. Accepts JPEG, PNG or WebP up to 5 MB.
- * @summary Upload an activity header image
+ * @description Sets (or replaces) the header image of a hackathon, hackathon workshop or standalone workshop to an image already uploaded through POST /admin/activities/{activityId}/header-image/upload-url. The uploaded object must be a JPEG, PNG or WebP up to 5 MB, otherwise it is deleted.
+ * @summary Set an activity header image
  * {@link /admin/activities/:activityId/header-image}
  */
 export function geeksHackingPortalApiEndpointsAdminActivitiesHeaderImageUploadEndpoint<ThrowOnError extends boolean = true>(options: Options<GeeksHackingPortalApiEndpointsAdminActivitiesHeaderImageUploadEndpointOptions, ThrowOnError>): Unwrappable<RequestResult<GeeksHackingPortalApiEndpointsAdminActivitiesHeaderImageUploadEndpointResponses, ThrowOnError>> {
   const { client: request = client, ...config } = options
 
-  return withUnwrap(request({ method: 'PUT', url: '/admin/activities/{activityId}/header-image', contentType: { request: 'multipart/form-data' }, ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsAdminActivitiesHeaderImageUploadEndpointResponses, ThrowOnError>>)
+  return withUnwrap(request({ method: 'PUT', url: '/admin/activities/{activityId}/header-image', ...config, throwOnError: config.throwOnError ?? true }) as Promise<RequestResult<GeeksHackingPortalApiEndpointsAdminActivitiesHeaderImageUploadEndpointResponses, ThrowOnError>>)
 }

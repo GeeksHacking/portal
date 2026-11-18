@@ -391,6 +391,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<PreviewSessionTickets>();
 builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
 builder.Services.AddSingleton<HeaderImageStorage>();
+builder.Services.AddHostedService<HeaderImageBucketInitializer>();
 
 builder.Services.AddScoped<MembershipService>();
 builder.Services.AddScoped<OAuthDirectoryService>();

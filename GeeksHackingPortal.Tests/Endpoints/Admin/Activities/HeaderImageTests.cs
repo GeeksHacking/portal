@@ -22,13 +22,6 @@ public class HeaderImageTests
     [ClassDataSource<HttpClientDataClass>]
     public required HttpClientDataClass Client { get; init; }
 
-    private static MultipartFormDataContent ImageForm(byte[] bytes, string contentType, string fileName)
-    {
-        var file = new ByteArrayContent(bytes);
-        file.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-        return new MultipartFormDataContent { { file, "file", fileName } };
-    }
-
     private async Task<HackathonResponse> CreateHackathonAsync()
     {
         var now = DateTimeOffset.UtcNow;
@@ -54,12 +47,56 @@ public class HeaderImageTests
         return (await response.Content.ReadFromJsonAsync<HackathonResponse>())!;
     }
 
-    [Test]
-    public async Task Upload_WithoutAuthentication_ReturnsUnauthorized()
+    private sealed record UploadUrlResponse(string UploadUrl, string Key, DateTimeOffset ExpiresAt);
+
+    private sealed record SetResponse(string HeaderImageUrl);
+
+    private async Task<HttpResponseMessage> RequestUploadUrlAsync(
+        Guid activityId,
+        string contentType = "image/png",
+        long contentLength = 12
+    ) =>
+        await AuthenticatedClient.HttpClient.PostAsJsonAsync(
+            $"/admin/activities/{activityId}/header-image/upload-url",
+            new { contentType, contentLength }
+        );
+
+    /// <summary>Gets an upload URL and PUTs the bytes straight to storage, like the browser does.</summary>
+    private async Task<string> UploadToStorageAsync(Guid activityId, byte[] bytes, string contentType = "image/png")
     {
-        var response = await Client.HttpClient.PutAsync(
+        var response = await RequestUploadUrlAsync(activityId, contentType, bytes.Length);
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        var upload = (await response.Content.ReadFromJsonAsync<UploadUrlResponse>())!;
+
+        using var storage = new HttpClient();
+        var content = new ByteArrayContent(bytes);
+        content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+        var put = await storage.PutAsync(upload.UploadUrl, content);
+        await Assert.That(put.IsSuccessStatusCode).IsTrue();
+
+        return upload.Key;
+    }
+
+    private Task<HttpResponseMessage> SetHeaderImageAsync(Guid activityId, string key) =>
+        AuthenticatedClient.HttpClient.PutAsJsonAsync($"/admin/activities/{activityId}/header-image", new { key });
+
+    [Test]
+    public async Task UploadUrl_WithoutAuthentication_ReturnsUnauthorized()
+    {
+        var response = await Client.HttpClient.PostAsJsonAsync(
+            $"/admin/activities/{Guid.NewGuid()}/header-image/upload-url",
+            new { contentType = "image/png", contentLength = 12 }
+        );
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
+    }
+
+    [Test]
+    public async Task Set_WithoutAuthentication_ReturnsUnauthorized()
+    {
+        var response = await Client.HttpClient.PutAsJsonAsync(
             $"/admin/activities/{Guid.NewGuid()}/header-image",
-            ImageForm(PngBytes, "image/png", "header.png")
+            new { key = "hackathon/x/header-x.png" }
         );
 
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
@@ -76,56 +113,90 @@ public class HeaderImageTests
     }
 
     [Test]
-    public async Task Upload_NonImageFile_ReturnsBadRequest()
+    public async Task UploadUrl_UnsupportedContentType_ReturnsBadRequest()
     {
         var hackathon = await CreateHackathonAsync();
 
-        // Claims to be a PNG but the bytes are not an image.
-        var response = await AuthenticatedClient.HttpClient.PutAsync(
-            $"/admin/activities/{hackathon.Id}/header-image",
-            ImageForm("not an image"u8.ToArray(), "image/png", "header.png")
-        );
+        var response = await RequestUploadUrlAsync(hackathon.Id, "image/gif");
 
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
     }
 
     [Test]
-    public async Task Upload_OversizedFile_ReturnsBadRequest()
+    public async Task UploadUrl_OversizedFile_ReturnsBadRequest()
     {
         var hackathon = await CreateHackathonAsync();
-        var bytes = new byte[5 * 1024 * 1024 + 1];
-        PngBytes.CopyTo(bytes, 0);
 
-        var response = await AuthenticatedClient.HttpClient.PutAsync(
-            $"/admin/activities/{hackathon.Id}/header-image",
-            ImageForm(bytes, "image/png", "header.png")
-        );
+        var response = await RequestUploadUrlAsync(hackathon.Id, contentLength: 5 * 1024 * 1024 + 1);
 
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
     }
 
     [Test]
-    public async Task Upload_UnknownActivity_ReturnsNotFound()
+    public async Task UploadUrl_UnknownActivity_ReturnsNotFound()
     {
-        var response = await AuthenticatedClient.HttpClient.PutAsync(
-            $"/admin/activities/{Guid.NewGuid()}/header-image",
-            ImageForm(PngBytes, "image/png", "header.png")
-        );
+        var response = await RequestUploadUrlAsync(Guid.NewGuid());
 
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
     }
 
     [Test]
-    public async Task Upload_WhenStorageNotConfigured_ReturnsServiceUnavailable()
+    public async Task Set_AfterDirectUpload_StoresPublicImage()
     {
         var hackathon = await CreateHackathonAsync();
+        var key = await UploadToStorageAsync(hackathon.Id, PngBytes);
 
-        var response = await AuthenticatedClient.HttpClient.PutAsync(
-            $"/admin/activities/{hackathon.Id}/header-image",
-            ImageForm(PngBytes, "image/png", "header.png")
-        );
+        var response = await SetHeaderImageAsync(hackathon.Id, key);
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        var body = (await response.Content.ReadFromJsonAsync<SetResponse>())!;
+        await Assert.That(body.HeaderImageUrl).EndsWith(key);
 
-        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.ServiceUnavailable);
+        // The bucket is publicly readable without credentials.
+        using var anonymous = new HttpClient();
+        var image = await anonymous.GetByteArrayAsync(body.HeaderImageUrl);
+        await Assert.That(image).IsEquivalentTo(PngBytes);
+
+        var get = await Client.HttpClient.GetAsync($"/participants/hackathons/{hackathon.Id}");
+        using var json = JsonDocument.Parse(await get.Content.ReadAsStringAsync());
+        await Assert.That(json.RootElement.GetProperty("headerImageUrl").GetString()).IsEqualTo(body.HeaderImageUrl);
+    }
+
+    [Test]
+    public async Task Set_NonImageUpload_ReturnsBadRequestAndDeletesObject()
+    {
+        var hackathon = await CreateHackathonAsync();
+        // Declared as a PNG but the bytes are not an image.
+        var key = await UploadToStorageAsync(hackathon.Id, "not an image"u8.ToArray());
+
+        var response = await SetHeaderImageAsync(hackathon.Id, key);
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+
+        // Rejected uploads are removed, so confirming again finds nothing.
+        var retry = await SetHeaderImageAsync(hackathon.Id, key);
+        await Assert.That(retry.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+    }
+
+    [Test]
+    public async Task Set_WithoutUploading_ReturnsBadRequest()
+    {
+        var hackathon = await CreateHackathonAsync();
+        var upload = (await (await RequestUploadUrlAsync(hackathon.Id)).Content.ReadFromJsonAsync<UploadUrlResponse>())!;
+
+        var response = await SetHeaderImageAsync(hackathon.Id, upload.Key);
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+    }
+
+    [Test]
+    public async Task Set_KeyOfAnotherActivity_ReturnsBadRequest()
+    {
+        var hackathon = await CreateHackathonAsync();
+        var other = await CreateHackathonAsync();
+        var key = await UploadToStorageAsync(other.Id, PngBytes);
+
+        var response = await SetHeaderImageAsync(hackathon.Id, key);
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
     }
 
     [Test]

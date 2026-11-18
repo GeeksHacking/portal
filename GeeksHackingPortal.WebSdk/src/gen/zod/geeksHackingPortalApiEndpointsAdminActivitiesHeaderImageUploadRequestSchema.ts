@@ -6,5 +6,5 @@
 import * as z from 'zod'
 
 export const geeksHackingPortalApiEndpointsAdminActivitiesHeaderImageUploadRequestSchema = z.strictObject({
-  file: z.instanceof(File).optional(),
+  key: z.string().optional(),
 })

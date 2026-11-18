@@ -36,33 +36,39 @@ var api = builder
     .WaitFor(db)
     .WaitFor(openIddictDb);
 
-// Cloudflare R2 header image storage is optional locally: only wired up when
-// the r2 bucket name parameter is set (env var Parameters__r2_bucket_name, or user secrets).
-// Without it, header image uploads return 503.
-if (
-    !string.IsNullOrWhiteSpace(
-        builder.Configuration["Parameters:r2-bucket-name"] ?? builder.Configuration["Parameters:r2_bucket_name"]
-    )
-)
-{
-    api.WithEnvironment("R2:AccountId", builder.AddParameter("r2-account-id"))
-        .WithEnvironment("R2:BucketName", builder.AddParameter("r2-bucket-name"))
-        .WithEnvironment("R2:PublicBaseUrl", builder.AddParameter("r2-public-base-url"));
+// Header image storage: production uses Cloudflare R2; locally we run RustFS, an S3-compatible server.
+// The API creates the bucket with a public-read policy on startup, and the browser uploads to it with
+// presigned URLs, so the frontend origin must be allowed by CORS.
+const string headerImageBucket = "portal";
+var storageAccessKey = builder.AddParameter("storage-access-key", "rustfsadmin");
+var storageSecretKey = builder.AddParameter("storage-secret-key", "rustfsadmin", secret: true);
 
-    if (
-        !string.IsNullOrWhiteSpace(
-            builder.Configuration["Parameters:r2-write-secrets"] ?? builder.Configuration["Parameters:r2_write_secrets"]
+var storage = builder
+    .AddContainer("storage", "rustfs/rustfs", "1.0.5")
+    .WithHttpEndpoint(targetPort: 9000, name: "s3")
+    .WithHttpEndpoint(targetPort: 9001, name: "console")
+    .WithEnvironment("RUSTFS_ACCESS_KEY", storageAccessKey)
+    .WithEnvironment("RUSTFS_SECRET_KEY", storageSecretKey)
+    .WithEnvironment("RUSTFS_CONSOLE_ENABLE", "true")
+    .WithEnvironment("RUSTFS_CORS_ALLOWED_ORIGINS", appFrontendUrl)
+    .WithHttpHealthCheck("/health", endpointName: "s3");
+if (builder.Configuration.GetValue("UseVolumes", true))
+{
+    storage.WithVolume("geekshacking-portal-rustfs", "/data");
+}
+
+var storageS3 = storage.GetEndpoint("s3");
+api.WithEnvironment("R2:ServiceUrl", storageS3)
+    .WithEnvironment(
+        "R2:WriteSecrets",
+        ReferenceExpression.Create(
+            $$"""{"accessKeyId":"{{storageAccessKey}}","secretAccessKey":"{{storageSecretKey}}"}"""
         )
     )
-    {
-        api.WithEnvironment("R2:WriteSecrets", builder.AddParameter("r2-write-secrets", secret: true));
-    }
-    else
-    {
-        api.WithEnvironment("R2:AccessKeyId", builder.AddParameter("r2-access-key-id", secret: true))
-            .WithEnvironment("R2:SecretAccessKey", builder.AddParameter("r2-secret-access-key", secret: true));
-    }
-}
+    .WithEnvironment("R2:BucketName", headerImageBucket)
+    .WithEnvironment("R2:PublicBaseUrl", ReferenceExpression.Create($"{storageS3}/{headerImageBucket}"))
+    .WithEnvironment("R2:EnsureBucket", "true")
+    .WaitFor(storage);
 
 builder
     .AddJavaScriptApp("sdk", "../GeeksHackingPortal.WebSdk")

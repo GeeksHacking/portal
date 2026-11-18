@@ -72,6 +72,19 @@ Common helper tasks (see project-specific READMEs for frontend/backend details):
 - Frontend: see `GeeksHackingPortal.WebApp/README.md`.
 - OIDC playground: see `GeeksHackingPortal.OidcWebPlayground/README.md`.
 
+
+## AI Agents (MCP & A2A)
+
+The API exposes opt-in FastEndpoints as Model Context Protocol tools and A2A skills, protected by authentication:
+
+- MCP endpoint: `/mcp` (requires authentication)
+- A2A agent card: `/.well-known/agent-card.json` (requires authentication)
+- A2A JSON-RPC: `/a2a` (requires authentication)
+
+Only endpoints that explicitly call `.McpTool()` / `.A2ASkill()` (or use the attributes) are exposed. Visibility is further restricted to authenticated callers. See https://fast-endpoints.com/docs/ai-agents for details.
+
+Example: the `auth/whoami` endpoint is exposed as the `whoami` tool/skill.
+
 ## Contributing
 
 Open issues or PRs against this repository. Include migration diffs when proposing schema changes.

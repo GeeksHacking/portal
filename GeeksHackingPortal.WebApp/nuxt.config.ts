@@ -23,6 +23,15 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  // Redesign fonts (see app/assets/css/tokens.css). Libre Franklin stands in for Franklin Gothic.
+  fonts: {
+    families: [
+      { name: 'Libre Franklin', weights: ['500 800'] },
+      { name: 'Open Sans', weights: ['300 700'] },
+      { name: 'JetBrains Mono', weights: ['500 700'] },
+    ],
+  },
+
   colorMode: {
     preference: 'light',
     fallback: 'light',

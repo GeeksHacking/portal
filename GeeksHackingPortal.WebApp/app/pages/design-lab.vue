@@ -2007,8 +2007,8 @@ const logoBackgrounds = [
                 />
                 <span
                   v-if="!collapsed"
-                  class="truncate font-display font-bold"
-                >GeeksHacking <span class="font-medium text-gh-muted">Portal</span></span>
+                  class="flex min-w-0 flex-col whitespace-nowrap font-display leading-[1.15] font-bold"
+                >GeeksHacking <span class="text-[11px] font-semibold tracking-[0.12em] text-gh-muted uppercase [font-family:var(--font-body)]">Portal</span></span>
               </span>
             </template>
             <template #default="{ collapsed }">

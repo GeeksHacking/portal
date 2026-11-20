@@ -281,15 +281,22 @@ const contactOpen = ref(false)
   outline-offset: 2px;
 }
 .portal-brand__name {
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
   font-family: var(--font-display);
   font-size: 16px;
   font-weight: 700;
-  text-overflow: ellipsis;
+  line-height: 1.15;
   white-space: nowrap;
 }
+/* "Portal" on its own line so the name never gets cut off next to the mark */
 .portal-brand__sub {
-  font-weight: 500;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--gh-text-muted);
 }
 

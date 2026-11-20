@@ -3,7 +3,6 @@ import { useGeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint } from 
 import { computed, onMounted, ref } from 'vue'
 
 const route = useRoute()
-const toast = useToast()
 const acceptInviteMutation = useGeeksHackingPortalApiEndpointsOrganizersAcceptInviteEndpoint()
 
 const code = computed(() => (route.params.code as string | undefined)?.trim() ?? '')
@@ -24,9 +23,7 @@ async function acceptInvite() {
     return
   }
 
-  status.value = 'idle'
-  errorMessage.value = ''
-
+  // a retry keeps the error on screen (the button shows it's working) so focus isn't lost
   try {
     const result = await acceptInviteMutation.mutateAsync({
       body: { code: code.value },
@@ -34,7 +31,6 @@ async function acceptInvite() {
 
     acceptedRole.value = result?.type ?? null
     status.value = 'success'
-    toast.add({ title: 'Organizer access added', color: 'success' })
   }
   catch (error) {
     status.value = 'error'
@@ -48,84 +44,73 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="min-h-screen bg-(--ui-bg-muted) px-4 py-10">
-    <div class="mx-auto flex min-h-[70vh] w-full max-w-md items-center">
-      <UCard class="w-full">
-        <template #header>
-          <div class="flex items-center gap-3">
-            <UIcon
-              name="i-lucide-user-plus"
-              class="size-5 text-(--ui-primary)"
-            />
-            <h1 class="text-base font-semibold">
-              Organizer Invite
-            </h1>
-          </div>
-        </template>
+  <AuthFrame>
+    <GLabelStrip
+      as="p"
+      label="Organizer invite"
+      class="self-start"
+    />
 
-        <div class="space-y-4">
-          <div
-            v-if="isAccepting || status === 'idle'"
-            class="flex items-center gap-3 text-sm text-(--ui-text-muted)"
-          >
-            <UIcon
-              name="i-lucide-loader-circle"
-              class="size-5 animate-spin"
-            />
-            Joining as organizer...
-          </div>
+    <template v-if="status === 'idle'">
+      <h1 class="sr-only">
+        Organizer invite
+      </h1>
+      <GLoading label="Adding you as an organizer…" />
+    </template>
 
-          <div
-            v-else-if="status === 'success'"
-            class="space-y-4"
-          >
-            <UAlert
-              color="success"
-              variant="subtle"
-              icon="i-lucide-circle-check"
-              title="You are now an organizer"
-              :description="acceptedRole ? `Role: ${acceptedRole}` : undefined"
-            />
+    <template v-else-if="status === 'success'">
+      <div class="flex flex-col gap-3">
+        <h1 class="font-display text-[32px] leading-tight font-bold">
+          You're now an organizer
+        </h1>
+        <p class="text-gh-muted">
+          Your organizer tools are in the Organizer section of the portal sidebar.
+        </p>
+      </div>
+      <GAlert
+        tone="ok"
+        title="Invite accepted"
+        :description="acceptedRole ? `Your role: ${acceptedRole}` : undefined"
+      />
+      <GButton
+        to="/dash/manage"
+        variant="primary"
+        size="lg"
+        block
+        icon="material-symbols:dashboard-rounded"
+        label="Open the organizer workspace"
+      />
+    </template>
 
-            <UButton
-              to="/dash"
-              icon="i-lucide-layout-dashboard"
-              block
-            >
-              Open Dashboard
-            </UButton>
-          </div>
-
-          <div
-            v-else
-            class="space-y-4"
-          >
-            <UAlert
-              color="error"
-              variant="subtle"
-              icon="i-lucide-circle-alert"
-              title="Invite could not be accepted"
-              :description="errorMessage"
-            />
-
-            <div class="flex flex-col gap-2 sm:flex-row sm:justify-end">
-              <UButton
-                variant="ghost"
-                to="/dash"
-              >
-                Back to Dashboard
-              </UButton>
-              <UButton
-                icon="i-lucide-refresh-cw"
-                :loading="isAccepting"
-                @click="acceptInvite"
-              >
-                Try Again
-              </UButton>
-            </div>
-          </div>
-        </div>
-      </UCard>
-    </div>
-  </main>
+    <template v-else>
+      <div class="flex flex-col gap-3">
+        <h1 class="font-display text-[32px] leading-tight font-bold">
+          We couldn't accept this invite
+        </h1>
+        <p class="text-gh-muted">
+          The link may have expired or already been used. Try again, or ask the organizer who invited you for a new link.
+        </p>
+      </div>
+      <GAlert
+        tone="err"
+        title="Invite not accepted"
+        :description="errorMessage"
+      />
+      <div class="flex flex-col gap-3 sm:flex-row-reverse">
+        <GButton
+          variant="primary"
+          icon="material-symbols:refresh-rounded"
+          label="Try again"
+          :loading="isAccepting"
+          loading-label="Trying again"
+          @click="acceptInvite"
+        />
+        <GButton
+          to="/dash"
+          variant="ghost"
+          label="Back to the portal"
+        />
+      </div>
+    </template>
+  </AuthFrame>
 </template>

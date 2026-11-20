@@ -12,7 +12,7 @@ withDefaults(defineProps<{
   size?: 'sm' | 'md'
   bordered?: boolean
 }>(), {
-  icon: 'i-lucide-inbox',
+  icon: 'material-symbols:inbox-rounded',
   size: 'md',
   bordered: true,
 })

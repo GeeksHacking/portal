@@ -119,7 +119,7 @@ function guard(event: Event) {
               <GButton
                 variant="ghost"
                 size="sm"
-                icon="i-lucide-x"
+                icon="material-symbols:close-rounded"
                 aria-label="Close"
               />
             </DialogClose>

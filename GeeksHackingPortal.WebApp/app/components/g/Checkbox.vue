@@ -80,12 +80,12 @@ const controlAttrs = computed(() => {
       >
         <Icon
           v-if="indeterminate"
-          name="i-lucide-minus"
+          name="material-symbols:remove-rounded"
           class="g-check__mark"
         />
         <Icon
           v-else-if="model"
-          name="i-lucide-check"
+          name="material-symbols:check-rounded"
           class="g-check__mark"
         />
       </span>

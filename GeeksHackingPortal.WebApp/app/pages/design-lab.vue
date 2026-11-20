@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Rgba } from '~/utils/color-contrast'
+import type { GTableColumn, GTableSort } from '~/utils/g-table'
 import { contrastRatio, flatten, parseCssColor, toHex } from '~/utils/color-contrast'
 
 useHead({ title: 'Design lab · GeeksHacking Portal' })
@@ -225,10 +226,10 @@ const perkLabels = ['Meals', 'Swag', 'Parking']
 const badgeTones = ['neutral', 'ok', 'err', 'pending'] as const
 const badgeVariants = ['soft', 'solid', 'outline'] as const
 const badgeSamples: Record<(typeof badgeTones)[number], { label: string, icon: string }> = {
-  neutral: { label: 'Draft', icon: 'i-lucide-file' },
-  ok: { label: 'Accepted', icon: 'i-lucide-check' },
-  err: { label: 'Rejected', icon: 'i-lucide-x' },
-  pending: { label: 'Pending review', icon: 'i-lucide-clock' },
+  neutral: { label: 'Draft', icon: 'material-symbols:draft-rounded' },
+  ok: { label: 'Accepted', icon: 'material-symbols:check-rounded' },
+  err: { label: 'Rejected', icon: 'material-symbols:close-rounded' },
+  pending: { label: 'Pending review', icon: 'material-symbols:schedule-rounded' },
 }
 
 const alertDismissed = ref(false)
@@ -252,7 +253,7 @@ const toastDemos = [
   { label: 'Success', run: () => gToast.add({ title: 'Checked in', description: 'Nur Aisyah Tan · Team Bus Uncles', color: 'success' }) },
   { label: 'Error', run: () => gToast.add({ title: 'Couldn\'t save', description: 'The server didn\'t answer. Your changes are still here.', color: 'error', action: { label: 'Retry', onClick: () => gToast.success('Saved') } }) },
   { label: 'Attention', run: () => gToast.add({ title: 'Check-in closes in 10 minutes', color: 'warning' }) },
-  { label: 'Neutral', run: () => gToast.add({ title: 'Link copied', icon: 'i-lucide-copy', color: 'neutral' }) },
+  { label: 'Neutral', run: () => gToast.add({ title: 'Link copied', icon: 'material-symbols:content-copy-rounded', color: 'neutral' }) },
   { label: 'Replace by id', run: () => gToast.add({ id: 'sync', title: `Synced ${new Date().toLocaleTimeString()}`, color: 'neutral' }) },
 ]
 
@@ -268,13 +269,13 @@ const interestItems = [
 type ViewMode = 'list' | 'cards'
 const viewMode = ref<ViewMode>('list')
 const viewOptions = [
-  { label: 'List', value: 'list', icon: 'i-lucide-list' },
-  { label: 'Cards', value: 'cards', icon: 'i-lucide-layout-grid' },
+  { label: 'List', value: 'list', icon: 'material-symbols:list-rounded' },
+  { label: 'Cards', value: 'cards', icon: 'material-symbols:grid-view-rounded' },
 ]
 const sectionTab = ref('overview')
 const sectionTabs = [
   { label: 'Overview', value: 'overview' },
-  { label: 'Participants', value: 'participants', icon: 'i-lucide-users' },
+  { label: 'Participants', value: 'participants', icon: 'material-symbols:group-rounded' },
   { label: 'Judging', value: 'judging' },
   { label: 'Archive', value: 'archive', disabled: true },
 ]
@@ -286,6 +287,40 @@ function reloadStats() {
   statsLoading.value = true
   setTimeout(() => (statsLoading.value = false), 1500)
 }
+
+// ---------- batch 4 demos ----------
+interface DemoParticipant { id: string, name: string, team: string | null, status: 'Accepted' | 'Pending' | 'Rejected', checkedIn: number | null }
+const firstNames = ['Aisyah', 'Wei Jie', 'Priya', 'Marcus', 'Hui Min', 'Arjun', 'Siti', 'Daniel', 'Mei Ling', 'Farhan', 'Chloe', 'Ravi']
+const lastNames = ['Tan', 'Lim', 'Ng', 'Rahman', 'Kumar', 'Goh', 'Lee', 'Wong', 'Ismail', 'Chua']
+const teamNames = ['Bus Uncles', 'Kopi Kode', 'Null Pointers', 'Hawker Hackers', null]
+const statuses = ['Accepted', 'Pending', 'Rejected'] as const
+function makeParticipants(count: number): DemoParticipant[] {
+  return Array.from({ length: count }, (_, i) => ({
+    id: `P-${String(i + 1).padStart(4, '0')}`,
+    name: `${firstNames[i % firstNames.length]} ${lastNames[(i * 7) % lastNames.length]}`,
+    team: teamNames[(i * 3) % teamNames.length] ?? null,
+    status: statuses[(i * 5) % 3]!,
+    checkedIn: i % 4 === 0 ? null : 8 + ((i * 13) % 4),
+  }))
+}
+const participants = makeParticipants(12)
+const manyParticipants = makeParticipants(2000)
+const participantColumns: GTableColumn<DemoParticipant>[] = [
+  { accessorKey: 'name', header: 'Participant', sortable: true, meta: { class: { th: 'min-w-[12rem]' } } },
+  { accessorKey: 'team', header: 'Team', sortable: true },
+  { accessorKey: 'status', header: 'Status', sortable: true },
+  { accessorKey: 'checkedIn', header: 'Check-in (am)', sortable: true, align: 'right' },
+  { id: 'actions', header: '', align: 'right' },
+]
+const tableSort = ref<GTableSort | null>({ id: 'name', desc: false })
+const statusTone = { Accepted: 'ok', Pending: 'pending', Rejected: 'err' } as const
+const tableLoading = ref(false)
+function reloadTable() {
+  tableLoading.value = true
+  setTimeout(() => (tableLoading.value = false), 1500)
+}
+
+const iconMap = Object.entries(lucideToMaterial)
 </script>
 
 <template>
@@ -344,18 +379,13 @@ function reloadStats() {
 
       <!-- 01 Brand palette -->
       <section aria-labelledby="s-palette">
-        <div class="mb-5 flex items-end gap-5 border-t-2 border-gh-text pt-3">
-          <span class="gh-numeral">01</span>
-          <div>
-            <span class="gh-strip mb-2">Palette</span>
-            <h2
-              id="s-palette"
-              class="gh-h2"
-            >
-              Brand colours
-            </h2>
-          </div>
-        </div>
+        <GSectionHeading
+          id="s-palette"
+          numeral="01"
+          label="Palette"
+          title="Brand colours"
+          class="mb-5"
+        />
         <p class="mb-4 max-w-[70ch] text-gh-muted">
           Raw colours from the brand guide. Components never use these directly; they use the semantic tokens below so light and dark mode both work.
         </p>
@@ -386,18 +416,13 @@ function reloadStats() {
 
       <!-- 02 Semantic tokens -->
       <section aria-labelledby="s-semantic">
-        <div class="mb-5 flex items-end gap-5 border-t-2 border-gh-text pt-3">
-          <span class="gh-numeral">02</span>
-          <div>
-            <span class="gh-strip mb-2">Semantic</span>
-            <h2
-              id="s-semantic"
-              class="gh-h2"
-            >
-              Light and dark tokens
-            </h2>
-          </div>
-        </div>
+        <GSectionHeading
+          id="s-semantic"
+          numeral="02"
+          label="Semantic"
+          title="Light and dark tokens"
+          class="mb-5"
+        />
         <p class="mb-4 max-w-[70ch] text-gh-muted">
           Use these in components. Utilities follow the same names, e.g. <code class="gh-mono">bg-gh-surface</code>, <code class="gh-mono">text-gh-muted</code>, <code class="gh-mono">border-gh-line</code>.
         </p>
@@ -441,18 +466,13 @@ function reloadStats() {
 
       <!-- 03 Contrast -->
       <section aria-labelledby="s-contrast">
-        <div class="mb-5 flex items-end gap-5 border-t-2 border-gh-text pt-3">
-          <span class="gh-numeral">03</span>
-          <div>
-            <span class="gh-strip mb-2">Checks</span>
-            <h2
-              id="s-contrast"
-              class="gh-h2"
-            >
-              Contrast
-            </h2>
-          </div>
-        </div>
+        <GSectionHeading
+          id="s-contrast"
+          numeral="03"
+          label="Checks"
+          title="Contrast"
+          class="mb-5"
+        />
         <p class="mb-4 max-w-[70ch] text-gh-muted">
           Worked out live from the tokens. Text needs 4.5:1; outlines, focus rings and chart marks need 3:1. Yellow buttons rely on their dark outline, not on the yellow itself.
         </p>
@@ -528,18 +548,13 @@ function reloadStats() {
 
       <!-- 04 Typography -->
       <section aria-labelledby="s-type">
-        <div class="mb-5 flex items-end gap-5 border-t-2 border-gh-text pt-3">
-          <span class="gh-numeral">04</span>
-          <div>
-            <span class="gh-strip mb-2">Type</span>
-            <h2
-              id="s-type"
-              class="gh-h2"
-            >
-              Typography
-            </h2>
-          </div>
-        </div>
+        <GSectionHeading
+          id="s-type"
+          numeral="04"
+          label="Type"
+          title="Typography"
+          class="mb-5"
+        />
         <p class="mb-4 max-w-[70ch] text-gh-muted">
           Libre Franklin stands in for Franklin Gothic (logo, display and H1–H2 only). Open Sans for everything else. All styles keep the guide's +0.5px tracking.
         </p>
@@ -575,18 +590,13 @@ function reloadStats() {
 
       <!-- 05 Shape and shadow -->
       <section aria-labelledby="s-shape">
-        <div class="mb-5 flex items-end gap-5 border-t-2 border-gh-text pt-3">
-          <span class="gh-numeral">05</span>
-          <div>
-            <span class="gh-strip mb-2">Shape</span>
-            <h2
-              id="s-shape"
-              class="gh-h2"
-            >
-              Radius, outline and offset shadow
-            </h2>
-          </div>
-        </div>
+        <GSectionHeading
+          id="s-shape"
+          numeral="05"
+          label="Shape"
+          title="Radius, outline and offset shadow"
+          class="mb-5"
+        />
         <p class="mb-4 max-w-[70ch] text-gh-muted">
           Outlines are 1.5px. The hard offset shadow comes from the logo and only goes on things you can act on, plus the hero; stat tiles, tables and info cards stay flat.
         </p>
@@ -618,18 +628,13 @@ function reloadStats() {
 
       <!-- 06 Motion -->
       <section aria-labelledby="s-motion">
-        <div class="mb-5 flex items-end gap-5 border-t-2 border-gh-text pt-3">
-          <span class="gh-numeral">06</span>
-          <div>
-            <span class="gh-strip mb-2">Motion</span>
-            <h2
-              id="s-motion"
-              class="gh-h2"
-            >
-              Motion
-            </h2>
-          </div>
-        </div>
+        <GSectionHeading
+          id="s-motion"
+          numeral="06"
+          label="Motion"
+          title="Motion"
+          class="mb-5"
+        />
         <p class="mb-4 max-w-[70ch] text-gh-muted">
           Movement only means "you can click this". Disabled things never move, never cast a shadow and never animate. All durations drop to 0 when the system asks for reduced motion.
         </p>
@@ -665,18 +670,13 @@ function reloadStats() {
 
       <!-- 07 Data viz and hero -->
       <section aria-labelledby="s-viz">
-        <div class="mb-5 flex items-end gap-5 border-t-2 border-gh-text pt-3">
-          <span class="gh-numeral">07</span>
-          <div>
-            <span class="gh-strip mb-2">Charts</span>
-            <h2
-              id="s-viz"
-              class="gh-h2"
-            >
-              Data viz and hero
-            </h2>
-          </div>
-        </div>
+        <GSectionHeading
+          id="s-viz"
+          numeral="07"
+          label="Charts"
+          title="Data viz and hero"
+          class="mb-5"
+        />
         <p class="mb-4 max-w-[70ch] text-gh-muted">
           Charts use a three-step neutral ramp. Green and red only when the data is a status. Every segment and legend swatch gets a dark edge so pale shades still read against the card.
         </p>
@@ -735,20 +735,15 @@ function reloadStats() {
 
       <!-- 08 Components -->
       <section aria-labelledby="s-components">
-        <div class="mb-5 flex items-end gap-5 border-t-2 border-gh-text pt-3">
-          <span class="gh-numeral">08</span>
-          <div>
-            <span class="gh-strip mb-2">Components</span>
-            <h2
-              id="s-components"
-              class="gh-h2"
-            >
-              The G* kit
-            </h2>
-          </div>
-        </div>
+        <GSectionHeading
+          id="s-components"
+          numeral="08"
+          label="Components"
+          title="The G* kit"
+          class="mb-5"
+        />
         <p class="mb-6 max-w-[70ch] text-gh-muted">
-          Everything in <code class="gh-mono">app/components/g/</code>: button, input, textarea, select (single and multiple), checkbox, switch, form field, tabs, badge, alert, toast, card, stat tile, empty state, skeleton and modal. Hover, press, tab to them and type: these are the real components.
+          Everything in <code class="gh-mono">app/components/g/</code>: button, input, textarea, select (single and multiple), checkbox, switch, form field, tabs, badge, alert, toast, card, stat tile, empty state, skeleton, modal, table, label strip and section heading. Hover, press, tab to them and type: these are the real components.
         </p>
 
         <div class="flex flex-col gap-6">
@@ -822,14 +817,14 @@ function reloadStats() {
                     <td class="pr-4">
                       <GButton
                         :variant="v"
-                        icon="i-lucide-check"
+                        icon="material-symbols:check-rounded"
                         label="Check in"
                       />
                     </td>
                     <td class="pr-4">
                       <GButton
                         :variant="v"
-                        icon="i-lucide-history"
+                        icon="material-symbols:history-rounded"
                         aria-label="View history"
                       />
                     </td>
@@ -862,12 +857,12 @@ function reloadStats() {
               <GButton
                 variant="secondary"
                 label="Link to Explore"
-                trailing-icon="i-lucide-arrow-right"
+                trailing-icon="material-symbols:arrow-forward-rounded"
                 to="/dash"
               />
               <GButton
                 variant="primary"
-                icon="i-lucide-save"
+                icon="material-symbols:save-rounded"
                 :loading="saving"
                 :label="saving ? 'Saving' : 'Try loading'"
                 @click="fakeSave"
@@ -877,7 +872,7 @@ function reloadStats() {
               <GButton
                 variant="primary"
                 size="lg"
-                icon="i-lucide-check"
+                icon="material-symbols:check-rounded"
                 label="Block button (full width)"
                 block
               />
@@ -928,7 +923,7 @@ function reloadStats() {
               >
                 <GInput
                   v-model="demo.teamCode"
-                  icon="i-lucide-users"
+                  icon="material-symbols:group-rounded"
                 />
               </GFormField>
               <GFormField
@@ -973,7 +968,7 @@ function reloadStats() {
                 <GInput
                   v-model="demo.search"
                   type="search"
-                  icon="i-lucide-search"
+                  icon="material-symbols:search-rounded"
                   placeholder="Search by name (label hidden)"
                 />
               </GFormField>
@@ -994,7 +989,7 @@ function reloadStats() {
                     <GButton
                       variant="ghost"
                       size="sm"
-                      icon="i-lucide-copy"
+                      icon="material-symbols:content-copy-rounded"
                       aria-label="Copy link"
                     />
                   </template>
@@ -1050,7 +1045,7 @@ function reloadStats() {
                 <GSelect
                   v-model="form2.challenge"
                   :items="challengeItems"
-                  icon="i-lucide-flag"
+                  icon="material-symbols:flag-rounded"
                 />
               </GFormField>
               <GFormField
@@ -1256,7 +1251,7 @@ function reloadStats() {
                 <GButton
                   size="sm"
                   variant="secondary"
-                  icon="i-lucide-rotate-cw"
+                  icon="material-symbols:refresh-rounded"
                   label="Try again"
                 />
               </template>
@@ -1366,13 +1361,13 @@ function reloadStats() {
             <div class="flex flex-wrap gap-3">
               <GButton
                 label="Edit team details"
-                icon="i-lucide-pencil"
+                icon="material-symbols:edit-rounded"
                 @click="modalOpen = true"
               />
               <GButton
                 variant="danger"
                 label="Leave team"
-                icon="i-lucide-log-out"
+                icon="material-symbols:logout-rounded"
                 @click="confirmOpen = true"
               />
               <GButton
@@ -1452,7 +1447,7 @@ function reloadStats() {
                     aria-hidden="true"
                   >
                     <Icon
-                      name="i-lucide-qr-code"
+                      name="material-symbols:qr-code-2-rounded"
                       class="size-24"
                     />
                   </div>
@@ -1605,7 +1600,7 @@ function reloadStats() {
               </div>
               <GButton
                 size="sm"
-                icon="i-lucide-refresh-cw"
+                icon="material-symbols:refresh-rounded"
                 label="Show loading"
                 :loading="statsLoading"
                 @click="reloadStats"
@@ -1617,7 +1612,7 @@ function reloadStats() {
                 :value="1284"
                 change="+36 since yesterday"
                 trend="up"
-                icon="i-lucide-user-plus"
+                icon="material-symbols:person-add-rounded"
                 :loading="statsLoading"
               />
               <GStatTile
@@ -1650,12 +1645,12 @@ function reloadStats() {
             <GEmptyState
               title="No submissions yet"
               description="Teams' projects show up here once they submit. Submissions open on Sunday at 9am."
-              icon="i-lucide-folder-open"
+              icon="material-symbols:folder-open-rounded"
             >
               <template #actions>
                 <GButton
                   variant="primary"
-                  icon="i-lucide-bell"
+                  icon="material-symbols:notifications-rounded"
                   label="Remind teams"
                 />
                 <GButton
@@ -1699,9 +1694,170 @@ function reloadStats() {
                 :bordered="false"
                 title="No check-ins yet"
                 description="Scan a QR code to start."
-                icon="i-lucide-scan-line"
+                icon="material-symbols:qr-code-scanner-rounded"
               />
             </div>
+          </div>
+
+          <!-- Table -->
+          <div class="flex flex-col gap-4 rounded-gh border-[1.5px] border-gh-line bg-gh-surface p-5">
+            <div class="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h3 class="gh-h3">
+                  Table
+                </h3>
+                <p class="gh-small text-gh-muted">
+                  Calm: no shadows, thin dividers, a sticky label-style header. Click a header to sort (ascending, descending, off). Empty values stay last.
+                </p>
+              </div>
+              <GButton
+                size="sm"
+                icon="material-symbols:refresh-rounded"
+                label="Show loading"
+                :loading="tableLoading"
+                @click="reloadTable"
+              />
+            </div>
+            <div class="overflow-hidden rounded-gh border-[1.5px] border-gh-line">
+              <GTable
+                v-model:sort="tableSort"
+                :data="participants"
+                :columns="participantColumns"
+                row-key="id"
+                caption="Participants (demo)"
+                :loading="tableLoading"
+              >
+                <template #name-cell="{ row }">
+                  <span class="font-semibold">{{ row.original.name }}</span>
+                  <span class="gh-mono block text-gh-muted">{{ row.original.id }}</span>
+                </template>
+                <template #team-cell="{ value }">
+                  <span :class="value ? '' : 'text-gh-muted'">{{ value ?? 'No team' }}</span>
+                </template>
+                <template #status-cell="{ row }">
+                  <GBadge
+                    size="sm"
+                    :tone="statusTone[row.original.status]"
+                    :label="row.original.status"
+                  />
+                </template>
+                <template #checkedIn-cell="{ value }">
+                  <span :class="value ? 'gh-mono' : 'text-gh-muted'">{{ value ? `${String(value).padStart(2, '0')}:14` : 'Not yet' }}</span>
+                </template>
+                <template #actions-cell="{ row }">
+                  <GButton
+                    variant="ghost"
+                    size="sm"
+                    icon="material-symbols:history-rounded"
+                    :aria-label="`Check-in history for ${row.original.name}`"
+                  />
+                </template>
+              </GTable>
+            </div>
+            <p class="gh-small text-gh-muted">
+              Sort: <code class="gh-mono">{{ tableSort ? `${tableSort.id} ${tableSort.desc ? 'desc' : 'asc'}` : 'none' }}</code>
+            </p>
+
+            <div class="grid gap-6 lg:grid-cols-2">
+              <div class="flex flex-col gap-2">
+                <span class="gh-label text-gh-muted">Virtualised · 2,000 rows</span>
+                <div class="overflow-hidden rounded-gh border-[1.5px] border-gh-line">
+                  <GTable
+                    :data="manyParticipants"
+                    :columns="participantColumns.slice(0, 3)"
+                    row-key="id"
+                    size="sm"
+                    caption="2,000 participants, virtualised (demo)"
+                    :virtualize="{ estimateSize: 37, overscan: 10 }"
+                    class="max-h-80"
+                  >
+                    <template #status-cell="{ row }">
+                      <GBadge
+                        size="sm"
+                        :tone="statusTone[row.original.status]"
+                        :label="row.original.status"
+                      />
+                    </template>
+                  </GTable>
+                </div>
+              </div>
+              <div class="flex flex-col gap-2">
+                <span class="gh-label text-gh-muted">Empty</span>
+                <div class="overflow-hidden rounded-gh border-[1.5px] border-gh-line">
+                  <GTable
+                    :data="[]"
+                    :columns="participantColumns.slice(0, 3)"
+                    caption="No results (demo)"
+                    empty-title="No participants match"
+                    empty-description="Try a different status filter or clear the search."
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Brand pieces -->
+          <div class="flex flex-col gap-5 rounded-gh border-[1.5px] border-gh-line bg-gh-surface p-5">
+            <div>
+              <h3 class="gh-h3">
+                Label strip and section heading
+              </h3>
+              <p class="gh-small text-gh-muted">
+                The wordmark's letter-spaced bar and the big section numerals. The logo itself comes later, with the real SVGs from the designers.
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-4">
+              <GLabelStrip label="Registration" />
+              <GLabelStrip
+                label="Live now"
+                tone="accent"
+              />
+              <GLabelStrip
+                label="Workshop"
+                tone="outline"
+              />
+              <GLabelStrip
+                label="Small"
+                size="sm"
+              />
+            </div>
+            <GSectionHeading
+              :numeral="2"
+              label="Step"
+              title="Tell us about your team"
+              :level="3"
+            >
+              Numbers are padded to two digits and hidden from screen readers.
+            </GSectionHeading>
+          </div>
+
+          <!-- Icons -->
+          <div class="flex flex-col gap-4 rounded-gh border-[1.5px] border-gh-line bg-gh-surface p-5">
+            <div>
+              <h3 class="gh-h3">
+                Icons
+              </h3>
+              <p class="gh-small text-gh-muted">
+                Material Symbols Rounded: filled, rounded, one colour. <code class="gh-mono">lucideToMaterial</code> in <code class="gh-mono">utils/g-icons.ts</code> maps the old Lucide names for page migrations.
+              </p>
+            </div>
+            <ul class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+              <li
+                v-for="[lucide, material] in iconMap"
+                :key="lucide"
+                class="flex items-center gap-3 rounded-gh-sm border border-gh-line-soft p-2"
+              >
+                <Icon
+                  :name="material"
+                  class="size-6 flex-none"
+                  aria-hidden="true"
+                />
+                <span class="min-w-0">
+                  <span class="gh-small block truncate">{{ material.replace('material-symbols:', '') }}</span>
+                  <span class="gh-mono block truncate text-xs text-gh-muted">{{ lucide.replace('i-lucide-', 'lucide ') }}</span>
+                </span>
+              </li>
+            </ul>
           </div>
         </div>
       </section>

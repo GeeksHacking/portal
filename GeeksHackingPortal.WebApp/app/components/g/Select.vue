@@ -136,7 +136,7 @@ const triggerAttrs = computed(() => {
         />
         <SelectIcon as-child>
           <Icon
-            name="i-lucide-chevron-down"
+            name="material-symbols:keyboard-arrow-down-rounded"
             class="g-select__chevron"
             aria-hidden="true"
           />
@@ -165,7 +165,7 @@ const triggerAttrs = computed(() => {
                 aria-hidden="true"
               >
                 <SelectItemIndicator as-child>
-                  <Icon name="i-lucide-check" />
+                  <Icon name="material-symbols:check-rounded" />
                 </SelectItemIndicator>
               </span>
               <SelectItemText>{{ option.label }}</SelectItemText>
@@ -174,7 +174,7 @@ const triggerAttrs = computed(() => {
                 class="g-select__indicator"
               >
                 <Icon
-                  name="i-lucide-check"
+                  name="material-symbols:check-rounded"
                   aria-hidden="true"
                 />
               </SelectItemIndicator>

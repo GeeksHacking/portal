@@ -99,7 +99,7 @@ function onClick(event: MouseEvent) {
   >
     <Icon
       v-if="loading"
-      name="i-lucide-loader-circle"
+      name="material-symbols:progress-activity"
       class="g-btn__icon g-btn__spinner"
       aria-hidden="true"
     />

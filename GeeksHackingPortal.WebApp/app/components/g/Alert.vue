@@ -24,10 +24,10 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{ close: [] }>()
 
 const defaultIcons = {
-  neutral: 'i-lucide-info',
-  ok: 'i-lucide-circle-check',
-  err: 'i-lucide-circle-alert',
-  attention: 'i-lucide-triangle-alert',
+  neutral: 'material-symbols:info-rounded',
+  ok: 'material-symbols:check-circle-rounded',
+  err: 'material-symbols:error-rounded',
+  attention: 'material-symbols:warning-rounded',
 } as const
 
 const iconName = computed(() => (props.icon === null ? undefined : props.icon ?? defaultIcons[props.tone]))
@@ -76,7 +76,7 @@ const iconName = computed(() => (props.icon === null ? undefined : props.icon ??
       class="g-alert__close"
       variant="ghost"
       size="sm"
-      icon="i-lucide-x"
+      icon="material-symbols:close-rounded"
       aria-label="Dismiss"
       @click="emit('close')"
     />

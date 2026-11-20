@@ -17,10 +17,10 @@ import {
 const { toasts, dismiss, remove } = useGToast()
 
 const icons = {
-  neutral: 'i-lucide-info',
-  ok: 'i-lucide-circle-check',
-  err: 'i-lucide-circle-alert',
-  attention: 'i-lucide-triangle-alert',
+  neutral: 'material-symbols:info-rounded',
+  ok: 'material-symbols:check-circle-rounded',
+  err: 'material-symbols:error-rounded',
+  attention: 'material-symbols:warning-rounded',
 } as const
 
 function iconFor(toast: GToast) {
@@ -84,7 +84,7 @@ function onOpenChange(id: string, open: boolean) {
         <GButton
           variant="ghost"
           size="sm"
-          icon="i-lucide-x"
+          icon="material-symbols:close-rounded"
           aria-label="Dismiss notification"
           class="g-toast__close"
         />

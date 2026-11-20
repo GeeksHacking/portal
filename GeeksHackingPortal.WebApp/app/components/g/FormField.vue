@@ -72,7 +72,7 @@ provideGFormField({
         class="g-field__error"
       >
         <Icon
-          name="i-lucide-circle-alert"
+          name="material-symbols:error-rounded"
           class="g-field__error-icon"
           aria-hidden="true"
         />

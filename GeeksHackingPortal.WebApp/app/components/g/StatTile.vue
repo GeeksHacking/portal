@@ -32,9 +32,9 @@ const formatted = computed(() => {
 })
 
 const trendIcon = computed(() => ({
-  up: 'i-lucide-arrow-up-right',
-  down: 'i-lucide-arrow-down-right',
-  flat: 'i-lucide-arrow-right',
+  up: 'material-symbols:north-east-rounded',
+  down: 'material-symbols:south-east-rounded',
+  flat: 'material-symbols:arrow-forward-rounded',
 })[props.trend])
 </script>
 

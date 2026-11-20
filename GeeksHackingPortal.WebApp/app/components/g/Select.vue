@@ -13,9 +13,11 @@ import {
 } from 'reka-ui'
 
 /**
- * GSelect: single choice from a short list (Reka UI Select underneath).
+ * GSelect: one choice (or several, with `multiple`) from a short list (Reka UI Select underneath).
  *
- * Drop-in for the old <USelect :items value-key label-key placeholder>:
+ * Drop-in for the old <USelect :items value-key label-key placeholder>, and for
+ * <USelectMenu multiple> without search (v-model is then an array; the menu stays open
+ * while picking and the trigger lists the chosen labels):
  * `items` may be strings/numbers or objects; `valueKey` / `labelKey` default to `value` / `label`,
  * and an item with `disabled: true` can't be picked. Items with an empty-string value are skipped
  * (Reka reserves '' for "nothing selected", so the placeholder shows instead).
@@ -36,6 +38,7 @@ const props = withDefaults(defineProps<{
   icon?: string
   size?: 'sm' | 'md' | 'lg'
   name?: string
+  multiple?: boolean
   invalid?: boolean
   disabled?: boolean
   required?: boolean
@@ -47,7 +50,7 @@ const props = withDefaults(defineProps<{
   size: 'md',
 })
 
-const model = defineModel<Primitive | null | undefined>()
+const model = defineModel<Primitive | Primitive[] | null | undefined>()
 
 const attrs = useAttrs()
 const { id, invalid, disabled, required, describedBy } = useGFieldControl(props)
@@ -62,12 +65,19 @@ const options = computed<Option[]>(() => props.items
   })
   .filter(o => o.value !== '' && o.value !== undefined && o.value !== null))
 
-// Reka works with strings; map back to the original (possibly numeric) value
-const innerValue = computed({
-  get: () => (model.value === null || model.value === undefined ? '' : String(model.value)),
-  set: (v: string) => {
-    const match = options.value.find(o => String(o.value) === v)
-    model.value = match ? match.value : v
+// Reka works with strings; map back to the original (possibly numeric) values
+function toOriginal(v: string): Primitive {
+  const match = options.value.find(o => String(o.value) === v)
+  return match ? match.value : v
+}
+const innerValue = computed<string | string[]>({
+  get: () => {
+    if (props.multiple)
+      return Array.isArray(model.value) ? model.value.map(String) : []
+    return model.value === null || model.value === undefined || Array.isArray(model.value) ? '' : String(model.value)
+  },
+  set: (v) => {
+    model.value = Array.isArray(v) ? v.map(toOriginal) : toOriginal(v)
   },
 })
 
@@ -98,6 +108,7 @@ const triggerAttrs = computed(() => {
       :disabled="disabled"
       :required="required"
       :name="name"
+      :multiple="multiple"
     >
       <SelectTrigger
         :id="id"
@@ -146,9 +157,22 @@ const triggerAttrs = computed(() => {
               :value="String(option.value)"
               :disabled="option.disabled"
               class="g-select__item"
+              :class="{ 'g-select__item--multiple': multiple }"
             >
+              <span
+                v-if="multiple"
+                class="g-select__box"
+                aria-hidden="true"
+              >
+                <SelectItemIndicator as-child>
+                  <Icon name="i-lucide-check" />
+                </SelectItemIndicator>
+              </span>
               <SelectItemText>{{ option.label }}</SelectItemText>
-              <SelectItemIndicator class="g-select__indicator">
+              <SelectItemIndicator
+                v-if="!multiple"
+                class="g-select__indicator"
+              >
                 <Icon
                   name="i-lucide-check"
                   aria-hidden="true"
@@ -305,6 +329,33 @@ const triggerAttrs = computed(() => {
   display: inline-flex;
   width: 16px;
   height: 16px;
+}
+.g-select__item--multiple {
+  padding-right: 10px;
+}
+/* multiple: a checkbox-style box, yellow fill + dark tick when picked (same as GCheckbox) */
+.g-select__box {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: var(--gh-border-width) solid var(--gh-line);
+  border-radius: 5px;
+  background: var(--gh-surface);
+  color: var(--gh-on-accent);
+}
+.g-select__box svg {
+  width: 13px;
+  height: 13px;
+}
+.g-select__item[data-state='checked'] .g-select__box {
+  background: var(--gh-accent);
+  border-color: var(--gh-on-accent);
+}
+.g-select__item[data-disabled] .g-select__box {
+  background: var(--gh-surface-sunken);
+  border-color: var(--gh-line-disabled);
 }
 .g-select__empty {
   margin: 0;

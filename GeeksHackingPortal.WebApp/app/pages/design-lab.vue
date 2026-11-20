@@ -57,6 +57,7 @@ const contrastPairs: Pair[] = [
   { label: 'Highlighted menu option', fg: '--gh-text', bg: '--gh-option-hover', under: '--gh-surface-raised', min: 4.5 },
   { label: 'Outline vs card (UI)', fg: '--gh-line', bg: '--gh-surface', min: 3 },
   { label: 'Outline vs menu / modal (UI)', fg: '--gh-line', bg: '--gh-surface-raised', min: 3 },
+  { label: 'Switch thumb (off) vs track (UI)', fg: '--gh-line', bg: '--gh-surface-sunken', min: 3 },
   { label: 'Outline vs page (UI)', fg: '--gh-line', bg: '--gh-bg', min: 3 },
   { label: 'Focus ring vs page (UI)', fg: '--gh-focus', bg: '--gh-bg', min: 3 },
   { label: 'Highlight edge vs card (UI)', fg: '--gh-highlight-edge', bg: '--gh-surface', min: 3 },
@@ -239,6 +240,51 @@ const lastModalAction = ref('')
 function confirmLeave() {
   confirmOpen.value = false
   lastModalAction.value = 'You left the team (demo only).'
+}
+
+// ---------- batch 3 demos ----------
+// toasts render from app.vue, outside this page's theme wrapper: mirror the theme onto <html> while here
+watch(theme, t => document.documentElement.setAttribute('data-gh-theme', t), { immediate: true })
+onBeforeUnmount(() => document.documentElement.removeAttribute('data-gh-theme'))
+
+const gToast = useGToast()
+const toastDemos = [
+  { label: 'Success', run: () => gToast.add({ title: 'Checked in', description: 'Nur Aisyah Tan · Team Bus Uncles', color: 'success' }) },
+  { label: 'Error', run: () => gToast.add({ title: 'Couldn\'t save', description: 'The server didn\'t answer. Your changes are still here.', color: 'error', action: { label: 'Retry', onClick: () => gToast.success('Saved') } }) },
+  { label: 'Attention', run: () => gToast.add({ title: 'Check-in closes in 10 minutes', color: 'warning' }) },
+  { label: 'Neutral', run: () => gToast.add({ title: 'Link copied', icon: 'i-lucide-copy', color: 'neutral' }) },
+  { label: 'Replace by id', run: () => gToast.add({ id: 'sync', title: `Synced ${new Date().toLocaleTimeString()}`, color: 'neutral' }) },
+]
+
+const interests = ref<string[]>(['web'])
+const interestItems = [
+  { value: 'web', label: 'Web' },
+  { value: 'ai', label: 'AI / ML' },
+  { value: 'hw', label: 'Hardware' },
+  { value: 'design', label: 'Design' },
+  { value: 'data', label: 'Data' },
+]
+
+type ViewMode = 'list' | 'cards'
+const viewMode = ref<ViewMode>('list')
+const viewOptions = [
+  { label: 'List', value: 'list', icon: 'i-lucide-list' },
+  { label: 'Cards', value: 'cards', icon: 'i-lucide-layout-grid' },
+]
+const sectionTab = ref('overview')
+const sectionTabs = [
+  { label: 'Overview', value: 'overview' },
+  { label: 'Participants', value: 'participants', icon: 'i-lucide-users' },
+  { label: 'Judging', value: 'judging' },
+  { label: 'Archive', value: 'archive', disabled: true },
+]
+
+const settings = reactive({ registrationOpen: true, waitlist: false, publicGallery: true })
+
+const statsLoading = ref(false)
+function reloadStats() {
+  statsLoading.value = true
+  setTimeout(() => (statsLoading.value = false), 1500)
 }
 </script>
 
@@ -702,7 +748,7 @@ function confirmLeave() {
           </div>
         </div>
         <p class="mb-6 max-w-[70ch] text-gh-muted">
-          Everything in <code class="gh-mono">app/components/g/</code>: button, input, textarea, select, checkbox, form field, badge, alert, card and modal. Hover, press, tab to them and type: these are the real components.
+          Everything in <code class="gh-mono">app/components/g/</code>: button, input, textarea, select (single and multiple), checkbox, switch, form field, tabs, badge, alert, toast, card, stat tile, empty state, skeleton and modal. Hover, press, tab to them and type: these are the real components.
         </p>
 
         <div class="flex flex-col gap-6">
@@ -1421,6 +1467,241 @@ function confirmLeave() {
                 </div>
               </template>
             </GModal>
+          </div>
+
+          <!-- Batch 3: multi-select, switch, tabs -->
+          <div class="grid gap-6 lg:grid-cols-2">
+            <div class="flex flex-col gap-4 rounded-gh border-[1.5px] border-gh-line bg-gh-surface p-5">
+              <div>
+                <h3 class="gh-h3">
+                  Multiple select and switch
+                </h3>
+                <p class="gh-small text-gh-muted">
+                  The menu stays open while you tick options. Switches apply straight away; checkboxes are for forms you submit.
+                </p>
+              </div>
+              <GFormField
+                label="Interests"
+                hint="Pick as many as you like."
+              >
+                <GSelect
+                  v-model="interests"
+                  :items="interestItems"
+                  multiple
+                  placeholder="Choose interests"
+                />
+              </GFormField>
+              <p class="gh-small text-gh-muted">
+                Value: <code class="gh-mono">{{ JSON.stringify(interests) }}</code>
+              </p>
+              <div class="flex flex-col gap-4 border-t border-gh-line-soft pt-4">
+                <GSwitch
+                  v-model="settings.registrationOpen"
+                  label="Registration open"
+                  description="Participants can sign up from the event page."
+                />
+                <GSwitch
+                  v-model="settings.waitlist"
+                  label="Waitlist when full"
+                />
+                <GSwitch
+                  v-model="settings.publicGallery"
+                  size="sm"
+                  label="Small: public project gallery"
+                />
+                <GSwitch
+                  label="Disabled off"
+                  disabled
+                />
+                <GSwitch
+                  :model-value="true"
+                  label="Disabled on"
+                  disabled
+                />
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-5 rounded-gh border-[1.5px] border-gh-line bg-gh-surface p-5">
+              <div>
+                <h3 class="gh-h3">
+                  Tabs
+                </h3>
+                <p class="gh-small text-gh-muted">
+                  Arrow keys move between tabs. Segmented for view toggles, underline for sections.
+                </p>
+              </div>
+              <div class="flex flex-wrap items-center gap-4">
+                <GTabs
+                  v-model="viewMode"
+                  :items="viewOptions"
+                  :content="false"
+                  size="sm"
+                  aria-label="View"
+                />
+                <span class="gh-small text-gh-muted">Showing: {{ viewMode }}</span>
+              </div>
+              <GTabs
+                v-model="sectionTab"
+                :items="sectionTabs"
+                variant="underline"
+                aria-label="Event sections"
+              >
+                <template #overview>
+                  <p class="gh-small text-gh-muted">
+                    Overview panel. Tab into it from the active tab.
+                  </p>
+                </template>
+                <template #participants>
+                  <p class="gh-small text-gh-muted">
+                    128 participants, 42 waiting for review.
+                  </p>
+                </template>
+                <template #judging>
+                  <p class="gh-small text-gh-muted">
+                    Judging opens on Sunday.
+                  </p>
+                </template>
+              </GTabs>
+              <GTabs
+                :items="viewOptions"
+                :content="false"
+                block
+                model-value="cards"
+                aria-label="Block view toggle"
+              />
+            </div>
+          </div>
+
+          <!-- Toasts -->
+          <div class="flex flex-col gap-4 rounded-gh border-[1.5px] border-gh-line bg-gh-surface p-5">
+            <div>
+              <h3 class="gh-h3">
+                Toast
+              </h3>
+              <p class="gh-small text-gh-muted">
+                <code class="gh-mono">useGToast().add({ title, description, color })</code>, the same shape as Nuxt UI's. Hover to pause, swipe right or press the × to dismiss, F8 to jump to them. Errors stay up longer.
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <GButton
+                v-for="d in toastDemos"
+                :key="d.label"
+                :label="d.label"
+                @click="d.run"
+              />
+            </div>
+          </div>
+
+          <!-- Stat tiles -->
+          <div class="flex flex-col gap-4">
+            <div class="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h3 class="gh-h3">
+                  Stat tile
+                </h3>
+                <p class="gh-small text-gh-muted">
+                  One highlighted number per view at most. Changes stay grey: more isn't always good.
+                </p>
+              </div>
+              <GButton
+                size="sm"
+                icon="i-lucide-refresh-cw"
+                label="Show loading"
+                :loading="statsLoading"
+                @click="reloadStats"
+              />
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <GStatTile
+                label="Registrations"
+                :value="1284"
+                change="+36 since yesterday"
+                trend="up"
+                icon="i-lucide-user-plus"
+                :loading="statsLoading"
+              />
+              <GStatTile
+                label="Waiting for review"
+                :value="42"
+                hint="Oldest is 3 days old"
+                highlight
+                :loading="statsLoading"
+              />
+              <GStatTile
+                label="Checked in"
+                :value="87"
+                unit="%"
+                change="−4 vs last year"
+                trend="down"
+                :loading="statsLoading"
+              />
+              <GStatTile
+                label="Teams"
+                :value="214"
+                hint="Open the team list"
+                to="/dash"
+                :loading="statsLoading"
+              />
+            </div>
+          </div>
+
+          <!-- Empty state + skeleton -->
+          <div class="grid gap-6 lg:grid-cols-2">
+            <GEmptyState
+              title="No submissions yet"
+              description="Teams' projects show up here once they submit. Submissions open on Sunday at 9am."
+              icon="i-lucide-folder-open"
+            >
+              <template #actions>
+                <GButton
+                  variant="primary"
+                  icon="i-lucide-bell"
+                  label="Remind teams"
+                />
+                <GButton
+                  variant="ghost"
+                  label="See the timeline"
+                />
+              </template>
+            </GEmptyState>
+            <div
+              class="flex flex-col gap-4 rounded-gh border-[1.5px] border-gh-line bg-gh-surface p-5"
+              aria-busy="true"
+            >
+              <div>
+                <h3 class="gh-h3">
+                  Skeleton
+                </h3>
+                <p class="gh-small text-gh-muted">
+                  Hidden from screen readers; the region is marked busy instead.
+                </p>
+              </div>
+              <div class="flex items-center gap-3">
+                <GSkeleton
+                  shape="circle"
+                  class="w-10"
+                />
+                <div class="flex flex-1 flex-col gap-2">
+                  <GSkeleton
+                    shape="text"
+                    class="w-1/3"
+                  />
+                  <GSkeleton
+                    shape="text"
+                    class="w-2/3"
+                  />
+                </div>
+              </div>
+              <GSkeleton class="h-10 w-full" />
+              <GSkeleton class="h-10 w-full" />
+              <GEmptyState
+                size="sm"
+                :bordered="false"
+                title="No check-ins yet"
+                description="Scan a QR code to start."
+                icon="i-lucide-scan-line"
+              />
+            </div>
           </div>
         </div>
       </section>

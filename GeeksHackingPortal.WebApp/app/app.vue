@@ -38,5 +38,6 @@ onMounted(() => {
         </UAlert>
       </div>
     </NuxtLayout>
+    <GToaster />
   </UApp>
 </template>

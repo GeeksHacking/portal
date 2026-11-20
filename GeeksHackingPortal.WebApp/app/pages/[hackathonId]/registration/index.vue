@@ -48,51 +48,40 @@ watchEffect(() => {
     label="Checking your session…"
   />
 
-  <!-- Show login UI only if not authenticated -->
-  <div
-    v-else
-    class="min-h-screen bg-(--ui-bg) font-raleway flex items-center justify-center px-4 text-(--ui-text)"
-  >
-    <div class="w-full flex justify-center">
-      <div class="flex flex-col items-center gap-3">
-        <p class="font-normal text-base text-(--ui-text-highlighted) text-center">
-          Register to participate in
-        </p>
-        <img
-          src="/logos/geekshacking.svg"
-          alt="GeeksHacking Portal"
-          class="w-full max-w-xl h-auto"
-        >
-        <div class="flex justify-center mt-8 w-full">
-          <UButton
-            :to="loginUrl"
-            external
-            rel="noopener"
-            variant="outline"
-            color="neutral"
-            size="xl"
-            icon="i-lucide-github"
-          >
-            Sign up with GitHub
-          </UButton>
-        </div>
-        <div class="flex flex-col items-center gap-2 mt-6 max-w-md px-4">
-          <p class="font-normal text-base text-(--ui-text-highlighted) text-center">
-            Note that due to a large number of registrations, all current registrations will be put on a waiting list.
-          </p>
-          <p class="font-normal text-base text-(--ui-text-highlighted) text-center">
-            You will be notified when a slot is available.
-          </p>
-        </div>
-        <div class="mt-30">
-          <NuxtLink
-            to="/"
-            class="text-base font-normal text-(--ui-text-highlighted) underline"
-          >
-            Exit Registration
-          </NuxtLink>
-        </div>
-      </div>
+  <!-- signed out: sign up first, then the form -->
+  <AuthFrame v-else>
+    <div class="flex flex-col items-start gap-3">
+      <GLabelStrip
+        as="p"
+        label="Registration"
+      />
+      <h1 class="font-display text-[32px] leading-tight font-bold">
+        {{ hackathon?.name ? `Register for ${hackathon.name}` : 'Register to participate' }}
+      </h1>
+      <p class="text-gh-muted">
+        Sign up with your GitHub account, then fill in a short registration form.
+      </p>
     </div>
-  </div>
+
+    <GAlert
+      tone="attention"
+      title="You'll join the waiting list"
+      description="We've had a large number of registrations, so every new registration goes on a waiting list. We'll let you know as soon as a slot opens."
+    />
+
+    <GButton
+      :href="loginUrl"
+      variant="primary"
+      size="lg"
+      block
+      icon="fa6-brands:github"
+      label="Sign up with GitHub"
+    />
+    <GButton
+      to="/"
+      variant="ghost"
+      label="Exit registration"
+      class="self-center"
+    />
+  </AuthFrame>
 </template>

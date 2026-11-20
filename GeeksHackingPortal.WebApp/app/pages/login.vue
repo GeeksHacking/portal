@@ -38,45 +38,49 @@ const isAuthenticated = computed(() => !!user.value && !isError.value)
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50">
-    <GLoading
-      v-if="isLoading || isAuthenticated"
-      :label="isAuthenticated ? 'Taking you to the portal…' : 'Checking your session…'"
+  <GLoading
+    v-if="isLoading || isAuthenticated"
+    page
+    :label="isAuthenticated ? 'Taking you to the portal…' : 'Checking your session…'"
+  />
+
+  <AuthFrame v-else>
+    <div class="flex flex-col items-start gap-3">
+      <GLabelStrip
+        as="p"
+        label="Sign in"
+      />
+      <h1 class="font-display text-[32px] leading-tight font-bold">
+        Welcome to the GeeksHacking Portal
+      </h1>
+      <p class="text-gh-muted">
+        Register for events, manage your team and run hackathons, all with your GitHub account.
+      </p>
+    </div>
+
+    <GAlert
+      v-if="sessionMissing"
+      tone="err"
+      title="We couldn't keep you signed in"
+      description="GitHub sign-in finished, but this preview couldn't keep the session. Please try again."
+    />
+    <GAlert
+      v-else-if="loginFailed"
+      tone="err"
+      title="GitHub sign-in didn't finish"
+      description="Please try again."
     />
 
-    <div v-else-if="isError" class="text-center max-w-md px-6">
-      <div class="space-y-6">
-        <div class="space-y-2">
-          <h1 class="text-4xl font-bold tracking-tight text-gray-900">
-            GeeksHacking
-          </h1>
-          <p class="text-gray-600">
-            Giving | Geeks | Grow
-          </p>
-        </div>
-
-        <UButton
-          :to="loginUrl"
-          external
-          rel="noopener"
-          size="lg"
-          icon="i-simple-icons-github"
-          color="neutral"
-        >
-          Login with GitHub
-        </UButton>
-
-        <p v-if="sessionMissing" class="text-sm text-red-600">
-          Sign-in finished, but this preview could not keep the session. Please try again.
-        </p>
-        <p v-else-if="loginFailed" class="text-sm text-red-600">
-          GitHub sign-in did not finish. Please try again.
-        </p>
-
-        <p class="text-sm text-gray-600">
-          Please ensure you are logged into GitHub first!
-        </p>
-      </div>
-    </div>
-  </div>
+    <GButton
+      :href="loginUrl"
+      variant="primary"
+      size="lg"
+      block
+      icon="fa6-brands:github"
+      :label="loginFailed ? 'Try GitHub sign-in again' : 'Sign in with GitHub'"
+    />
+    <p class="gh-small text-gh-muted">
+      Sign in to GitHub in this browser first, then come back here.
+    </p>
+  </AuthFrame>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Rgba } from '~/utils/color-contrast'
-import { contrastRatio, flatten, toHex } from '~/utils/color-contrast'
+import { contrastRatio, flatten, parseCssColor, toHex } from '~/utils/color-contrast'
 
 useHead({ title: 'Design lab · GeeksHacking Portal' })
 
@@ -25,10 +25,10 @@ const brandPalette = [
 ]
 
 const semanticGroups = [
-  { title: 'Surfaces', tokens: ['--gh-bg', '--gh-surface', '--gh-surface-sunken', '--gh-highlight'] },
+  { title: 'Surfaces', tokens: ['--gh-bg', '--gh-surface', '--gh-surface-sunken', '--gh-surface-raised', '--gh-highlight'] },
   { title: 'Text', tokens: ['--gh-text', '--gh-text-muted', '--gh-text-subtle', '--gh-text-disabled'] },
   { title: 'Lines and focus', tokens: ['--gh-line', '--gh-line-soft', '--gh-highlight-edge', '--gh-focus'] },
-  { title: 'Accent and status', tokens: ['--gh-accent', '--gh-on-accent', '--gh-highlight-ink', '--gh-ok', '--gh-ok-soft', '--gh-err', '--gh-err-soft'] },
+  { title: 'Accent and status', tokens: ['--gh-accent', '--gh-on-accent', '--gh-highlight-ink', '--gh-ok', '--gh-ok-soft', '--gh-on-ok', '--gh-err', '--gh-err-soft', '--gh-on-err'] },
   { title: 'Data viz', tokens: ['--gh-viz-1', '--gh-viz-2', '--gh-viz-3', '--gh-viz-edge', '--gh-viz-track'] },
 ]
 
@@ -46,7 +46,17 @@ const contrastPairs: Pair[] = [
   { label: 'Success badge', fg: '--gh-ok', bg: '--gh-ok-soft', under: '--gh-surface', min: 4.5 },
   { label: 'Error text on card', fg: '--gh-err', bg: '--gh-surface', min: 4.5 },
   { label: 'Error badge', fg: '--gh-err', bg: '--gh-err-soft', under: '--gh-surface', min: 4.5 },
+  { label: 'Solid success badge', fg: '--gh-on-ok', bg: '--gh-ok', min: 4.5 },
+  { label: 'Solid error badge', fg: '--gh-on-err', bg: '--gh-err', min: 4.5 },
+  { label: 'Solid neutral badge', fg: '--gh-bg', bg: '--gh-text', min: 4.5 },
+  { label: 'Neutral badge', fg: '--gh-text', bg: '--gh-surface-sunken', min: 4.5 },
+  { label: 'Success alert body', fg: '--gh-text-muted', bg: '--gh-ok-soft', under: '--gh-surface', min: 4.5 },
+  { label: 'Error alert body', fg: '--gh-text-muted', bg: '--gh-err-soft', under: '--gh-surface', min: 4.5 },
+  { label: 'Text in menu / modal', fg: '--gh-text', bg: '--gh-surface-raised', min: 4.5 },
+  { label: 'Muted text in menu / modal', fg: '--gh-text-muted', bg: '--gh-surface-raised', min: 4.5 },
+  { label: 'Highlighted menu option', fg: '--gh-text', bg: '--gh-option-hover', under: '--gh-surface-raised', min: 4.5 },
   { label: 'Outline vs card (UI)', fg: '--gh-line', bg: '--gh-surface', min: 3 },
+  { label: 'Outline vs menu / modal (UI)', fg: '--gh-line', bg: '--gh-surface-raised', min: 3 },
   { label: 'Outline vs page (UI)', fg: '--gh-line', bg: '--gh-bg', min: 3 },
   { label: 'Focus ring vs page (UI)', fg: '--gh-focus', bg: '--gh-bg', min: 3 },
   { label: 'Highlight edge vs card (UI)', fg: '--gh-highlight-edge', bg: '--gh-surface', min: 3 },
@@ -123,16 +133,16 @@ function parseHex(value: string | undefined): Rgba | null {
   if (value === 'transparent')
     return { r: 0, g: 0, b: 0, a: 0 }
   let hex = value.replace('#', '')
-  // the CSS minifier shortens #ffffff to #fff
-  if (/^[0-9a-f]{3}$/i.test(hex))
+  // the CSS minifier shortens #ffffff to #fff, and rgb(0 0 0 / 0.06) to #0000000f
+  if (/^[0-9a-f]{3,4}$/i.test(hex))
     hex = hex.split('').map(c => c + c).join('')
-  if (!/^[0-9a-f]{6}$/i.test(hex))
-    return null
+  if (!/^(?:[0-9a-f]{6}|[0-9a-f]{8})$/i.test(hex))
+    return parseCssColor(value) // unminified rgb() / rgba()
   return {
     r: Number.parseInt(hex.slice(0, 2), 16),
     g: Number.parseInt(hex.slice(2, 4), 16),
     b: Number.parseInt(hex.slice(4, 6), 16),
-    a: 1,
+    a: hex.length === 8 ? Number.parseInt(hex.slice(6, 8), 16) / 255 : 1,
   }
 }
 
@@ -182,6 +192,54 @@ const emailError = computed(() => {
   return demo.email.includes('@') ? '' : 'That doesn\'t look like an email address yet. Check for a missing @.'
 })
 const teamCodeError = 'That code doesn\'t match a team yet. Check with your teammate, or skip this and join later.'
+
+// ---------- batch 2 demos ----------
+const shirtSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
+const challengeItems = [
+  { value: 'c1', label: 'Smarter public transport' },
+  { value: 'c2', label: 'Healthier hawker centres' },
+  { value: 'c3', label: 'Closed this year', disabled: true },
+  { value: 'c4', label: 'Greener HDB estates' },
+]
+const form2 = reactive({
+  shirt: undefined as string | undefined,
+  challenge: 'c2' as string | undefined,
+  dietary: undefined as string | undefined,
+  pitch: '',
+  notes: 'We met at the last workshop and want to keep building the bus-arrival idea.',
+  coc: false,
+  newsletter: true,
+  photos: false,
+})
+const pitchTouched = ref(false)
+const pitchError = computed(() => (pitchTouched.value && form2.pitch.trim().length < 20 ? 'Tell us a bit more: at least 20 characters.' : ''))
+const allPerks = ref<boolean[]>([true, false, true])
+const allPerksChecked = computed(() => allPerks.value.every(Boolean))
+const somePerksChecked = computed(() => allPerks.value.some(Boolean) && !allPerksChecked.value)
+function toggleAllPerks(value: boolean) {
+  allPerks.value = allPerks.value.map(() => value)
+}
+const perkLabels = ['Meals', 'Swag', 'Parking']
+
+const badgeTones = ['neutral', 'ok', 'err', 'pending'] as const
+const badgeVariants = ['soft', 'solid', 'outline'] as const
+const badgeSamples: Record<(typeof badgeTones)[number], { label: string, icon: string }> = {
+  neutral: { label: 'Draft', icon: 'i-lucide-file' },
+  ok: { label: 'Accepted', icon: 'i-lucide-check' },
+  err: { label: 'Rejected', icon: 'i-lucide-x' },
+  pending: { label: 'Pending review', icon: 'i-lucide-clock' },
+}
+
+const alertDismissed = ref(false)
+
+const modalOpen = ref(false)
+const confirmOpen = ref(false)
+const customOpen = ref(false)
+const lastModalAction = ref('')
+function confirmLeave() {
+  confirmOpen.value = false
+  lastModalAction.value = 'You left the team (demo only).'
+}
 </script>
 
 <template>
@@ -639,12 +697,12 @@ const teamCodeError = 'That code doesn\'t match a team yet. Check with your team
               id="s-components"
               class="gh-h2"
             >
-              Button, input and form field
+              The G* kit
             </h2>
           </div>
         </div>
         <p class="mb-6 max-w-[70ch] text-gh-muted">
-          <code class="gh-mono">GButton</code>, <code class="gh-mono">GInput</code> and <code class="gh-mono">GFormField</code> in <code class="gh-mono">app/components/g/</code>. Hover, press, tab to them and type: these are the real components.
+          Everything in <code class="gh-mono">app/components/g/</code>: button, input, textarea, select, checkbox, form field, badge, alert, card and modal. Hover, press, tab to them and type: these are the real components.
         </p>
 
         <div class="flex flex-col gap-6">
@@ -914,6 +972,455 @@ const teamCodeError = 'That code doesn\'t match a team yet. Check with your team
                 </GFormField>
               </div>
             </div>
+          </div>
+
+          <!-- Textarea, select, checkbox -->
+          <div class="grid gap-6 lg:grid-cols-2">
+            <form
+              class="flex flex-col gap-4 rounded-gh border-[1.5px] border-gh-line bg-gh-surface p-5"
+              novalidate
+              @submit.prevent
+            >
+              <div>
+                <h3 class="gh-h3">
+                  Select and textarea
+                </h3>
+                <p class="gh-small text-gh-muted">
+                  Open a select with Space or the arrow keys, type to jump, Esc to close.
+                </p>
+              </div>
+              <GFormField
+                label="T-shirt size"
+                hint="Unisex fit."
+                required
+              >
+                <GSelect
+                  v-model="form2.shirt"
+                  :items="shirtSizes"
+                  placeholder="Choose a size"
+                />
+              </GFormField>
+              <GFormField label="Challenge statement">
+                <GSelect
+                  v-model="form2.challenge"
+                  :items="challengeItems"
+                  icon="i-lucide-flag"
+                />
+              </GFormField>
+              <GFormField
+                label="Dietary needs"
+                error="Pick one so the caterer can plan."
+              >
+                <GSelect
+                  v-model="form2.dietary"
+                  :items="['None', 'Vegetarian', 'Halal', 'Vegan']"
+                  placeholder="Select one"
+                />
+              </GFormField>
+              <GFormField
+                label="Track"
+                hint="Assigned by organisers."
+                disabled
+              >
+                <GSelect
+                  :items="['Beginner', 'Open']"
+                  placeholder="Not assigned yet"
+                />
+              </GFormField>
+              <GFormField
+                label="Your pitch"
+                hint="One or two sentences. Grows as you type."
+                :error="pitchError"
+                required
+              >
+                <GTextarea
+                  v-model="form2.pitch"
+                  :rows="2"
+                  :max-rows="8"
+                  autoresize
+                  placeholder="We're building…"
+                  @blur="pitchTouched = true"
+                />
+              </GFormField>
+              <GFormField label="Notes for organisers">
+                <GTextarea v-model="form2.notes" />
+              </GFormField>
+              <GFormField
+                label="Judge feedback"
+                disabled
+              >
+                <GTextarea placeholder="Shown after judging" />
+              </GFormField>
+            </form>
+
+            <div class="flex flex-col gap-4 rounded-gh border-[1.5px] border-gh-line bg-gh-surface p-5">
+              <div>
+                <h3 class="gh-h3">
+                  Checkbox
+                </h3>
+                <p class="gh-small text-gh-muted">
+                  Checked is a solid yellow box with a dark tick. Space toggles.
+                </p>
+              </div>
+              <GCheckbox
+                v-model="form2.coc"
+                label="I agree to the Code of Conduct"
+                description="You can't register without this."
+                required
+                :invalid="!form2.coc"
+              />
+              <GCheckbox
+                v-model="form2.newsletter"
+                label="Email me about future events"
+              />
+              <GCheckbox
+                v-model="form2.photos"
+                label="I'm happy to appear in event photos"
+                description="Opt out any time from your profile."
+              />
+              <fieldset class="flex flex-col gap-3 border-t border-gh-line-soft pt-4">
+                <legend class="gh-label mb-3 text-gh-muted">
+                  Indeterminate
+                </legend>
+                <GCheckbox
+                  :model-value="allPerksChecked"
+                  :indeterminate="somePerksChecked"
+                  label="All perks"
+                  @update:model-value="toggleAllPerks"
+                />
+                <div class="flex flex-col gap-3 pl-8">
+                  <GCheckbox
+                    v-for="(perk, i) in perkLabels"
+                    :key="perk"
+                    v-model="allPerks[i]"
+                    :label="perk"
+                  />
+                </div>
+              </fieldset>
+              <div class="flex flex-col gap-3 border-t border-gh-line-soft pt-4">
+                <span class="gh-label text-gh-muted">Disabled</span>
+                <GCheckbox
+                  label="Locked off"
+                  disabled
+                />
+                <GCheckbox
+                  :model-value="true"
+                  label="Locked on"
+                  disabled
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Badges -->
+          <div class="rounded-gh border-[1.5px] border-gh-line bg-gh-surface p-5">
+            <h3 class="gh-h3 mb-1">
+              Badge
+            </h3>
+            <p class="gh-small mb-5 text-gh-muted">
+              Status is green or red. Pending is always solid yellow with dark text. Soft badges are tinted in light and outlined in dark.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="w-full border-separate border-spacing-x-0 border-spacing-y-3 text-left">
+                <thead>
+                  <tr>
+                    <th
+                      scope="col"
+                      class="gh-label w-28 text-gh-muted"
+                    >
+                      Tone
+                    </th>
+                    <th
+                      v-for="v in badgeVariants"
+                      :key="v"
+                      scope="col"
+                      class="gh-label capitalize text-gh-muted"
+                    >
+                      {{ v }}
+                    </th>
+                    <th
+                      scope="col"
+                      class="gh-label text-gh-muted"
+                    >
+                      Small
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="t in badgeTones"
+                    :key="t"
+                  >
+                    <th
+                      scope="row"
+                      class="font-semibold capitalize"
+                    >
+                      {{ t }}
+                    </th>
+                    <td
+                      v-for="v in badgeVariants"
+                      :key="v"
+                      class="pr-4"
+                    >
+                      <GBadge
+                        :tone="t"
+                        :variant="v"
+                        :icon="badgeSamples[t].icon"
+                        :label="badgeSamples[t].label"
+                      />
+                    </td>
+                    <td class="pr-4">
+                      <GBadge
+                        :tone="t"
+                        size="sm"
+                        :label="badgeSamples[t].label"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Alerts -->
+          <div class="flex flex-col gap-4 rounded-gh border-[1.5px] border-gh-line bg-gh-surface p-5">
+            <div>
+              <h3 class="gh-h3">
+                Alert
+              </h3>
+              <p class="gh-small text-gh-muted">
+                Only the icon and edge carry the tone. Body text stays readable. Errors are announced.
+              </p>
+            </div>
+            <GAlert
+              title="Registration closes Friday 23:59"
+              description="You can still edit your answers until then."
+            />
+            <GAlert
+              tone="ok"
+              title="You're checked in"
+              description="Grab your lanyard from the front desk."
+            />
+            <GAlert
+              tone="err"
+              title="We couldn't save your submission"
+              description="The repository link isn't public. Make it public, then try again."
+            >
+              <template #actions>
+                <GButton
+                  size="sm"
+                  variant="secondary"
+                  icon="i-lucide-rotate-cw"
+                  label="Try again"
+                />
+              </template>
+            </GAlert>
+            <GAlert
+              v-if="!alertDismissed"
+              tone="attention"
+              title="Your team needs one more member"
+              description="Teams of 2–5 can submit. Invite someone with your team code."
+              dismissible
+              @close="alertDismissed = true"
+            />
+            <GButton
+              v-else
+              variant="ghost"
+              size="sm"
+              label="Bring the dismissed alert back"
+              class="self-start"
+              @click="alertDismissed = false"
+            />
+          </div>
+
+          <!-- Cards -->
+          <div class="flex flex-col gap-4">
+            <div>
+              <h3 class="gh-h3">
+                Card
+              </h3>
+              <p class="gh-small text-gh-muted">
+                Plain cards stay still. Action cards are one big link or button: they lift on hover and press in. Disabled ones don't move.
+              </p>
+            </div>
+            <div class="grid gap-4 md:grid-cols-3">
+              <GCard>
+                <template #header>
+                  <span class="gh-label text-gh-muted">Plain</span>
+                </template>
+                <p class="gh-h3">
+                  128
+                </p>
+                <p class="gh-small text-gh-muted">
+                  Registrations
+                </p>
+                <template #footer>
+                  <span class="gh-small text-gh-muted">Updated 2 min ago</span>
+                </template>
+              </GCard>
+              <GCard highlight>
+                <span class="gh-label">Highlight</span>
+                <p class="gh-h3 text-gh-highlight-ink">
+                  42
+                </p>
+                <p class="gh-small text-gh-muted">
+                  Waiting for review: one per view at most
+                </p>
+              </GCard>
+              <GCard
+                variant="action"
+                to="/dash"
+              >
+                <span class="gh-label text-gh-muted">Action · link</span>
+                <p class="gh-h3">
+                  GeeksHacking 2026
+                </p>
+                <p class="gh-small text-gh-muted">
+                  12–14 Jun · Open to all
+                </p>
+              </GCard>
+              <GCard
+                variant="action"
+                @click="lastModalAction = 'Action card clicked.'"
+              >
+                <span class="gh-label text-gh-muted">Action · button</span>
+                <p class="gh-h3">
+                  Intro to Rust
+                </p>
+                <p class="gh-small text-gh-muted">
+                  Workshop · 20 seats left
+                </p>
+              </GCard>
+              <GCard
+                variant="action"
+                to="/dash"
+                disabled
+              >
+                <span class="gh-label">Action · disabled</span>
+                <p class="gh-h3">
+                  Past event
+                </p>
+                <p class="gh-small">
+                  Registration closed
+                </p>
+              </GCard>
+            </div>
+          </div>
+
+          <!-- Modals -->
+          <div class="flex flex-col gap-4 rounded-gh border-[1.5px] border-gh-line bg-gh-surface p-5">
+            <div>
+              <h3 class="gh-h3">
+                Modal
+              </h3>
+              <p class="gh-small text-gh-muted">
+                Focus is trapped inside and returns to the button that opened it. Esc and clicking outside close it, unless it must be answered.
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <GButton
+                label="Edit team details"
+                icon="i-lucide-pencil"
+                @click="modalOpen = true"
+              />
+              <GButton
+                variant="danger"
+                label="Leave team"
+                icon="i-lucide-log-out"
+                @click="confirmOpen = true"
+              />
+              <GButton
+                variant="ghost"
+                label="Custom content"
+                @click="customOpen = true"
+              />
+            </div>
+            <p
+              v-if="lastModalAction"
+              class="gh-small text-gh-muted"
+              role="status"
+            >
+              {{ lastModalAction }}
+            </p>
+
+            <GModal
+              v-model:open="modalOpen"
+              title="Edit team details"
+              description="Everyone on your team sees these."
+            >
+              <div class="flex flex-col gap-4">
+                <GFormField
+                  label="Team name"
+                  required
+                >
+                  <GInput model-value="Bus Uncles" />
+                </GFormField>
+                <GFormField label="What are you building?">
+                  <GTextarea model-value="A bus-arrival app for people who can't read small screens." />
+                </GFormField>
+              </div>
+              <template #footer="{ close }">
+                <GButton
+                  variant="ghost"
+                  label="Cancel"
+                  @click="close"
+                />
+                <GButton
+                  variant="primary"
+                  label="Save"
+                  @click="close(); lastModalAction = 'Team details saved (demo only).'"
+                />
+              </template>
+            </GModal>
+
+            <GModal
+              v-model:open="confirmOpen"
+              size="sm"
+              title="Leave Bus Uncles?"
+              description="You'll lose access to the team's submission. Your teammates can invite you back."
+              :dismissible="false"
+            >
+              <template #footer>
+                <GButton
+                  variant="ghost"
+                  label="Stay"
+                  @click="confirmOpen = false"
+                />
+                <GButton
+                  variant="danger"
+                  label="Leave team"
+                  @click="confirmLeave"
+                />
+              </template>
+            </GModal>
+
+            <GModal
+              v-model:open="customOpen"
+              title="Your check-in QR code"
+            >
+              <template #content="{ close }">
+                <div class="flex flex-col items-center gap-4 p-8 text-center">
+                  <span class="gh-strip">Check-in</span>
+                  <div
+                    class="grid size-40 place-items-center rounded-gh border-[1.5px] border-gh-line bg-gh-sunken"
+                    aria-hidden="true"
+                  >
+                    <Icon
+                      name="i-lucide-qr-code"
+                      class="size-24"
+                    />
+                  </div>
+                  <p class="gh-small text-gh-muted">
+                    The content slot replaces the whole inside. The title is still read out to screen readers.
+                  </p>
+                  <GButton
+                    variant="primary"
+                    label="Done"
+                    @click="close"
+                  />
+                </div>
+              </template>
+            </GModal>
           </div>
         </div>
       </section>

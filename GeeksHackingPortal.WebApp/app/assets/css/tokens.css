@@ -48,6 +48,7 @@
   --gh-bg: #fafaf7;
   --gh-surface: #ffffff;
   --gh-surface-sunken: #f5f5f5;
+  --gh-surface-raised: #ffffff; /* menus, modals */
 
   --gh-text: #1c1b1b;
   --gh-text-muted: #5e5d5f;
@@ -68,6 +69,8 @@
   --gh-ok-soft: #ddf3e5;
   --gh-err: #a32d2d;
   --gh-err-soft: #fbe3e3;
+  --gh-on-ok: #ffffff; /* text on solid status fills */
+  --gh-on-err: #ffffff;
 
   --gh-focus: #1c1b1b;
   --gh-shadow-color: #29282a;
@@ -86,6 +89,11 @@
   --gh-field-focus-border: #1c1b1b;
   --gh-field-error: 3px 3px 0 #fbe3e3, 3px 3px 0 1.5px #a32d2d;
   --gh-ghost-hover: rgb(0 0 0 / 0.06);
+  --gh-option-hover: rgb(0 0 0 / 0.06); /* highlighted menu option */
+
+  /* overlays: scrim behind modals, offset shadow under menus and modals */
+  --gh-scrim: rgb(28 27 27 / 0.55);
+  --gh-shadow-overlay: 6px 6px 0 #29282a;
 
   --gh-border-width: 1.5px;
   --gh-tracking: 0.5px;
@@ -103,6 +111,7 @@
   --gh-bg: #1c1b1b;
   --gh-surface: #29282a;
   --gh-surface-sunken: #232224;
+  --gh-surface-raised: #302f31;
 
   --gh-text: #f2f2f2;
   --gh-text-muted: #a09fa0;
@@ -123,6 +132,8 @@
   --gh-ok-soft: transparent;
   --gh-err: #ff8a8a;
   --gh-err-soft: transparent;
+  --gh-on-ok: #1c1b1b;
+  --gh-on-err: #1c1b1b;
 
   --gh-focus: #fff200;
   --gh-shadow-color: #000000;
@@ -141,6 +152,10 @@
   --gh-field-focus-border: #fff200;
   --gh-field-error: 3px 3px 0 rgb(255 138 138 / 0.3);
   --gh-ghost-hover: rgb(255 255 255 / 0.08);
+  --gh-option-hover: rgb(255 255 255 / 0.1);
+
+  --gh-scrim: rgb(0 0 0 / 0.7);
+  --gh-shadow-overlay: 6px 6px 0 #000000;
 
   color-scheme: dark;
 }
@@ -159,6 +174,7 @@
   --color-gh-bg: var(--gh-bg);
   --color-gh-surface: var(--gh-surface);
   --color-gh-sunken: var(--gh-surface-sunken);
+  --color-gh-raised: var(--gh-surface-raised);
   --color-gh-text: var(--gh-text);
   --color-gh-muted: var(--gh-text-muted);
   --color-gh-subtle: var(--gh-text-subtle);

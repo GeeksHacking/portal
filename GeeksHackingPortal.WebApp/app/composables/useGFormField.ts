@@ -22,3 +22,29 @@ export function provideGFormField(context: GFormFieldContext) {
 export function useGFormField() {
   return inject(G_FORM_FIELD_KEY, undefined)
 }
+
+export interface GFieldControlProps {
+  id?: string
+  invalid?: boolean
+  disabled?: boolean
+  required?: boolean
+}
+
+/**
+ * Resolves a control's id / invalid / disabled / required / aria-describedby from its own props,
+ * falling back to the surrounding <GFormField>. Own props win; describedBy merges both.
+ */
+export function useGFieldControl(props: GFieldControlProps) {
+  const field = useGFormField()
+  const attrs = useAttrs()
+  return {
+    field,
+    id: computed(() => props.id ?? field?.id.value),
+    invalid: computed(() => !!props.invalid || !!field?.invalid.value),
+    disabled: computed(() => !!props.disabled || !!field?.disabled.value),
+    required: computed(() => !!props.required || !!field?.required.value),
+    describedBy: computed(() =>
+      [attrs['aria-describedby'] as string | undefined, field?.describedBy.value].filter(Boolean).join(' ') || undefined,
+    ),
+  }
+}

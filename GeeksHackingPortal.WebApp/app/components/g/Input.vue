@@ -25,16 +25,14 @@ const props = withDefaults(defineProps<{
 
 const model = defineModel<string | number | null>()
 
-const field = useGFormField()
 const attrs = useAttrs()
-
-const inputId = computed(() => props.id ?? field?.id.value)
-const isInvalid = computed(() => props.invalid || !!field?.invalid.value)
-const isDisabled = computed(() => props.disabled || !!field?.disabled.value)
-const isRequired = computed(() => props.required || !!field?.required.value)
-const describedBy = computed(() =>
-  [attrs['aria-describedby'] as string | undefined, field?.describedBy.value].filter(Boolean).join(' ') || undefined,
-)
+const {
+  id: inputId,
+  invalid: isInvalid,
+  disabled: isDisabled,
+  required: isRequired,
+  describedBy,
+} = useGFieldControl(props)
 
 const inputEl = ref<HTMLInputElement | null>(null)
 defineExpose({ focus: () => inputEl.value?.focus(), el: inputEl })

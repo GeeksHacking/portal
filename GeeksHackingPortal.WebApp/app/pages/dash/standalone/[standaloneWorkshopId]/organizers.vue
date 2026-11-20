@@ -155,13 +155,9 @@ watch(standaloneWorkshopId, fetchInvites)
 </script>
 
 <template>
-  <UDashboardPanel id="standalone-organizers">
+  <GPanel id="standalone-organizers">
     <template #header>
-      <UDashboardNavbar title="Organizers">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Organizers" />
     </template>
 
     <template #body>
@@ -435,5 +431,5 @@ watch(standaloneWorkshopId, fetchInvites)
         </UModal>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

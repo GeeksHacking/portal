@@ -284,13 +284,9 @@ function downloadParticipantEmailsExcel() {
 </script>
 
 <template>
-  <UDashboardPanel id="infopack">
+  <GPanel id="infopack">
     <template #header>
-      <UDashboardNavbar title="Data Export">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Data Export" />
     </template>
 
     <template #body>
@@ -438,5 +434,5 @@ function downloadParticipantEmailsExcel() {
         </UCard>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

@@ -76,9 +76,9 @@ function statusBadgeColor(status: string | null | undefined) {
 </script>
 
 <template>
-  <UDashboardPanel id="admin-oauth-application">
+  <GPanel id="admin-oauth-application">
     <template #header>
-      <UDashboardNavbar :title="application?.displayName ?? 'OAuth Application'">
+      <GPanelHeader :title="application?.displayName ?? 'OAuth Application'">
         <template #leading>
           <UButton
             variant="ghost"
@@ -86,7 +86,7 @@ function statusBadgeColor(status: string | null | undefined) {
             to="/dash/admin/oauth-applications"
           />
         </template>
-      </UDashboardNavbar>
+      </GPanelHeader>
     </template>
 
     <template #body>
@@ -358,5 +358,5 @@ function statusBadgeColor(status: string | null | undefined) {
         </div>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

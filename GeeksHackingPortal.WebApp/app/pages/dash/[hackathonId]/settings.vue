@@ -121,13 +121,9 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <UDashboardPanel id="settings">
+  <GPanel id="settings">
     <template #header>
-      <UDashboardNavbar title="Settings">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Settings" />
     </template>
 
     <template #body>
@@ -232,5 +228,5 @@ async function handleSubmit() {
         </UCard>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

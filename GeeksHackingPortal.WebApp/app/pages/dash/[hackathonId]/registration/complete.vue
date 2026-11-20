@@ -11,7 +11,7 @@ const dashboardPath = computed(() => (hackathonId.value ? `/dash/${hackathonId.v
 </script>
 
 <template>
-  <UDashboardPanel id="registration-complete">
+  <GPanel id="registration-complete">
     <template #body>
       <div class="min-h-screen bg-(--ui-bg) font-raleway flex items-center justify-center px-4 text-(--ui-text)">
         <div class="w-full flex justify-center">
@@ -64,5 +64,5 @@ const dashboardPath = computed(() => (hackathonId.value ? `/dash/${hackathonId.v
         </div>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

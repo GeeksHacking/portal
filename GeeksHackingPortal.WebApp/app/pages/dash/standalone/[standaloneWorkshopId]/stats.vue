@@ -26,13 +26,9 @@ const statCards = computed(() => [
 </script>
 
 <template>
-  <UDashboardPanel id="standalone-stats">
+  <GPanel id="standalone-stats">
     <template #header>
-      <UDashboardNavbar title="Standalone Event Stats">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Standalone Event Stats" />
     </template>
 
     <template #body>
@@ -89,5 +85,5 @@ const statCards = computed(() => [
         </div>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

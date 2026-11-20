@@ -82,13 +82,9 @@ function handleSubmit() {
 </script>
 
 <template>
-  <UDashboardPanel id="profile">
+  <GPanel id="profile">
     <template #header>
-      <UDashboardNavbar title="Profile">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Profile" />
     </template>
 
     <template #body>
@@ -173,5 +169,5 @@ function handleSubmit() {
         </UCard>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

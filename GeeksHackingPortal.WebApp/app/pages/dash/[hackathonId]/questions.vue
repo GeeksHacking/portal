@@ -296,13 +296,9 @@ async function onQuestionDrop(targetQuestion: Question) {
 </script>
 
 <template>
-  <UDashboardPanel id="questions">
+  <GPanel id="questions">
     <template #header>
-      <UDashboardNavbar title="Questions">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Questions" />
     </template>
 
     <template #body>
@@ -717,5 +713,5 @@ async function onQuestionDrop(targetQuestion: Question) {
         </div>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

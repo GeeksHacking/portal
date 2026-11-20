@@ -823,13 +823,9 @@ const filteredResourceTeamBreakdown = computed<GeeksHackingPortalApiEndpointsOrg
 </script>
 
 <template>
-  <UDashboardPanel id="participant-stats">
+  <GPanel id="participant-stats">
     <template #header>
-      <UDashboardNavbar title="Statistics">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Statistics" />
     </template>
 
     <template #body>
@@ -1435,5 +1431,5 @@ const filteredResourceTeamBreakdown = computed<GeeksHackingPortalApiEndpointsOrg
         </template>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

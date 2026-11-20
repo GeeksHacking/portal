@@ -96,13 +96,9 @@ const isSubmitting = computed(() => createMutation.isPending.value || updateMuta
 </script>
 
 <template>
-  <UDashboardPanel id="judges">
+  <GPanel id="judges">
     <template #header>
-      <UDashboardNavbar title="Judges">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Judges" />
     </template>
 
     <template #body>
@@ -242,5 +238,5 @@ const isSubmitting = computed(() => createMutation.isPending.value || updateMuta
         </UModal>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

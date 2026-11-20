@@ -39,6 +39,8 @@ export const lucideToMaterial: Record<string, string> = {
   'i-lucide-user-plus': 'material-symbols:person-add-rounded',
   'i-lucide-users': 'material-symbols:group-rounded',
   'i-lucide-x': 'material-symbols:close-rounded',
+  'i-lucide-menu': 'material-symbols:menu-rounded',
+  'i-lucide-mail': 'material-symbols:mail-rounded',
   'i-lucide-arrow-up': 'material-symbols:arrow-upward-rounded',
   'i-lucide-arrow-down': 'material-symbols:arrow-downward-rounded',
   'i-lucide-chevrons-up-down': 'material-symbols:unfold-more-rounded',

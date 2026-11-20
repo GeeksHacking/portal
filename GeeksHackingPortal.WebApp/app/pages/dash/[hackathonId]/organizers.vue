@@ -155,13 +155,9 @@ watch(hackathonId, fetchInvites)
 </script>
 
 <template>
-  <UDashboardPanel id="organizers">
+  <GPanel id="organizers">
     <template #header>
-      <UDashboardNavbar title="Organizers">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Organizers" />
     </template>
 
     <template #body>
@@ -435,5 +431,5 @@ watch(hackathonId, fetchInvites)
         </UModal>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

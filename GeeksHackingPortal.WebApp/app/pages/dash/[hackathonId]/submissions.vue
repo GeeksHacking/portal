@@ -176,13 +176,9 @@ function exportToExcel() {
 </script>
 
 <template>
-  <UDashboardPanel id="submissions">
+  <GPanel id="submissions">
     <template #header>
-      <UDashboardNavbar title="Submissions">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Submissions" />
     </template>
 
     <template #body>
@@ -445,5 +441,5 @@ function exportToExcel() {
         </UModal>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

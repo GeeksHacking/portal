@@ -175,13 +175,9 @@ async function withdrawParticipant(participant: ParticipantItem) {
 </script>
 
 <template>
-  <UDashboardPanel id="standalone-participants">
+  <GPanel id="standalone-participants">
     <template #header>
-      <UDashboardNavbar title="Participants">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Participants" />
     </template>
 
     <template #body>
@@ -500,5 +496,5 @@ async function withdrawParticipant(participant: ParticipantItem) {
         </UModal>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

@@ -89,13 +89,9 @@ function toggleTeam(teamId: string) {
 </script>
 
 <template>
-  <UDashboardPanel id="teams">
+  <GPanel id="teams">
     <template #header>
-      <UDashboardNavbar title="Teams">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Teams" />
     </template>
 
     <template #body>
@@ -231,5 +227,5 @@ function toggleTeam(teamId: string) {
         </div>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

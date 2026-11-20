@@ -257,12 +257,9 @@ function platformBadgeColor(platform: OAuthApplicationPlatform | null | undefine
 </script>
 
 <template>
-  <UDashboardPanel id="oauth-applications">
+  <GPanel id="oauth-applications">
     <template #header>
-      <UDashboardNavbar title="OAuth Applications">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
+      <GPanelHeader title="OAuth Applications">
         <template #right>
           <UButton
             v-if="user?.isRoot"
@@ -273,7 +270,7 @@ function platformBadgeColor(platform: OAuthApplicationPlatform | null | undefine
             Add Application
           </UButton>
         </template>
-      </UDashboardNavbar>
+      </GPanelHeader>
     </template>
 
     <template #body>
@@ -427,7 +424,7 @@ function platformBadgeColor(platform: OAuthApplicationPlatform | null | undefine
         </UCard>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 
   <UModal v-model:open="isEditorOpen">
     <template #content>

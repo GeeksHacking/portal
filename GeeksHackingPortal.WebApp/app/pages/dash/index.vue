@@ -258,13 +258,9 @@ function eventDateRange(start?: string | null, end?: string | null) {
 </script>
 
 <template>
-  <UDashboardPanel id="dashboard">
+  <GPanel id="dashboard">
     <template #header>
-      <UDashboardNavbar title="Explore">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Explore" />
     </template>
 
     <template #body>
@@ -541,5 +537,5 @@ function eventDateRange(start?: string | null, end?: string | null) {
         </section>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

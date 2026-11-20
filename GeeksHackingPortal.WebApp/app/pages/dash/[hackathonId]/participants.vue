@@ -637,13 +637,9 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
 </script>
 
 <template>
-  <UDashboardPanel id="participants">
+  <GPanel id="participants">
     <template #header>
-      <UDashboardNavbar title="Participants">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Participants" />
     </template>
 
     <template #body>
@@ -1165,5 +1161,5 @@ function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined
         </UModal>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

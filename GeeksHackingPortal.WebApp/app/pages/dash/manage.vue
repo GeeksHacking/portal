@@ -749,13 +749,9 @@ function capacityPercent(event: typeof standaloneEvents.value[number]) {
 </script>
 
 <template>
-  <UDashboardPanel id="dashboard-management">
+  <GPanel id="dashboard-management">
     <template #header>
-      <UDashboardNavbar title="Manage events">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Manage events" />
     </template>
 
     <template #body>
@@ -1155,7 +1151,7 @@ function capacityPercent(event: typeof standaloneEvents.value[number]) {
         </section>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 
   <!-- Hackathon Create/Edit Modal (Admin only) -->
   <UModal

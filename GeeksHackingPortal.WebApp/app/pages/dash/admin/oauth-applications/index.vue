@@ -64,13 +64,9 @@ function platformBadgeColor(platform: DirectoryApplication['platform']) {
 </script>
 
 <template>
-  <UDashboardPanel id="admin-oauth-applications">
+  <GPanel id="admin-oauth-applications">
     <template #header>
-      <UDashboardNavbar title="All OAuth Applications">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="All OAuth Applications" />
     </template>
 
     <template #body>
@@ -202,5 +198,5 @@ function platformBadgeColor(platform: DirectoryApplication['platform']) {
         </UCard>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

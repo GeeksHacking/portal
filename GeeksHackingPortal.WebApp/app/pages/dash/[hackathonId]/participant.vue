@@ -219,13 +219,9 @@ function formatParticipantStatus(status: GeeksHackingPortalApiEndpointsParticipa
 
 <template>
   <div>
-    <UDashboardPanel id="hackathon-participant">
+    <GPanel id="hackathon-participant">
       <template #header>
-        <UDashboardNavbar :title="hackathon?.name ?? 'Hackathon'">
-          <template #leading>
-            <UDashboardSidebarCollapse />
-          </template>
-        </UDashboardNavbar>
+        <GPanelHeader :title="hackathon?.name ?? 'Hackathon'" />
       </template>
 
       <template #body>
@@ -401,7 +397,7 @@ function formatParticipantStatus(status: GeeksHackingPortalApiEndpointsParticipa
           </div>
         </div>
       </template>
-    </UDashboardPanel>
+    </GPanel>
 
     <UModal
       v-model:open="isReviewModalOpen"

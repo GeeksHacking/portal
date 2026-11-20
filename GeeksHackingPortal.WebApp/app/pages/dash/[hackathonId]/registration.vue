@@ -11,17 +11,13 @@ const resolvedHackathonId = computed(() => hackathon.value?.id ?? null)
 </script>
 
 <template>
-  <UDashboardPanel id="registration">
+  <GPanel id="registration">
     <template #header>
-      <UDashboardNavbar title="Registration">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Registration" />
     </template>
 
     <template #body>
       <RegistrationFormPage :hackathon-id="resolvedHackathonId" />
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

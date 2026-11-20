@@ -218,13 +218,9 @@ function hasChart(challengeId: string | null | undefined): boolean {
 </script>
 
 <template>
-  <UDashboardPanel id="challenge-dashboard">
+  <GPanel id="challenge-dashboard">
     <template #header>
-      <UDashboardNavbar :title="hackathon?.name ? `${hackathon.name} — Challenges` : 'Challenge Dashboard'">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-
+      <GPanelHeader :title="hackathon?.name ? `${hackathon.name} — Challenges` : 'Challenge Dashboard'">
         <template #trailing>
           <div class="flex items-center gap-3">
             <UButton
@@ -249,7 +245,7 @@ function hasChart(challengeId: string | null | undefined): boolean {
             </div>
           </div>
         </template>
-      </UDashboardNavbar>
+      </GPanelHeader>
     </template>
 
     <template #body>
@@ -393,5 +389,5 @@ function hasChart(challengeId: string | null | undefined): boolean {
         </div>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

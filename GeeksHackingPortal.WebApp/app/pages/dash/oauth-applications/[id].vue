@@ -21,9 +21,9 @@ function formatDate(dateStr: string | null | undefined) {
 </script>
 
 <template>
-  <UDashboardPanel id="oauth-history">
+  <GPanel id="oauth-history">
     <template #header>
-      <UDashboardNavbar title="Sign In History">
+      <GPanelHeader title="Sign In History">
         <template #leading>
           <UButton
             variant="ghost"
@@ -31,7 +31,7 @@ function formatDate(dateStr: string | null | undefined) {
             to="/dash/oauth-applications"
           />
         </template>
-      </UDashboardNavbar>
+      </GPanelHeader>
     </template>
 
     <template #body>
@@ -72,5 +72,5 @@ function formatDate(dateStr: string | null | undefined) {
         </UTable>
       </UCard>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

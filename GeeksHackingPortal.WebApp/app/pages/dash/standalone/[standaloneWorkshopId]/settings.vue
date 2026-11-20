@@ -179,13 +179,9 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <UDashboardPanel id="standalone-settings">
+  <GPanel id="standalone-settings">
     <template #header>
-      <UDashboardNavbar title="Standalone Event Settings">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Standalone Event Settings" />
     </template>
 
     <template #body>
@@ -324,5 +320,5 @@ async function handleSubmit() {
         </form>
       </UCard>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

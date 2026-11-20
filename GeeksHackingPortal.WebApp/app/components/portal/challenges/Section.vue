@@ -129,12 +129,6 @@ watch(selectedIndex, (val) => {
 
 <template>
   <section>
-    <!-- Section header -->
-    <header class="h-18 flex items-center justify-center bg-linear-to-r from-[#ffc1aa] via-[#ff5b84] to-[#ffc1aa] border-y border-y-black" style="border-image: linear-gradient(to right, black, transparent) 1">
-      <h2 class="font-['Zalando_Sans_Expanded'] text-black text-center m-0 text-2xl">
-        CHALLENGES
-      </h2>
-    </header>
 
     <div v-if="isLoading">
       Loading challenges...

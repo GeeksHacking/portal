@@ -55,12 +55,6 @@ watch(
 
 <template>
   <section ref="sectionRef" class="relative z-10">
-    <!-- Section header -->
-    <header class="h-18 flex items-center justify-center bg-[linear-gradient(to_right,#B4E2FB_0%,#81CAF6_91%,#B4E2FB_100%)] border-y border-y-black" style="border-image: linear-gradient(to right, black, transparent) 1">
-      <h2 class="font-['Zalando_Sans_Expanded'] text-black text-center m-0 text-2xl">
-        TEAM
-      </h2>
-    </header>
 
     <div
       v-if="isLoading"

@@ -366,13 +366,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <UDashboardPanel id="standalone-checkin">
+  <GPanel id="standalone-checkin">
     <template #header>
-      <UDashboardNavbar title="Check Ins">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Check Ins" />
     </template>
 
     <template #body>
@@ -816,5 +812,5 @@ onUnmounted(() => {
         </UModal>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

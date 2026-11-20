@@ -56,6 +56,7 @@ const contrastPairs: Pair[] = [
   { label: 'Text in menu / modal', fg: '--gh-text', bg: '--gh-surface-raised', min: 4.5 },
   { label: 'Muted text in menu / modal', fg: '--gh-text-muted', bg: '--gh-surface-raised', min: 4.5 },
   { label: 'Highlighted menu option', fg: '--gh-text', bg: '--gh-option-hover', under: '--gh-surface-raised', min: 4.5 },
+  { label: 'Sidebar link on hover', fg: '--gh-text', bg: '--gh-ghost-hover', under: '--gh-surface', min: 4.5 },
   { label: 'Outline vs card (UI)', fg: '--gh-line', bg: '--gh-surface', min: 3 },
   { label: 'Outline vs menu / modal (UI)', fg: '--gh-line', bg: '--gh-surface-raised', min: 3 },
   { label: 'Switch thumb (off) vs track (UI)', fg: '--gh-line', bg: '--gh-surface-sunken', min: 3 },
@@ -321,6 +322,36 @@ function reloadTable() {
 }
 
 const iconMap = Object.entries(lucideToMaterial)
+
+const shellDemoGroups = [
+  { items: [{ label: 'Explore', icon: 'material-symbols:explore-rounded', to: '/design-lab?shell=explore' }] },
+  {
+    label: 'HackOMania 2026',
+    items: [
+      { label: 'Team', icon: 'material-symbols:groups-rounded', to: '/design-lab?shell=team' },
+      { label: 'Challenges', icon: 'material-symbols:trophy-rounded', to: '/design-lab?shell=challenges' },
+      { label: 'Submission', icon: 'material-symbols:upload-file-rounded', to: '/design-lab?shell=submission' },
+    ],
+  },
+  {
+    label: 'Organizer',
+    items: [
+      { label: 'Workspace', icon: 'material-symbols:dashboard-rounded', to: '/design-lab?shell=workspace' },
+      {
+        label: 'Judging',
+        icon: 'material-symbols:balance-rounded',
+        children: [
+          { label: 'Judges', to: '/design-lab?shell=judges' },
+          { label: 'Analytics', to: '/design-lab?shell=analytics' },
+        ],
+      },
+    ],
+  },
+]
+const shellDemoTitle = computed(() => {
+  const key = String(route.query.shell ?? 'team')
+  return key.charAt(0).toUpperCase() + key.slice(1)
+})
 
 const logoBackgrounds = [
   { on: 'light', color: '#f5f5f5', label: '#5e5d5f' },
@@ -1946,11 +1977,99 @@ const logoBackgrounds = [
           </div>
         </div>
       </section>
+      <!-- 09 Shell -->
+      <section aria-labelledby="s-shells">
+        <GSectionHeading
+          id="s-shells"
+          numeral="09"
+          label="Shell"
+          title="Portal shell"
+          class="mb-5"
+        />
+        <p class="mb-6 max-w-[70ch] text-gh-muted">
+          <code class="gh-mono">GShell</code> + <code class="gh-mono">GNavList</code> + <code class="gh-mono">GPanel</code> / <code class="gh-mono">GPanelHeader</code>: the frame every signed-in page sits in (<code class="gh-mono">layouts/portal.vue</code>). The sidebar shrinks to icons from the header button and remembers it. Below 1024px it becomes a drawer behind the menu button. The links here only switch this demo.
+        </p>
+        <div class="shell-preview overflow-hidden rounded-gh border-[1.5px] border-gh-line">
+          <GShell
+            contained
+            label="Demo navigation"
+            storage-key="gh-shell-demo"
+          >
+            <template #header="{ collapsed }">
+              <span
+                class="flex min-w-0 items-center gap-2.5"
+                :class="{ 'mx-auto': collapsed }"
+              >
+                <GLogo
+                  :wordmark="false"
+                  size="sm"
+                  decorative
+                />
+                <span
+                  v-if="!collapsed"
+                  class="truncate font-display font-bold"
+                >GeeksHacking <span class="font-medium text-gh-muted">Portal</span></span>
+              </span>
+            </template>
+            <template #default="{ collapsed }">
+              <GNavList
+                :groups="shellDemoGroups"
+                :collapsed="collapsed"
+                label="Demo pages"
+              />
+            </template>
+            <template #footer="{ collapsed }">
+              <GButton
+                variant="ghost"
+                size="sm"
+                icon="material-symbols:support-agent-rounded"
+                :label="collapsed ? undefined : 'Contact us'"
+                :aria-label="collapsed ? 'Contact us' : undefined"
+                :block="!collapsed"
+              />
+            </template>
+            <template #main>
+              <GPanel id="shell-demo-panel">
+                <template #header>
+                  <GPanelHeader :title="shellDemoTitle">
+                    <template #right>
+                      <GButton
+                        variant="secondary"
+                        size="sm"
+                        icon="material-symbols:qr-code-2-rounded"
+                        label="My QR code"
+                      />
+                    </template>
+                  </GPanelHeader>
+                </template>
+                <template #body>
+                  <GLabelStrip
+                    label="HackOMania 2026"
+                    class="self-start"
+                  />
+                  <GCard
+                    v-for="n in 4"
+                    :key="n"
+                  >
+                    <p class="text-gh-muted">
+                      {{ shellDemoTitle }} content block {{ n }}. The body scrolls under the header.
+                    </p>
+                  </GCard>
+                </template>
+              </GPanel>
+            </template>
+          </GShell>
+        </div>
+      </section>
     </main>
   </div>
 </template>
 
 <style scoped>
+.shell-preview {
+  height: 640px;
+  background: var(--gh-bg);
+}
 .gh-mark {
   background: linear-gradient(transparent 58%, var(--gh-accent) 58%, var(--gh-accent) 92%, transparent 92%);
   color: inherit;

@@ -80,13 +80,9 @@ function downloadEmailsExcel() {
 </script>
 
 <template>
-  <UDashboardPanel id="standalone-infopack">
+  <GPanel id="standalone-infopack">
     <template #header>
-      <UDashboardNavbar title="Data Export">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="Data Export" />
     </template>
 
     <template #body>
@@ -151,5 +147,5 @@ function downloadEmailsExcel() {
         </UCard>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>

@@ -321,6 +321,12 @@ function reloadTable() {
 }
 
 const iconMap = Object.entries(lucideToMaterial)
+
+const logoBackgrounds = [
+  { on: 'light', color: '#f5f5f5', label: '#5e5d5f' },
+  { on: 'dark', color: '#1f1f1f', label: '#a09fa0' },
+  { on: 'yellow', color: '#fff200', label: '#1c1b1b' },
+] as const
 </script>
 
 <template>
@@ -331,7 +337,10 @@ const iconMap = Object.entries(lucideToMaterial)
     <header class="sticky top-0 z-10 border-b-[1.5px] border-gh-line bg-gh-bg">
       <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
         <div class="flex items-center gap-3">
-          <span class="gh-strip">GeeksHacking</span>
+          <GLogo
+            :wordmark="false"
+            size="sm"
+          />
           <span class="gh-h4">Design lab</span>
         </div>
         <div
@@ -1803,7 +1812,7 @@ const iconMap = Object.entries(lucideToMaterial)
                 Label strip and section heading
               </h3>
               <p class="gh-small text-gh-muted">
-                The wordmark's letter-spaced bar and the big section numerals. The logo itself comes later, with the real SVGs from the designers.
+                The wordmark's letter-spaced bar and the big section numerals. The logo is below.
               </p>
             </div>
             <div class="flex flex-wrap items-center gap-4">
@@ -1829,6 +1838,82 @@ const iconMap = Object.entries(lucideToMaterial)
             >
               Numbers are padded to two digits and hidden from screen readers.
             </GSectionHeading>
+          </div>
+
+          <!-- Logo -->
+          <div class="flex flex-col gap-5 rounded-gh border-[1.5px] border-gh-line bg-gh-surface p-5">
+            <div>
+              <h3 class="gh-h3">
+                Logo
+              </h3>
+              <p class="gh-small text-gh-muted">
+                <code class="gh-mono">GLogo</code>, traced from the brand-guide moodboard until the designers export vector files. Primary has the wordmark bar; secondary is the glasses alone; mono is one colour. Keep it upright, keep its proportions, never recolour it.
+              </p>
+            </div>
+            <div class="grid gap-4 md:grid-cols-3">
+              <div
+                v-for="bg in logoBackgrounds"
+                :key="bg.on"
+                class="flex flex-col gap-6 rounded-gh border-[1.5px] border-gh-line p-6"
+                :style="{ background: bg.color }"
+              >
+                <span
+                  class="gh-label"
+                  :style="{ color: bg.label }"
+                >On {{ bg.on }}</span>
+                <GLogo
+                  :on="bg.on"
+                  size="lg"
+                  decorative
+                />
+                <GLogo
+                  :on="bg.on"
+                  :wordmark="false"
+                  size="lg"
+                  decorative
+                />
+                <GLogo
+                  :on="bg.on"
+                  variant="mono"
+                  size="lg"
+                  decorative
+                />
+              </div>
+            </div>
+            <div class="flex flex-wrap items-end gap-6 border-t border-gh-line-soft pt-5">
+              <div class="flex flex-col gap-2">
+                <span class="gh-label text-gh-muted">Follows the theme</span>
+                <GLogo size="lg" />
+              </div>
+              <div class="flex flex-col gap-2">
+                <span class="gh-label text-gh-muted">With clearance space</span>
+                <GLogo
+                  size="lg"
+                  clearance
+                  class="outline-1 outline-dashed outline-gh-subtle"
+                />
+              </div>
+              <div class="flex flex-col gap-2">
+                <span class="gh-label text-gh-muted">Small: glasses alone, name as text</span>
+                <div class="flex items-center gap-3">
+                  <GLogo
+                    :wordmark="false"
+                    size="sm"
+                    decorative
+                  />
+                  <span class="font-display text-lg font-semibold">GeeksHacking</span>
+                  <GLogo
+                    :wordmark="false"
+                    size="md"
+                    class="ml-4"
+                  />
+                </div>
+              </div>
+              <div class="flex flex-col gap-2">
+                <span class="gh-label text-gh-muted">Primary from lg up</span>
+                <GLogo size="xl" />
+              </div>
+            </div>
           </div>
 
           <!-- Icons -->

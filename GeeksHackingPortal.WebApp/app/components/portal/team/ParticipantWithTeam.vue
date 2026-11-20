@@ -134,8 +134,8 @@ function copyInviteUrl() {
           class="py-2 lg:py-3"
         >
           <template v-if="team.members?.[index]">
-            <div class="flex items-center justify-between">
-              <p class="font-['Raleway'] text-base lg:text-2xl truncate">
+            <div class="flex items-center justify-between gap-2">
+              <p class="min-w-0 font-['Raleway'] text-base lg:text-2xl break-words">
                 {{ team.members[index].name }}
                 <span
                   v-if="team.members[index].isCurrentUser"

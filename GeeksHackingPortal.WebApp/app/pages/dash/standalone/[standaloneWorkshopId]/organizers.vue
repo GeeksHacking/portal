@@ -210,10 +210,10 @@ watch(standaloneWorkshopId, fetchInvites)
               class="py-3 flex items-center justify-between gap-3"
             >
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium truncate">
+                <p class="text-sm font-medium break-words">
                   {{ organizer.name }}
                 </p>
-                <p class="text-xs text-(--ui-text-muted) truncate">
+                <p class="text-xs text-(--ui-text-muted) break-all">
                   {{ organizer.email }}
                 </p>
               </div>

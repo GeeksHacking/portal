@@ -381,7 +381,7 @@ function hasChart(challengeId: string | null | undefined): boolean {
                 class="w-5 h-5 mt-0.5 shrink-0 animate-bounce"
               />
               <div class="min-w-0">
-                <p class="font-semibold text-sm leading-tight truncate">
+                <p class="font-semibold text-sm leading-tight break-words">
                   {{ notif.challengeTitle }}
                 </p>
                 <p class="text-xs text-orange-100 mt-0.5">

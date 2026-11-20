@@ -328,10 +328,10 @@ function platformBadgeColor(platform: OAuthApplicationPlatform | null | undefine
           <template #header>
             <div class="flex items-start justify-between gap-3">
               <div class="min-w-0">
-                <h2 class="truncate text-base font-semibold">
+                <h2 class="break-words text-base font-semibold">
                   {{ application.displayName }}
                 </h2>
-                <p class="truncate text-sm text-(--ui-text-muted)">
+                <p class="break-all text-sm text-(--ui-text-muted)">
                   {{ application.clientId }}
                 </p>
               </div>
@@ -372,7 +372,7 @@ function platformBadgeColor(platform: OAuthApplicationPlatform | null | undefine
                 <code
                   v-for="uri in application.redirectUris"
                   :key="uri"
-                  class="block truncate rounded-md bg-muted px-2 py-1 text-xs"
+                  class="block break-all rounded-md bg-muted px-2 py-1 text-xs"
                 >
                   {{ uri }}
                 </code>
@@ -387,7 +387,7 @@ function platformBadgeColor(platform: OAuthApplicationPlatform | null | undefine
                 <code
                   v-for="uri in application.postLogoutRedirectUris"
                   :key="uri"
-                  class="block truncate rounded-md bg-muted px-2 py-1 text-xs"
+                  class="block break-all rounded-md bg-muted px-2 py-1 text-xs"
                 >
                   {{ uri }}
                 </code>

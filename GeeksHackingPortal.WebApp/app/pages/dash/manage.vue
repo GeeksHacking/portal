@@ -940,28 +940,28 @@ function capacityPercent(event: typeof standaloneEvents.value[number]) {
             <div
               v-for="row in visibleEvents"
               :key="row.key"
-              class="rounded-lg border border-default bg-default p-4 transition hover:border-primary/40 hover:shadow-sm"
+              class="min-w-0 rounded-lg border border-default bg-default p-4 transition hover:border-primary/40 hover:shadow-sm"
               :class="viewMode === 'card' ? 'flex flex-col gap-4' : 'grid gap-3 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1.4fr)_15rem] lg:items-center'"
             >
               <div class="min-w-0 space-y-1.5">
                 <div
-                  class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide"
+                  class="flex min-w-0 items-start gap-1.5 text-xs font-semibold uppercase tracking-wide"
                   :class="row.kind === 'hackathon' ? 'text-primary' : 'text-info'"
                 >
                   <UIcon
                     :name="row.kind === 'hackathon' ? 'i-lucide-trophy' : 'i-lucide-brain-circuit'"
-                    class="size-3.5 shrink-0"
+                    class="mt-px size-3.5 shrink-0"
                   />
-                  <span>{{ row.kind === 'hackathon' ? 'Hackathon' : 'Workshop' }}</span>
+                  <span class="shrink-0">{{ row.kind === 'hackathon' ? 'Hackathon' : 'Workshop' }}</span>
                   <span
                     v-if="row.shortCode"
-                    class="font-normal normal-case tracking-normal text-muted"
+                    class="min-w-0 break-all font-normal normal-case tracking-normal text-muted"
                   >
                     · #{{ row.shortCode }}
                   </span>
                 </div>
-                <div class="flex items-center gap-2">
-                  <h3 class="truncate text-base font-semibold text-default">
+                <div class="flex min-w-0 items-start gap-2">
+                  <h3 class="min-w-0 break-words text-base font-semibold text-default">
                     {{ row.name }}
                   </h3>
                   <UButton
@@ -1013,32 +1013,32 @@ function capacityPercent(event: typeof standaloneEvents.value[number]) {
 
               <p
                 v-if="viewMode === 'card' && row.description"
-                class="line-clamp-2 text-sm text-muted"
+                class="line-clamp-2 break-words text-sm text-muted"
               >
                 {{ row.description }}
               </p>
 
-              <div class="grid gap-1.5 text-sm text-muted">
-                <div class="flex items-center gap-2">
+              <div class="grid min-w-0 grid-cols-1 gap-1.5 text-sm text-muted">
+                <div class="flex min-w-0 items-center gap-2">
                   <UIcon
                     name="i-lucide-calendar-days"
                     class="size-4 shrink-0"
                   />
-                  <span>{{ formatHackathonDate(row.start) }} to {{ formatHackathonDate(row.end) }}</span>
+                  <span class="min-w-0">{{ formatHackathonDate(row.start) }} to {{ formatHackathonDate(row.end) }}</span>
                 </div>
                 <div
                   v-if="row.location"
-                  class="flex items-center gap-2"
+                  class="flex min-w-0 items-start gap-2"
                 >
                   <UIcon
                     name="i-lucide-map-pin"
-                    class="size-4 shrink-0"
+                    class="mt-0.5 size-4 shrink-0"
                   />
-                  <span class="truncate">{{ row.location }}</span>
+                  <span class="min-w-0 break-words">{{ row.location }}</span>
                 </div>
                 <div
                   v-if="row.workshop"
-                  class="flex items-center gap-2"
+                  class="flex min-w-0 items-center gap-2"
                 >
                   <UIcon
                     name="i-lucide-users"

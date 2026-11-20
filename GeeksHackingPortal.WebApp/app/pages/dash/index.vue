@@ -389,7 +389,7 @@ function eventDateRange(start?: string | null, end?: string | null) {
             <div
               v-for="row in visibleEvents"
               :key="row.key"
-              class="rounded-lg border border-default bg-default p-4 transition hover:border-primary/40 hover:shadow-sm"
+              class="min-w-0 rounded-lg border border-default bg-default p-4 transition hover:border-primary/40 hover:shadow-sm"
               :class="viewMode === 'card' ? 'flex flex-col gap-4' : 'grid gap-3 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1.4fr)_19rem] lg:items-center'"
             >
               <div class="min-w-0 space-y-1.5">
@@ -403,11 +403,11 @@ function eventDateRange(start?: string | null, end?: string | null) {
                   />
                   <span>{{ row.kind === 'hackathon' ? 'Hackathon' : 'Workshop' }}</span>
                 </div>
-                <h3 class="truncate text-base font-semibold text-default">
+                <h3 class="break-words text-base font-semibold text-default">
                   {{ row.name }}
                 </h3>
                 <p
-                  class="text-sm text-muted"
+                  class="break-words text-sm text-muted"
                   :class="viewMode === 'card' ? 'line-clamp-3' : 'line-clamp-1'"
                 >
                   {{ row.description }}
@@ -455,23 +455,23 @@ function eventDateRange(start?: string | null, end?: string | null) {
                 />
               </div>
 
-              <div class="grid gap-1.5 text-sm text-muted">
-                <div class="flex items-center gap-2">
+              <div class="grid min-w-0 grid-cols-1 gap-1.5 text-sm text-muted">
+                <div class="flex min-w-0 items-center gap-2">
                   <UIcon
                     name="i-lucide-calendar-days"
                     class="size-4 shrink-0"
                   />
-                  <span>{{ eventDateRange(row.start, row.end) }}</span>
+                  <span class="min-w-0">{{ eventDateRange(row.start, row.end) }}</span>
                 </div>
                 <div
                   v-if="row.location"
-                  class="flex items-center gap-2"
+                  class="flex min-w-0 items-start gap-2"
                 >
                   <UIcon
                     name="i-lucide-map-pin"
-                    class="size-4 shrink-0"
+                    class="mt-0.5 size-4 shrink-0"
                   />
-                  <span class="truncate">{{ row.location }}</span>
+                  <span class="min-w-0 break-words">{{ row.location }}</span>
                 </div>
               </div>
 

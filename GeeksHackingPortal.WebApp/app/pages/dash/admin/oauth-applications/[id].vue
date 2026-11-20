@@ -136,10 +136,10 @@ function statusBadgeColor(status: string | null | undefined) {
           <template #header>
             <div class="flex items-start justify-between gap-3">
               <div class="min-w-0">
-                <h2 class="truncate text-base font-semibold">
+                <h2 class="break-words text-base font-semibold">
                   {{ application.displayName }}
                 </h2>
-                <code class="truncate text-sm text-(--ui-text-muted)">
+                <code class="block break-all text-sm text-(--ui-text-muted)">
                   {{ application.clientId }}
                 </code>
               </div>
@@ -160,7 +160,7 @@ function statusBadgeColor(status: string | null | undefined) {
               <dd class="mt-1">
                 <template v-if="application.ownerName || application.ownerEmail">
                   {{ application.ownerName }}
-                  <span class="text-(--ui-text-muted)">{{ application.ownerEmail }}</span>
+                  <span class="break-all text-(--ui-text-muted)">{{ application.ownerEmail }}</span>
                 </template>
                 <span
                   v-else
@@ -218,7 +218,7 @@ function statusBadgeColor(status: string | null | undefined) {
                 <code
                   v-for="uri in application.redirectUris"
                   :key="uri"
-                  class="block truncate rounded-md bg-muted px-2 py-1 text-xs"
+                  class="block break-all rounded-md bg-muted px-2 py-1 text-xs"
                 >
                   {{ uri }}
                 </code>
@@ -235,7 +235,7 @@ function statusBadgeColor(status: string | null | undefined) {
                 <code
                   v-for="uri in application.postLogoutRedirectUris"
                   :key="uri"
-                  class="block truncate rounded-md bg-muted px-2 py-1 text-xs"
+                  class="block break-all rounded-md bg-muted px-2 py-1 text-xs"
                 >
                   {{ uri }}
                 </code>
@@ -308,10 +308,10 @@ function statusBadgeColor(status: string | null | undefined) {
             >
               <template #user-cell="{ row }">
                 <div class="min-w-0">
-                  <div class="truncate">
+                  <div class="whitespace-normal break-words">
                     {{ row.original.userName ?? 'Unknown user' }}
                   </div>
-                  <div class="truncate text-xs text-(--ui-text-muted)">
+                  <div class="whitespace-normal break-all text-xs text-(--ui-text-muted)">
                     {{ row.original.userEmail ?? row.original.subject }}
                   </div>
                 </div>

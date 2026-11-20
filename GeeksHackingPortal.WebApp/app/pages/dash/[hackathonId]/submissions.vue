@@ -269,17 +269,17 @@ function exportToExcel() {
               >
                 <div class="flex-1 min-w-0">
                   <button
-                    class="text-sm font-medium text-left hover:underline cursor-pointer text-(--ui-text-highlighted)"
+                    class="text-sm font-medium text-left break-words hover:underline cursor-pointer text-(--ui-text-highlighted)"
                     @click="openDetail(submission.id ?? '')"
                   >
                     {{ submission.title }}
                   </button>
-                  <p class="text-xs text-(--ui-text-muted)">
+                  <p class="text-xs text-(--ui-text-muted) break-words">
                     {{ submission.teamName }} · {{ submission.challengeTitle ?? 'No challenge' }}
                   </p>
                   <p
                     v-if="submission.description"
-                    class="text-xs text-(--ui-text-dimmed) truncate max-w-md"
+                    class="text-xs text-(--ui-text-dimmed) break-words max-w-md"
                   >
                     {{ submission.description }}
                   </p>

@@ -136,11 +136,11 @@ function platformBadgeColor(platform: DirectoryApplication['platform']) {
               <div class="min-w-0">
                 <NuxtLink
                   :to="`/dash/admin/oauth-applications/${row.original.id}`"
-                  class="block truncate font-medium hover:underline"
+                  class="block whitespace-normal break-words font-medium hover:underline"
                 >
                   {{ row.original.displayName }}
                 </NuxtLink>
-                <code class="block truncate text-xs text-(--ui-text-muted)">
+                <code class="block whitespace-normal break-all text-xs text-(--ui-text-muted)">
                   {{ row.original.clientId }}
                 </code>
               </div>
@@ -158,10 +158,10 @@ function platformBadgeColor(platform: DirectoryApplication['platform']) {
                 v-if="row.original.ownerName || row.original.ownerEmail"
                 class="min-w-0"
               >
-                <div class="truncate">
+                <div class="whitespace-normal break-words">
                   {{ row.original.ownerName }}
                 </div>
-                <div class="truncate text-xs text-(--ui-text-muted)">
+                <div class="whitespace-normal break-all text-xs text-(--ui-text-muted)">
                   {{ row.original.ownerEmail }}
                 </div>
               </div>

@@ -5,6 +5,14 @@
     --font-sans: ui-sans-serif, system-ui, sans-serif;
 }
 
+@layer base {
+    /* Let long unbroken user content (URLs, emails, addresses) wrap instead of
+       widening flex/grid items and overflowing the page on narrow screens. */
+    body {
+        overflow-wrap: anywhere;
+    }
+}
+
 @utility no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;

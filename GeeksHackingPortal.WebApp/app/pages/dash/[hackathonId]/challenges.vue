@@ -164,10 +164,10 @@ const isSubmitting = computed(() => createMutation.isPending.value || updateMuta
               class="py-2 flex items-center justify-between"
             >
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium">
+                <p class="text-sm font-medium break-words">
                   {{ challenge.title }}
                 </p>
-                <p class="text-xs text-(--ui-text-muted) truncate">
+                <p class="text-xs text-(--ui-text-muted) break-words">
                   {{ challenge.description ?? 'No description' }}
                 </p>
               </div>

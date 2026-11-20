@@ -126,10 +126,7 @@ async function joinHackathonFromRegistration() {
       v-else-if="isLoadingStatus || isLoading"
       class="flex flex-col items-center justify-center gap-3 px-4 py-8 text-center"
     >
-      <UIcon name="i-lucide-loader-circle" class="size-8 animate-spin text-primary" />
-      <p class="text-sm font-medium text-(--ui-text-muted)">
-        Loading registration questions...
-      </p>
+      <GLoading label="Loading registration questions…" />
     </div>
 
     <div
@@ -174,10 +171,7 @@ async function joinHackathonFromRegistration() {
       v-else-if="!setupComplete"
       class="flex flex-col items-center justify-center gap-3 px-4 py-8 text-center"
     >
-      <UIcon name="i-lucide-loader-circle" class="size-8 animate-spin text-primary" />
-      <p class="text-sm font-medium text-(--ui-text-muted)">
-        Preparing your registration form...
-      </p>
+      <GLoading label="Preparing your registration form…" />
     </div>
 
     <!-- Error State -->

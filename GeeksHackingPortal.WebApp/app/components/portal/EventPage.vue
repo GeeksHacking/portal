@@ -36,15 +36,10 @@ useHead({
         class="self-start"
       />
       <slot v-if="ready" />
-      <div
+      <GLoading
         v-else
-        class="flex flex-col gap-3"
-        role="status"
-      >
-        <span class="sr-only">Checking your session…</span>
-        <GSkeleton class="h-6 w-1/3" />
-        <GSkeleton class="h-40 w-full" />
-      </div>
+        label="Checking your session…"
+      />
     </template>
   </GPanel>
 </template>

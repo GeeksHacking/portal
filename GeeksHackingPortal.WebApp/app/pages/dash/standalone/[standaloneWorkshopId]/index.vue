@@ -13,7 +13,5 @@ watch(
 </script>
 
 <template>
-  <div class="p-4 text-sm text-(--ui-text-muted)">
-    Redirecting...
-  </div>
+  <GLoading label="Opening the workshop…" />
 </template>

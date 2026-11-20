@@ -2060,12 +2060,32 @@ const logoBackgrounds = [
             </template>
           </GShell>
         </div>
+        <div class="mt-8 grid gap-4 sm:grid-cols-2">
+          <div class="flex flex-col gap-2">
+            <span class="gh-label text-gh-muted">GLoading · in a panel</span>
+            <div class="rounded-gh border-[1.5px] border-gh-line bg-gh-surface">
+              <GLoading label="Opening the event…" />
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <span class="gh-label text-gh-muted">GLoading page · auth checks, redirects</span>
+            <div class="loading-page-preview overflow-hidden rounded-gh border-[1.5px] border-gh-line">
+              <GLoading
+                page
+                label="Checking your session…"
+              />
+            </div>
+          </div>
+        </div>
       </section>
     </main>
   </div>
 </template>
 
 <style scoped>
+.loading-page-preview :deep(.g-loading--page) {
+  min-height: 260px;
+}
 .shell-preview {
   height: 640px;
   background: var(--gh-bg);

@@ -39,12 +39,10 @@ const isAuthenticated = computed(() => !!user.value && !isError.value)
 
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-50">
-    <div v-if="isLoading || isAuthenticated" class="flex flex-col items-center gap-4">
-      <p class="text-sm font-medium text-gray-600 animate-pulse">
-        {{ isAuthenticated ? 'Redirecting to dashboard...' : 'Checking your session...' }}
-      </p>
-      <UIcon name="i-lucide-loader-circle" class="w-8 h-8 animate-spin text-primary" />
-    </div>
+    <GLoading
+      v-if="isLoading || isAuthenticated"
+      :label="isAuthenticated ? 'Taking you to the portal…' : 'Checking your session…'"
+    />
 
     <div v-else-if="isError" class="text-center max-w-md px-6">
       <div class="space-y-6">

@@ -154,15 +154,11 @@ watchEffect(() => {
 
 <template>
   <!-- Show loading while checking auth -->
-  <div
+  <GLoading
     v-if="isLoading || !showPage"
-    class="min-h-screen flex flex-col items-center justify-center gap-4 bg-(--ui-bg) px-4 text-(--ui-text)"
-  >
-    <p class="text-sm font-medium text-(--ui-text-muted) animate-pulse">
-      Checking your session...
-    </p>
-    <UIcon name="i-lucide-loader-circle" class="w-8 h-8 animate-spin text-primary" />
-  </div>
+    page
+    label="Checking your session…"
+  />
 
   <!-- Show content if authenticated -->
   <div

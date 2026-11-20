@@ -37,7 +37,5 @@ watch([isOrganizer, isLoadingUser, isLoadingOrganizers], ([organizer, loadingUse
 </script>
 
 <template>
-  <div class="p-4 text-sm text-(--ui-text-muted)">
-    Redirecting...
-  </div>
+  <GLoading label="Opening the event…" />
 </template>

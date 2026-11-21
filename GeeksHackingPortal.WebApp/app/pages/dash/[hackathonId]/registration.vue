@@ -17,7 +17,10 @@ const resolvedHackathonId = computed(() => hackathon.value?.id ?? null)
     </template>
 
     <template #body>
-      <RegistrationFormPage :hackathon-id="resolvedHackathonId" />
+      <RegistrationFormPage
+        :hackathon-id="resolvedHackathonId"
+        embedded
+      />
     </template>
   </GPanel>
 </template>

@@ -75,7 +75,11 @@ watch(
     }
     catch (error) {
       console.error('[FORM] Registration setup failed:', error)
-      setupError.value = 'Failed to initialize registration. Please try again.'
+      // only organisers can set up the questions: a participant arriving first just has to wait
+      const status = (error as { status?: number } | null)?.status
+      setupError.value = status === 401 || status === 403
+        ? 'Registration isn\'t open yet: the organisers are still setting up the questions. Try again later.'
+        : 'Failed to initialize registration. Please try again.'
     }
   },
   { immediate: true },
@@ -151,8 +155,8 @@ async function joinHackathonFromRegistration() {
       class="reg-page__notice"
     >
       <GAlert
-        tone="err"
-        title="Registration unavailable"
+        :tone="canJoinFromHere ? 'attention' : 'err'"
+        :title="canJoinFromHere ? 'You\'re not taking part in this hackathon' : 'Registration unavailable'"
         :description="setupError"
       />
       <GButton

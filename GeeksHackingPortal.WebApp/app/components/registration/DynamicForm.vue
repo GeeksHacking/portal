@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpointStatus200 } from '@geekshacking/portal-sdk'
 import {
+  geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListEndpointQueryKey,
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint,
@@ -225,13 +226,13 @@ async function onSubmit() {
     submissionError.value = false
     await submitRegistrationMutation.mutateAsync({ path: { hackathonId: props.hackathonId }, body: { submissions } })
 
-    // Remove cached submissions so status page fetches fresh data
+    // Remove cached submissions so the status page fetches fresh data
     queryClient.removeQueries({
-      queryKey: ['hackathons', props.hackathonId, 'registration', 'submissions'],
+      queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListEndpointQueryKey({ path: { hackathonId: props.hackathonId } }),
     })
 
     router.push({
-      path: `${registrationPath.value}/complete`,
+      path: props.embedded ? `/dash/${props.hackathonId}/registration/complete` : `${registrationPath.value}/complete`,
       query: route.query.joinCode ? { joinCode: route.query.joinCode } : undefined,
     })
   }

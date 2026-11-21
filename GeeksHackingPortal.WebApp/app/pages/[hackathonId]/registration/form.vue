@@ -51,10 +51,11 @@ watchEffect(() => {
     return
   }
 
-  // Registration already complete - redirect to team page
+  // Registration already complete - redirect to team page.
+  // An event with no questions yet isn't "complete": the form sets them up.
   // Guard with current participant status to avoid redirect loops when cached
   // submissions exist for users who have withdrawn.
-  if (statusData.value?.isParticipant && submissionsData.value?.requiredQuestionsRemaining === 0) {
+  if (statusData.value?.isParticipant && submissionsData.value?.requiredQuestionsRemaining === 0 && (submissionsData.value?.totalQuestions ?? 0) > 0) {
     navigateTo({ path: `/${hackathon.value.shortCode}/team`, query: route.query }, { replace: true })
     return
   }

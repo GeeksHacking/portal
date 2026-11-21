@@ -56,8 +56,8 @@ const registrationState = computed<RegistrationState>(() => {
     return 'rejected'
   }
 
-  // Check if incomplete (has required questions remaining)
-  if (submissionsData.value && submissionsData.value.requiredQuestionsRemaining > 0) {
+  // Incomplete: required answers left, or the event has no questions yet (the form sets them up)
+  if (submissionsData.value && (submissionsData.value.requiredQuestionsRemaining > 0 || submissionsData.value.totalQuestions === 0)) {
     return 'incomplete'
   }
 
@@ -65,68 +65,61 @@ const registrationState = computed<RegistrationState>(() => {
   return 'pending_review'
 })
 
+const teamPath = computed(() => {
+  const path = `/${hackathon.value?.shortCode ?? ''}/team`
+  return route.query.joinCode ? { path, query: { joinCode: route.query.joinCode } } : path
+})
+
+// One entry per state: copy, where the steps stand, and the next action
 const stateContent = computed(() => {
   const shortCode = hackathon.value?.shortCode ?? ''
 
   switch (registrationState.value) {
     case 'not_registered':
       return {
-        title: 'Registration Required',
-        description: 'You have not registered yet. Start your registration to participate in the hackathon.',
-        primaryButton: {
-          label: 'Start Registration',
-          to: `/${shortCode}/registration/`,
-        },
+        title: 'You haven\'t registered yet',
+        description: 'Sign up to take part in this hackathon. It takes about five minutes.',
+        step: 0,
+        tone: null,
+        primary: { label: 'Start registration', to: `/${shortCode}/registration` },
       }
     case 'incomplete':
       return {
-        title: 'Complete Your Registration',
-        description: 'Your registration is incomplete. Please continue filling out the required information to complete your registration.',
-        primaryButton: {
-          label: 'Continue Registration',
-          to: `/${shortCode}/registration/form`,
-        },
-      }
-    case 'pending_review':
-      return {
-        title: 'Registration Under Review',
-        description: 'Thank you for registering! Our team is reviewing your application. You will be notified once a decision has been made.',
-        primaryButton: {
-          label: 'Back to GeeksHacking Portal',
-          to: '/',
-        },
+        title: 'Finish your registration',
+        description: 'Some required questions are still unanswered. Your answers so far are saved.',
+        step: 1,
+        tone: null,
+        primary: { label: 'Continue registration', to: `/${shortCode}/registration/form` },
       }
     case 'rejected':
       return {
-        title: 'Registration Rejected',
-        description: 'Unfortunately, your registration has not been approved.',
-        primaryButton: {
-          label: 'Back to GeeksHacking Portal',
-          to: '/',
-        },
+        title: 'Your registration wasn\'t approved',
+        description: 'The organisers have reviewed your application and can\'t offer you a place this time.',
+        step: 2,
+        tone: 'err' as const,
+        primary: null,
       }
     case 'approved':
       return {
-        title: 'Registration Approved!',
-        description: 'Congratulations! Your registration has been approved. You can now access the team portal to form or join a team.',
-        primaryButton: {
-          label: 'Go to Team Portal',
-          to: route.query.joinCode
-            ? { path: `/${shortCode}/team`, query: { joinCode: route.query.joinCode } }
-            : `/${shortCode}/team`,
-        },
+        title: 'You\'re in!',
+        description: 'Your registration has been approved. Head to the event portal to form or join a team.',
+        step: 3,
+        tone: 'ok' as const,
+        primary: { label: 'Go to the event portal', to: teamPath.value },
       }
+    case 'pending_review':
     default:
       return {
-        title: 'Registration Status',
-        description: 'Your registration status is being prepared.',
-        primaryButton: {
-          label: 'Back to GeeksHacking Portal',
-          to: '/',
-        },
+        title: 'Your registration is under review',
+        description: 'Thanks for registering. The organisers are reviewing your answers and will email you once they\'ve decided.',
+        step: 2,
+        tone: null,
+        primary: null,
       }
   }
 })
+
+useHead({ title: computed(() => `Registration status`) })
 
 // Handle auth state changes
 watchEffect(() => {
@@ -157,70 +150,52 @@ watchEffect(() => {
   <GLoading
     v-if="isLoading || !showPage"
     page
-    label="Checking your session…"
+    label="Checking your registration…"
   />
 
-  <!-- Show content if authenticated -->
-  <div
-    v-else
-    class="min-h-screen bg-(--ui-bg) font-raleway flex items-center justify-center px-4 text-(--ui-text)"
-  >
-    <div class="w-full flex justify-center">
-      <div class="flex flex-col items-center gap-6 max-w-2xl">
-        <img
-          src="/logos/geekshacking.svg"
-          alt="GeeksHacking Portal"
-          class="w-full max-w-xl h-auto"
-        >
-
-        <div class="flex flex-col items-center gap-4 mt-8">
-          <h1 class="font-raleway text-2xl md:text-3xl font-semibold text-(--ui-text-highlighted) text-center">
-            {{ stateContent.title }}
-          </h1>
-
-          <div class="font-raleway text-base md:text-lg font-normal text-(--ui-text) text-center max-w-lg space-y-4">
-            <p>{{ stateContent.description }}</p>
-          </div>
-        </div>
-
-        <!-- Show message from approved/rejected status -->
-        <div
-          v-if="(registrationState === 'approved' || registrationState === 'rejected') && statusData?.reviewReason"
-          class="w-full max-w-lg"
-        >
-          <label class="block font-raleway text-sm font-medium text-(--ui-text-highlighted) mb-1">
-            Message
-          </label>
-          <UTextarea
-            :model-value="statusData.reviewReason"
-            readonly
-            :rows="3"
-            class="w-full"
-          />
-        </div>
-
-        <div class="flex flex-col gap-3 mt-8 w-full max-w-sm">
-          <UButton
-            :to="stateContent.primaryButton.to"
-            :external="stateContent.primaryButton.external"
-            size="xl"
-            color="neutral"
-            class="w-full justify-center"
-          >
-            {{ stateContent.primaryButton.label }}
-          </UButton>
-
-          <UButton
-            to="/"
-            size="xl"
-            color="neutral"
-            variant="outline"
-            class="w-full justify-center"
-          >
-            Visit GeeksHacking Portal
-          </UButton>
-        </div>
-      </div>
+  <AuthFrame v-else>
+    <GLabelStrip
+      as="p"
+      :label="hackathon?.name ? `Registration · ${hackathon.name}` : 'Registration'"
+      class="self-start"
+    />
+    <div class="flex flex-col gap-3">
+      <h1 class="font-display text-[32px] leading-tight font-bold">
+        {{ stateContent.title }}
+      </h1>
+      <p class="text-gh-muted">
+        {{ stateContent.description }}
+      </p>
     </div>
-  </div>
+
+    <RegistrationSteps
+      :current="stateContent.step"
+      :rejected="registrationState === 'rejected'"
+    />
+
+    <!-- the organiser's note with the decision -->
+    <GAlert
+      v-if="(registrationState === 'approved' || registrationState === 'rejected') && statusData?.reviewReason"
+      :tone="stateContent.tone ?? 'neutral'"
+      title="Message from the organisers"
+      :description="statusData.reviewReason"
+    />
+
+    <div class="flex flex-col gap-3">
+      <GButton
+        v-if="stateContent.primary"
+        :to="stateContent.primary.to"
+        variant="primary"
+        size="lg"
+        block
+        :label="stateContent.primary.label"
+      />
+      <GButton
+        to="/dash"
+        :variant="stateContent.primary ? 'ghost' : 'secondary'"
+        block
+        label="Go to the portal"
+      />
+    </div>
+  </AuthFrame>
 </template>

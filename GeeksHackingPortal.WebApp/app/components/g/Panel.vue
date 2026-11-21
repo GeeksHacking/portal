@@ -50,4 +50,8 @@ defineProps<{
 @media (min-width: 640px) {
   .g-panel__body { gap: 24px; padding: 24px; }
 }
+/* the body scrolls, so its content never shrinks (overflow:hidden children would collapse) */
+.g-panel__body > :deep(*) {
+  flex-shrink: 0;
+}
 </style>

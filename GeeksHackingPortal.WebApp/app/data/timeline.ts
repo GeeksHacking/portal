@@ -1,6 +1,13 @@
-import type { ItineraryItem } from '~/data/preevent'
+/**
+ * Fallback timetable (HackOMania), shown on the Schedule page only when the hackathon has no
+ * timeline items in the API yet.
+ */
+export interface FallbackScheduleItem {
+  time: string
+  event: string
+}
 
-export const day1Items: ItineraryItem[] = [
+export const day1Items: FallbackScheduleItem[] = [
   { time: '10:00 AM', event: 'Registration & Team Forming' },
   { time: '11:00 AM', event: 'Introduction' },
   { time: '11:45 AM', event: 'Safety Briefing' },
@@ -15,7 +22,7 @@ export const day1Items: ItineraryItem[] = [
   { time: '11:00 PM', event: 'Snack Time!' },
 ]
 
-export const day2Items: ItineraryItem[] = [
+export const day2Items: FallbackScheduleItem[] = [
   { time: '08:00 AM', event: 'Breakfast' },
   { time: '09:00 AM', event: 'Submission' },
   { time: '11:30 AM', event: 'Submission Close' },

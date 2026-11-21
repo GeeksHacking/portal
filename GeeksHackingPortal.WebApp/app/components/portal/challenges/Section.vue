@@ -190,8 +190,6 @@ watch([selectedId, () => challenges.value.length], async () => {
 <style scoped>
 .challenges {
   width: 100%;
-  max-width: 72rem;
-  margin: 0 auto;
 }
 .challenges__layout {
   display: flex;

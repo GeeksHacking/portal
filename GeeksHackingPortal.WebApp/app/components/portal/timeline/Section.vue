@@ -163,8 +163,6 @@ const days = computed(() => (apiDays.value.length ? apiDays.value : fallbackDays
   flex-direction: column;
   gap: 16px;
   width: 100%;
-  max-width: 72rem;
-  margin: 0 auto;
 }
 .schedule__note {
   margin: 0;

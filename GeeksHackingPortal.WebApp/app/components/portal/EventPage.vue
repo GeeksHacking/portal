@@ -30,16 +30,33 @@ useHead({
     </template>
 
     <template #body>
-      <GLabelStrip
-        v-if="hackathon?.name"
-        :label="hackathon.name"
-        class="self-start"
-      />
-      <slot v-if="ready" />
-      <GLoading
-        v-else
-        label="Checking your session…"
-      />
+      <!-- one centred column for every event page: the event strip lines up with the content -->
+      <div class="event-page">
+        <GLabelStrip
+          v-if="hackathon?.name"
+          :label="hackathon.name"
+          class="self-start"
+        />
+        <slot v-if="ready" />
+        <GLoading
+          v-else
+          label="Checking your session…"
+        />
+      </div>
     </template>
   </GPanel>
 </template>
+
+<style scoped>
+.event-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+@media (min-width: 640px) {
+  .event-page { gap: 24px; }
+}
+</style>

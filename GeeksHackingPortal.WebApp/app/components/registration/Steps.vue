@@ -1,17 +1,19 @@
 <script setup lang="ts">
 /**
- * Where a participant is in the hackathon sign-up: sign up → answer the questions →
- * organiser review → form a team. Done steps get a check, the current step is the yellow
- * block (aria-current="step"), a rejected review is marked in red with a cross.
+ * Where a participant is in a sign-up flow. Defaults to the hackathon's: sign up → answer the
+ * questions → organiser review → form a team; pass `steps` for another flow (e.g. workshops).
+ * Done steps get a check, the current step is the yellow block (aria-current="step"), a
+ * rejected review is marked in red with a cross.
  */
-const props = defineProps<{
-  /** 0-based index of the current step; steps before it are done. 4 = everything done. */
+const props = withDefaults(defineProps<{
+  /** 0-based index of the current step; steps before it are done. steps.length = everything done. */
   current: number
   /** the review step (index 2) ended in a rejection */
   rejected?: boolean
-}>()
-
-const steps = ['Sign up', 'Answer the questions', 'Organiser review', 'Form a team']
+  steps?: string[]
+}>(), {
+  steps: () => ['Sign up', 'Answer the questions', 'Organiser review', 'Form a team'],
+})
 
 function stateOf(index: number): 'done' | 'current' | 'failed' | 'todo' {
   if (props.rejected && index === 2)

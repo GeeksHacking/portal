@@ -18,14 +18,21 @@ import { useProfileName } from '~/composables/useProfileName'
 import { HACKATHON_TIME_ZONE, HACKATHON_TIME_ZONE_LABEL, isSameHackathonDay } from '~/utils/hackathon-date-time'
 import { githubLoginUrl } from '~/utils/login-url'
 
+/**
+ * A workshop's public page, inside the portal shell (signed out, the sidebar offers "Sign in").
+ * Details and the description on the left; the registration card on the right walks through
+ * sign in → confirm your name → answer the questions → registered. While the questions are being
+ * answered the form takes the main column. Registered people get their QR code and answers here.
+ */
 definePageMeta({
   auth: false,
+  layout: 'portal',
 })
 
 const route = useRoute()
 const config = useRuntimeConfig()
 const queryClient = useQueryClient()
-const toast = useToast()
+const toast = useGToast()
 
 const slug = computed(() => (route.params.slug as string | undefined) ?? '')
 
@@ -52,7 +59,7 @@ const joinMutation = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWork
 const { profileName, isProfileNameValid, saveProfileName, isSavingProfileName } = useProfileName(user)
 
 useHead(() => ({
-  title: workshop.value?.title ? `${workshop.value.title} - GeeksHacking` : 'Workshop - GeeksHacking',
+  title: workshop.value?.title ?? 'Workshop',
 }))
 
 const registrationState = computed(() => {
@@ -74,18 +81,13 @@ const registrationState = computed(() => {
 })
 
 // Registration journey shown as a stepper: sign in -> confirm name -> answer questions -> done
-const registrationSteps = [
-  { label: 'Sign in', icon: 'i-lucide-log-in' },
-  { label: 'Confirm details', icon: 'i-lucide-user-round' },
-  { label: 'Answer questions', icon: 'i-lucide-clipboard-pen-line' },
-  { label: 'Registered', icon: 'i-lucide-ticket-check' },
-]
+const registrationSteps = ['Sign in', 'Confirm your name', 'Answer the questions', 'Registered']
 
 // Index of the step the participant is currently on (steps before it are complete)
 const currentStepIndex = computed(() => {
   switch (registrationState.value) {
     case 'registered':
-      return 3
+      return 4
     case 'incomplete':
     case 'loading-registration':
       return 2
@@ -155,10 +157,13 @@ const formattedDateTime = computed(() => {
   }
 })
 
+const joinError = ref('')
+
 async function startRegistration() {
   if (!workshopId.value || !isProfileNameValid.value)
     return
 
+  joinError.value = ''
   try {
     await saveProfileName()
     await joinMutation.mutateAsync({ path: { standaloneWorkshopId: workshopId.value } })
@@ -173,19 +178,10 @@ async function startRegistration() {
         queryKey: standaloneWorkshopRegistrationSubmissionsQueryKey(workshopId.value),
       }),
     ])
-    toast.add({
-      title: 'Registration started',
-      description: 'Your registration form is ready.',
-      color: 'success',
-    })
   }
   catch (error) {
     console.error('Failed to start standalone workshop registration', error)
-    toast.add({
-      title: 'Unable to start registration',
-      description: 'Please try again.',
-      color: 'error',
-    })
+    joinError.value = getApiErrorMessage(error, 'We couldn\'t start your registration. Try again.')
   }
 }
 
@@ -220,9 +216,9 @@ async function showParticipantIdQrCode() {
   catch (error) {
     console.error('Failed to generate participant QR code', error)
     toast.add({
-      title: 'Unable to show QR code',
-      description: 'Please try again.',
-      color: 'error',
+      title: 'Couldn\'t show your QR code',
+      description: 'Try again in a moment.',
+      tone: 'err',
     })
   }
 }
@@ -231,11 +227,11 @@ const registeredAtLabel = computed(() => {
   if (!statusData.value?.registeredAt)
     return 'Registration date unavailable'
 
-  return new Intl.DateTimeFormat(undefined, {
+  return `${new Intl.DateTimeFormat(undefined, {
     dateStyle: 'medium',
     timeStyle: 'short',
     timeZone: HACKATHON_TIME_ZONE,
-  }).format(new Date(statusData.value.registeredAt))
+  }).format(new Date(statusData.value.registeredAt))} ${HACKATHON_TIME_ZONE_LABEL}`
 })
 
 const questionById = computed(() => {
@@ -375,640 +371,629 @@ const totalQuestionsCount = computed(() => {
   const apiCount = submissionsData.value?.totalQuestions ?? 0
   return apiCount > 0 ? apiCount : allQuestions.value.length
 })
+
+const isBusy = computed(() => ['checking-auth', 'loading', 'checking-status', 'loading-registration'].includes(registrationState.value))
+// the questions take the main column while they're being answered (even after the end, as before)
+const showFormInMain = computed(() => registrationState.value === 'incomplete')
 </script>
 
 <template>
-  <div class="min-h-screen bg-(--ui-bg) text-(--ui-text)">
-    <div class="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-6 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between gap-3 border-b border-(--ui-border) pb-4">
-        <div class="flex min-w-0 items-center gap-3">
-          <NuxtLink
-            to="/"
-            class="text-sm font-medium tracking-[0.18em] text-(--ui-text-muted) uppercase transition-colors hover:text-(--ui-text-highlighted)"
-          >
-            GeeksHacking
-          </NuxtLink>
-          <span
-            class="hidden text-(--ui-text-dimmed) sm:inline"
-            aria-hidden="true"
-          >/</span>
-          <NuxtLink
-            to="/dash"
-            class="hidden items-center gap-1 text-sm text-(--ui-text-muted) transition-colors hover:text-(--ui-text-highlighted) sm:inline-flex"
-          >
-            <UIcon
-              name="i-lucide-compass"
-              class="size-4"
-            />
-            Explore events
-          </NuxtLink>
-        </div>
-        <div class="flex items-center gap-3">
-          <UBadge
-            v-if="workshop?.isPublished && !hasEnded"
-            size="sm"
-            color="success"
-            variant="subtle"
-          >
-            Open for registration
-          </UBadge>
-          <UBadge
-            v-else-if="hasEnded"
-            size="sm"
-            color="neutral"
-            variant="subtle"
-          >
-            Event ended
-          </UBadge>
-          <UButton
-            v-if="user"
-            to="/dash"
-            size="sm"
-            variant="outline"
-            color="neutral"
-            icon="i-lucide-layout-dashboard"
-          >
-            Dashboard
-          </UButton>
-          <UButton
-            v-else-if="authResolved || authErrored"
-            :to="loginUrl"
-            external
-            rel="noopener"
-            size="sm"
-            variant="outline"
-            color="neutral"
-            icon="i-lucide-github"
-          >
-            Sign in
-          </UButton>
-        </div>
-      </div>
-
-      <div
-        v-if="isLoadingWorkshop"
-        class="flex flex-1 items-center justify-center"
+  <GPanel id="workshop">
+    <template #header>
+      <GPanelHeader
+        title="Workshop"
+        as="p"
       >
-        <div class="space-y-3 text-center">
-          <UIcon
-            name="i-lucide-loader-circle"
-            class="mx-auto size-8 animate-spin text-primary"
+        <template #right>
+          <GButton
+            v-if="registrationState === 'registered'"
+            variant="secondary"
+            size="sm"
+            icon="material-symbols:qr-code-2-rounded"
+            label="My QR code"
+            :disabled="!participantId"
+            @click="showParticipantIdQrCode"
           />
-          <p class="text-sm text-(--ui-text-muted)">
-            Loading workshop details...
-          </p>
-        </div>
-      </div>
+        </template>
+      </GPanelHeader>
+    </template>
 
-      <div
-        v-else-if="workshopError || !workshop"
-        class="flex flex-1 items-center justify-center"
-      >
-        <UCard class="max-w-xl">
-          <div class="space-y-3 text-center">
-            <p class="text-lg font-semibold text-(--ui-text-highlighted)">
-              Workshop not found
-            </p>
-            <p class="text-sm text-(--ui-text-muted)">
-              This workshop may no longer be public, or the link may be incorrect.
-            </p>
-          </div>
-        </UCard>
-      </div>
+    <template #body>
+      <div class="ws">
+        <GLoading
+          v-if="isLoadingWorkshop"
+          label="Loading the workshop…"
+        />
 
-      <div
-        v-else
-        class="flex flex-1 justify-center py-6 lg:py-8"
-      >
-        <div class="w-full max-w-6xl space-y-5 lg:space-y-6">
-          <section class="reveal-up reveal-delay-1 overflow-hidden rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) shadow-sm">
-            <div
-              class="h-28 bg-linear-to-br from-primary/25 via-info/15 to-warning/20 sm:h-40"
-              aria-hidden="true"
+        <GEmptyState
+          v-else-if="workshopError || !workshop"
+          icon="material-symbols:search-off-rounded"
+          title="Workshop not found"
+          description="It may no longer be public, or the link may be wrong."
+        >
+          <template #actions>
+            <GButton
+              to="/dash"
+              variant="secondary"
+              icon="material-symbols:explore-rounded"
+              label="Explore events"
             />
-            <div class="grid gap-5 p-5 sm:p-7 lg:p-9">
-              <div class="flex flex-wrap items-center gap-2">
-                <UBadge
-                  color="info"
-                  variant="outline"
-                  size="sm"
-                  icon="i-lucide-brain-circuit"
-                >
-                  Workshop
-                </UBadge>
-                <UBadge
-                  v-if="registrationState === 'registered'"
-                  color="success"
-                  variant="subtle"
-                  size="sm"
-                >
-                  You're registered
-                </UBadge>
-                <UBadge
-                  v-else-if="registrationState === 'incomplete'"
-                  color="warning"
-                  variant="subtle"
-                  size="sm"
-                >
-                  Registration incomplete
-                </UBadge>
-              </div>
+          </template>
+        </GEmptyState>
 
-              <h1 class="max-w-4xl text-3xl font-semibold tracking-tight text-(--ui-text-highlighted) sm:text-4xl lg:text-5xl">
-                {{ workshop.title }}
-              </h1>
-
-              <div class="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
-                <div class="flex items-start gap-3">
-                  <UIcon
-                    name="i-lucide-calendar-days"
-                    class="mt-0.5 size-5 shrink-0 text-primary"
-                  />
-                  <div>
-                    <p class="font-medium text-(--ui-text-highlighted)">
-                      {{ formattedDateTime.dateLabel }}
-                    </p>
-                    <p class="text-(--ui-text-muted)">
-                      {{ formattedDateTime.timeLabel }}
-                    </p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-3">
-                  <UIcon
-                    name="i-lucide-map-pin"
-                    class="mt-0.5 size-5 shrink-0 text-primary"
-                  />
-                  <div>
-                    <p class="font-medium text-(--ui-text-highlighted)">
-                      {{ workshop.location || 'Location to be announced' }}
-                    </p>
-                    <p class="text-(--ui-text-muted)">
-                      In person
-                    </p>
-                  </div>
-                </div>
-                <UButton
-                  v-if="workshop.homepageUri"
-                  :to="workshop.homepageUri"
-                  external
-                  target="_blank"
-                  color="neutral"
-                  variant="link"
-                  icon="i-lucide-arrow-up-right"
-                  class="justify-start self-start px-0"
-                >
-                  Visit event site
-                </UButton>
-              </div>
+        <template v-else>
+          <!-- header -->
+          <header class="ws-head">
+            <div class="ws-head__tags">
+              <GLabelStrip label="Workshop" />
+              <GBadge
+                v-if="registrationState === 'registered'"
+                tone="ok"
+                icon="material-symbols:check-circle-rounded"
+                label="You're registered"
+              />
+              <GBadge
+                v-else-if="registrationState === 'incomplete'"
+                tone="pending"
+                label="Registration incomplete"
+              />
+              <GBadge
+                v-if="hasEnded"
+                label="Ended"
+              />
             </div>
-          </section>
+            <h1 class="ws-head__title">
+              {{ workshop.title }}
+            </h1>
+            <ul class="ws-head__meta">
+              <li>
+                <Icon
+                  name="material-symbols:calendar-month-rounded"
+                  aria-hidden="true"
+                />
+                <span>
+                  <span class="ws-head__meta-main">{{ formattedDateTime.dateLabel }}</span>
+                  <span class="ws-head__meta-sub">{{ formattedDateTime.timeLabel }}</span>
+                </span>
+              </li>
+              <li>
+                <Icon
+                  name="material-symbols:location-on-rounded"
+                  aria-hidden="true"
+                />
+                <span>
+                  <span class="ws-head__meta-main">{{ workshop.location || 'Location to be announced' }}</span>
+                  <span class="ws-head__meta-sub">In person</span>
+                </span>
+              </li>
+              <li v-if="workshop.homepageUri">
+                <Icon
+                  name="material-symbols:link-rounded"
+                  aria-hidden="true"
+                />
+                <a
+                  :href="workshop.homepageUri"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="ws-link"
+                >Event site<span class="sr-only"> (opens in a new tab)</span></a>
+              </li>
+            </ul>
+          </header>
 
-          <div
-            class="grid gap-6 lg:gap-8"
-            :class="registrationState === 'registered' ? 'lg:grid-cols-1' : 'lg:grid-cols-[minmax(0,0.82fr)_minmax(22rem,0.64fr)]'"
-          >
-            <div class="space-y-5 lg:space-y-6">
+          <div class="ws-grid">
+            <div class="ws-main">
+              <!-- the questions, while they're being answered -->
               <section
-                class="reveal-up reveal-delay-2 rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) p-5 sm:p-7"
+                v-if="showFormInMain"
+                class="ws-card"
+                aria-labelledby="ws-questions-title"
               >
-                <h2 class="mb-3 text-lg font-semibold text-(--ui-text-highlighted)">
+                <h2
+                  id="ws-questions-title"
+                  class="ws-card__title"
+                >
+                  Answer the questions
+                </h2>
+                <LazyWorkshopsRegistrationForm
+                  v-if="questionsData?.categories?.length"
+                  :standalone-workshop-id="workshopId"
+                  :workshop-title="workshop.title"
+                  :questions="questionsData"
+                />
+                <GEmptyState
+                  v-else
+                  size="sm"
+                  :bordered="false"
+                  icon="material-symbols:help-rounded"
+                  title="No questions yet"
+                  description="The organisers haven't set up the registration questions. Check back soon."
+                />
+              </section>
+
+              <section
+                class="ws-card"
+                aria-labelledby="ws-about-title"
+              >
+                <h2
+                  id="ws-about-title"
+                  class="ws-card__title"
+                >
                   About this workshop
                 </h2>
-                <div class="max-w-3xl text-sm leading-7 text-(--ui-text-muted) sm:text-base">
+                <div class="ws-md">
                   <Suspense>
                     <Markdown
                       :value="workshop.description"
                       :options="{ autoClose: true, autoUnwrap: true }"
-                      class="workshop-markdown"
                     />
                   </Suspense>
                 </div>
               </section>
 
+              <!-- registered: your answers -->
               <section
                 v-if="registrationState === 'registered'"
-                class="reveal-up reveal-delay-3 space-y-5"
+                class="ws-answers"
+                aria-labelledby="ws-answers-title"
               >
-                <div class="grid gap-3 sm:grid-cols-3">
-                  <div class="rounded-md border border-(--ui-border) bg-(--ui-bg-elevated) p-4">
-                    <p class="text-xs font-medium tracking-[0.14em] text-(--ui-text-muted) uppercase">
-                      Registration status
-                    </p>
-                    <div class="mt-2 flex items-center gap-2 text-sm font-semibold text-(--ui-text-highlighted)">
-                      <UIcon
-                        name="i-lucide-check-circle-2"
-                        class="size-4 text-success"
-                      />
-                      <span>Complete</span>
-                    </div>
-                  </div>
-
-                  <div class="rounded-md border border-(--ui-border) bg-(--ui-bg-elevated) p-4">
-                    <p class="text-xs font-medium tracking-[0.14em] text-(--ui-text-muted) uppercase">
-                      Registered
-                    </p>
-                    <p class="mt-2 text-sm font-semibold leading-6 text-(--ui-text-highlighted)">
-                      {{ registeredAtLabel }}
-                    </p>
-                  </div>
-
-                  <div class="rounded-md border border-(--ui-border) bg-(--ui-bg-elevated) p-4">
-                    <p class="text-xs font-medium tracking-[0.14em] text-(--ui-text-muted) uppercase">
-                      Answers saved
-                    </p>
-                    <p class="mt-2 text-sm font-semibold text-(--ui-text-highlighted)">
-                      {{ savedAnswersCount }} of {{ totalQuestionsCount }}
-                    </p>
-                  </div>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-3 rounded-md border border-(--ui-border) bg-(--ui-bg-elevated) p-4">
-                  <div class="min-w-0 flex-1">
-                    <p class="text-sm font-semibold text-(--ui-text-highlighted)">
-                      Participant ID
-                    </p>
-                    <p class="text-sm leading-6 text-(--ui-text-muted)">
-                      Show this ID when an organizer needs to scan or verify your registration.
-                    </p>
-                  </div>
-                  <UButton
-                    icon="i-lucide-qr-code"
-                    color="neutral"
-                    variant="outline"
-                    :disabled="!participantId"
-                    @click="showParticipantIdQrCode"
-                  >
-                    Show QR code
-                  </UButton>
-                </div>
-
-                <div
-                  v-if="answerGroups.length"
-                  class="space-y-4"
+                <h2
+                  id="ws-answers-title"
+                  class="ws-card__title"
                 >
-                  <UCard
+                  Your answers
+                </h2>
+                <template v-if="answerGroups.length">
+                  <div
                     v-for="group in answerGroups"
                     :key="group.name"
-                    :ui="{ body: 'p-5 sm:p-6' }"
-                    class="border-(--ui-border) bg-(--ui-bg-elevated)"
+                    class="ws-card"
                   >
-                    <div class="space-y-4">
-                      <h2 class="text-base font-semibold text-(--ui-text-highlighted)">
-                        {{ group.name }}
-                      </h2>
-
-                      <div class="divide-y divide-(--ui-border)">
-                        <div
-                          v-for="detail in group.details"
-                          :key="detail.key"
-                          class="grid gap-3 py-4 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] sm:gap-6"
-                        >
-                          <p class="text-sm font-medium leading-6 text-(--ui-text-highlighted)">
-                            {{ detail.question }}
-                          </p>
-                          <div class="space-y-2">
-                            <div class="flex flex-wrap gap-2">
-                              <UBadge
-                                v-for="answer in detail.answers"
-                                :key="answer"
-                                color="neutral"
-                                variant="soft"
-                                class="max-w-full whitespace-normal text-left"
-                              >
-                                {{ answer }}
-                              </UBadge>
-                            </div>
-
-                            <div
-                              v-for="followUp in detail.followUps"
-                              :key="`${detail.key}-${followUp.label}`"
-                              class="rounded-md border border-(--ui-border) bg-(--ui-bg) p-3"
-                            >
-                              <p class="text-xs font-medium text-(--ui-text-muted)">
-                                {{ followUp.label }}
-                              </p>
-                              <p class="mt-1 text-sm leading-6 text-(--ui-text-highlighted)">
-                                {{ followUp.value }}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
+                    <h3 class="ws-answers__group">
+                      {{ group.name }}
+                    </h3>
+                    <dl class="ws-answers__list">
+                      <div
+                        v-for="detail in group.details"
+                        :key="detail.key"
+                        class="ws-answers__row"
+                      >
+                        <dt>{{ detail.question }}</dt>
+                        <dd>
+                          <span class="ws-answers__values">{{ detail.answers.join(', ') }}</span>
+                          <span
+                            v-for="followUp in detail.followUps"
+                            :key="`${detail.key}-${followUp.label}`"
+                            class="ws-answers__followup"
+                          >
+                            <span class="ws-answers__followup-label">{{ followUp.label }}</span>
+                            {{ followUp.value }}
+                          </span>
+                        </dd>
                       </div>
-                    </div>
-                  </UCard>
-                </div>
-
-                <UAlert
+                    </dl>
+                  </div>
+                </template>
+                <GAlert
                   v-else
-                  color="neutral"
-                  variant="soft"
-                  icon="i-lucide-info"
-                  title="No question responses"
-                  description="This workshop did not require any registration questions."
+                  title="No answers to show"
+                  description="This workshop didn't ask any registration questions."
                 />
               </section>
             </div>
 
+            <!-- registration card -->
             <aside
-              v-if="registrationState !== 'registered'"
-              class="reveal-up reveal-delay-3 lg:sticky lg:top-6 lg:self-start"
+              class="ws-aside"
+              aria-labelledby="ws-reg-title"
             >
-              <UCard
-                :ui="{ body: 'p-5 sm:p-6 lg:p-7' }"
-                class="border-(--ui-border) bg-(--ui-bg) shadow-2xl shadow-black/10 ring-1 ring-(--ui-border) transition-transform duration-300 ease-out hover:-translate-y-0.5 hover:shadow-black/15"
-              >
-                <div class="space-y-4 sm:space-y-5">
-                  <div class="space-y-2">
-                    <p class="text-xs font-medium tracking-[0.16em] text-(--ui-text-muted) uppercase">
-                      Registration
-                    </p>
-                    <h2 class="text-2xl font-semibold text-(--ui-text-highlighted)">
-                      Reserve your spot
-                    </h2>
-                    <p class="text-sm leading-6 text-(--ui-text-muted)">
-                      Free to join. Sign in, confirm your name and answer a few questions. Answers are locked once you submit.
-                    </p>
-                  </div>
-
-                  <ol
-                    class="grid grid-cols-4 gap-2"
-                    aria-label="Registration progress"
+              <div class="ws-card ws-reg">
+                <div class="flex flex-col gap-1">
+                  <h2
+                    id="ws-reg-title"
+                    class="ws-card__title"
                   >
-                    <li
-                      v-for="(step, index) in registrationSteps"
-                      :key="step.label"
-                      class="space-y-2"
-                      :aria-current="index === currentStepIndex ? 'step' : undefined"
-                    >
-                      <div
-                        class="h-1.5 rounded-full transition-colors"
-                        :class="index < currentStepIndex ? 'bg-success' : index === currentStepIndex ? 'bg-primary' : 'bg-(--ui-border)'"
-                      />
-                      <div class="flex items-center gap-1 text-xs leading-4">
-                        <UIcon
-                          :name="index < currentStepIndex ? 'i-lucide-check' : step.icon"
-                          class="size-3.5 shrink-0"
-                          :class="index < currentStepIndex ? 'text-success' : index === currentStepIndex ? 'text-primary' : 'text-(--ui-text-dimmed)'"
-                        />
-                        <span
-                          class="hidden sm:inline"
-                          :class="index === currentStepIndex ? 'font-medium text-(--ui-text-highlighted)' : 'text-(--ui-text-muted)'"
-                        >{{ step.label }}</span>
-                      </div>
-                    </li>
-                  </ol>
-
-                  <UAlert
-                    v-if="hasEnded"
-                    color="neutral"
-                    variant="soft"
-                    icon="i-lucide-calendar-x"
-                    title="This workshop has ended"
-                    description="Registration is closed. Browse other events on the portal."
+                    {{ registrationState === 'registered' ? 'You\'re in' : 'Reserve your spot' }}
+                  </h2>
+                  <p
+                    v-if="registrationState !== 'registered'"
+                    class="ws-reg__lead"
                   >
-                    <template #actions>
-                      <UButton
-                        to="/dash"
-                        size="sm"
-                        color="neutral"
-                        variant="outline"
-                      >
-                        Explore events
-                      </UButton>
-                    </template>
-                  </UAlert>
-
-                  <div
-                    v-if="registrationState === 'checking-auth' || registrationState === 'checking-status' || registrationState === 'loading-registration'"
-                    class="rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) p-5 text-sm text-(--ui-text-muted) shadow-lg shadow-black/5 transition-all duration-300 ease-out"
-                  >
-                    <div class="flex items-center gap-3">
-                      <UIcon
-                        name="i-lucide-loader-circle"
-                        class="size-5 animate-spin text-primary"
-                      />
-                      <span>Loading your registration...</span>
-                    </div>
-                  </div>
-
-                  <template v-else-if="hasEnded && registrationState !== 'incomplete'" />
-
-                  <div
-                    v-else-if="registrationState === 'signed-out'"
-                    class="space-y-4 rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) p-5 shadow-lg shadow-black/5"
-                  >
-                    <p class="text-sm leading-6 text-(--ui-text-muted)">
-                      Step 1 of 3: sign in with GitHub. You can read the details without an account, and we’ll bring you straight back here afterwards.
-                    </p>
-                    <UButton
-                      :to="loginUrl"
-                      external
-                      rel="noopener"
-                      block
-                      size="lg"
-                      icon="i-lucide-github"
-                    >
-                      Sign in to register
-                    </UButton>
-                  </div>
-
-                  <div
-                    v-else-if="registrationState === 'ready-to-join'"
-                    class="space-y-4 rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) p-5 shadow-lg shadow-black/5"
-                  >
-                    <p class="text-sm leading-6 text-(--ui-text-muted)">
-                      Step 2 of 3: confirm the name organizers will see, then continue to the workshop questions.
-                    </p>
-                    <div class="grid gap-3">
-                      <UFormField
-                        label="First name"
-                        required
-                      >
-                        <UInput
-                          v-model="profileName.firstName"
-                          autocomplete="given-name"
-                          class="w-full"
-                        />
-                      </UFormField>
-                      <UFormField
-                        label="Last name"
-                        required
-                      >
-                        <UInput
-                          v-model="profileName.lastName"
-                          autocomplete="family-name"
-                          class="w-full"
-                        />
-                      </UFormField>
-                    </div>
-                    <p class="text-xs leading-5 text-(--ui-text-muted)">
-                      This is your GeeksHacking profile name. Organizers of every hackathon and workshop you join see it, and changing it here updates it everywhere.
-                    </p>
-                    <UButton
-                      block
-                      size="lg"
-                      icon="i-lucide-arrow-right"
-                      trailing
-                      :loading="joinMutation.isPending.value || isSavingProfileName"
-                      :disabled="!isProfileNameValid"
-                      @click="startRegistration"
-                    >
-                      Continue to questions
-                    </UButton>
-                  </div>
-
-                  <div
-                    v-else
-                    class="space-y-5"
-                  >
-                    <div
-                      v-if="questionsData?.categories?.length"
-                      class="rounded-[1.5rem] bg-transparent"
-                    >
-                      <LazyWorkshopsRegistrationForm
-                        :standalone-workshop-id="workshopId"
-                        :workshop-title="workshop.title"
-                        :questions="questionsData"
-                      />
-                    </div>
-
-                    <div
-                      v-else
-                      class="rounded-2xl border border-dashed border-(--ui-border) bg-(--ui-bg-elevated) p-5 text-sm text-(--ui-text-muted) shadow-lg shadow-black/5"
-                    >
-                      No registration questions have been configured for this workshop yet.
-                    </div>
-                  </div>
+                    Free to join. Sign in, confirm your name and answer a few questions.
+                  </p>
                 </div>
-              </UCard>
+
+                <RegistrationSteps
+                  :current="currentStepIndex"
+                  :steps="registrationSteps"
+                />
+
+                <GAlert
+                  v-if="hasEnded && registrationState !== 'registered'"
+                  title="This workshop has ended"
+                  description="Registration is closed."
+                >
+                  <template #actions>
+                    <GButton
+                      to="/dash"
+                      size="sm"
+                      label="Explore events"
+                      trailing-icon="material-symbols:arrow-forward-rounded"
+                    />
+                  </template>
+                </GAlert>
+
+                <GLoading
+                  v-if="isBusy"
+                  label="Loading your registration…"
+                />
+
+                <!-- registered -->
+                <template v-else-if="registrationState === 'registered'">
+                  <dl class="ws-reg__facts">
+                    <div>
+                      <dt>Registered</dt>
+                      <dd>{{ registeredAtLabel }}</dd>
+                    </div>
+                    <div>
+                      <dt>Answers saved</dt>
+                      <dd>{{ savedAnswersCount }} of {{ totalQuestionsCount }}</dd>
+                    </div>
+                  </dl>
+                  <p class="ws-reg__lead">
+                    Show your QR code when an organiser checks you in.
+                  </p>
+                  <GButton
+                    variant="primary"
+                    icon="material-symbols:qr-code-2-rounded"
+                    label="Show my QR code"
+                    :disabled="!participantId"
+                    block
+                    @click="showParticipantIdQrCode"
+                  />
+                </template>
+
+                <template v-else-if="hasEnded" />
+
+                <!-- step 1: sign in -->
+                <template v-else-if="registrationState === 'signed-out'">
+                  <p class="ws-reg__lead">
+                    Sign in with GitHub to register. We'll bring you straight back here.
+                  </p>
+                  <GButton
+                    :href="loginUrl"
+                    variant="primary"
+                    size="lg"
+                    icon="fa6-brands:github"
+                    label="Sign in to register"
+                    block
+                  />
+                </template>
+
+                <!-- step 2: confirm name -->
+                <form
+                  v-else-if="registrationState === 'ready-to-join'"
+                  class="flex flex-col gap-4"
+                  novalidate
+                  @submit.prevent="startRegistration"
+                >
+                  <GFormField
+                    label="First name"
+                    required
+                  >
+                    <GInput
+                      v-model="profileName.firstName"
+                      autocomplete="given-name"
+                    />
+                  </GFormField>
+                  <GFormField
+                    label="Last name"
+                    required
+                    hint="Your GeeksHacking profile name. Organisers of every event you join see it, and changing it here updates it everywhere."
+                  >
+                    <GInput
+                      v-model="profileName.lastName"
+                      autocomplete="family-name"
+                    />
+                  </GFormField>
+                  <GAlert
+                    v-if="joinError"
+                    tone="err"
+                    title="Not started"
+                    :description="joinError"
+                  />
+                  <GButton
+                    type="submit"
+                    variant="primary"
+                    size="lg"
+                    label="Continue to questions"
+                    trailing-icon="material-symbols:arrow-forward-rounded"
+                    :disabled="!isProfileNameValid"
+                    :loading="joinMutation.isPending.value || isSavingProfileName"
+                    loading-label="Starting"
+                    block
+                  />
+                </form>
+
+                <!-- step 3: questions are in the main column -->
+                <p
+                  v-else-if="registrationState === 'incomplete'"
+                  class="ws-reg__lead"
+                >
+                  Answer the questions to finish. Your answers can't be changed after you submit.
+                </p>
+              </div>
             </aside>
           </div>
-        </div>
+        </template>
       </div>
-    </div>
+    </template>
+  </GPanel>
 
-    <UModal
-      v-model:open="isParticipantIdOpen"
-      title="Participant QR Code"
-      description="Show this to an organizer when they need to scan your workshop registration."
-    >
-      <template #body>
-        <div class="space-y-4">
-          <div class="rounded-md border border-(--ui-border) bg-(--ui-bg-elevated) p-4 text-center">
-            <p class="text-xs font-medium tracking-[0.14em] text-(--ui-text-muted) uppercase">
-              {{ workshop?.title }}
-            </p>
-            <div class="mt-4 flex justify-center">
-              <img
-                v-if="participantQrCodeDataUrl"
-                :src="participantQrCodeDataUrl"
-                alt="Participant registration QR code"
-                class="size-72 max-w-full rounded-md bg-white p-3"
-              >
-              <div
-                v-else
-                class="flex size-72 max-w-full items-center justify-center rounded-md border border-dashed border-(--ui-border) text-sm text-(--ui-text-muted)"
-              >
-                QR code unavailable
-              </div>
-            </div>
-          </div>
-        </div>
-      </template>
-    </UModal>
-  </div>
+  <GModal
+    v-model:open="isParticipantIdOpen"
+    title="Your QR code"
+    description="Show this to an organiser when they check you in."
+    size="sm"
+  >
+    <div class="flex flex-col items-center gap-3">
+      <img
+        v-if="participantQrCodeDataUrl"
+        :src="participantQrCodeDataUrl"
+        alt="Your workshop check-in QR code"
+        class="h-auto w-full max-w-[280px] rounded-gh border-[1.5px] border-gh-line bg-white"
+      >
+      <p class="gh-small text-gh-muted">
+        {{ workshop?.title }}
+      </p>
+    </div>
+  </GModal>
 </template>
 
 <style scoped>
-@media (prefers-reduced-motion: no-preference) {
-  .reveal-up {
-    animation: reveal-up 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  .reveal-delay-1 {
-    animation-delay: 60ms;
-  }
-
-  .reveal-delay-2 {
-    animation-delay: 140ms;
-  }
-
-  .reveal-delay-3 {
-    animation-delay: 220ms;
-  }
+.ws {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
 }
-
-@keyframes reveal-up {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.ws-head {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
-
-:deep(.workshop-markdown) {
-  display: grid;
-  gap: 0.9rem;
+.ws-head__tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
 }
-
-:deep(.workshop-markdown p) {
+.ws-head__title {
   margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4.5vw, 44px);
+  font-weight: 700;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
 }
-
-:deep(.workshop-markdown h1),
-:deep(.workshop-markdown h2),
-:deep(.workshop-markdown h3),
-:deep(.workshop-markdown h4) {
-  margin: 0;
-  color: color-mix(in oklab, currentColor 88%, black 12%);
+.ws-head__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ws-head__meta li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.ws-head__meta li > :deep(svg),
+.ws-head__meta li > .iconify {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+}
+.ws-head__meta-main {
+  display: block;
   font-weight: 600;
-  letter-spacing: -0.02em;
+}
+.ws-head__meta-sub {
+  display: block;
+  font-size: 14px;
+  color: var(--gh-text-muted);
+}
+.ws-link {
+  font-weight: 600;
+  color: var(--gh-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ws-link:focus-visible {
+  outline: 3px solid var(--gh-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
-:deep(.workshop-markdown h1) {
-  font-size: 1.45em;
+.ws-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
 }
-
-:deep(.workshop-markdown h2) {
-  font-size: 1.2em;
+@media (min-width: 1024px) {
+  .ws-grid { grid-template-columns: minmax(0, 1fr) 22rem; }
+  .ws-aside {
+    position: sticky;
+    top: 0;
+  }
 }
-
-:deep(.workshop-markdown h3),
-:deep(.workshop-markdown h4) {
-  font-size: 1.05em;
+/* below 1024px the registration card comes first: it's what people came to do */
+@media (max-width: 1023px) {
+  .ws-aside { order: -1; }
 }
-
-:deep(.workshop-markdown ul),
-:deep(.workshop-markdown ol) {
+.ws-main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+.ws-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  padding: 20px;
+  border: var(--gh-border-width) solid var(--gh-line);
+  border-radius: var(--radius-gh-lg);
+  background: var(--gh-surface);
+}
+@media (min-width: 640px) {
+  .ws-card { padding: 24px; }
+}
+.ws-card__title {
   margin: 0;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.ws-reg__lead {
+  margin: 0;
+  font-size: 14px;
+  color: var(--gh-text-muted);
+}
+.ws-reg__facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 0;
+}
+.ws-reg__facts dt,
+.ws-answers__row dt {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gh-text-muted);
+}
+.ws-reg__facts dd {
+  margin: 2px 0 0;
+  font-weight: 600;
+}
+
+.ws-answers {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ws-answers__group {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+.ws-answers__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+.ws-answers__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px 24px;
+  padding: 12px 0;
+  border-top: var(--gh-border-width) solid var(--gh-line-soft);
+}
+.ws-answers__row:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+.ws-answers__row:last-child {
+  padding-bottom: 0;
+}
+@media (min-width: 768px) {
+  .ws-answers__row { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
+  .ws-answers__row dt {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: normal;
+    text-transform: none;
+    color: var(--gh-text);
+  }
+}
+.ws-answers__row dd {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.ws-answers__followup {
+  padding-left: 12px;
+  border-left: 3px solid var(--gh-line-soft);
+  font-size: 14px;
+}
+.ws-answers__followup-label {
+  display: block;
+  font-size: 12px;
+  color: var(--gh-text-muted);
+}
+
+/* workshop description (Markdown). The renderer wraps the content in its own element, so
+   spacing goes between siblings rather than on a grid around them. */
+.ws-md {
+  max-width: 70ch;
+  line-height: 1.7;
+}
+.ws-md :deep(:is(p, ul, ol, h1, h2, h3, h4, pre, blockquote)) {
+  margin: 0;
+}
+.ws-md :deep(* + :is(p, ul, ol, pre, blockquote)) {
+  margin-top: 0.9em;
+}
+.ws-md :deep(* + :is(h1, h2, h3, h4)) {
+  margin-top: 1.4em;
+}
+.ws-md :deep(:is(h1, h2, h3, h4) + *) {
+  margin-top: 0.4em;
+}
+.ws-md :deep(:is(h1, h2, h3, h4)) {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.25;
+}
+.ws-md :deep(h1) { font-size: 1.4em; }
+.ws-md :deep(h2) { font-size: 1.2em; }
+.ws-md :deep(h3),
+.ws-md :deep(h4) { font-size: 1.05em; }
+.ws-md :deep(ul),
+.ws-md :deep(ol) {
   padding-left: 1.25rem;
 }
-
-:deep(.workshop-markdown li + li) {
+.ws-md :deep(ul) { list-style: disc; }
+.ws-md :deep(ol) { list-style: decimal; }
+.ws-md :deep(li + li) {
   margin-top: 0.35rem;
 }
-
-:deep(.workshop-markdown a) {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-color: color-mix(in oklab, currentColor 28%, transparent);
-  text-underline-offset: 0.18em;
-}
-
-:deep(.workshop-markdown strong) {
-  color: color-mix(in oklab, currentColor 92%, black 8%);
+.ws-md :deep(a) {
+  color: var(--gh-text);
   font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
-
-:deep(.workshop-markdown code) {
-  border: 1px solid rgb(0 0 0 / 0.08);
-  border-radius: 0.65rem;
-  background: rgb(255 255 255 / 0.82);
-  padding: 0.1rem 0.45rem;
-  font-size: 0.92em;
+.ws-md :deep(strong) {
+  font-weight: 700;
+}
+.ws-md :deep(code) {
+  padding: 0.1rem 0.4rem;
+  border: var(--gh-border-width) solid var(--gh-line-soft);
+  border-radius: var(--radius-gh-sm);
+  background: var(--gh-surface-sunken);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
 }
 </style>

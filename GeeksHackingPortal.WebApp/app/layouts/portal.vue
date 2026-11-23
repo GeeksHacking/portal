@@ -7,11 +7,13 @@ import {
   useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { CONTACT_EMAIL, SOCIAL_LINKS, SPONSOR_EMAIL } from '~/constants/socials'
+import { githubLoginUrl } from '~/utils/login-url'
 
 /**
  * The signed-in portal: one sidebar for everything (Explore, the event you're taking part in,
  * organizer tools, admin) around the current page. Used by /dash/** (via pages/dash.vue) and the
- * participant event pages (/[shortCode]/team, challenges, submission, schedule).
+ * participant event pages (/[shortCode]/team, challenges, submission, schedule). Public pages
+ * (e.g. /workshops/[slug]) use it too: signed out, the footer offers "Sign in" instead of the profile.
  */
 useHead({
   titleTemplate: title => (title ? `${title} - GeeksHacking` : 'GeeksHacking'),
@@ -122,6 +124,9 @@ const groups = computed<GNavGroup[]>(() => {
 })
 
 const contactOpen = ref(false)
+
+const config = useRuntimeConfig()
+const loginUrl = computed(() => githubLoginUrl(config.public.api, route.fullPath))
 </script>
 
 <template>
@@ -161,6 +166,17 @@ const contactOpen = ref(false)
         <GSkeleton
           v-if="userIsLoading"
           class="h-10 w-full"
+        />
+        <GButton
+          v-else-if="!user"
+          :href="loginUrl"
+          variant="primary"
+          size="sm"
+          icon="fa6-brands:github"
+          :label="collapsed ? undefined : 'Sign in'"
+          :aria-label="collapsed ? 'Sign in with GitHub' : undefined"
+          :block="!collapsed"
+          class="mb-1"
         />
         <NuxtLink
           v-else

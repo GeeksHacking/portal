@@ -66,7 +66,7 @@ const groups = computed<GNavGroup[]>(() => {
 
   if (user.value?.id && isOrganizer.value) {
     const items: GNavItem[] = [
-      { label: 'Workspace', icon: 'material-symbols:dashboard-rounded', exact: true, to: '/dash/manage' },
+      { label: 'Workspace', icon: 'material-symbols:dashboard-rounded', to: '/dash/manage' },
     ]
 
     if (standaloneWorkshopId.value) {

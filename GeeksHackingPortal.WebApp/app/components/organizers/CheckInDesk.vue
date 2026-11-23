@@ -220,13 +220,8 @@ const historyEvents = computed(() => {
 
 // ---- scanner ------------------------------------------------------------------------------------
 const isScannerOpen = ref(false)
-const scannerElementId = `qr-reader-${useId()}`
-const isCameraOn = ref(false)
-const cameraError = ref('')
 const scanError = ref('')
 const rawQrData = ref('')
-const cameras = ref<Array<{ id: string, label: string }>>([])
-const useFrontCamera = ref(false)
 const scanAction = ref<{ ok: boolean, title: string, message: string } | null>(null)
 const isActing = ref(false)
 
@@ -234,112 +229,22 @@ const scanned = computed(() => participantById(scannedUserId.value))
 const scannedName = computed(() => scanned.value?.userName || scannedDetailName.value || 'Participant')
 const scannedIsUnknown = computed(() => !!scannedUserId.value && !isLoadingOverview.value && !scanned.value)
 
-let qr: import('html5-qrcode').Html5Qrcode | null = null
-
-/** Pull the participant out of a QR code: our JSON payloads ({ userId, … }) or a bare id. */
-function readQr(decodedText: string) {
-  const text = decodedText.trim()
-  let id = text
-  let otherEvent = false
-  try {
-    const data = JSON.parse(text) as Record<string, unknown>
-    id = String(data.userId ?? data.participantUserId ?? data.registrationId ?? data.participantId ?? '').trim()
-    // a workshop code carries its workshop: refuse codes for another event
-    const eventId = data.workshopId ?? data.hackathonId
-    otherEvent = typeof eventId === 'string' && !!eventId && eventId !== activityId.value
-  }
-  catch {
-    // not JSON: treat the whole text as an id
-  }
-  if (!id)
-    throw new Error('This QR code has no participant in it.')
-  if (otherEvent)
-    throw new Error('This QR code is for a different event.')
-  const match = participants.value.find(p => p.userId === id || p.participantId === id)
-  return match?.userId ?? id
-}
-
-async function waitForElement(id: string) {
-  for (let i = 0; i < 60 && !document.getElementById(id); i++)
-    await new Promise(resolve => requestAnimationFrame(resolve))
-  return document.getElementById(id)
-}
-
-async function startCamera() {
-  cameraError.value = ''
-  scanError.value = ''
-  rawQrData.value = ''
-  if (!(await waitForElement(scannerElementId)) || !isScannerOpen.value)
-    return
-  try {
-    const { Html5Qrcode } = await import('html5-qrcode')
-    qr = new Html5Qrcode(scannerElementId)
-    if (!cameras.value.length)
-      cameras.value = await Html5Qrcode.getCameras().catch(() => [])
-    await qr.start(
-      { facingMode: useFrontCamera.value ? 'user' : 'environment' },
-      {
-        fps: 30,
-        // scan most of the picture, not a small square, so codes don't have to be lined up exactly
-        qrbox: (width: number, height: number) => {
-          const side = Math.max(160, Math.floor(Math.min(width, height) * 0.7))
-          return { width: side, height: side }
-        },
-        aspectRatio: 1,
-      },
-      (decodedText) => {
-        void onScan(decodedText)
-      },
-      () => {},
-    )
-    isCameraOn.value = true
-  }
-  catch (error) {
-    console.error('Failed to start camera', error)
-    cameraError.value = 'Allow camera access for this site, then try again. You can also check people in from the list.'
-    isCameraOn.value = false
-  }
-}
-
-async function stopCamera() {
-  isCameraOn.value = false
-  const current = qr
-  qr = null
-  if (!current)
-    return
-  try {
-    await current.stop()
-    current.clear()
-  }
-  catch (error) {
-    console.error('Error stopping scanner', error)
-  }
-}
-
-async function onScan(decodedText: string) {
+function onScan(decodedText: string) {
   rawQrData.value = decodedText
-  await stopCamera()
   try {
-    scannedUserId.value = readQr(decodedText)
+    scannedUserId.value = readParticipantQr(decodedText, activityId.value, participants.value)
   }
   catch (error) {
     scanError.value = (error as Error).message
   }
 }
 
-async function scanNext() {
+// clearing the scanned person shows the camera again (OrganizersQrScanner remounts)
+function scanNext() {
   scannedUserId.value = ''
   scanAction.value = null
-  await nextTick()
-  // give the camera a moment to be released before restarting it
-  await new Promise(resolve => setTimeout(resolve, 250))
-  await startCamera()
-}
-
-async function switchCamera() {
-  useFrontCamera.value = !useFrontCamera.value
-  await stopCamera()
-  await startCamera()
+  scanError.value = ''
+  rawQrData.value = ''
 }
 
 async function actOnScanned() {
@@ -380,20 +285,8 @@ function openScanner() {
 }
 
 watch(isScannerOpen, (open) => {
-  if (open) {
-    void startCamera()
-  }
-  else {
-    void stopCamera()
-    scannedUserId.value = ''
-    scanAction.value = null
-    scanError.value = ''
-    cameraError.value = ''
-  }
-})
-
-onBeforeUnmount(() => {
-  void stopCamera()
+  if (!open)
+    scanNext()
 })
 </script>
 
@@ -626,38 +519,11 @@ onBeforeUnmount(() => {
     size="md"
   >
     <div class="cd-scan">
-      <!-- camera -->
-      <div
-        v-show="!scannedUserId && !scanError"
-        class="cd-scan__camera"
-      >
-        <div
-          :id="scannerElementId"
-          class="cd-scan__view"
-        />
-        <GAlert
-          v-if="cameraError"
-          tone="err"
-          title="Camera unavailable"
-          :description="cameraError"
-        />
-        <div class="flex flex-wrap justify-center gap-2">
-          <GButton
-            v-if="cameraError"
-            variant="secondary"
-            icon="material-symbols:refresh-rounded"
-            label="Try again"
-            @click="startCamera"
-          />
-          <GButton
-            v-if="isCameraOn && cameras.length > 1"
-            variant="ghost"
-            icon="material-symbols:cameraswitch-rounded"
-            label="Switch camera"
-            @click="switchCamera"
-          />
-        </div>
-      </div>
+      <!-- camera (on only while this is shown) -->
+      <OrganizersQrScanner
+        v-if="!scannedUserId && !scanError"
+        @decoded="onScan"
+      />
 
       <!-- unreadable code -->
       <template v-if="scanError">
@@ -946,19 +812,6 @@ onBeforeUnmount(() => {
   flex-direction: column;
   gap: 16px;
 }
-.cd-scan__camera {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.cd-scan__view {
-  width: 100%;
-  min-height: 240px;
-  overflow: hidden;
-  border-radius: var(--radius-gh-sm);
-  background: #000;
-}
-.cd-scan__view:empty { aspect-ratio: 1; min-height: 0; }
 .cd-scan__person {
   display: flex;
   flex-direction: column;

@@ -5,7 +5,7 @@ const toast = useToast()
 
 onMounted(() => {
   if ($pwa.offlineReady)
-    toast.success('App ready to work offline')
+    toast.add({ title: 'Ready to work offline', color: 'success' })
 })
 </script>
 

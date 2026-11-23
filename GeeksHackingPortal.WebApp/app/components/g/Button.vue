@@ -106,6 +106,7 @@ function onClick(event: MouseEvent) {
     <Icon
       v-else-if="icon"
       :name="icon"
+      :key="icon"
       class="g-btn__icon"
       aria-hidden="true"
     />
@@ -122,6 +123,7 @@ function onClick(event: MouseEvent) {
     <Icon
       v-if="trailingIcon && !loading"
       :name="trailingIcon"
+      :key="trailingIcon"
       class="g-btn__icon"
       aria-hidden="true"
     />

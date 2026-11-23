@@ -29,6 +29,7 @@ withDefaults(defineProps<{
     >
       <Icon
         :name="icon"
+        :key="icon"
         class="g-empty__icon"
       />
     </span>

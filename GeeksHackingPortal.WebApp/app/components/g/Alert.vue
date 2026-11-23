@@ -42,6 +42,7 @@ const iconName = computed(() => (props.icon === null ? undefined : props.icon ??
     <Icon
       v-if="iconName"
       :name="iconName"
+      :key="iconName"
       class="g-alert__icon"
       aria-hidden="true"
     />

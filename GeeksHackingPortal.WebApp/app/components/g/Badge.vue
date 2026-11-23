@@ -31,6 +31,7 @@ withDefaults(defineProps<{
     <Icon
       v-if="icon"
       :name="icon"
+      :key="icon"
       class="g-badge__icon"
       aria-hidden="true"
     />

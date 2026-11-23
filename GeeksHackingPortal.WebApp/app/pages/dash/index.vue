@@ -19,7 +19,15 @@ import { useLocalStorage } from '@vueuse/core'
 import { computed, ref, unref } from 'vue'
 import { formatHackathonDate } from '~/utils/hackathon-date-time'
 
-const toast = useToast()
+/**
+ * Explore: everyone's dashboard home. Upcoming and ongoing hackathons (with your status in each)
+ * and workshops, with search, filters, sorting and a list/card view. The next step for each event
+ * is its main button: join, continue registration, view status or open the event portal.
+ *
+ * Workshops come from the organiser list, so only organisers (and admins) see them here; a
+ * participant workshop list needs a new API endpoint.
+ */
+const toast = useGToast()
 const queryClient = useQueryClient()
 const joinMutation = useGeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint()
 
@@ -78,19 +86,23 @@ function isRegistrationComplete(index: number) {
 
 function formatParticipantStatus(status: GeeksHackingPortalApiEndpointsParticipantsHackathonStatusParticipantStatusKey | null | undefined, isParticipant?: boolean | null) {
   if (!isParticipant)
-    return { label: 'Open', color: 'success' as const }
+    return { label: 'Open', tone: 'ok' as const, icon: 'material-symbols:lock-open-right-rounded' }
 
   switch (status) {
     case 'Accepted':
-      return { label: 'Accepted', color: 'success' as const }
+      return { label: 'Accepted', tone: 'ok' as const, icon: 'material-symbols:check-circle-rounded' }
     case 'Rejected':
-      return { label: 'Not accepted', color: 'error' as const }
+      return { label: 'Not accepted', tone: 'err' as const, icon: 'material-symbols:cancel-rounded' }
     default:
-      return { label: 'Pending review', color: 'warning' as const }
+      return { label: 'Pending review', tone: 'pending' as const, icon: 'material-symbols:hourglass-top-rounded' }
   }
 }
 
+// only the clicked event's button spins
+const joiningId = ref<string | null>(null)
+
 async function joinHackathon(hackathon: { id: string, shortCode: string }) {
+  joiningId.value = hackathon.id
   try {
     await joinMutation.mutateAsync({ path: { hackathonId: hackathon.id } })
     await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpointQueryKey({ path: { hackathonId: hackathon.id } }) })
@@ -100,10 +112,13 @@ async function joinHackathon(hackathon: { id: string, shortCode: string }) {
   catch (error) {
     console.error('[DASH] Failed to join hackathon', error)
     toast.add({
-      title: 'Could not join',
-      description: 'Please try again in a moment.',
-      color: 'error',
+      title: 'Couldn\'t join',
+      description: getApiErrorMessage(error, 'Try again in a moment.'),
+      tone: 'err',
     })
+  }
+  finally {
+    joiningId.value = null
   }
 }
 
@@ -114,10 +129,25 @@ const activeSort = ref<'date-asc' | 'date-desc' | 'name' | 'attention'>('attenti
 const viewMode = useLocalStorage<'list' | 'card'>('dash-events-view', 'list')
 
 const eventTypeFilters = [
-  { label: 'All', value: 'all' as const, icon: 'i-lucide-layout-grid' },
-  { label: 'Hackathons', value: 'hackathons' as const, icon: 'i-lucide-trophy' },
-  { label: 'Workshops', value: 'workshops' as const, icon: 'i-lucide-brain-circuit' },
+  { label: 'All', value: 'all' },
+  { label: 'Hackathons', value: 'hackathons', icon: 'material-symbols:trophy-rounded' },
+  { label: 'Workshops', value: 'workshops', icon: 'material-symbols:school-rounded' },
 ]
+
+const viewModes = [
+  { label: 'List', value: 'list', icon: 'material-symbols:view-list-rounded' },
+  { label: 'Cards', value: 'card', icon: 'material-symbols:grid-view-rounded' },
+]
+
+// GTabs speaks plain strings
+const eventTypeModel = computed({
+  get: () => activeEventType.value as string,
+  set: value => (activeEventType.value = value as typeof activeEventType.value),
+})
+const viewModeModel = computed({
+  get: () => viewMode.value as string,
+  set: value => (viewMode.value = value as typeof viewMode.value),
+})
 
 const audienceFilters = [
   { label: 'All events', value: 'all' as const },
@@ -173,7 +203,7 @@ const eventRows = computed<EventRow[]>(() => {
       key: `h-${hackathon.id ?? card.index}`,
       kind: 'hackathon',
       name: hackathon.name ?? '',
-      description: hackathon.description || 'Details are being prepared by the organizers.',
+      description: hackathon.description || 'Details are being prepared by the organisers.',
       location: hackathon.venue ?? '',
       shortCode: hackathon.shortCode ?? '',
       homepageUri: hackathon.homepageUri,
@@ -242,6 +272,8 @@ const visibleEvents = computed(() => {
   })
 })
 
+const isLoadingEvents = computed(() => isLoadingUser.value || isLoadingHackathons.value || (!!user.value?.id && isLoadingStandaloneEvents.value))
+
 const hasActiveFilters = computed(() =>
   !!searchQuery.value.trim() || activeEventType.value !== 'all' || activeAudience.value !== 'all',
 )
@@ -253,8 +285,12 @@ function resetFilters() {
 }
 
 function eventDateRange(start?: string | null, end?: string | null) {
-  return `${formatHackathonDate(start)} to ${formatHackathonDate(end)}`
+  const from = formatHackathonDate(start)
+  const to = formatHackathonDate(end)
+  // one-day events (most workshops) show a single date
+  return from === to ? from : `${from} to ${to}`
 }
+
 </script>
 
 <template>
@@ -264,278 +300,469 @@ function eventDateRange(start?: string | null, end?: string | null) {
     </template>
 
     <template #body>
-      <div class="mx-auto flex w-full max-w-7xl flex-col gap-6">
-        <section class="py-2">
-          <h1 class="text-3xl font-semibold tracking-tight text-default sm:text-4xl">
+      <div class="ex">
+        <header class="ex-head">
+          <h1 class="ex-head__title">
             {{ user?.gitHubLogin ? `Welcome back, ${user.gitHubLogin}` : 'Explore' }}
           </h1>
-          <p class="mt-2 text-base text-muted">
-            Discover hackathons and workshops, pick up where you left off, and jump into your events.
+          <p class="ex-head__lead">
+            Find hackathons and workshops, pick up where you left off, and jump into your events.
           </p>
-        </section>
+        </header>
 
-        <section class="space-y-3">
-          <div class="flex flex-col gap-2 lg:flex-row lg:items-center">
-            <UInput
+        <!-- search, filters, sort, view -->
+        <section
+          class="ex-tools"
+          aria-label="Search and filter events"
+        >
+          <div class="ex-tools__row">
+            <GInput
               v-model="searchQuery"
-              icon="i-lucide-search"
-              placeholder="Search events, venues, or short codes"
-              class="lg:flex-1"
+              type="search"
+              icon="material-symbols:search-rounded"
+              placeholder="Search events, venues or short codes"
+              aria-label="Search events"
+              class="ex-tools__search"
             />
-            <USelect
+            <GSelect
               v-model="activeAudience"
               :items="audienceFilters"
-              icon="i-lucide-user"
-              class="lg:w-44"
-              aria-label="Filter by participation"
+              icon="material-symbols:person-rounded"
+              aria-label="Filter by whether you've joined"
+              class="ex-tools__select"
             />
-            <USelect
+            <GSelect
               v-model="activeSort"
               :items="sortOptions"
-              icon="i-lucide-arrow-down-up"
-              class="lg:w-52"
+              icon="material-symbols:swap-vert-rounded"
               aria-label="Sort events"
+              class="ex-tools__select ex-tools__select--wide"
             />
           </div>
-
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="flex gap-1">
-              <UButton
-                v-for="filter in eventTypeFilters"
-                :key="filter.value"
-                :icon="filter.icon"
-                size="sm"
-                :aria-pressed="activeEventType === filter.value"
-                :color="activeEventType === filter.value ? 'primary' : 'neutral'"
-                :variant="activeEventType === filter.value ? 'soft' : 'ghost'"
-                @click="activeEventType = filter.value"
+          <div class="ex-tools__row ex-tools__row--split">
+            <GTabs
+              v-model="eventTypeModel"
+              :items="eventTypeFilters"
+              :content="false"
+              size="sm"
+              aria-label="Event type"
+            />
+            <div class="ex-tools__meta">
+              <p
+                class="ex-tools__count"
+                aria-live="polite"
               >
-                {{ filter.label }}
-              </UButton>
-            </div>
-            <div class="flex items-center gap-3 text-xs text-muted">
-              <span>{{ visibleEvents.length }} of {{ eventRows.length }} events</span>
-              <UButton
+                {{ visibleEvents.length }} of {{ eventRows.length }} events
+              </p>
+              <GButton
                 v-if="hasActiveFilters"
-                size="xs"
-                variant="link"
-                color="neutral"
-                icon="i-lucide-x"
+                variant="ghost"
+                size="sm"
+                icon="material-symbols:close-rounded"
+                label="Clear filters"
                 @click="resetFilters"
-              >
-                Clear filters
-              </UButton>
-              <div class="flex gap-0.5">
-                <UButton
-                  size="xs"
-                  icon="i-lucide-list"
-                  aria-label="List view"
-                  :aria-pressed="viewMode === 'list'"
-                  :color="viewMode === 'list' ? 'primary' : 'neutral'"
-                  :variant="viewMode === 'list' ? 'soft' : 'ghost'"
-                  @click="viewMode = 'list'"
-                />
-                <UButton
-                  size="xs"
-                  icon="i-lucide-layout-grid"
-                  aria-label="Card view"
-                  :aria-pressed="viewMode === 'card'"
-                  :color="viewMode === 'card' ? 'primary' : 'neutral'"
-                  :variant="viewMode === 'card' ? 'soft' : 'ghost'"
-                  @click="viewMode = 'card'"
-                />
-              </div>
+              />
+              <GTabs
+                v-model="viewModeModel"
+                :items="viewModes"
+                :content="false"
+                size="sm"
+                aria-label="View"
+              />
             </div>
           </div>
         </section>
 
-        <section :class="viewMode === 'card' ? 'grid gap-4 sm:grid-cols-2 xl:grid-cols-3' : 'space-y-2'">
-          <div
-            v-if="isLoadingUser || isLoadingHackathons || (!!user?.id && isLoadingStandaloneEvents)"
-            class="col-span-full space-y-2"
+        <!-- events -->
+        <div
+          v-if="isLoadingEvents"
+          class="ex-list"
+          :class="{ 'ex-list--cards': viewMode === 'card' }"
+          aria-busy="true"
+        >
+          <span class="sr-only">Loading events…</span>
+          <GSkeleton
+            v-for="index in 4"
+            :key="index"
+            class="ex-skeleton"
+          />
+        </div>
+
+        <template v-else>
+          <GAlert
+            v-if="!user?.id && activeEventType !== 'hackathons'"
+            icon="material-symbols:login-rounded"
+            title="Sign in to see workshops"
+            description="Workshops show up here once you're signed in."
+          />
+
+          <GEmptyState
+            v-if="!visibleEvents.length"
+            icon="material-symbols:search-off-rounded"
+            :title="eventRows.length ? 'No events match' : 'Nothing on right now'"
+            :description="eventRows.length ? 'Try a different search, or clear your filters.' : 'New hackathons and workshops will show up here.'"
+            bordered
           >
-            <USkeleton
-              v-for="index in 4"
-              :key="index"
-              class="h-24 w-full"
-            />
-          </div>
+            <template
+              v-if="hasActiveFilters"
+              #actions
+            >
+              <GButton
+                variant="secondary"
+                icon="material-symbols:close-rounded"
+                label="Clear filters"
+                @click="resetFilters"
+              />
+            </template>
+          </GEmptyState>
 
-          <template v-else>
-            <UAlert
-              v-if="!user?.id && activeEventType !== 'hackathons'"
-              color="neutral"
-              variant="soft"
-              icon="i-lucide-log-in"
-              class="col-span-full"
-              title="Sign in to explore workshops"
-              description="Workshop discovery is available after sign-in."
-            />
-
-            <UAlert
-              v-if="!visibleEvents.length"
-              color="neutral"
-              variant="soft"
-              icon="i-lucide-search-x"
-              class="col-span-full"
-              title="No matching events"
-              description="Try a different search term or clear your filters."
-            />
-
-            <div
+          <ul
+            v-else
+            class="ex-list"
+            :class="{ 'ex-list--cards': viewMode === 'card' }"
+          >
+            <li
               v-for="row in visibleEvents"
               :key="row.key"
-              class="rounded-lg border border-default bg-default p-4 transition hover:border-primary/40 hover:shadow-sm"
-              :class="viewMode === 'card' ? 'flex flex-col gap-4' : 'grid gap-3 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1.4fr)_19rem] lg:items-center'"
             >
-              <div class="min-w-0 space-y-1.5">
-                <div
-                  class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide"
-                  :class="row.kind === 'hackathon' ? 'text-primary' : 'text-info'"
-                >
-                  <UIcon
-                    :name="row.kind === 'hackathon' ? 'i-lucide-trophy' : 'i-lucide-brain-circuit'"
-                    class="size-3.5 shrink-0"
-                  />
-                  <span>{{ row.kind === 'hackathon' ? 'Hackathon' : 'Workshop' }}</span>
-                </div>
-                <h3 class="truncate text-base font-semibold text-default">
-                  {{ row.name }}
-                </h3>
-                <p
-                  class="text-sm text-muted"
-                  :class="viewMode === 'card' ? 'line-clamp-3' : 'line-clamp-1'"
-                >
-                  {{ row.description }}
-                </p>
-                <div class="flex flex-wrap items-center gap-1.5">
-                  <UBadge
-                    v-if="row.hackathonCard"
-                    :color="formatParticipantStatus(row.hackathonCard.status?.status ?? null, row.hackathonCard.status?.isParticipant).color"
-                    variant="subtle"
-                    size="sm"
-                  >
-                    {{ formatParticipantStatus(row.hackathonCard.status?.status ?? null, row.hackathonCard.status?.isParticipant).label }}
-                  </UBadge>
-                  <UBadge
-                    v-else
-                    color="success"
-                    variant="subtle"
-                    size="sm"
-                  >
-                    Open
-                  </UBadge>
-                  <UBadge
-                    v-if="row.needsAttention"
-                    color="warning"
-                    variant="soft"
-                    icon="i-lucide-circle-alert"
-                    size="sm"
-                  >
-                    Registration incomplete
-                  </UBadge>
-                  <UBadge
-                    :color="row.isOngoing ? 'success' : 'info'"
-                    variant="outline"
-                    size="sm"
-                  >
-                    {{ row.isOngoing ? 'Ongoing' : 'Upcoming' }}
-                  </UBadge>
-                </div>
-                <UAlert
-                  v-if="row.hackathonCard?.status?.status === 'Rejected' && row.hackathonCard.status.reviewReason"
-                  color="error"
-                  variant="soft"
-                  icon="i-lucide-circle-alert"
-                  :description="`Reason: ${row.hackathonCard.status.reviewReason}`"
-                />
-              </div>
-
-              <div class="grid gap-1.5 text-sm text-muted">
-                <div class="flex items-center gap-2">
-                  <UIcon
-                    name="i-lucide-calendar-days"
-                    class="size-4 shrink-0"
-                  />
-                  <span>{{ eventDateRange(row.start, row.end) }}</span>
-                </div>
-                <div
-                  v-if="row.location"
-                  class="flex items-center gap-2"
-                >
-                  <UIcon
-                    name="i-lucide-map-pin"
-                    class="size-4 shrink-0"
-                  />
-                  <span class="truncate">{{ row.location }}</span>
-                </div>
-              </div>
-
-              <div
-                class="flex flex-wrap items-center gap-2"
-                :class="viewMode === 'card' ? 'mt-auto' : 'lg:justify-end'"
+              <article
+                class="ex-event"
+                :class="{ 'ex-event--attention': row.needsAttention }"
+                :aria-labelledby="`ex-${row.key}`"
               >
-                <template v-if="row.hackathonCard">
-                  <UButton
-                    v-if="!row.hackathonCard.status?.isParticipant"
-                    icon="i-lucide-user-plus"
-                    size="sm"
-                    :loading="joinMutation.isPending.value"
-                    @click="joinHackathon({ id: row.hackathonCard.hackathon.id!, shortCode: row.hackathonCard.hackathon.shortCode! })"
+                <div class="ex-event__main">
+                  <p class="ex-event__kind">
+                    <Icon
+                      :name="row.kind === 'hackathon' ? 'material-symbols:trophy-rounded' : 'material-symbols:school-rounded'"
+                      aria-hidden="true"
+                    />
+                    {{ row.kind === 'hackathon' ? 'Hackathon' : 'Workshop' }}
+                  </p>
+                  <h2
+                    :id="`ex-${row.key}`"
+                    class="ex-event__name"
                   >
-                    Join event
-                  </UButton>
-                  <UButton
-                    v-else-if="!row.hackathonCard.registrationComplete"
-                    :to="`/${row.shortCode}/registration`"
-                    icon="i-lucide-clipboard-pen-line"
-                    size="sm"
-                  >
-                    Continue registration
-                  </UButton>
-                  <UButton
-                    v-else-if="row.hackathonCard.status?.status !== 'Accepted'"
-                    :to="`/dash/${row.hackathonCard.hackathon.id}/participant`"
-                    icon="i-lucide-file-check"
-                    size="sm"
-                  >
-                    View status
-                  </UButton>
-                  <UButton
-                    v-else
-                    :to="`/${row.shortCode}/team`"
-                    icon="i-lucide-arrow-right"
-                    trailing
-                    size="sm"
-                  >
-                    Open event portal
-                  </UButton>
-                </template>
-                <UButton
-                  v-else-if="row.shortCode"
-                  :to="`/workshops/${row.shortCode}`"
-                  icon="i-lucide-clipboard-pen-line"
-                  size="sm"
-                >
-                  Register
-                </UButton>
+                    {{ row.name }}
+                  </h2>
+                  <p class="ex-event__desc">
+                    {{ row.description }}
+                  </p>
+                  <div class="ex-event__badges">
+                    <GBadge
+                      v-if="row.hackathonCard"
+                      :tone="formatParticipantStatus(row.hackathonCard.status?.status ?? null, row.hackathonCard.status?.isParticipant).tone"
+                      :icon="formatParticipantStatus(row.hackathonCard.status?.status ?? null, row.hackathonCard.status?.isParticipant).icon"
+                      :label="formatParticipantStatus(row.hackathonCard.status?.status ?? null, row.hackathonCard.status?.isParticipant).label"
+                    />
+                    <GBadge
+                      v-else
+                      tone="ok"
+                      icon="material-symbols:lock-open-right-rounded"
+                      label="Open"
+                    />
+                    <GBadge
+                      v-if="row.needsAttention"
+                      tone="pending"
+                      variant="solid"
+                      icon="material-symbols:error-rounded"
+                      label="Registration incomplete"
+                    />
+                    <GBadge
+                      variant="outline"
+                      :label="row.isOngoing ? 'Happening now' : 'Upcoming'"
+                    />
+                  </div>
+                  <GAlert
+                    v-if="row.hackathonCard?.status?.status === 'Rejected' && row.hackathonCard.status.reviewReason"
+                    tone="err"
+                    title="Reason"
+                    :description="row.hackathonCard.status.reviewReason"
+                  />
+                </div>
 
-                <UButton
-                  v-if="row.homepageUri"
-                  :to="row.homepageUri"
-                  target="_blank"
-                  color="neutral"
-                  variant="outline"
-                  icon="i-lucide-external-link"
-                  size="sm"
-                >
-                  Website
-                </UButton>
-              </div>
-            </div>
-          </template>
-        </section>
+                <dl class="ex-event__meta">
+                  <div>
+                    <dt class="sr-only">
+                      When
+                    </dt>
+                    <dd>
+                      <Icon
+                        name="material-symbols:calendar-today-rounded"
+                        aria-hidden="true"
+                      />
+                      <span>{{ eventDateRange(row.start, row.end) }}</span>
+                    </dd>
+                  </div>
+                  <div v-if="row.location">
+                    <dt class="sr-only">
+                      Where
+                    </dt>
+                    <dd>
+                      <Icon
+                        name="material-symbols:location-on-rounded"
+                        aria-hidden="true"
+                      />
+                      <span>{{ row.location }}</span>
+                    </dd>
+                  </div>
+                </dl>
+
+                <div class="ex-event__actions">
+                  <template v-if="row.hackathonCard">
+                    <GButton
+                      v-if="!row.hackathonCard.status?.isParticipant"
+                      variant="primary"
+                      size="sm"
+                      icon="material-symbols:person-add-rounded"
+                      label="Join event"
+                      :aria-label="`Join ${row.name}`"
+                      :loading="joiningId === row.hackathonCard.hackathon.id"
+                      loading-label="Joining"
+                      :disabled="!!joiningId && joiningId !== row.hackathonCard.hackathon.id"
+                      @click="joinHackathon({ id: row.hackathonCard.hackathon.id!, shortCode: row.hackathonCard.hackathon.shortCode! })"
+                    />
+                    <GButton
+                      v-else-if="!row.hackathonCard.registrationComplete"
+                      :to="`/${row.shortCode}/registration`"
+                      variant="primary"
+                      size="sm"
+                      icon="material-symbols:edit-note-rounded"
+                      label="Continue registration"
+                    />
+                    <GButton
+                      v-else-if="row.hackathonCard.status?.status !== 'Accepted'"
+                      :to="`/dash/${row.hackathonCard.hackathon.id}/participant`"
+                      variant="secondary"
+                      size="sm"
+                      icon="material-symbols:fact-check-rounded"
+                      label="View status"
+                    />
+                    <GButton
+                      v-else
+                      :to="`/${row.shortCode}/team`"
+                      variant="primary"
+                      size="sm"
+                      trailing-icon="material-symbols:arrow-forward-rounded"
+                      label="Open event portal"
+                    />
+                  </template>
+                  <GButton
+                    v-else-if="row.shortCode"
+                    :to="`/workshops/${row.shortCode}`"
+                    variant="primary"
+                    size="sm"
+                    icon="material-symbols:edit-note-rounded"
+                    label="Register"
+                    :aria-label="`Register for ${row.name}`"
+                  />
+
+                  <GButton
+                    v-if="row.homepageUri"
+                    :href="row.homepageUri"
+                    target="_blank"
+                    variant="ghost"
+                    size="sm"
+                    trailing-icon="material-symbols:open-in-new-rounded"
+                    label="Website"
+                    :aria-label="`${row.name} website (opens in a new tab)`"
+                  />
+                </div>
+              </article>
+            </li>
+          </ul>
+        </template>
       </div>
     </template>
   </GPanel>
 </template>
+
+<style scoped>
+.ex {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+}
+.ex-head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ex-head__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4.5vw, 40px);
+  font-weight: 700;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+.ex-head__lead {
+  max-width: 65ch;
+  margin: 0;
+  color: var(--gh-text-muted);
+}
+
+/* toolbar */
+.ex-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ex-tools__row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+@media (min-width: 1024px) {
+  .ex-tools__row { flex-direction: row; align-items: center; }
+  .ex-tools__search { flex: 1 1 auto; }
+  .ex-tools__select { flex: 0 0 11rem; }
+  .ex-tools__select--wide { flex-basis: 14rem; }
+}
+.ex-tools__row--split {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+.ex-tools__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.ex-tools__count {
+  margin: 0;
+  font-size: 14px;
+  color: var(--gh-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* events */
+.ex-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ex-list--cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+@media (min-width: 640px) {
+  .ex-list--cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1280px) {
+  .ex-list--cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.ex-list > li { min-width: 0; }
+.ex-skeleton {
+  display: block;
+  height: 120px;
+  border-radius: var(--radius-gh-lg);
+}
+.ex-list--cards .ex-skeleton { height: 260px; }
+
+.ex-event {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  height: 100%;
+  padding: 20px;
+  border: var(--gh-border-width) solid var(--gh-line);
+  border-radius: var(--radius-gh-lg);
+  background: var(--gh-surface);
+}
+/* list rows: details | when & where | actions */
+@media (min-width: 1024px) {
+  .ex-list:not(.ex-list--cards) .ex-event {
+    grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.3fr) auto;
+    align-items: center;
+    gap: 24px;
+  }
+  .ex-list:not(.ex-list--cards) .ex-event__actions { justify-content: flex-end; }
+  .ex-list:not(.ex-list--cards) .ex-event__desc { -webkit-line-clamp: 1; line-clamp: 1; }
+}
+/* cards: actions pinned to the bottom */
+.ex-list--cards .ex-event { grid-template-rows: 1fr auto auto; }
+/* registration left unfinished: a yellow edge so it stands out in the list */
+.ex-event--attention {
+  box-shadow: inset 6px 0 0 var(--gh-accent);
+}
+
+.ex-event__main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.ex-event__kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gh-text-muted);
+}
+.ex-event__kind :deep(svg),
+.ex-event__kind > * { width: 16px; height: 16px; flex: none; }
+.ex-event__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.ex-event__desc {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  font-size: 14px;
+  color: var(--gh-text-muted);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+.ex-event__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ex-event__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  font-size: 14px;
+}
+.ex-event__meta dd {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.ex-event__meta dd > :first-child {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  color: var(--gh-text-muted);
+}
+.ex-event__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+</style>

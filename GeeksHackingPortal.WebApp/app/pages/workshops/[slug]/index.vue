@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import type {
-  GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto,
-  GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto,
-} from '@geekshacking/portal-sdk'
 import { Markdown } from '@comark/vue'
 import {
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
@@ -13,9 +9,7 @@ import {
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
-import QRCode from 'qrcode'
 import { useProfileName } from '~/composables/useProfileName'
-import { HACKATHON_TIME_ZONE, HACKATHON_TIME_ZONE_LABEL, isSameHackathonDay } from '~/utils/hackathon-date-time'
 import { githubLoginUrl } from '~/utils/login-url'
 
 /**
@@ -32,7 +26,6 @@ definePageMeta({
 const route = useRoute()
 const config = useRuntimeConfig()
 const queryClient = useQueryClient()
-const toast = useGToast()
 
 const slug = computed(() => (route.params.slug as string | undefined) ?? '')
 
@@ -115,47 +108,7 @@ function standaloneWorkshopRegistrationSubmissionsQueryKey(standaloneWorkshopId:
   return [{ url: '/participants/standalone-workshops/:standaloneWorkshopId/registration/submissions', params: { standaloneWorkshopId } }] as const
 }
 
-const formattedDateTime = computed(() => {
-  if (!workshop.value?.startTime || !workshop.value?.endTime) {
-    return {
-      dateLabel: 'Date to be announced',
-      timeLabel: 'Time to be announced',
-    }
-  }
-
-  const start = new Date(workshop.value.startTime)
-  const end = new Date(workshop.value.endTime)
-
-  const sameDay = isSameHackathonDay(start, end)
-
-  const dateFormatter = new Intl.DateTimeFormat(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    timeZone: HACKATHON_TIME_ZONE,
-  })
-
-  const dateWithYearFormatter = new Intl.DateTimeFormat(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    timeZone: HACKATHON_TIME_ZONE,
-  })
-
-  const timeFormatter = new Intl.DateTimeFormat(undefined, {
-    hour: 'numeric',
-    minute: '2-digit',
-    timeZone: HACKATHON_TIME_ZONE,
-  })
-
-  return {
-    dateLabel: sameDay
-      ? dateWithYearFormatter.format(start)
-      : `${dateFormatter.format(start)} to ${dateWithYearFormatter.format(end)}`,
-    timeLabel: `${timeFormatter.format(start)} to ${timeFormatter.format(end)} ${HACKATHON_TIME_ZONE_LABEL}`,
-  }
-})
+const formattedDateTime = computed(() => formatWorkshopWhen(workshop.value?.startTime, workshop.value?.endTime))
 
 const joinError = ref('')
 
@@ -187,190 +140,12 @@ async function startRegistration() {
 
 const loginUrl = computed(() => githubLoginUrl(config.public.api, route.fullPath))
 
-const isParticipantIdOpen = ref(false)
-const participantQrCodeDataUrl = ref('')
-
 const participantId = computed(() => user.value?.id ?? '')
 const registrationId = computed(() => statusData.value?.registrationId ?? '')
 
-async function showParticipantIdQrCode() {
-  if (!participantId.value || !import.meta.client)
-    return
+const registeredAtLabel = computed(() => formatWorkshopRegisteredAt(statusData.value?.registeredAt))
 
-  try {
-    participantQrCodeDataUrl.value = await QRCode.toDataURL(JSON.stringify({
-      kind: 'standalone-workshop-check-in',
-      workshopId: workshopId.value,
-      userId: participantId.value,
-      registrationId: registrationId.value,
-    }), {
-      width: 320,
-      margin: 2,
-      color: {
-        dark: '#000000',
-        light: '#FFFFFF',
-      },
-    })
-    isParticipantIdOpen.value = true
-  }
-  catch (error) {
-    console.error('Failed to generate participant QR code', error)
-    toast.add({
-      title: 'Couldn\'t show your QR code',
-      description: 'Try again in a moment.',
-      tone: 'err',
-    })
-  }
-}
-
-const registeredAtLabel = computed(() => {
-  if (!statusData.value?.registeredAt)
-    return 'Registration date unavailable'
-
-  return `${new Intl.DateTimeFormat(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone: HACKATHON_TIME_ZONE,
-  }).format(new Date(statusData.value.registeredAt))} ${HACKATHON_TIME_ZONE_LABEL}`
-})
-
-const questionById = computed(() => {
-  const questions = questionsData.value?.categories?.flatMap(category => category.questions ?? []) ?? []
-  return new Map(questions.filter(question => question.id).map(question => [question.id as string, question]))
-})
-
-const allQuestions = computed(() =>
-  questionsData.value?.categories?.flatMap(category => category.questions ?? []) ?? [],
-)
-
-function parseJsonValue(value: string | null | undefined) {
-  if (!value)
-    return null
-
-  try {
-    return JSON.parse(value) as unknown
-  }
-  catch {
-    return null
-  }
-}
-
-function optionLabel(question: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto | undefined, value: string) {
-  const option = question?.options?.find(item => item.optionValue === value)
-  return option?.optionText ?? value
-}
-
-function formatAnswerValue(
-  value: string | null | undefined,
-  question: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto | undefined,
-) {
-  const rawValue = value ?? ''
-  const parsed = parseJsonValue(rawValue)
-
-  if (Array.isArray(parsed))
-    return parsed.map(item => optionLabel(question, String(item)))
-
-  if (rawValue === 'true')
-    return ['Yes']
-  if (rawValue === 'false')
-    return ['No']
-
-  return [optionLabel(question, rawValue)]
-}
-
-function formatAnswers(submission: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto) {
-  const question = submission.questionId ? questionById.value.get(submission.questionId) : undefined
-  return formatAnswerValue(submission.value, question)
-}
-
-function formatFollowUpValue(
-  followUpValue: string | null | undefined,
-  question: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto | undefined,
-) {
-  if (!followUpValue)
-    return []
-
-  const parsed = parseJsonValue(followUpValue)
-  if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-    return Object.entries(parsed as Record<string, string>)
-      .filter(([, value]) => Boolean(value))
-      .map(([optionValue, value]) => ({
-        label: optionLabel(question, optionValue),
-        value,
-      }))
-  }
-
-  return [{ label: 'Additional details', value: followUpValue }]
-}
-
-function formatFollowUps(submission: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto) {
-  const question = submission.questionId ? questionById.value.get(submission.questionId) : undefined
-  return formatFollowUpValue(submission.followUpValue, question)
-}
-
-interface AnswerDetail {
-  key: string
-  question: string
-  answers: string[]
-  followUps: { label: string, value: string }[]
-}
-
-interface AnswerGroup {
-  name: string
-  details: AnswerDetail[]
-}
-
-function addAnswerDetail(groups: Map<string, AnswerDetail[]>, category: string, detail: AnswerDetail) {
-  const details = groups.get(category) ?? []
-  details.push(detail)
-  groups.set(category, details)
-}
-
-const answerGroups = computed<AnswerGroup[]>(() => {
-  const groups = new Map<string, AnswerDetail[]>()
-  const submissions = submissionsData.value?.submissions ?? []
-
-  if (submissions.length > 0) {
-    for (const submission of submissions) {
-      const category = submission.category || 'Registration details'
-      addAnswerDetail(groups, category, {
-        key: submission.questionId ?? `${category}-${groups.get(category)?.length ?? 0}`,
-        question: submission.questionText ?? submission.questionKey ?? 'Question',
-        answers: formatAnswers(submission),
-        followUps: formatFollowUps(submission),
-      })
-    }
-  }
-  else {
-    for (const category of questionsData.value?.categories ?? []) {
-      for (const question of category.questions ?? []) {
-        const submission = question.currentSubmission
-        if (!submission?.value)
-          continue
-
-        addAnswerDetail(groups, category.name ?? 'Registration details', {
-          key: question.id ?? question.questionKey ?? `${category.name}-${groups.get(category.name ?? '')?.length ?? 0}`,
-          question: question.questionText ?? question.questionKey ?? 'Question',
-          answers: formatAnswerValue(submission.value, question),
-          followUps: formatFollowUpValue(submission.followUpValue, question),
-        })
-      }
-    }
-  }
-
-  return Array.from(groups.entries()).map(([name, details]) => ({ name, details }))
-})
-
-const savedAnswersCount = computed(() => {
-  const fallbackCount = answerGroups.value.reduce((count, group) => count + group.details.length, 0)
-  const apiCount = submissionsData.value?.answeredQuestions ?? 0
-  return apiCount > 0 ? apiCount : fallbackCount
-})
-
-const totalQuestionsCount = computed(() => {
-  const apiCount = submissionsData.value?.totalQuestions ?? 0
-  return apiCount > 0 ? apiCount : allQuestions.value.length
-})
+const { answerGroups, savedAnswersCount, totalQuestionsCount } = useWorkshopAnswers(questionsData, submissionsData)
 
 const isBusy = computed(() => ['checking-auth', 'loading', 'checking-status', 'loading-registration'].includes(registrationState.value))
 // the questions take the main column while they're being answered (even after the end, as before)
@@ -385,14 +160,12 @@ const showFormInMain = computed(() => registrationState.value === 'incomplete')
         as="p"
       >
         <template #right>
-          <GButton
-            v-if="registrationState === 'registered'"
-            variant="secondary"
-            size="sm"
-            icon="material-symbols:qr-code-2-rounded"
-            label="My QR code"
-            :disabled="!participantId"
-            @click="showParticipantIdQrCode"
+          <WorkshopsCheckinQr
+            v-if="registrationState === 'registered' && workshop"
+            :workshop-id="workshopId"
+            :user-id="participantId"
+            :registration-id="registrationId"
+            :workshop-title="workshop.title"
           />
         </template>
       </GPanelHeader>
@@ -543,42 +316,7 @@ const showFormInMain = computed(() => registrationState.value === 'incomplete')
                 >
                   Your answers
                 </h2>
-                <template v-if="answerGroups.length">
-                  <div
-                    v-for="group in answerGroups"
-                    :key="group.name"
-                    class="ws-card"
-                  >
-                    <h3 class="ws-answers__group">
-                      {{ group.name }}
-                    </h3>
-                    <dl class="ws-answers__list">
-                      <div
-                        v-for="detail in group.details"
-                        :key="detail.key"
-                        class="ws-answers__row"
-                      >
-                        <dt>{{ detail.question }}</dt>
-                        <dd>
-                          <span class="ws-answers__values">{{ detail.answers.join(', ') }}</span>
-                          <span
-                            v-for="followUp in detail.followUps"
-                            :key="`${detail.key}-${followUp.label}`"
-                            class="ws-answers__followup"
-                          >
-                            <span class="ws-answers__followup-label">{{ followUp.label }}</span>
-                            {{ followUp.value }}
-                          </span>
-                        </dd>
-                      </div>
-                    </dl>
-                  </div>
-                </template>
-                <GAlert
-                  v-else
-                  title="No answers to show"
-                  description="This workshop didn't ask any registration questions."
-                />
+                <WorkshopsAnswerList :groups="answerGroups" />
               </section>
             </div>
 
@@ -643,13 +381,22 @@ const showFormInMain = computed(() => registrationState.value === 'incomplete')
                   <p class="ws-reg__lead">
                     Show your QR code when an organiser checks you in.
                   </p>
-                  <GButton
-                    variant="primary"
-                    icon="material-symbols:qr-code-2-rounded"
+                  <WorkshopsCheckinQr
+                    :workshop-id="workshopId"
+                    :user-id="participantId"
+                    :registration-id="registrationId"
+                    :workshop-title="workshop.title"
                     label="Show my QR code"
-                    :disabled="!participantId"
+                    variant="primary"
+                    size="md"
                     block
-                    @click="showParticipantIdQrCode"
+                  />
+                  <GButton
+                    :to="`/workshops/${slug}/registered`"
+                    variant="ghost"
+                    icon="material-symbols:edit-calendar-rounded"
+                    label="Manage registration"
+                    block
                   />
                 </template>
 
@@ -730,24 +477,6 @@ const showFormInMain = computed(() => registrationState.value === 'incomplete')
     </template>
   </GPanel>
 
-  <GModal
-    v-model:open="isParticipantIdOpen"
-    title="Your QR code"
-    description="Show this to an organiser when they check you in."
-    size="sm"
-  >
-    <div class="flex flex-col items-center gap-3">
-      <img
-        v-if="participantQrCodeDataUrl"
-        :src="participantQrCodeDataUrl"
-        alt="Your workshop check-in QR code"
-        class="h-auto w-full max-w-[280px] rounded-gh border-[1.5px] border-gh-line bg-white"
-      >
-      <p class="gh-small text-gh-muted">
-        {{ workshop?.title }}
-      </p>
-    </div>
-  </GModal>
 </template>
 
 <style scoped>
@@ -873,8 +602,7 @@ const showFormInMain = computed(() => registrationState.value === 'incomplete')
   gap: 12px;
   margin: 0;
 }
-.ws-reg__facts dt,
-.ws-answers__row dt {
+.ws-reg__facts dt {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -890,57 +618,6 @@ const showFormInMain = computed(() => registrationState.value === 'incomplete')
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-.ws-answers__group {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 700;
-}
-.ws-answers__list {
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-}
-.ws-answers__row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 4px 24px;
-  padding: 12px 0;
-  border-top: var(--gh-border-width) solid var(--gh-line-soft);
-}
-.ws-answers__row:first-child {
-  padding-top: 0;
-  border-top: 0;
-}
-.ws-answers__row:last-child {
-  padding-bottom: 0;
-}
-@media (min-width: 768px) {
-  .ws-answers__row { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
-  .ws-answers__row dt {
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: normal;
-    text-transform: none;
-    color: var(--gh-text);
-  }
-}
-.ws-answers__row dd {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin: 0;
-  overflow-wrap: anywhere;
-}
-.ws-answers__followup {
-  padding-left: 12px;
-  border-left: 3px solid var(--gh-line-soft);
-  font-size: 14px;
-}
-.ws-answers__followup-label {
-  display: block;
-  font-size: 12px;
-  color: var(--gh-text-muted);
 }
 
 /* workshop description (Markdown). The renderer wraps the content in its own element, so

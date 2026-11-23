@@ -43,6 +43,7 @@ provideGFormField({
     :class="{ 'g-field--disabled': disabled }"
   >
     <label
+      :id="`${id}-label`"
       :for="id"
       class="g-field__label"
       :class="{ 'sr-only': hideLabel }"

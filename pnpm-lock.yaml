@@ -32,6 +32,9 @@ importers:
       '@geekshacking/portal-sdk':
         specifier: workspace:*
         version: link:../GeeksHackingPortal.WebSdk
+      '@internationalized/date':
+        specifier: 3.12.4
+        version: 3.12.4
       '@nuxt/fonts':
         specifier: ^0.14.0
         version: 0.14.0(@nuxt/schema@4.6.0)(confbox@0.3.1)(db0@0.3.4)(dotenv@17.4.2)(esbuild@0.28.2)(giget@3.3.1)(ioredis@5.11.1(supports-color@10.2.2))(jiti@2.7.0)(magic-string@1.4.3)(mlly@1.8.2)(oxc-parser@0.140.0)(rolldown@1.2.12)(rollup@4.64.1)(vite@8.3.3)

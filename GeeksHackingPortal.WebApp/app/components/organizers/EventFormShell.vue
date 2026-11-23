@@ -28,7 +28,53 @@ const emit = defineEmits<{ submit: [] }>()
 const formId = `event-form-${useId()}`
 const backTo = computed(() => props.backTo ?? '/dash/manage')
 
+// ---- which section is in view (highlighted in the section list) -------------------------------
+const root = ref<HTMLElement | null>(null)
+const activeId = ref(props.sections[0]?.id ?? '')
+let scroller: HTMLElement | null = null
+// after a click, keep the clicked item lit until the smooth scroll settles
+let lockedUntil = 0
+let frame = 0
+
+// current = the last section whose top has passed the upper third of the panel;
+// at the very bottom the last section wins (the final sections are short)
+function pickActive() {
+  frame = 0
+  if (!scroller || Date.now() < lockedUntil)
+    return
+  if (scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 4) {
+    activeId.value = props.sections.at(-1)?.id ?? activeId.value
+    return
+  }
+  const line = scroller.getBoundingClientRect().top + scroller.clientHeight / 3
+  let current = props.sections[0]?.id ?? ''
+  for (const section of props.sections) {
+    const el = document.getElementById(section.id)
+    if (el && el.getBoundingClientRect().top <= line)
+      current = section.id
+  }
+  activeId.value = current
+}
+
+function onScroll() {
+  if (!frame)
+    frame = requestAnimationFrame(pickActive)
+}
+
+onMounted(() => {
+  scroller = root.value?.closest<HTMLElement>('.g-panel__body') ?? null
+  scroller?.addEventListener('scroll', onScroll, { passive: true })
+  pickActive()
+})
+
+onBeforeUnmount(() => {
+  scroller?.removeEventListener('scroll', onScroll)
+  cancelAnimationFrame(frame)
+})
+
 function jumpTo(id: string) {
+  activeId.value = id
+  lockedUntil = Date.now() + 800
   const target = document.getElementById(id)
   target?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' })
   // move focus to the section heading so keyboard and screen-reader users land there too
@@ -66,7 +112,10 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload)
 </script>
 
 <template>
-  <div class="ef">
+  <div
+    ref="root"
+    class="ef"
+  >
     <div class="ef-head">
       <GButton
         :to="backTo"
@@ -100,6 +149,7 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload)
             <button
               type="button"
               class="ef-nav__link"
+              :aria-current="activeId === section.id ? 'location' : undefined"
               @click="jumpTo(section.id)"
             >
               {{ section.label }}
@@ -240,7 +290,7 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload)
 .ef-nav__link {
   width: 100%;
   padding: 8px 12px;
-  border: 0;
+  border: var(--gh-border-width) solid transparent;
   border-radius: var(--radius-gh-sm);
   background: none;
   color: var(--gh-text-muted);
@@ -253,6 +303,12 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload)
 .ef-nav__link:hover {
   background: var(--gh-ghost-hover);
   color: var(--gh-text);
+}
+/* the section in view: the same yellow block as the sidebar's current page */
+.ef-nav__link[aria-current='location'] {
+  border-color: var(--gh-on-accent);
+  background: var(--gh-accent);
+  color: var(--gh-on-accent);
 }
 .ef-nav__link:focus-visible {
   outline: 2px solid var(--gh-focus);

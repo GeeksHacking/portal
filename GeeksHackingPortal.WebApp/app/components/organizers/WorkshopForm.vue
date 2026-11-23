@@ -350,9 +350,8 @@ const sections = [
           required
           :error="errors.startTime"
         >
-          <GInput
+          <GDateTimePicker
             v-model="form.startTime"
-            type="datetime-local"
           />
         </GFormField>
         <GFormField
@@ -360,9 +359,9 @@ const sections = [
           required
           :error="errors.endTime"
         >
-          <GInput
+          <GDateTimePicker
             v-model="form.endTime"
-            type="datetime-local"
+            :min="form.startTime || undefined"
           />
         </GFormField>
       </div>

@@ -345,18 +345,17 @@ const sections = [
           label="Event starts"
           :error="errors.eventStartDate"
         >
-          <GInput
+          <GDateTimePicker
             v-model="form.eventStartDate"
-            type="datetime-local"
           />
         </GFormField>
         <GFormField
           label="Event ends"
           :error="errors.eventEndDate"
         >
-          <GInput
+          <GDateTimePicker
             v-model="form.eventEndDate"
-            type="datetime-local"
+            :min="form.eventStartDate || undefined"
           />
         </GFormField>
       </div>
@@ -365,18 +364,17 @@ const sections = [
           label="Submissions open"
           :error="errors.submissionsStartDate"
         >
-          <GInput
+          <GDateTimePicker
             v-model="form.submissionsStartDate"
-            type="datetime-local"
           />
         </GFormField>
         <GFormField
           label="Submissions close"
           :error="errors.submissionsEndDate"
         >
-          <GInput
+          <GDateTimePicker
             v-model="form.submissionsEndDate"
-            type="datetime-local"
+            :min="form.submissionsStartDate || undefined"
           />
         </GFormField>
       </div>
@@ -386,9 +384,8 @@ const sections = [
           hint="Teams can't change their challenge after this."
           :error="errors.challengeSelectionEndDate"
         >
-          <GInput
+          <GDateTimePicker
             v-model="form.challengeSelectionEndDate"
-            type="datetime-local"
           />
         </GFormField>
       </div>
@@ -397,18 +394,17 @@ const sections = [
           label="Judging starts"
           :error="errors.judgingStartDate"
         >
-          <GInput
+          <GDateTimePicker
             v-model="form.judgingStartDate"
-            type="datetime-local"
           />
         </GFormField>
         <GFormField
           label="Judging ends"
           :error="errors.judgingEndDate"
         >
-          <GInput
+          <GDateTimePicker
             v-model="form.judgingEndDate"
-            type="datetime-local"
+            :min="form.judgingStartDate || undefined"
           />
         </GFormField>
       </div>

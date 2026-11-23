@@ -5,6 +5,7 @@ import {
   useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsCreateEndpoint,
+  useGeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsListEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonTeamsGetMineEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
@@ -35,7 +36,24 @@ const challengeId = computed(() => teamData.value?.challengeId ?? null)
 
 const submissionsPath = computed(() => ({ hackathonId: hackathonId.value, teamId: teamId.value }))
 const { data: submissionsData, isLoading: isLoadingSubmissions } = useGeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsListEndpoint({ path: submissionsPath }, { query: { enabled: computed(() => !!hackathonId.value && hasTeam.value) } })
-const submission = computed(() => submissionsData.value?.submissions?.[0] ?? null)
+const listedSubmission = computed(() => submissionsData.value?.submissions?.[0] ?? null)
+
+// The list endpoint returns its links as null (its SQL projection drops the Uri columns), so the
+// links come from the single-submission endpoint, which maps the full row.
+const submissionId = computed(() => listedSubmission.value?.id ?? '')
+const { data: submissionDetail, isLoading: isLoadingDetail } = useGeeksHackingPortalApiEndpointsParticipantsHackathonSubmissionsGetEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value, submissionId: submissionId.value })) }, { query: { enabled: computed(() => !!hackathonId.value && !!submissionId.value) } })
+const submission = computed(() => {
+  const listed = listedSubmission.value
+  if (!listed)
+    return null
+  const detail = submissionDetail.value
+  return {
+    ...listed,
+    repoUri: listed.repoUri ?? detail?.repositoryUri ?? null,
+    slidesUri: listed.slidesUri ?? detail?.slidesUri ?? null,
+    demoUri: listed.demoUri ?? detail?.demoUri ?? null,
+  }
+})
 
 const { data: challengesData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) }, { query: { enabled: computed(() => !!hackathonId.value && hasTeam.value) } })
 function challengeTitle(id: string | null | undefined) {
@@ -47,7 +65,7 @@ function challengeTitle(id: string | null | undefined) {
 const teamChallenge = computed(() => challengeTitle(challengeId.value))
 const submittedChallenge = computed(() => challengeTitle(submission.value?.challengeId))
 
-const isLoading = computed(() => !hackathonId.value || isLoadingStatus.value || (isParticipant.value && isLoadingTeam.value) || (hasTeam.value && isLoadingSubmissions.value))
+const isLoading = computed(() => !hackathonId.value || isLoadingStatus.value || (isParticipant.value && isLoadingTeam.value) || (hasTeam.value && isLoadingSubmissions.value) || (!!submissionId.value && isLoadingDetail.value))
 
 // ---- dates (shown in event time) -------------------------------------------------------------
 const dateFormatter = new Intl.DateTimeFormat('en-SG', { timeZone: HACKATHON_TIME_ZONE, weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })
@@ -589,14 +607,20 @@ const submittedLinks = computed(() => {
 }
 .sub__links {
   display: grid;
-  grid-template-columns: 1fr;
+  /* minmax(0, …): long URLs truncate instead of widening the tile past the card */
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 @media (min-width: 768px) {
-  .sub__links { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* one equal column per tile, so two or three tiles always fill the card */
+  .sub__links {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+  }
 }
 .sub__link {
   display: flex;

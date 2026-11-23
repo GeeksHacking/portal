@@ -134,6 +134,12 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload)
       <h1 class="ef-head__title">
         {{ title }}
       </h1>
+      <p class="ef-head__note">
+        Fields marked <span
+          class="ef-head__req"
+          aria-hidden="true"
+        >*</span><span class="sr-only">with an asterisk</span> are required.
+      </p>
     </div>
 
     <div class="ef-body">
@@ -256,6 +262,15 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload)
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--gh-text-muted);
+}
+.ef-head__note {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--gh-text-muted);
+}
+.ef-head__req {
+  color: var(--gh-err);
+  font-weight: 700;
 }
 .ef-head__title {
   margin: 0;

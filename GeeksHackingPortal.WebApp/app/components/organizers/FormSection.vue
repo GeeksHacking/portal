@@ -7,6 +7,8 @@ defineProps<{
   id: string
   title: string
   description?: string
+  /** marks the title, for a section whose only field hides its own label */
+  required?: boolean
 }>()
 </script>
 
@@ -22,7 +24,11 @@ defineProps<{
         class="fs__title"
         tabindex="-1"
       >
-        {{ title }}
+        {{ title }}<span
+          v-if="required"
+          class="fs__req"
+          aria-hidden="true"
+        > *</span>
       </h2>
       <p
         v-if="description"
@@ -38,6 +44,9 @@ defineProps<{
 </template>
 
 <style scoped>
+.fs__req {
+  color: var(--gh-err);
+}
 .fs {
   display: flex;
   flex-direction: column;

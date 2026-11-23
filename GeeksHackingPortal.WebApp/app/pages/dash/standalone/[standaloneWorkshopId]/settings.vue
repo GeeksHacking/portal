@@ -232,9 +232,10 @@ async function handleSubmit() {
             required
             :error="fieldErrors.description"
           >
-            <UTextarea
+            <GMarkdownEditor
               v-model="form.description"
-              :rows="3"
+              aria-label="Description"
+              :invalid="!!fieldErrors.description"
             />
           </UFormField>
 

@@ -40,7 +40,7 @@ const statCards = computed(() => [
                 {{ event?.title ?? 'Standalone Event' }}
               </h2>
               <p class="text-sm text-(--ui-text-muted)">
-                {{ event?.description ?? 'Summary analytics for this standalone event.' }}
+                {{ markdownToPlainText(event?.description) || 'Summary analytics for this standalone event.' }}
               </p>
             </div>
             <UBadge

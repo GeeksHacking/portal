@@ -1,0 +1,90 @@
+/*
+ * .g-prose: rendered Markdown (event descriptions), shared by <GMarkdown> and the
+ * description editor so what organisers write looks the same as what participants read.
+ * Spacing goes between siblings, because renderers wrap the content in their own elements.
+ */
+.g-prose {
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.g-prose :is(p, ul, ol, h1, h2, h3, h4, h5, pre, blockquote, hr) {
+  margin: 0;
+}
+.g-prose * + :is(p, ul, ol, pre, blockquote, hr) {
+  margin-top: 0.9em;
+}
+.g-prose * + :is(h1, h2, h3, h4, h5) {
+  margin-top: 1.4em;
+}
+.g-prose :is(h1, h2, h3, h4, h5) + * {
+  margin-top: 0.4em;
+}
+.g-prose :is(h1, h2, h3, h4, h5) {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: normal;
+}
+.g-prose :is(h1, h2) { font-size: 1.25em; }
+.g-prose h3 { font-size: 1.1em; }
+.g-prose :is(h4, h5) { font-size: 1em; }
+.g-prose :is(ul, ol) {
+  padding-left: 1.4rem;
+}
+.g-prose ul { list-style: disc; }
+.g-prose ol { list-style: decimal; }
+.g-prose li + li,
+.g-prose li > :is(ul, ol) {
+  margin-top: 0.35rem;
+}
+.g-prose li > p + p {
+  margin-top: 0.35rem;
+}
+.g-prose a {
+  color: var(--gh-text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.g-prose a:hover {
+  text-decoration-thickness: 2px;
+}
+.g-prose :is(strong, b) {
+  font-weight: 700;
+}
+.g-prose :is(em, i) {
+  font-style: italic;
+}
+.g-prose :is(s, del) {
+  text-decoration: line-through;
+}
+.g-prose blockquote {
+  padding: 0.1em 0 0.1em 1em;
+  border-left: 3px solid var(--gh-accent);
+  color: var(--gh-text-muted);
+}
+.g-prose code {
+  padding: 0.1rem 0.4rem;
+  border: var(--gh-border-width) solid var(--gh-line-soft);
+  border-radius: var(--radius-gh-sm);
+  background: var(--gh-surface-sunken);
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+}
+.g-prose pre {
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+  border: var(--gh-border-width) solid var(--gh-line-soft);
+  border-radius: var(--radius-gh-sm);
+  background: var(--gh-surface-sunken);
+  line-height: 1.5;
+}
+.g-prose pre code {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.g-prose hr {
+  border: 0;
+  border-top: var(--gh-border-width) solid var(--gh-line-soft);
+}

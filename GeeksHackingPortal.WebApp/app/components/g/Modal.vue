@@ -59,6 +59,15 @@ function guard(event: Event) {
   if (!props.dismissible)
     event.preventDefault()
 }
+
+// a field marked `autofocus` gets focus on open (Reka would otherwise focus the first button)
+function focusAutofocus(event: Event) {
+  const target = (event.target as HTMLElement | null)?.querySelector<HTMLElement>('[autofocus]')
+  if (!target)
+    return
+  event.preventDefault()
+  target.focus()
+}
 </script>
 
 <template>
@@ -80,6 +89,7 @@ function guard(event: Event) {
         @escape-key-down="guard"
         @pointer-down-outside="guard"
         @interact-outside="guard"
+        @open-auto-focus="focusAutofocus"
         @close-auto-focus="emit('afterLeave')"
       >
         <template v-if="customContent">

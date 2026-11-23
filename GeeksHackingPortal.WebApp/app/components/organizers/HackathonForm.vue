@@ -105,8 +105,30 @@ function validate() {
   const next: typeof errors.value = {}
   if (!f.name.trim())
     next.name = 'Give the hackathon a name.'
-  if (f.homepageUri.trim() && !isHttpUrl(f.homepageUri.trim()))
+  if (!f.shortCode.trim())
+    next.shortCode = 'Add a short code.'
+  else if (!/^[A-Za-z0-9-]{3,16}$/.test(f.shortCode.trim()))
+    next.shortCode = 'Use 3 to 16 letters, numbers or hyphens.'
+  if (!f.homepageUri.trim())
+    next.homepageUri = 'Add the event\'s website.'
+  else if (!isHttpUrl(f.homepageUri.trim()))
     next.homepageUri = 'Use a full address starting with http:// or https://.'
+  if (!f.description.trim())
+    next.description = 'Add a description.'
+  if (!f.venue.trim())
+    next.venue = 'Add where it happens.'
+  const missing = {
+    eventStartDate: 'Add when the event starts.',
+    eventEndDate: 'Add when the event ends.',
+    submissionsStartDate: 'Add when submissions open.',
+    submissionsEndDate: 'Add when submissions close.',
+    judgingStartDate: 'Add when judging starts.',
+    judgingEndDate: 'Add when judging ends.',
+  } as const
+  for (const [key, message] of Object.entries(missing) as [keyof typeof missing, string][]) {
+    if (!f[key])
+      next[key] = message
+  }
   // datetime-local values compare correctly as strings
   if (f.eventStartDate && f.eventEndDate && f.eventEndDate <= f.eventStartDate)
     next.eventEndDate = 'End after the event starts.'
@@ -160,7 +182,7 @@ async function save() {
   const body = {
     name: f.name.trim() || undefined,
     shortCode: f.shortCode.trim() || undefined,
-    description: f.description || undefined,
+    description: f.description.trim() || undefined,
     venue: f.venue.trim() || undefined,
     homepageUri: f.homepageUri.trim(),
     eventStartDate: serializeHackathonDateTimeInput(f.eventStartDate),
@@ -277,6 +299,7 @@ const sections = [
       <div class="fs-pair">
         <GFormField
           label="Short code"
+          required
           hint="Used in the event's links, e.g. /hack-2026/team."
           :error="errors.shortCode"
         >
@@ -289,7 +312,8 @@ const sections = [
         </GFormField>
         <GFormField
           label="Website"
-          hint="Optional. The event's own site."
+          required
+          hint="The event's own site."
           :error="errors.homepageUri"
         >
           <GInput
@@ -304,18 +328,18 @@ const sections = [
     <OrganizersFormSection
       id="hf-description"
       title="Description"
+      required
       description="What the hackathon is about. Participants see it on Explore and the event pages."
     >
       <GFormField
         label="Description"
         hide-label
+        required
         :error="errors.description"
       >
-        <GTextarea
+        <GMarkdownEditor
           v-model="form.description"
-          :rows="6"
-          autoresize
-          :max-rows="20"
+          placeholder="What it's about, who it's for, what to bring…"
         />
       </GFormField>
     </OrganizersFormSection>
@@ -323,9 +347,12 @@ const sections = [
     <OrganizersFormSection
       id="hf-venue"
       title="Venue"
+      required
     >
       <GFormField
         label="Venue"
+        hide-label
+        required
         :error="errors.venue"
       >
         <GInput
@@ -343,6 +370,7 @@ const sections = [
       <div class="fs-pair">
         <GFormField
           label="Event starts"
+          required
           :error="errors.eventStartDate"
         >
           <GDateTimePicker
@@ -351,6 +379,7 @@ const sections = [
         </GFormField>
         <GFormField
           label="Event ends"
+          required
           :error="errors.eventEndDate"
         >
           <GDateTimePicker
@@ -362,6 +391,7 @@ const sections = [
       <div class="fs-pair">
         <GFormField
           label="Submissions open"
+          required
           :error="errors.submissionsStartDate"
         >
           <GDateTimePicker
@@ -370,6 +400,7 @@ const sections = [
         </GFormField>
         <GFormField
           label="Submissions close"
+          required
           :error="errors.submissionsEndDate"
         >
           <GDateTimePicker
@@ -381,7 +412,7 @@ const sections = [
       <div class="fs-pair">
         <GFormField
           label="Challenge choice closes"
-          hint="Teams can't change their challenge after this."
+          hint="Optional. Teams can't change their challenge after this. Empty means when submissions close."
           :error="errors.challengeSelectionEndDate"
         >
           <GDateTimePicker
@@ -392,6 +423,7 @@ const sections = [
       <div class="fs-pair">
         <GFormField
           label="Judging starts"
+          required
           :error="errors.judgingStartDate"
         >
           <GDateTimePicker
@@ -400,6 +432,7 @@ const sections = [
         </GFormField>
         <GFormField
           label="Judging ends"
+          required
           :error="errors.judgingEndDate"
         >
           <GDateTimePicker

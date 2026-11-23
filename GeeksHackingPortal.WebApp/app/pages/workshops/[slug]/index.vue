@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Markdown } from '@comark/vue'
 import {
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint,
@@ -294,14 +293,10 @@ const showFormInMain = computed(() => registrationState.value === 'incomplete')
                 >
                   About this workshop
                 </h2>
-                <div class="ws-md">
-                  <Suspense>
-                    <Markdown
-                      :value="workshop.description"
-                      :options="{ autoClose: true, autoUnwrap: true }"
-                    />
-                  </Suspense>
-                </div>
+                <GMarkdown
+                  :value="workshop.description"
+                  class="ws-md"
+                />
               </section>
 
               <!-- registered: your answers -->
@@ -620,57 +615,8 @@ const showFormInMain = computed(() => registrationState.value === 'incomplete')
   gap: 16px;
 }
 
-/* workshop description (Markdown). The renderer wraps the content in its own element, so
-   spacing goes between siblings rather than on a grid around them. */
+/* workshop description: the prose styles come from GMarkdown (.g-prose) */
 .ws-md {
   max-width: 70ch;
-  line-height: 1.7;
-}
-.ws-md :deep(:is(p, ul, ol, h1, h2, h3, h4, pre, blockquote)) {
-  margin: 0;
-}
-.ws-md :deep(* + :is(p, ul, ol, pre, blockquote)) {
-  margin-top: 0.9em;
-}
-.ws-md :deep(* + :is(h1, h2, h3, h4)) {
-  margin-top: 1.4em;
-}
-.ws-md :deep(:is(h1, h2, h3, h4) + *) {
-  margin-top: 0.4em;
-}
-.ws-md :deep(:is(h1, h2, h3, h4)) {
-  font-family: var(--font-display);
-  font-weight: 700;
-  line-height: 1.25;
-}
-.ws-md :deep(h1) { font-size: 1.4em; }
-.ws-md :deep(h2) { font-size: 1.2em; }
-.ws-md :deep(h3),
-.ws-md :deep(h4) { font-size: 1.05em; }
-.ws-md :deep(ul),
-.ws-md :deep(ol) {
-  padding-left: 1.25rem;
-}
-.ws-md :deep(ul) { list-style: disc; }
-.ws-md :deep(ol) { list-style: decimal; }
-.ws-md :deep(li + li) {
-  margin-top: 0.35rem;
-}
-.ws-md :deep(a) {
-  color: var(--gh-text);
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.ws-md :deep(strong) {
-  font-weight: 700;
-}
-.ws-md :deep(code) {
-  padding: 0.1rem 0.4rem;
-  border: var(--gh-border-width) solid var(--gh-line-soft);
-  border-radius: var(--radius-gh-sm);
-  background: var(--gh-surface-sunken);
-  font-family: var(--font-mono);
-  font-size: 0.9em;
 }
 </style>

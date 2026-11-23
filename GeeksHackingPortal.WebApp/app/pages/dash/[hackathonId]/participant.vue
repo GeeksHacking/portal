@@ -364,12 +364,11 @@ function getErrorStatusCode(error: unknown): number | null {
             >
               About the event
             </h2>
-            <p
+            <GMarkdown
               v-if="hackathon.description"
+              :value="hackathon.description"
               class="ps-card__text ps-card__text--body"
-            >
-              {{ hackathon.description }}
-            </p>
+            />
             <dl class="ps-facts">
               <div>
                 <dt>When</dt>
@@ -583,7 +582,6 @@ function getErrorStatusCode(error: unknown): number | null {
 }
 .ps-card__text--body {
   color: var(--gh-text);
-  white-space: pre-line;
 }
 .ps-facts {
   display: grid;

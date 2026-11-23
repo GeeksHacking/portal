@@ -291,6 +291,7 @@ const sections = [
     <OrganizersFormSection
       id="wf-description"
       title="Description"
+      required
       description="Shown on the workshop's sign-up page."
     >
       <GFormField
@@ -299,11 +300,9 @@ const sections = [
         required
         :error="errors.description"
       >
-        <GTextarea
+        <GMarkdownEditor
           v-model="form.description"
-          :rows="6"
-          autoresize
-          :max-rows="20"
+          placeholder="What people will learn, who it's for, what to bring…"
         />
       </GFormField>
     </OrganizersFormSection>

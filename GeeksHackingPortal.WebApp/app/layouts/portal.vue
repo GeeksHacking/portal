@@ -72,7 +72,7 @@ const groups = computed<GNavGroup[]>(() => {
     if (standaloneWorkshopId.value) {
       const base = `/dash/standalone/${standaloneWorkshopId.value}`
       items.push(
-        { label: 'Check Ins', icon: 'material-symbols:qr-code-2-rounded', to: `${base}/checkin` },
+        { label: 'Check-ins', icon: 'material-symbols:qr-code-2-rounded', to: `${base}/checkin` },
         { label: 'Resources', icon: 'material-symbols:redeem-rounded', to: `${base}/resources` },
         { label: 'Stats', icon: 'material-symbols:pie-chart-rounded', to: `${base}/stats` },
         { label: 'Participants', icon: 'material-symbols:group-rounded', to: `${base}/participants` },
@@ -85,7 +85,7 @@ const groups = computed<GNavGroup[]>(() => {
     else if (isDashRoute.value && hackathonId.value && !isParticipantView) {
       const base = `/dash/${hackathonId.value}`
       items.push(
-        { label: 'Check Ins', icon: 'material-symbols:qr-code-2-rounded', to: `${base}/checkin` },
+        { label: 'Check-ins', icon: 'material-symbols:qr-code-2-rounded', to: `${base}/checkin` },
         { label: 'Resources', icon: 'material-symbols:redeem-rounded', to: `${base}/resources` },
         { label: 'Stats', icon: 'material-symbols:pie-chart-rounded', to: `${base}/stats` },
         { label: 'Participants', icon: 'material-symbols:group-rounded', to: `${base}/participants` },

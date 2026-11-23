@@ -427,18 +427,14 @@ const followLinks = [
                 class="reg-form__question"
                 :class="{ 'reg-form__question--wide': shouldBeFullWidth(question, category.questions) }"
               >
-                <!-- a single option (e.g. consent): a labelled checkbox under the question -->
+                <!-- a single option (e.g. consent): a labelled checkbox under the question; the checkbox carries the required mark -->
                 <fieldset
                   v-if="question.hasOptions && !question.isMultiSelect && question.items.length === 1"
                   class="reg-form__fieldset"
                   :aria-describedby="[question.helpText ? `q-${question.id}-hint` : '', fieldErrors[question.questionKey ?? ''] ? `q-${question.id}-error` : ''].filter(Boolean).join(' ') || undefined"
                 >
                   <legend class="reg-form__legend">
-                    {{ question.questionText ?? '' }}<span
-                      v-if="isRequiredQuestion(question)"
-                      class="reg-form__required"
-                      aria-hidden="true"
-                    > *</span>
+                    {{ question.questionText ?? '' }}
                   </legend>
                   <GCheckbox
                     :model-value="state[question.questionKey ?? ''] === question.items[0]?.value"

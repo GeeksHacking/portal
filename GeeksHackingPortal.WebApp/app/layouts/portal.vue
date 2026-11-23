@@ -200,6 +200,10 @@ const contactOpen = ref(false)
           class="portal-footer__contact"
           @click="contactOpen = true"
         />
+        <GThemeSwitch
+          :compact="collapsed"
+          :class="{ 'w-full': !collapsed }"
+        />
       </div>
     </template>
 

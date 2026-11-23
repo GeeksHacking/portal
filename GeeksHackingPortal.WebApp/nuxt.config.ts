@@ -33,7 +33,8 @@ export default defineNuxtConfig({
   },
 
   colorMode: {
-    preference: 'light',
+    // Light / Dark / System is chosen in the sidebar (GThemeSwitch); System follows the device
+    preference: 'system',
     fallback: 'light',
   },
 

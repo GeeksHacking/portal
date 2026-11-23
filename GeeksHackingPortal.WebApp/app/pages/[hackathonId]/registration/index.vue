@@ -63,6 +63,12 @@ watchEffect(() => {
       </p>
     </div>
 
+    <RegistrationAboutEvent
+      :name="hackathon?.name"
+      :description="hackathon?.description"
+      :collapsed-height="200"
+    />
+
     <GAlert
       tone="attention"
       title="You'll join the waiting list"

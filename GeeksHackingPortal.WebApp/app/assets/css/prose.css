@@ -88,3 +88,19 @@
   border: 0;
   border-top: var(--gh-border-width) solid var(--gh-line-soft);
 }
+
+/* GMarkdown inline: one run of text, clamped by the card */
+.g-prose--inline {
+  line-height: inherit;
+}
+.g-prose--inline > *,
+.g-prose--inline .comark-content {
+  display: inline;
+}
+.g-prose--inline .g-prose__heading {
+  font-weight: 700;
+  color: var(--gh-text);
+}
+.g-prose--inline code {
+  padding: 0 0.3rem;
+}

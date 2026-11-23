@@ -15,7 +15,7 @@ import {
   useGeeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueries, useQueryClient } from '@tanstack/vue-query'
-import { useLocalStorage } from '@vueuse/core'
+import { createReusableTemplate, useLocalStorage } from '@vueuse/core'
 import { computed, ref, unref } from 'vue'
 import { formatHackathonDate } from '~/utils/hackathon-date-time'
 
@@ -175,7 +175,12 @@ interface EventRow {
   key: string
   kind: 'hackathon' | 'workshop'
   name: string
+  /** plain text, for search */
   description: string
+  /** the Markdown as written, for display */
+  descriptionMarkdown: string
+  /** more than the card's excerpt can show: offer the details dialog */
+  hasMoreDetails: boolean
   location: string
   shortCode: string
   homepageUri: string | null | undefined
@@ -204,6 +209,8 @@ const eventRows = computed<EventRow[]>(() => {
       kind: 'hackathon',
       name: hackathon.name ?? '',
       description: markdownToPlainText(hackathon.description) || 'Details are being prepared by the organisers.',
+      descriptionMarkdown: hackathon.description?.trim() || 'Details are being prepared by the organisers.',
+      hasMoreDetails: hasMoreThanExcerpt(hackathon.description),
       location: hackathon.venue ?? '',
       shortCode: hackathon.shortCode ?? '',
       homepageUri: hackathon.homepageUri,
@@ -224,6 +231,8 @@ const eventRows = computed<EventRow[]>(() => {
       kind: 'workshop',
       name: event.title ?? '',
       description: markdownToPlainText(event.description) || 'Workshop details are being prepared.',
+      descriptionMarkdown: event.description?.trim() || 'Workshop details are being prepared.',
+      hasMoreDetails: hasMoreThanExcerpt(event.description),
       location: event.location ?? '',
       shortCode: event.shortCode ?? '',
       homepageUri: event.homepageUri,
@@ -284,6 +293,25 @@ function resetFilters() {
   activeAudience.value = 'all'
 }
 
+// ---- details dialog -----------------------------------------------------------------------
+const detailsKey = ref<string | null>(null)
+const detailsRow = computed(() => eventRows.value.find(row => row.key === detailsKey.value))
+const detailsOpen = computed({
+  get: () => !!detailsRow.value,
+  set: (open) => {
+    if (!open)
+      detailsKey.value = null
+  },
+})
+// close the dialog when one of its actions leaves the page
+const route = useRoute()
+watch(() => route.fullPath, () => {
+  detailsKey.value = null
+})
+
+// the card's actions, shared by the card and the details dialog
+const [DefineActions, ReuseActions] = createReusableTemplate<{ row: EventRow }>()
+
 function eventDateRange(start?: string | null, end?: string | null) {
   const from = formatHackathonDate(start)
   const to = formatHackathonDate(end)
@@ -300,6 +328,67 @@ function eventDateRange(start?: string | null, end?: string | null) {
     </template>
 
     <template #body>
+      <DefineActions v-slot="{ row }">
+      <template v-if="row.hackathonCard">
+        <GButton
+          v-if="!row.hackathonCard.status?.isParticipant"
+          variant="primary"
+          size="sm"
+          icon="material-symbols:person-add-rounded"
+          label="Join event"
+          :aria-label="`Join ${row.name}`"
+          :loading="joiningId === row.hackathonCard.hackathon.id"
+          loading-label="Joining"
+          :disabled="!!joiningId && joiningId !== row.hackathonCard.hackathon.id"
+          @click="joinHackathon({ id: row.hackathonCard.hackathon.id!, shortCode: row.hackathonCard.hackathon.shortCode! })"
+        />
+        <GButton
+          v-else-if="!row.hackathonCard.registrationComplete"
+          :to="`/${row.shortCode}/registration`"
+          variant="primary"
+          size="sm"
+          icon="material-symbols:edit-note-rounded"
+          label="Continue registration"
+        />
+        <GButton
+          v-else-if="row.hackathonCard.status?.status !== 'Accepted'"
+          :to="`/dash/${row.hackathonCard.hackathon.id}/participant`"
+          variant="secondary"
+          size="sm"
+          icon="material-symbols:fact-check-rounded"
+          label="View status"
+        />
+        <GButton
+          v-else
+          :to="`/${row.shortCode}/team`"
+          variant="primary"
+          size="sm"
+          trailing-icon="material-symbols:arrow-forward-rounded"
+          label="Open event portal"
+        />
+      </template>
+      <GButton
+        v-else-if="row.shortCode"
+        :to="`/workshops/${row.shortCode}`"
+        variant="primary"
+        size="sm"
+        icon="material-symbols:edit-note-rounded"
+        label="Register"
+        :aria-label="`Register for ${row.name}`"
+      />
+
+      <GButton
+        v-if="row.homepageUri"
+        :href="row.homepageUri"
+        target="_blank"
+        variant="ghost"
+        size="sm"
+        trailing-icon="material-symbols:open-in-new-rounded"
+        label="Website"
+        :aria-label="`${row.name} website (opens in a new tab)`"
+      />
+      </DefineActions>
+
       <div class="ex">
         <header class="ex-head">
           <h1 class="ex-head__title">
@@ -444,9 +533,11 @@ function eventDateRange(start?: string | null, end?: string | null) {
                   >
                     {{ row.name }}
                   </h2>
-                  <p class="ex-event__desc">
-                    {{ row.description }}
-                  </p>
+                  <GMarkdown
+                    inline
+                    :value="row.descriptionMarkdown"
+                    class="ex-event__desc"
+                  />
                   <div class="ex-event__badges">
                     <GBadge
                       v-if="row.hackathonCard"
@@ -508,63 +599,15 @@ function eventDateRange(start?: string | null, end?: string | null) {
                 </dl>
 
                 <div class="ex-event__actions">
-                  <template v-if="row.hackathonCard">
-                    <GButton
-                      v-if="!row.hackathonCard.status?.isParticipant"
-                      variant="primary"
-                      size="sm"
-                      icon="material-symbols:person-add-rounded"
-                      label="Join event"
-                      :aria-label="`Join ${row.name}`"
-                      :loading="joiningId === row.hackathonCard.hackathon.id"
-                      loading-label="Joining"
-                      :disabled="!!joiningId && joiningId !== row.hackathonCard.hackathon.id"
-                      @click="joinHackathon({ id: row.hackathonCard.hackathon.id!, shortCode: row.hackathonCard.hackathon.shortCode! })"
-                    />
-                    <GButton
-                      v-else-if="!row.hackathonCard.registrationComplete"
-                      :to="`/${row.shortCode}/registration`"
-                      variant="primary"
-                      size="sm"
-                      icon="material-symbols:edit-note-rounded"
-                      label="Continue registration"
-                    />
-                    <GButton
-                      v-else-if="row.hackathonCard.status?.status !== 'Accepted'"
-                      :to="`/dash/${row.hackathonCard.hackathon.id}/participant`"
-                      variant="secondary"
-                      size="sm"
-                      icon="material-symbols:fact-check-rounded"
-                      label="View status"
-                    />
-                    <GButton
-                      v-else
-                      :to="`/${row.shortCode}/team`"
-                      variant="primary"
-                      size="sm"
-                      trailing-icon="material-symbols:arrow-forward-rounded"
-                      label="Open event portal"
-                    />
-                  </template>
+                  <ReuseActions :row="row" />
                   <GButton
-                    v-else-if="row.shortCode"
-                    :to="`/workshops/${row.shortCode}`"
-                    variant="primary"
-                    size="sm"
-                    icon="material-symbols:edit-note-rounded"
-                    label="Register"
-                    :aria-label="`Register for ${row.name}`"
-                  />
-
-                  <GButton
-                    v-if="row.homepageUri"
-                    :href="row.homepageUri"
-                    target="_blank"
+                    v-if="row.hasMoreDetails"
                     variant="ghost"
                     size="sm"
-                    trailing-icon="material-symbols:open-in-new-rounded"
-                    label="Website"
-                    :aria-label="`${row.name} website (opens in a new tab)`"
+                    icon="material-symbols:article-outline-rounded"
+                    label="Details"
+                    :aria-label="`Details for ${row.name}`"
+                    @click="detailsKey = row.key"
                   />
                 </div>
               </article>
@@ -572,6 +615,63 @@ function eventDateRange(start?: string | null, end?: string | null) {
           </ul>
         </template>
       </div>
+      <GModal
+        v-model:open="detailsOpen"
+        :title="detailsRow?.name || 'Event details'"
+        size="lg"
+      >
+        <div
+          v-if="detailsRow"
+          class="ex-details"
+        >
+          <p class="ex-event__kind">
+            <Icon
+              :name="detailsRow.kind === 'hackathon' ? 'material-symbols:trophy-rounded' : 'material-symbols:school-rounded'"
+              aria-hidden="true"
+            />
+            {{ detailsRow.kind === 'hackathon' ? 'Hackathon' : 'Workshop' }}
+          </p>
+          <dl class="ex-event__meta">
+            <div>
+              <dt class="sr-only">
+                When
+              </dt>
+              <dd>
+                <Icon
+                  name="material-symbols:calendar-today-rounded"
+                  aria-hidden="true"
+                />
+                <span>{{ eventDateRange(detailsRow.start, detailsRow.end) }}</span>
+              </dd>
+            </div>
+            <div v-if="detailsRow.location">
+              <dt class="sr-only">
+                Where
+              </dt>
+              <dd>
+                <Icon
+                  name="material-symbols:location-on-rounded"
+                  aria-hidden="true"
+                />
+                <span>{{ detailsRow.location }}</span>
+              </dd>
+            </div>
+          </dl>
+          <GMarkdown
+            :value="detailsRow.descriptionMarkdown"
+            :heading-level="3"
+            class="ex-details__desc"
+          />
+        </div>
+        <template
+          v-if="detailsRow"
+          #footer
+        >
+          <div class="ex-details__actions">
+            <ReuseActions :row="detailsRow" />
+          </div>
+        </template>
+      </GModal>
     </template>
   </GPanel>
 </template>
@@ -758,6 +858,23 @@ function eventDateRange(start?: string | null, end?: string | null) {
   height: 18px;
   margin-top: 1px;
   color: var(--gh-text-muted);
+}
+.ex-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ex-details__desc {
+  margin-top: 4px;
+  padding-top: 16px;
+  border-top: var(--gh-border-width) solid var(--gh-line-soft);
+}
+.ex-details__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  width: 100%;
 }
 .ex-event__actions {
   display: flex;

@@ -38,3 +38,12 @@ export function markdownToPlainText(markdown: string | null | undefined, options
 
   return options.keepLines ? lines.join('\n') : lines.join(' ')
 }
+
+/**
+ * Whether a description needs more room than a card's few-line excerpt: long text, or Markdown
+ * structure (headings, lists, quotes, several paragraphs) that the excerpt flattens.
+ */
+export function hasMoreThanExcerpt(markdown: string | null | undefined, maxLength = 140): boolean {
+  const text = markdown?.trim() ?? ''
+  return markdownToPlainText(text).length > maxLength || /\n\s*\n|^\s*(?:#{1,6}\s|[-*+]\s|\d+[.)]\s|>)/m.test(text)
+}

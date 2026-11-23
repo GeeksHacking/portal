@@ -17,7 +17,7 @@ import {
   useGeeksHackingPortalApiEndpointsParticipantsHackathonListEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueries, useQueryClient } from '@tanstack/vue-query'
-import { useLocalStorage } from '@vueuse/core'
+import { createReusableTemplate, useLocalStorage } from '@vueuse/core'
 import { formatHackathonDate, parseHackathonDateTimeValue } from '~/utils/hackathon-date-time'
 
 /**
@@ -160,7 +160,12 @@ interface EventRow {
   kind: 'hackathon' | 'workshop'
   id: string
   name: string
+  /** plain text, for search */
   description: string
+  /** the Markdown as written, for display */
+  descriptionMarkdown: string
+  /** more than the card's excerpt can show: offer the details dialog */
+  hasMoreDetails: boolean
   location: string
   shortCode: string
   homepageUri: string | null | undefined
@@ -190,6 +195,8 @@ const eventRows = computed<EventRow[]>(() => {
       id: hackathon.id ?? '',
       name: hackathon.name ?? '',
       description: markdownToPlainText(hackathon.description),
+      descriptionMarkdown: hackathon.description?.trim() ?? '',
+      hasMoreDetails: hasMoreThanExcerpt(hackathon.description),
       location: hackathon.venue ?? '',
       shortCode: hackathon.shortCode ?? '',
       homepageUri: hackathon.homepageUri,
@@ -216,6 +223,8 @@ const eventRows = computed<EventRow[]>(() => {
       id: event.id ?? '',
       name: event.title ?? '',
       description: markdownToPlainText(event.description),
+      descriptionMarkdown: event.description?.trim() ?? '',
+      hasMoreDetails: hasMoreThanExcerpt(event.description),
       location: event.location ?? '',
       shortCode: event.shortCode ?? '',
       homepageUri: event.homepageUri,
@@ -359,6 +368,25 @@ function showAttention() {
 }
 
 // ---- formatting ---------------------------------------------------------------------------------
+// ---- details dialog -----------------------------------------------------------------------
+const detailsKey = ref<string | null>(null)
+const detailsRow = computed(() => eventRows.value.find(row => row.key === detailsKey.value))
+const detailsOpen = computed({
+  get: () => !!detailsRow.value,
+  set: (open) => {
+    if (!open)
+      detailsKey.value = null
+  },
+})
+// close the dialog when one of its actions leaves the page
+const detailsRoute = useRoute()
+watch(() => detailsRoute.fullPath, () => {
+  detailsKey.value = null
+})
+
+// the card's actions, shared by the card and the details dialog
+const [DefineActions, ReuseActions] = createReusableTemplate<{ row: EventRow }>()
+
 function eventDateRange(start?: string | null, end?: string | null) {
   const from = formatHackathonDate(start)
   const to = formatHackathonDate(end)
@@ -389,6 +417,89 @@ useHead({ title: 'Workspace' })
     </template>
 
     <template #body>
+      <DefineActions v-slot="{ row }">
+      <!-- events this person runs -->
+      <template v-if="row.kind === 'workshop' || row.isOrganizing">
+        <GButton
+          v-if="row.id"
+          :to="row.kind === 'workshop' ? `/dash/standalone/${row.id}` : `/dash/${row.id}`"
+          variant="primary"
+          size="sm"
+          icon="material-symbols:settings-rounded"
+          label="Manage"
+          :aria-label="`Manage ${row.name}`"
+        />
+        <GButton
+          v-if="isAdmin && row.id"
+          :to="`/dash/manage/${row.kind}/${row.id}/edit`"
+          variant="secondary"
+          size="sm"
+          icon="material-symbols:edit-rounded"
+          label="Edit"
+          :aria-label="`Edit ${row.name}`"
+        />
+        <GButton
+          v-if="row.shortCode"
+          :to="row.kind === 'workshop' ? `/workshops/${row.shortCode}` : `/${row.shortCode}/team`"
+          variant="ghost"
+          size="sm"
+          trailing-icon="material-symbols:arrow-forward-rounded"
+          label="View page"
+          :aria-label="`View the ${row.name} page`"
+        />
+        <GButton
+          v-else-if="row.homepageUri"
+          :href="row.homepageUri"
+          target="_blank"
+          variant="ghost"
+          size="sm"
+          trailing-icon="material-symbols:open-in-new-rounded"
+          label="Website"
+          :aria-label="`${row.name} website (opens in a new tab)`"
+        />
+      </template>
+
+      <!-- hackathons this person takes part in: their next step -->
+      <template v-else>
+        <GButton
+          v-if="!row.status?.isParticipant"
+          variant="primary"
+          size="sm"
+          icon="material-symbols:person-add-rounded"
+          label="Join event"
+          :aria-label="`Join ${row.name}`"
+          :loading="joiningId === row.id"
+          loading-label="Joining"
+          :disabled="!!joiningId && joiningId !== row.id"
+          @click="joinHackathon({ id: row.id, shortCode: row.shortCode })"
+        />
+        <GButton
+          v-else-if="!row.registrationComplete"
+          :to="`/${row.shortCode}/registration`"
+          variant="primary"
+          size="sm"
+          icon="material-symbols:edit-note-rounded"
+          label="Continue registration"
+        />
+        <GButton
+          v-else-if="row.status?.status !== 'Accepted'"
+          :to="`/dash/${row.id}/participant`"
+          variant="secondary"
+          size="sm"
+          icon="material-symbols:fact-check-rounded"
+          label="View status"
+        />
+        <GButton
+          v-else
+          :to="`/${row.shortCode}/team`"
+          variant="primary"
+          size="sm"
+          trailing-icon="material-symbols:arrow-forward-rounded"
+          label="Open event portal"
+        />
+      </template>
+      </DefineActions>
+
       <div class="ws">
         <header class="ws-head">
           <div class="ws-head__text">
@@ -607,12 +718,12 @@ useHead({ title: 'Workspace' })
                 >
                   {{ row.name || 'Untitled event' }}
                 </h2>
-                <p
-                  v-if="row.description"
+                <GMarkdown
+                  v-if="row.descriptionMarkdown"
+                  inline
+                  :value="row.descriptionMarkdown"
                   class="ws-event__desc"
-                >
-                  {{ row.description }}
-                </p>
+                />
                 <div class="ws-event__badges">
                   <GBadge
                     :tone="row.isPublished ? 'ok' : 'pending'"
@@ -694,86 +805,16 @@ useHead({ title: 'Workspace' })
               </dl>
 
               <div class="ws-event__actions">
-                <!-- events this person runs -->
-                <template v-if="row.kind === 'workshop' || row.isOrganizing">
-                  <GButton
-                    v-if="row.id"
-                    :to="row.kind === 'workshop' ? `/dash/standalone/${row.id}` : `/dash/${row.id}`"
-                    variant="primary"
-                    size="sm"
-                    icon="material-symbols:settings-rounded"
-                    label="Manage"
-                    :aria-label="`Manage ${row.name}`"
-                  />
-                  <GButton
-                    v-if="isAdmin && row.id"
-                    :to="`/dash/manage/${row.kind}/${row.id}/edit`"
-                    variant="secondary"
-                    size="sm"
-                    icon="material-symbols:edit-rounded"
-                    label="Edit"
-                    :aria-label="`Edit ${row.name}`"
-                  />
-                  <GButton
-                    v-if="row.shortCode"
-                    :to="row.kind === 'workshop' ? `/workshops/${row.shortCode}` : `/${row.shortCode}/team`"
-                    variant="ghost"
-                    size="sm"
-                    trailing-icon="material-symbols:arrow-forward-rounded"
-                    label="View page"
-                    :aria-label="`View the ${row.name} page`"
-                  />
-                  <GButton
-                    v-else-if="row.homepageUri"
-                    :href="row.homepageUri"
-                    target="_blank"
-                    variant="ghost"
-                    size="sm"
-                    trailing-icon="material-symbols:open-in-new-rounded"
-                    label="Website"
-                    :aria-label="`${row.name} website (opens in a new tab)`"
-                  />
-                </template>
-
-                <!-- hackathons this person takes part in: their next step -->
-                <template v-else>
-                  <GButton
-                    v-if="!row.status?.isParticipant"
-                    variant="primary"
-                    size="sm"
-                    icon="material-symbols:person-add-rounded"
-                    label="Join event"
-                    :aria-label="`Join ${row.name}`"
-                    :loading="joiningId === row.id"
-                    loading-label="Joining"
-                    :disabled="!!joiningId && joiningId !== row.id"
-                    @click="joinHackathon({ id: row.id, shortCode: row.shortCode })"
-                  />
-                  <GButton
-                    v-else-if="!row.registrationComplete"
-                    :to="`/${row.shortCode}/registration`"
-                    variant="primary"
-                    size="sm"
-                    icon="material-symbols:edit-note-rounded"
-                    label="Continue registration"
-                  />
-                  <GButton
-                    v-else-if="row.status?.status !== 'Accepted'"
-                    :to="`/dash/${row.id}/participant`"
-                    variant="secondary"
-                    size="sm"
-                    icon="material-symbols:fact-check-rounded"
-                    label="View status"
-                  />
-                  <GButton
-                    v-else
-                    :to="`/${row.shortCode}/team`"
-                    variant="primary"
-                    size="sm"
-                    trailing-icon="material-symbols:arrow-forward-rounded"
-                    label="Open event portal"
-                  />
-                </template>
+                <ReuseActions :row="row" />
+                <GButton
+                  v-if="row.hasMoreDetails"
+                  variant="ghost"
+                  size="sm"
+                  icon="material-symbols:article-outline-rounded"
+                  label="Details"
+                  :aria-label="`Details for ${row.name || 'this event'}`"
+                  @click="detailsKey = row.key"
+                />
               </div>
             </article>
           </li>
@@ -792,6 +833,67 @@ useHead({ title: 'Workspace' })
           />
         </p>
       </div>
+      <GModal
+        v-model:open="detailsOpen"
+        :title="detailsRow?.name || 'Event details'"
+        size="lg"
+      >
+        <div
+          v-if="detailsRow"
+          class="ws-details"
+        >
+          <p class="ws-event__kind">
+            <Icon
+              :name="detailsRow.kind === 'hackathon' ? 'material-symbols:trophy-rounded' : 'material-symbols:school-rounded'"
+              aria-hidden="true"
+            />
+            {{ detailsRow.kind === 'hackathon' ? 'Hackathon' : 'Workshop' }}
+            <span
+              v-if="detailsRow.shortCode"
+              class="ws-event__code"
+            >· {{ detailsRow.shortCode }}</span>
+          </p>
+          <dl class="ws-event__meta">
+            <div>
+              <dt class="sr-only">
+                When
+              </dt>
+              <dd>
+                <Icon
+                  name="material-symbols:calendar-today-rounded"
+                  aria-hidden="true"
+                />
+                <span>{{ eventDateRange(detailsRow.start, detailsRow.end) }}</span>
+              </dd>
+            </div>
+            <div v-if="detailsRow.location">
+              <dt class="sr-only">
+                Where
+              </dt>
+              <dd>
+                <Icon
+                  name="material-symbols:location-on-rounded"
+                  aria-hidden="true"
+                />
+                <span>{{ detailsRow.location }}</span>
+              </dd>
+            </div>
+          </dl>
+          <GMarkdown
+            :value="detailsRow.descriptionMarkdown"
+            :heading-level="3"
+            class="ws-details__desc"
+          />
+        </div>
+        <template
+          v-if="detailsRow"
+          #footer
+        >
+          <div class="ws-details__actions">
+            <ReuseActions :row="detailsRow" />
+          </div>
+        </template>
+      </GModal>
     </template>
   </GPanel>
 </template>
@@ -1029,6 +1131,23 @@ useHead({ title: 'Workspace' })
   height: 100%;
   border-radius: 999px;
   background: var(--gh-viz-1);
+}
+.ws-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ws-details__desc {
+  margin-top: 4px;
+  padding-top: 16px;
+  border-top: var(--gh-border-width) solid var(--gh-line-soft);
+}
+.ws-details__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  width: 100%;
 }
 .ws-event__actions {
   display: flex;

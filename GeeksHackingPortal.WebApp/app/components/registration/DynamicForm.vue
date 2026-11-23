@@ -369,6 +369,11 @@ const followLinks = [
         <p class="reg-form__lead">
           It takes about five minutes. Questions marked <span aria-hidden="true">*</span><span class="sr-only">with an asterisk</span> are required, and your answers are only shared with the organisers.
         </p>
+        <RegistrationAboutEvent
+          :name="hackathon?.name"
+          :description="hackathon?.description"
+          class="mt-2"
+        />
       </div>
 
       <section

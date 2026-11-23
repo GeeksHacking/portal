@@ -2,6 +2,7 @@
 import {
   geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpointQueryOptions,
   useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1,
+  useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
@@ -18,6 +19,12 @@ useHead({
 })
 
 const hackathonId = computed(() => props.hackathonId ?? null)
+
+// for "About {hackathon}" while someone decides whether to join
+const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({
+  path: computed(() => ({ hackathonIdOrShortCode: hackathonId.value ?? '' })),
+  query: { enabled: computed(() => !!hackathonId.value) },
+})
 
 const setupComplete = ref(false)
 const setupError = ref<string | null>(null)
@@ -167,6 +174,12 @@ async function joinHackathonFromRegistration() {
         loading-label="Joining"
         class="self-start"
         @click="joinHackathonFromRegistration"
+      />
+      <RegistrationAboutEvent
+        v-if="canJoinFromHere && !embedded"
+        :name="hackathon?.name"
+        :description="hackathon?.description"
+        class="mt-2"
       />
     </div>
 

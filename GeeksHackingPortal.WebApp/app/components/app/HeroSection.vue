@@ -1,5 +1,28 @@
+<script setup lang="ts">
+defineProps<{
+  /** Event header image. When set, it replaces the default gradient banner. */
+  imageUrl?: string | null
+}>()
+</script>
+
 <template>
-  <section class="h-64 md:h-120 lg:h-180 w-full flex flex-col items-center justify-center text-center bg-[radial-gradient(circle_at_0_0,#ffeaccb3_0,#0000_50%),radial-gradient(circle_at_100%_0,#a1e3fbb3_0,#0000_50%),radial-gradient(circle_at_0_100%,#e2d4ffb3_0,#0000_50%),radial-gradient(circle_at_100%_100%,#ffbabab3_0,#0000_50%)]">
+  <section
+    v-if="imageUrl"
+    class="aspect-2/1 w-full"
+  >
+    <h1 class="sr-only">
+      Team Portal
+    </h1>
+    <img
+      :src="imageUrl"
+      alt=""
+      class="size-full object-cover"
+    >
+  </section>
+  <section
+    v-else
+    class="h-64 md:h-120 lg:h-180 w-full flex flex-col items-center justify-center text-center bg-[radial-gradient(circle_at_0_0,#ffeaccb3_0,#0000_50%),radial-gradient(circle_at_100%_0,#a1e3fbb3_0,#0000_50%),radial-gradient(circle_at_0_100%,#e2d4ffb3_0,#0000_50%),radial-gradient(circle_at_100%_100%,#ffbabab3_0,#0000_50%)]"
+  >
     <h1 class="font-['Zalando_Sans_Expanded'] font-bold text-3xl md:text-6xl text-black">
       TEAM PORTAL
     </h1>

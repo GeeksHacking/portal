@@ -2,12 +2,13 @@ using FastEndpoints;
 using GeeksHackingPortal.Api.Authorization;
 using GeeksHackingPortal.Api.Entities;
 using GeeksHackingPortal.Api.Features.Hackathons.GitHubRepositorySettings;
+using GeeksHackingPortal.Api.Services;
 using SqlSugar;
 using HackathonEntity = GeeksHackingPortal.Api.Entities.Hackathon;
 
 namespace GeeksHackingPortal.Api.Endpoints.Organizers.Hackathon.Get;
 
-public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
+public class Endpoint(ISqlSugarClient sql, HeaderImageStorage storage) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -53,6 +54,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 Name = hackathon.Activity.Title,
                 Description = hackathon.Activity.Description,
                 Venue = hackathon.Activity.Location,
+                HeaderImageUrl = storage.ToUrl(hackathon.Activity.HeaderImageKey),
                 HomepageUri = hackathon.HomepageUri,
                 ShortCode = hackathon.ShortCode,
                 IsPublished = hackathon.Activity.IsPublished,

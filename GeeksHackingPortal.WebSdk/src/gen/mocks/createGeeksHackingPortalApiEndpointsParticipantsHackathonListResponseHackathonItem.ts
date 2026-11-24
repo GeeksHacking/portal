@@ -14,6 +14,7 @@ export function createGeeksHackingPortalApiEndpointsParticipantsHackathonListRes
   name: faker.string.alpha(),
   description: faker.string.alpha(),
   venue: faker.string.alpha(),
+  headerImageUrl: faker.string.alpha(),
   homepageUri: faker.internet.url(),
   shortCode: faker.string.alpha(),
   isPublished: faker.datatype.boolean(),

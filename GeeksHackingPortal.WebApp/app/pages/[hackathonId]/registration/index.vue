@@ -66,6 +66,13 @@ watchEffect(() => {
           Register to participate in
         </p>
         <img
+          v-if="hackathon?.headerImageUrl"
+          :src="hackathon.headerImageUrl"
+          :alt="hackathon.name ?? 'Hackathon header'"
+          class="w-full max-w-xl aspect-2/1 object-cover rounded-xl"
+        >
+        <img
+          v-else
           src="/logos/geekshacking.svg"
           alt="GeeksHacking Portal"
           class="w-full max-w-xl h-auto"

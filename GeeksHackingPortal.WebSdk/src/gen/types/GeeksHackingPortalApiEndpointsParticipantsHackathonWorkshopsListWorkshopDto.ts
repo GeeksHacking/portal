@@ -25,6 +25,7 @@ export type GeeksHackingPortalApiEndpointsParticipantsHackathonWorkshopsListWork
     */
     endTime?: string;
     location?: string;
+    headerImageUrl?: string | null;
     /**
      * @description
      * Format: `int32`

@@ -8,6 +8,7 @@ public class Response
     public required string Name { get; init; }
     public required string Description { get; init; }
     public required string Venue { get; init; }
+    public string? HeaderImageUrl { get; init; }
     public required Uri HomepageUri { get; init; }
     public required string ShortCode { get; init; }
     public required bool IsPublished { get; init; }

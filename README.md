@@ -64,6 +64,33 @@ dotnet run --project GeeksHackingPortal.DbMigrator -- apply --seed-development-t
 - Organizer views, participant emails and OIDC `given_name` / `family_name` claims all read the profile name.
 - Names are never registration answers: the `first_name` and `last_name` question keys are reserved.
 
+## Header images (Cloudflare R2)
+
+- Hackathons, hackathon workshops and standalone workshops can have a header image, stored in an S3-compatible bucket (Cloudflare R2 in production, RustFS locally). Every list/get response for them includes `headerImageUrl` (`null` when unset).
+- Only admins (`App:AdminEmails` / `App:AdminGitHubLogins`) can change images. The browser uploads straight to the bucket; the API never handles the file:
+  1. `POST /admin/activities/{activityId}/header-image/upload-url` with `{ contentType, contentLength }` (JPEG, PNG or WebP, max 5 MB) returns a presigned `uploadUrl` (valid 10 minutes) and a `key`.
+  2. `PUT` the file to `uploadUrl` with the same `Content-Type` header.
+  3. `PUT /admin/activities/{activityId}/header-image` with `{ key }`. The API checks the object's size and file signature (deleting it if invalid), then sets it and deletes the previous image.
+  - `DELETE /admin/activities/{activityId}/header-image` removes the image.
+- The bucket is read publicly via its custom domain / r2.dev URL; the R2 API token (Object Read & Write, scoped to this bucket) lives only in the API.
+- API configuration: `R2:AccountId` (or `R2:ServiceUrl` for another S3 endpoint), `R2:WriteSecrets` (JSON `{"accessKeyId": "...", "secretAccessKey": "..."}`; the only way to pass credentials), `R2:BucketName`, `R2:PublicBaseUrl`. Without them, uploads return 503.
+- Locally, `aspire run` starts a RustFS container (`storage`, console login `rustfsadmin` / `rustfsadmin`) and the API creates the `portal` bucket with a public-read policy on startup (`R2:EnsureBucket`). No setup needed.
+- Production: the Pulumi stack reads Secret Manager secret `r2-write-secrets` (injected as `R2__WriteSecrets`) and the `r2:accountId`, `r2:bucketName`, `r2:publicBaseUrl` config in `GeeksHackingPortal.Infra/Pulumi.production.yaml`.
+- The R2 bucket needs a CORS rule so browsers can upload (Cloudflare dashboard → R2 → bucket → Settings → CORS policy):
+
+  ```json
+  [
+    {
+      "AllowedOrigins": ["https://portal.geekshacking.com"],
+      "AllowedMethods": ["PUT"],
+      "AllowedHeaders": ["Content-Type"],
+      "MaxAgeSeconds": 3600
+    }
+  ]
+  ```
+
+- Uploads that are never confirmed (e.g. the tab is closed between steps 2 and 3) stay in the bucket. An R2 lifecycle rule can clean them up if that becomes a problem.
+
 ## Development
 
 Common helper tasks (see project-specific READMEs for frontend/backend details):

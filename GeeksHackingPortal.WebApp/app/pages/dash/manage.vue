@@ -25,6 +25,7 @@ import {
 import { useQueries, useQueryClient } from '@tanstack/vue-query'
 import { useLocalStorage } from '@vueuse/core'
 import { computed, ref, unref } from 'vue'
+import { emptyHeaderImageChange, useActivityHeaderImage } from '~/composables/useActivityHeaderImage'
 import { getApiErrorMessage, getApiFieldError, getApiValidationErrors, getApiValidationSummary } from '~/utils/api-errors'
 import {
   formatHackathonDate,
@@ -41,6 +42,15 @@ const createMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonCreat
 const updateHackathonMutation = useGeeksHackingPortalApiEndpointsOrganizersActivitiesHackathonsEndpoint()
 const createStandaloneEventMutation = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsCreateEndpoint()
 const updateStandaloneEventMutation = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsUpdateEndpoint()
+const { saveHeaderImage, isSavingHeaderImage } = useActivityHeaderImage()
+
+function notifyHeaderImageFailure(eventLabel: string, error: unknown) {
+  toast.add({
+    title: `${eventLabel} saved, but the header image could not be updated`,
+    description: getApiErrorMessage(error, 'Edit the event to try the image again.'),
+    color: 'warning',
+  })
+}
 
 interface StandaloneEventAnalytics {
   registeredCount?: number
@@ -58,6 +68,8 @@ interface StandaloneEventAnalytics {
 const isHackathonModalOpen = ref(false)
 const isEditingHackathon = ref(false)
 const editingHackathonId = ref<string | null>(null)
+const hackathonHeaderImage = ref(emptyHeaderImageChange())
+const hackathonCurrentHeaderImageUrl = ref<string | null>(null)
 
 const hackathonForm = ref({
   name: '',
@@ -95,6 +107,8 @@ function resetHackathonForm() {
   }
   isEditingHackathon.value = false
   editingHackathonId.value = null
+  hackathonHeaderImage.value = emptyHeaderImageChange()
+  hackathonCurrentHeaderImageUrl.value = null
 }
 
 function openCreateHackathonModal() {
@@ -128,6 +142,8 @@ function openEditHackathonModal(hackathon: typeof hackathons.value[number]) {
   }
   isEditingHackathon.value = true
   editingHackathonId.value = hackathon.id ?? null
+  hackathonHeaderImage.value = emptyHeaderImageChange()
+  hackathonCurrentHeaderImageUrl.value = hackathon.headerImageUrl ?? null
   isHackathonModalOpen.value = true
 }
 
@@ -150,7 +166,9 @@ async function handleHackathonSubmit() {
   }
 
   try {
+    let savedHackathonId: string | null | undefined
     if (isEditingHackathon.value && editingHackathonId.value) {
+      savedHackathonId = editingHackathonId.value
       await updateHackathonMutation.mutateAsync({
         path: { hackathonId: editingHackathonId.value },
         body: {
@@ -173,9 +191,13 @@ async function handleHackathonSubmit() {
       toast.add({ title: 'Hackathon updated', color: 'success' })
     }
     else {
-      await createMutation.mutateAsync({ body: formData })
+      const created = await createMutation.mutateAsync({ body: formData })
+      savedHackathonId = created.id
       toast.add({ title: 'Hackathon created', color: 'success' })
     }
+    const headerImageError = await saveHeaderImage(savedHackathonId, hackathonHeaderImage.value)
+    if (headerImageError)
+      notifyHeaderImageFailure('Hackathon', headerImageError)
     await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonListEndpointQueryKey() })
     await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonListEndpointQueryKey() })
     isHackathonModalOpen.value = false
@@ -193,12 +215,15 @@ async function handleHackathonSubmit() {
 
 const isHackathonSubmitting = computed(() =>
   createMutation.isPending.value
-  || updateHackathonMutation.isPending.value,
+  || updateHackathonMutation.isPending.value
+  || isSavingHeaderImage.value,
 )
 
 const isStandaloneEventModalOpen = ref(false)
 const isEditingStandaloneEvent = ref(false)
 const editingStandaloneEventId = ref<string | null>(null)
+const standaloneEventHeaderImage = ref(emptyHeaderImageChange())
+const standaloneEventCurrentHeaderImageUrl = ref<string | null>(null)
 
 const standaloneEventForm = ref({
   title: '',
@@ -230,6 +255,8 @@ function resetStandaloneEventForm() {
   isEditingStandaloneEvent.value = false
   editingStandaloneEventId.value = null
   standaloneEventFieldErrors.value = {}
+  standaloneEventHeaderImage.value = emptyHeaderImageChange()
+  standaloneEventCurrentHeaderImageUrl.value = null
 }
 
 function openCreateStandaloneEventModal() {
@@ -252,6 +279,8 @@ function openEditStandaloneEventModal(event: typeof standaloneEvents.value[numbe
   }
   isEditingStandaloneEvent.value = true
   editingStandaloneEventId.value = event.id ?? null
+  standaloneEventHeaderImage.value = emptyHeaderImageChange()
+  standaloneEventCurrentHeaderImageUrl.value = event.headerImageUrl ?? null
   standaloneEventFieldErrors.value = {}
   isStandaloneEventModalOpen.value = true
 }
@@ -350,7 +379,9 @@ async function handleStandaloneEventSubmit() {
   }
 
   try {
+    let savedEventId: string | null | undefined
     if (isEditingStandaloneEvent.value && editingStandaloneEventId.value) {
+      savedEventId = editingStandaloneEventId.value
       await updateStandaloneEventMutation.mutateAsync({
         path: { standaloneWorkshopId: editingStandaloneEventId.value },
         body: {
@@ -370,14 +401,18 @@ async function handleStandaloneEventSubmit() {
       toast.add({ title: 'Standalone event updated', color: 'success' })
     }
     else {
-      await createStandaloneEventMutation.mutateAsync({
+      const created = await createStandaloneEventMutation.mutateAsync({
         body: {
           ...formData,
           homepageUri: formData.homepageUri,
         },
       })
+      savedEventId = created.id
       toast.add({ title: 'Standalone event created', color: 'success' })
     }
+    const headerImageError = await saveHeaderImage(savedEventId, standaloneEventHeaderImage.value)
+    if (headerImageError)
+      notifyHeaderImageFailure('Standalone event', headerImageError)
 
     await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryKey() })
     isStandaloneEventModalOpen.value = false
@@ -396,7 +431,8 @@ async function handleStandaloneEventSubmit() {
 
 const isStandaloneEventSubmitting = computed(() =>
   createStandaloneEventMutation.isPending.value
-  || updateStandaloneEventMutation.isPending.value,
+  || updateStandaloneEventMutation.isPending.value
+  || isSavingHeaderImage.value,
 )
 
 const { data: user, isLoading: isLoadingUser } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
@@ -598,6 +634,7 @@ interface EventRow {
   kind: 'hackathon' | 'workshop'
   name: string
   description: string
+  headerImageUrl: string | null
   location: string
   shortCode: string
   start: string | undefined
@@ -621,6 +658,7 @@ const eventRows = computed<EventRow[]>(() => {
     rows.push({
       key: `h-${hackathon.id ?? card.index}`,
       kind: 'hackathon',
+      headerImageUrl: hackathon.headerImageUrl ?? null,
       name: hackathon.name ?? '',
       description: hackathon.description ?? '',
       location: hackathon.venue ?? '',
@@ -642,6 +680,7 @@ const eventRows = computed<EventRow[]>(() => {
     rows.push({
       key: `w-${event.id}`,
       kind: 'workshop',
+      headerImageUrl: event.headerImageUrl ?? null,
       name: event.title ?? '',
       description: event.description ?? '',
       location: event.location ?? '',
@@ -943,6 +982,13 @@ function capacityPercent(event: typeof standaloneEvents.value[number]) {
               class="rounded-lg border border-default bg-default p-4 transition hover:border-primary/40 hover:shadow-sm"
               :class="viewMode === 'card' ? 'flex flex-col gap-4' : 'grid gap-3 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1.4fr)_15rem] lg:items-center'"
             >
+              <img
+                v-if="viewMode === 'card' && row.headerImageUrl"
+                :src="row.headerImageUrl"
+                alt=""
+                loading="lazy"
+                class="-mx-4 -mt-4 aspect-2/1 w-[calc(100%+2rem)] max-w-none rounded-t-lg object-cover"
+              >
               <div class="min-w-0 space-y-1.5">
                 <div
                   class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide"
@@ -1221,6 +1267,11 @@ function capacityPercent(event: typeof standaloneEvents.value[number]) {
             />
           </UFormField>
 
+          <OrganizersHeaderImageField
+            v-model="hackathonHeaderImage"
+            :current-url="hackathonCurrentHeaderImageUrl"
+          />
+
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <p class="text-xs text-(--ui-text-muted) sm:col-span-2">
               Schedule fields use {{ HACKATHON_TIME_ZONE_LABEL }} (UTC+8).
@@ -1390,6 +1441,11 @@ function capacityPercent(event: typeof standaloneEvents.value[number]) {
               placeholder="https://..."
             />
           </UFormField>
+
+          <OrganizersHeaderImageField
+            v-model="standaloneEventHeaderImage"
+            :current-url="standaloneEventCurrentHeaderImageUrl"
+          />
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <p class="text-xs text-(--ui-text-muted) sm:col-span-2">

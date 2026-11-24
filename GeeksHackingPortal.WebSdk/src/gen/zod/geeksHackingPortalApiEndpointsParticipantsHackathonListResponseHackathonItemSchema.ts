@@ -10,6 +10,7 @@ export const geeksHackingPortalApiEndpointsParticipantsHackathonListResponseHack
   name: z.string().optional(),
   description: z.string().optional(),
   venue: z.string().optional(),
+  headerImageUrl: z.string().nullish(),
   homepageUri: z.url().optional(),
   shortCode: z.string().optional(),
   isPublished: z.boolean().optional(),

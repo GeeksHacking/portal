@@ -1,1 +1,5 @@
 encryptionsalt: v1:lO80kyKncA4=:v1:YIYJjkngNtwROPAJ:p2a9turqRz6UQ0KdvSpmSfo79lPIZQ==
+config:
+  r2:accountId: d7393d5e5bb57fb0eedebc68aa7e5467
+  r2:bucketName: portal
+  r2:publicBaseUrl: https://portal-r2.geekshacking.com

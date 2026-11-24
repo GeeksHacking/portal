@@ -6,7 +6,7 @@ using SqlSugar;
 
 namespace GeeksHackingPortal.Api.Endpoints.Organizers.StandaloneWorkshops.Update;
 
-public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
+public class Endpoint(ISqlSugarClient sql, HeaderImageStorage storage) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -120,6 +120,7 @@ public class Endpoint(ISqlSugarClient sql) : Endpoint<Request, Response>
                 StartTime = workshop.Activity.StartTime,
                 EndTime = workshop.Activity.EndTime,
                 Location = workshop.Activity.Location,
+                HeaderImageUrl = storage.ToUrl(workshop.Activity.HeaderImageKey),
                 HomepageUri = workshop.HomepageUri,
                 ShortCode = workshop.ShortCode,
                 MaxParticipants = workshop.MaxParticipants,

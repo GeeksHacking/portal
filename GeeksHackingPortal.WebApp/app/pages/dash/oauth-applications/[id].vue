@@ -25,19 +25,6 @@ const LIMIT = 100
 
 useHead(() => ({ title: `Sign-in history · ${app.value?.displayName ?? 'OAuth app'}` }))
 
-/** OpenIddict stores scopes as a JSON array ('["openid","email"]'); fall back to spaces. */
-function scopesOf(value: string | null | undefined) {
-  if (!value)
-    return []
-  try {
-    const parsed = JSON.parse(value)
-    if (Array.isArray(parsed))
-      return parsed.map(String)
-  }
-  catch {}
-  return value.split(/[\s,]+/).filter(Boolean)
-}
-
 const people = computed(() => new Set(items.value.map(i => i.subject)).size)
 const search = ref('')
 const shown = computed(() => {
@@ -171,11 +158,11 @@ const when = (value: string | null | undefined) => (value ? formatOrganizerDateT
                     </td>
                     <td>
                       <ul
-                        v-if="scopesOf(item.scopes).length"
+                        v-if="oauthScopesOf(item.scopes).length"
                         class="oh-scopes"
                       >
                         <li
-                          v-for="scope in scopesOf(item.scopes)"
+                          v-for="scope in oauthScopesOf(item.scopes)"
                           :key="scope"
                         >
                           <code>{{ scope }}</code>

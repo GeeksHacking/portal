@@ -75,9 +75,12 @@
   --gh-focus: #1c1b1b;
   --gh-shadow-color: #29282a;
 
+  /* charts: one ink ramp, dark→light (validated as an ordered ramp: each step >= 0.06 lightness
+     apart, lightest >= 2:1 on the card). Status bars use --gh-ok / --gh-accent / --gh-err beside
+     these greys; neighbours stay apart under colour-blindness (worst dE 16.4). */
   --gh-viz-1: #1c1b1b;
   --gh-viz-2: #6f6e70;
-  --gh-viz-3: #bdbcbd;
+  --gh-viz-3: #a09fa0;
   --gh-viz-edge: #1c1b1b;
   --gh-viz-track: #cfcfcf;
 

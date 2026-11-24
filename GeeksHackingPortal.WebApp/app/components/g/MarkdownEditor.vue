@@ -10,9 +10,9 @@ import { EditorContent, useEditor } from '@tiptap/vue-3'
  *
  * - `v-model` is a Markdown string; '' when empty. Loading a value doesn't emit, so a form
  *   only turns dirty when someone edits.
- * - Toolbar: bold, italic, heading, small heading, bullet and numbered lists, quote, link,
- *   inline code, undo/redo. One tab stop; arrow keys move along it (WAI-ARIA toolbar).
- *   Ctrl/⌘+B, I, K (link), Z, Shift+Z work in the text.
+ * - Toolbar: bold, italic, strikethrough, heading, small heading, bullet and numbered lists,
+ *   quote, divider (horizontal rule), link, inline code, undo/redo. One tab stop; arrow keys
+ *   move along it (WAI-ARIA toolbar). Ctrl/⌘+B, I, Shift+S, K (link), Z, Shift+Z work in the text.
  * - "Markdown" shows the raw Markdown in a textarea for people who prefer typing it.
  * - Only http(s) and mailto links. Pasted HTML is reduced to what the toolbar can make.
  * - Inside <GFormField> it is named by the field's label and picks up its description,
@@ -138,11 +138,13 @@ interface Tool {
 const tools: Tool[] = [
   { key: 'bold', label: 'Bold', icon: 'material-symbols:format-bold-rounded', shortcut: `${mod}B`, isActive: e => e.isActive('bold'), run: c => c.toggleBold() },
   { key: 'italic', label: 'Italic', icon: 'material-symbols:format-italic-rounded', shortcut: `${mod}I`, isActive: e => e.isActive('italic'), run: c => c.toggleItalic() },
+  { key: 'strike', label: 'Strikethrough', icon: 'material-symbols:format-strikethrough-rounded', shortcut: isMac ? '⇧⌘S' : 'Ctrl+Shift+S', isActive: e => e.isActive('strike'), run: c => c.toggleStrike() },
   { key: 'h2', label: 'Heading', icon: 'material-symbols:format-h2-rounded', group: true, isActive: e => e.isActive('heading', { level: 2 }), run: c => c.toggleHeading({ level: 2 }) },
   { key: 'h3', label: 'Small heading', icon: 'material-symbols:format-h3-rounded', isActive: e => e.isActive('heading', { level: 3 }), run: c => c.toggleHeading({ level: 3 }) },
   { key: 'ul', label: 'Bullet list', icon: 'material-symbols:format-list-bulleted-rounded', group: true, isActive: e => e.isActive('bulletList'), run: c => c.toggleBulletList() },
   { key: 'ol', label: 'Numbered list', icon: 'material-symbols:format-list-numbered-rounded', isActive: e => e.isActive('orderedList'), run: c => c.toggleOrderedList() },
   { key: 'quote', label: 'Quote', icon: 'material-symbols:format-quote-rounded', isActive: e => e.isActive('blockquote'), run: c => c.toggleBlockquote() },
+  { key: 'hr', label: 'Divider', icon: 'material-symbols:horizontal-rule-rounded', can: e => e.can().setHorizontalRule(), run: c => c.setHorizontalRule() },
   { key: 'link', label: 'Link', icon: 'material-symbols:link-rounded', shortcut: `${mod}K`, group: true, link: true, isActive: e => e.isActive('link'), run: c => c },
   { key: 'code', label: 'Code', icon: 'material-symbols:code-rounded', shortcut: `${mod}E`, isActive: e => e.isActive('code'), run: c => c.toggleCode() },
   { key: 'undo', label: 'Undo', icon: 'material-symbols:undo-rounded', shortcut: `${mod}Z`, group: true, can: e => e.can().undo(), run: c => c.undo() },

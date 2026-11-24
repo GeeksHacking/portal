@@ -2,6 +2,7 @@
 import type { DateValue } from '@internationalized/date'
 import { CalendarDateTime, getLocalTimeZone, parseDateTime, today } from '@internationalized/date'
 import {
+  DatePickerAnchor,
   DatePickerCalendar,
   DatePickerCell,
   DatePickerCellTrigger,
@@ -117,16 +118,63 @@ const minuteItems = computed(() => {
 
 const minValue = computed(() => toDate(props.min))
 const maxValue = computed(() => toDate(props.max))
-// where the calendar opens when empty: today, at 09:00
-const placeholder = ref<DateValue>(new CalendarDateTime(today(getLocalTimeZone()).year, today(getLocalTimeZone()).month, today(getLocalTimeZone()).day, 9, 0))
+// the month the calendar shows: set each time it opens (see openingMonth)
+function todayAtNine() {
+  const t = today(getLocalTimeZone())
+  return new CalendarDateTime(t.year, t.month, t.day, 9, 0)
+}
+const placeholder = ref<DateValue>(todayAtNine())
+/** Open on the chosen date's month; when empty, on the earliest allowed date if that's later
+ * than today (an end time opens on its start's month), else today. */
+function openingMonth(): DateValue {
+  if (value.value)
+    return value.value
+  const now = todayAtNine()
+  return minValue.value && minValue.value.compare(now) > 0 ? minValue.value : now
+}
 
 const open = ref(false)
 const root = ref<HTMLElement | null>(null)
 const { theme, sync } = useGPortalTheme(root)
 watch(open, (isOpen) => {
-  if (isOpen)
+  if (isOpen) {
+    placeholder.value = openingMonth()
     sync()
+    makeRoomBelow()
+  }
 })
+
+/**
+ * The calendar opens centred under the field, and flips above it when there isn't room below.
+ * To keep it below where possible, scroll the form up just enough before it opens (never so far
+ * that the field itself leaves the top). Near the end of a page that can't scroll further it
+ * still flips, which keeps it on screen. Runs before the calendar is placed, so it doesn't jump.
+ */
+const CALENDAR_ROOM = 440 // calendar ≈ 410px tall + offset + edge padding
+function scrollParentOf(el: HTMLElement): HTMLElement | null {
+  for (let node = el.parentElement; node; node = node.parentElement) {
+    const { overflowY } = getComputedStyle(node)
+    if ((overflowY === 'auto' || overflowY === 'scroll') && node.scrollHeight > node.clientHeight)
+      return node
+  }
+  return null
+}
+function makeRoomBelow() {
+  const el = root.value
+  if (!el || typeof window === 'undefined')
+    return
+  const scroller = scrollParentOf(el)
+  const area = scroller?.getBoundingClientRect()
+  const rect = el.getBoundingClientRect()
+  const bottomEdge = Math.min(window.innerHeight, area?.bottom ?? window.innerHeight)
+  const topEdge = Math.max(0, area?.top ?? 0)
+  const lack = CALENDAR_ROOM - (bottomEdge - rect.bottom)
+  if (lack <= 0)
+    return
+  const by = Math.min(lack, rect.top - topEdge - 8)
+  if (by > 0)
+    (scroller ?? document.scrollingElement)?.scrollBy({ top: by })
+}
 
 const wrapperAttrs = computed(() => ({ class: attrs.class, style: attrs.style }))
 const fieldAttrs = computed(() => {
@@ -155,54 +203,58 @@ const fieldAttrs = computed(() => {
       :close-on-select="false"
       fixed-weeks
     >
-      <DatePickerField
-        v-slot="{ segments }"
-        class="g-dtp__field"
-        :class="{ 'g-dtp__field--invalid': invalid, 'g-dtp__field--disabled': disabled }"
-        role="group"
-        :aria-labelledby="groupLabelledBy"
-        :aria-invalid="invalid || undefined"
-        :aria-describedby="describedBy"
-        v-bind="fieldAttrs"
-      >
-        <div class="g-dtp__segments">
-          <template
-            v-for="item in segments"
-            :key="item.part"
-          >
-            <DatePickerInput
-              v-if="item.part === 'literal'"
-              :part="item.part"
-              class="g-dtp__literal"
-            >
-              {{ item.value }}
-            </DatePickerInput>
-            <DatePickerInput
-              v-else
-              :part="item.part"
-              class="g-dtp__segment"
-              :class="{ 'g-dtp__segment--empty': !value }"
-            >
-              {{ item.value }}
-            </DatePickerInput>
-          </template>
-        </div>
-        <DatePickerTrigger
-          class="g-dtp__trigger"
-          aria-label="Choose date and time"
+      <!-- the calendar opens centred under the whole field, not beside the small calendar button -->
+      <DatePickerAnchor class="g-dtp__anchor">
+        <DatePickerField
+          v-slot="{ segments }"
+          class="g-dtp__field"
+          :class="{ 'g-dtp__field--invalid': invalid, 'g-dtp__field--disabled': disabled }"
+          role="group"
+          :aria-labelledby="groupLabelledBy"
+          :aria-invalid="invalid || undefined"
+          :aria-describedby="describedBy"
+          v-bind="fieldAttrs"
         >
-          <Icon
-            name="material-symbols:calendar-month-rounded"
-            aria-hidden="true"
-          />
-        </DatePickerTrigger>
-      </DatePickerField>
+          <div class="g-dtp__segments">
+            <template
+              v-for="item in segments"
+              :key="item.part"
+            >
+              <DatePickerInput
+                v-if="item.part === 'literal'"
+                :part="item.part"
+                class="g-dtp__literal"
+              >
+                {{ item.value }}
+              </DatePickerInput>
+              <DatePickerInput
+                v-else
+                :part="item.part"
+                class="g-dtp__segment"
+                :class="{ 'g-dtp__segment--empty': !value }"
+              >
+                {{ item.value }}
+              </DatePickerInput>
+            </template>
+          </div>
+          <DatePickerTrigger
+            class="g-dtp__trigger"
+            aria-label="Choose date and time"
+          >
+            <Icon
+              name="material-symbols:calendar-month-rounded"
+              aria-hidden="true"
+            />
+          </DatePickerTrigger>
+        </DatePickerField>
+      </DatePickerAnchor>
 
       <DatePickerContent
         class="g-dtp__content"
         :data-gh-theme="theme"
+        side="bottom"
         :side-offset="6"
-        align="start"
+        align="center"
         :collision-padding="12"
       >
         <DatePickerCalendar
@@ -325,6 +377,11 @@ const fieldAttrs = computed(() => {
 <!-- not scoped: the pop-up is teleported to <body> -->
 <style>
 .g-dtp {
+  width: 100%;
+}
+/* the calendar's anchor: the whole field */
+.g-dtp__anchor {
+  display: block;
   width: 100%;
 }
 

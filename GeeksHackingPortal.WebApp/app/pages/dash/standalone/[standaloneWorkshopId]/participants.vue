@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import type {
   GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem,
-  GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse,
-  GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetRegistrationSubmissionItem,
 } from '@geekshacking/portal-sdk'
+import type { GTabItem } from '~/components/g/Tabs.vue'
 import {
   geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpointQueryKey,
   geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListEndpointQueryKey,
@@ -13,25 +12,30 @@ import {
   useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsWithdrawEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
-import { HACKATHON_TIME_ZONE } from '~/utils/hackathon-date-time'
+import { formatOrganizerDateTime, waitedFor } from '~/utils/participant-review'
 
+/**
+ * Workshop participants: everyone who registered, with search and Registered / Withdrawn
+ * filters. Pick someone to see their answers and check-ins, and withdraw them if needed.
+ */
 type ParticipantItem = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListParticipantItem
-type ParticipantDetail = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetResponse
-type RegistrationSubmission = GeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetRegistrationSubmissionItem
 type FilterStatus = 'all' | 'active' | 'withdrawn'
 
 const route = useRoute()
-const toast = useToast()
+const toast = useGToast()
 const queryClient = useQueryClient()
 
 const standaloneWorkshopId = computed(() => (route.params.standaloneWorkshopId as string | undefined) ?? '')
 const searchQuery = ref('')
 const activeFilter = ref<FilterStatus>('all')
 const selectedUserId = ref<string | null>(null)
-const isDetailOpen = ref(false)
 
 const { data: eventsData } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint()
-const { data: participantsData, isLoading } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListEndpoint({ path: computed(() => ({ standaloneWorkshopId: standaloneWorkshopId.value })) })
+const {
+  data: participantsData,
+  isLoading,
+  error: participantsError,
+} = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListEndpoint({ path: computed(() => ({ standaloneWorkshopId: standaloneWorkshopId.value })) })
 const withdrawMutation = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsWithdrawEndpoint()
 
 const event = computed(() => eventsData.value?.standaloneWorkshops?.find(item => item.id === standaloneWorkshopId.value))
@@ -42,134 +46,98 @@ const { data: participantDetail, isLoading: isLoadingDetail } = useGeeksHackingP
   { query: { enabled: computed(() => !!standaloneWorkshopId.value && !!selectedUserId.value) } },
 )
 
-const filteredParticipants = computed(() => {
-  const query = searchQuery.value.trim().toLowerCase()
-
-  return participants.value
-    .filter((participant) => {
-      if (activeFilter.value === 'active')
-        return !participant.withdrawnAt
-      if (activeFilter.value === 'withdrawn')
-        return !!participant.withdrawnAt
-      return true
-    })
-    .filter((participant) => {
-      if (!query)
-        return true
-
-      const haystack = [
-        participant.name,
-        participant.email,
-        participant.status,
-        participant.userId,
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase()
-
-      if (haystack.includes(query))
-        return true
-
-      return (participant.registrationSubmissions ?? []).some(submission =>
-        [submission.questionText, submission.value, submission.followUpValue]
-          .filter(Boolean)
-          .join(' ')
-          .toLowerCase()
-          .includes(query),
-      )
-    })
-    .sort((a, b) => {
-      const aTime = a.registeredAt ? new Date(a.registeredAt).getTime() : 0
-      const bTime = b.registeredAt ? new Date(b.registeredAt).getTime() : 0
-      return bTime - aTime
-    })
-})
-
-const stats = computed(() => ({
-  total: participants.value.length,
-  active: participants.value.filter(participant => !participant.withdrawnAt).length,
-  withdrawn: participants.value.filter(participant => !!participant.withdrawnAt).length,
-  withResponses: participants.value.filter(participant => (participant.registrationSubmissions?.length ?? 0) > 0).length,
+const counts = computed(() => ({
+  all: participants.value.length,
+  active: participants.value.filter(p => !p.withdrawnAt).length,
+  withdrawn: participants.value.filter(p => !!p.withdrawnAt).length,
+  answered: participants.value.filter(p => (p.registrationSubmissions?.length ?? 0) > 0).length,
 }))
 
-const detailSubmissions = computed<RegistrationSubmission[]>(() => participantDetail.value?.registrationSubmissions ?? [])
-const selectedParticipant = computed<ParticipantDetail | null>(() => participantDetail.value ?? null)
+const filterTabs = computed<GTabItem[]>(() => [
+  { value: 'all', label: `All · ${counts.value.all}` },
+  { value: 'active', label: `Registered · ${counts.value.active}` },
+  { value: 'withdrawn', label: `Withdrawn · ${counts.value.withdrawn}` },
+])
+const filterModel = computed({
+  get: () => activeFilter.value,
+  set: (value: string) => { activeFilter.value = value as FilterStatus },
+})
 
-function formatDateTime(value: string | null | undefined) {
-  if (!value)
-    return '—'
-
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime()))
-    return '—'
-
-  return new Intl.DateTimeFormat(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone: HACKATHON_TIME_ZONE,
-  }).format(date)
-}
-
-function getSubmissionValue(submission: RegistrationSubmission) {
-  const value = submission.value?.trim()
-  const followUpValue = submission.followUpValue?.trim()
-
-  if (value && followUpValue)
-    return `${value}\nFollow-up: ${followUpValue}`
-  if (followUpValue)
-    return `Follow-up: ${followUpValue}`
-  return value || '—'
-}
-
-function openParticipant(userId: string | undefined) {
-  if (!userId)
-    return
-
-  selectedUserId.value = userId
-  isDetailOpen.value = true
-}
-
-function closeParticipant() {
-  isDetailOpen.value = false
-  selectedUserId.value = null
-}
-
-async function invalidateParticipants() {
-  await queryClient.invalidateQueries({
-    queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListEndpointQueryKey({ path: { standaloneWorkshopId: standaloneWorkshopId.value } }),
-  })
-
-  if (selectedUserId.value) {
-    await queryClient.invalidateQueries({
-      queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpointQueryKey({ path: { standaloneWorkshopId: standaloneWorkshopId.value, userId: selectedUserId.value } }),
+const visibleParticipants = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase()
+  return participants.value
+    .filter((p) => {
+      if (activeFilter.value === 'active')
+        return !p.withdrawnAt
+      if (activeFilter.value === 'withdrawn')
+        return !!p.withdrawnAt
+      return true
     })
-  }
+    .filter((p) => {
+      if (!query)
+        return true
+      if ([p.name, p.email, p.status, p.userId].filter(Boolean).join(' ').toLowerCase().includes(query))
+        return true
+      return (p.registrationSubmissions ?? []).some(s =>
+        [s.questionText, s.value, s.followUpValue].filter(Boolean).join(' ').toLowerCase().includes(query))
+    })
+    .sort((a, b) => new Date(b.registeredAt ?? 0).getTime() - new Date(a.registeredAt ?? 0).getTime())
+})
+
+function displayName(p: { name?: string, email?: string, userId?: string } | null | undefined) {
+  return p?.name || p?.email || 'Participant'
 }
 
-async function withdrawParticipant(participant: ParticipantItem) {
-  if (!standaloneWorkshopId.value || !participant.userId || participant.withdrawnAt)
-    return
+// ---- selection ----
+const detailOpen = computed({
+  get: () => !!selectedUserId.value,
+  set: (value) => {
+    if (!value)
+      selectedUserId.value = null
+  },
+})
+// list data first (instant), the detail call adds the check-ins
+const selected = computed(() => participants.value.find(p => p.userId === selectedUserId.value) ?? null)
+const selectedName = computed(() => displayName(participantDetail.value ?? selected.value))
+const selectedAnswers = computed(() => participantDetail.value?.registrationSubmissions ?? selected.value?.registrationSubmissions ?? [])
+const checkIns = computed(() => [...(participantDetail.value?.venueCheckIns ?? [])].sort((a, b) =>
+  new Date(b.checkInTime ?? 0).getTime() - new Date(a.checkInTime ?? 0).getTime()))
 
-  if (!confirm(`Withdraw ${participant.name ?? participant.email ?? 'this participant'} from the workshop?`))
-    return
+const confirmingWithdraw = ref(false)
+const withdrawError = ref('')
 
+watch(selectedUserId, () => {
+  confirmingWithdraw.value = false
+  withdrawError.value = ''
+})
+
+function select(userId: string | undefined) {
+  if (userId)
+    selectedUserId.value = userId
+}
+
+async function withdraw() {
+  const participant = selected.value
+  if (!standaloneWorkshopId.value || !participant?.userId || participant.withdrawnAt)
+    return
+  withdrawError.value = ''
   try {
     await withdrawMutation.mutateAsync({
       path: { standaloneWorkshopId: standaloneWorkshopId.value, userId: participant.userId },
     })
-    await invalidateParticipants()
-    toast.add({
-      title: 'Participant withdrawn',
-      color: 'success',
-    })
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsListEndpointQueryKey({ path: { standaloneWorkshopId: standaloneWorkshopId.value } }),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsParticipantsGetEndpointQueryKey({ path: { standaloneWorkshopId: standaloneWorkshopId.value, userId: participant.userId } }),
+      }),
+    ])
+    confirmingWithdraw.value = false
+    toast.add({ tone: 'ok', title: `Withdrew ${displayName(participant)}` })
   }
   catch (error) {
-    console.error('Failed to withdraw participant', error)
-    toast.add({
-      title: 'Failed to withdraw participant',
-      description: 'Please try again.',
-      color: 'error',
-    })
+    withdrawError.value = getApiErrorMessage(error, 'They weren\'t withdrawn. Try again.')
   }
 }
 </script>
@@ -181,320 +149,467 @@ async function withdrawParticipant(participant: ParticipantItem) {
     </template>
 
     <template #body>
-      <div class="space-y-4">
-        <UCard>
-          <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-            <div class="space-y-1">
-              <h2 class="text-lg font-semibold">
-                {{ event?.title ?? 'Standalone Workshop' }}
-              </h2>
-              <p class="text-sm text-(--ui-text-muted)">
-                Review registrations and manage workshop attendees.
-              </p>
-            </div>
-            <UBadge
-              :color="event?.isPublished ? 'success' : 'neutral'"
-              variant="subtle"
+      <div class="wp">
+        <div class="wp-head">
+          <div class="wp-head__text">
+            <GLabelStrip
+              label="Workshop"
+              size="sm"
+            />
+            <p class="wp-head__title">
+              {{ event?.title ?? 'Workshop' }}
+            </p>
+            <p
+              v-if="participants.length"
+              class="wp-muted"
             >
-              {{ event?.isPublished ? 'Published' : 'Draft' }}
-            </UBadge>
+              {{ counts.active }} registered · {{ counts.withdrawn }} withdrawn · {{ counts.answered }} answered the questions
+            </p>
           </div>
-        </UCard>
-
-        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <UCard>
-            <p class="text-sm text-(--ui-text-muted)">
-              Total
-            </p>
-            <p class="mt-1 text-2xl font-semibold">
-              {{ stats.total }}
-            </p>
-          </UCard>
-          <UCard>
-            <p class="text-sm text-(--ui-text-muted)">
-              Active
-            </p>
-            <p class="mt-1 text-2xl font-semibold">
-              {{ stats.active }}
-            </p>
-          </UCard>
-          <UCard>
-            <p class="text-sm text-(--ui-text-muted)">
-              Withdrawn
-            </p>
-            <p class="mt-1 text-2xl font-semibold">
-              {{ stats.withdrawn }}
-            </p>
-          </UCard>
-          <UCard>
-            <p class="text-sm text-(--ui-text-muted)">
-              With Responses
-            </p>
-            <p class="mt-1 text-2xl font-semibold">
-              {{ stats.withResponses }}
-            </p>
-          </UCard>
+          <GBadge
+            v-if="event"
+            :tone="event.isPublished ? 'ok' : 'neutral'"
+            :icon="event.isPublished ? 'material-symbols:public' : 'material-symbols:draft-rounded'"
+            :label="event.isPublished ? 'Published' : 'Draft'"
+          />
         </div>
 
-        <UCard>
-          <template #header>
-            <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-              <div class="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
-                <UInput
-                  v-model="searchQuery"
-                  icon="i-lucide-search"
-                  placeholder="Search by name, email, status, or responses"
-                  class="w-full sm:max-w-md"
-                />
-                <div class="flex flex-wrap gap-2">
-                  <UButton
-                    size="xs"
-                    :variant="activeFilter === 'all' ? 'solid' : 'ghost'"
-                    @click="activeFilter = 'all'"
-                  >
-                    All ({{ stats.total }})
-                  </UButton>
-                  <UButton
-                    size="xs"
-                    :variant="activeFilter === 'active' ? 'solid' : 'ghost'"
-                    @click="activeFilter = 'active'"
-                  >
-                    Active ({{ stats.active }})
-                  </UButton>
-                  <UButton
-                    size="xs"
-                    :variant="activeFilter === 'withdrawn' ? 'solid' : 'ghost'"
-                    color="warning"
-                    @click="activeFilter = 'withdrawn'"
-                  >
-                    Withdrawn ({{ stats.withdrawn }})
-                  </UButton>
-                </div>
-              </div>
+        <GAlert
+          v-if="participantsError && !participants.length"
+          tone="err"
+          title="Couldn't load participants"
+          :description="getApiErrorMessage(participantsError, 'Refresh the page to try again.')"
+        />
+
+        <div class="wp-toolbar">
+          <GTabs
+            v-model="filterModel"
+            :items="filterTabs"
+            :content="false"
+            size="sm"
+            aria-label="Show participants"
+            class="wp-toolbar__filters"
+          />
+          <GInput
+            v-model="searchQuery"
+            type="search"
+            icon="material-symbols:search-rounded"
+            placeholder="Search names, emails, answers"
+            aria-label="Search participants"
+            class="wp-toolbar__search"
+          />
+        </div>
+
+        <OrganizersListDetail
+          v-model:open="detailOpen"
+          :label="`Participant: ${selectedName}`"
+        >
+          <template #list>
+            <div
+              v-if="isLoading"
+              class="wp-box wp-box--loading"
+              aria-busy="true"
+            >
+              <GSkeleton
+                v-for="i in 5"
+                :key="i"
+                class="wp-skeleton"
+              />
             </div>
+            <GEmptyState
+              v-else-if="!participants.length"
+              icon="material-symbols:group-off-rounded"
+              title="No one has registered yet"
+              :description="event?.isPublished ? 'People who register show up here.' : 'Publish the workshop so people can register.'"
+            />
+            <GEmptyState
+              v-else-if="!visibleParticipants.length"
+              icon="material-symbols:search-off-rounded"
+              title="No one matches"
+              description="Try another search or filter."
+            >
+              <template #actions>
+                <GButton
+                  variant="secondary"
+                  label="Show everyone"
+                  @click="searchQuery = ''; activeFilter = 'all'"
+                />
+              </template>
+            </GEmptyState>
+            <ul
+              v-else
+              class="wp-box wp-list"
+              :aria-label="`${visibleParticipants.length} participants`"
+            >
+              <li
+                v-for="(p, index) in visibleParticipants"
+                :key="p.userId ?? p.registrationId ?? index"
+              >
+                <button
+                  type="button"
+                  class="wp-row"
+                  :class="{ 'is-selected': p.userId === selectedUserId }"
+                  :aria-current="p.userId === selectedUserId ? 'true' : undefined"
+                  @click="select(p.userId)"
+                >
+                  <span class="wp-row__main">
+                    <span class="wp-row__name">{{ displayName(p) }}</span>
+                    <span class="wp-row__meta">
+                      <template v-if="p.name && p.email">{{ p.email }} · </template>registered {{ waitedFor(new Date(p.registeredAt ?? 0).getTime()) || '—' }}
+                    </span>
+                  </span>
+                  <GBadge
+                    v-if="p.withdrawnAt"
+                    size="sm"
+                    icon="material-symbols:person-off-rounded"
+                    label="Withdrawn"
+                  />
+                </button>
+              </li>
+            </ul>
           </template>
 
-          <div
-            v-if="isLoading"
-            class="text-sm text-(--ui-text-muted)"
-          >
-            Loading participants...
-          </div>
-
-          <div
-            v-else-if="!participants.length"
-            class="text-sm text-(--ui-text-muted)"
-          >
-            No participants yet.
-          </div>
-
-          <div
-            v-else-if="!filteredParticipants.length"
-            class="text-sm text-(--ui-text-muted)"
-          >
-            No participants match the current filters.
-          </div>
-
-          <div
-            v-else
-            class="divide-y divide-(--ui-border)"
-          >
-            <div
-              v-for="participant in filteredParticipants"
-              :key="participant.userId ?? participant.registrationId ?? participant.email ?? ''"
-              class="flex flex-col gap-3 py-4 lg:flex-row lg:items-center lg:justify-between"
+          <template #detail="{ close }">
+            <OrganizersDetailPane
+              v-if="selected"
+              :title="selectedName"
+              close-label="Close participant"
+              @close="close"
             >
-              <div class="min-w-0 flex-1">
-                <button
-                  class="text-left text-sm font-medium text-highlighted hover:underline"
-                  @click="openParticipant(participant.userId)"
-                >
-                  {{ participant.name ?? participant.email ?? participant.userId ?? 'Participant' }}
-                </button>
-                <div class="mt-1 flex flex-wrap gap-2">
-                  <UBadge
-                    variant="subtle"
-                    :color="participant.withdrawnAt ? 'warning' : 'success'"
-                    size="xs"
-                  >
-                    {{ participant.withdrawnAt ? 'Withdrawn' : (participant.status ?? 'Registered') }}
-                  </UBadge>
-                  <UBadge
-                    v-if="participant.email"
-                    variant="outline"
-                    size="xs"
-                  >
-                    {{ participant.email }}
-                  </UBadge>
-                  <UBadge
-                    variant="outline"
-                    size="xs"
-                  >
-                    Registered {{ formatDateTime(participant.registeredAt) }}
-                  </UBadge>
-                  <UBadge
-                    v-if="participant.registrationSubmissions?.length"
-                    variant="outline"
-                    size="xs"
-                  >
-                    {{ participant.registrationSubmissions.length }} responses
-                  </UBadge>
+              <template #meta>
+                <GBadge
+                  v-if="selected.withdrawnAt"
+                  icon="material-symbols:person-off-rounded"
+                  label="Withdrawn"
+                />
+                <GBadge
+                  v-else
+                  tone="ok"
+                  icon="material-symbols:how-to-reg-rounded"
+                  :label="selected.status || 'Registered'"
+                />
+              </template>
+
+              <dl class="wp-facts">
+                <div>
+                  <dt>Email</dt>
+                  <dd>
+                    <a
+                      v-if="selected.email"
+                      :href="`mailto:${selected.email}`"
+                      class="wp-link"
+                    >{{ selected.email }}</a>
+                    <template v-else>
+                      —
+                    </template>
+                  </dd>
                 </div>
-              </div>
+                <div>
+                  <dt>Registered</dt>
+                  <dd>{{ formatOrganizerDateTime(selected.registeredAt) }}</dd>
+                </div>
+                <div v-if="selected.withdrawnAt">
+                  <dt>Withdrew</dt>
+                  <dd>{{ formatOrganizerDateTime(selected.withdrawnAt) }}</dd>
+                </div>
+              </dl>
 
-              <div class="flex gap-2">
-                <UButton
-                  size="xs"
-                  variant="ghost"
-                  icon="i-lucide-eye"
-                  @click="openParticipant(participant.userId)"
+              <section
+                class="wp-section"
+                aria-labelledby="wp-answers"
+              >
+                <h3
+                  id="wp-answers"
+                  class="wp-section__title"
                 >
-                  View
-                </UButton>
-                <UButton
-                  v-if="!participant.withdrawnAt"
-                  size="xs"
-                  color="warning"
-                  variant="ghost"
-                  icon="i-lucide-user-x"
-                  :loading="withdrawMutation.isPending.value"
-                  @click="withdrawParticipant(participant)"
-                >
-                  Withdraw
-                </UButton>
-              </div>
-            </div>
-          </div>
-        </UCard>
+                  Answers
+                </h3>
+                <OrganizersAnswerList
+                  :answers="selectedAnswers"
+                  empty-text="No answers. The workshop may not ask any questions."
+                />
+              </section>
 
-        <UModal
-          v-model:open="isDetailOpen"
-          :title="selectedParticipant?.name ?? selectedParticipant?.email ?? 'Participant details'"
-        >
-          <template #content>
-            <div class="overflow-auto max-h-[80vh]">
-              <UCard>
-                <template #header>
-                  <div class="flex items-center justify-between gap-3">
-                    <div>
-                      <h3 class="text-base font-semibold">
-                        {{ selectedParticipant?.name ?? selectedParticipant?.email ?? 'Participant details' }}
-                      </h3>
-                      <p class="text-sm text-(--ui-text-muted)">
-                        {{ selectedParticipant?.userId ?? '' }}
-                      </p>
-                    </div>
-                    <UButton
+              <section
+                class="wp-section"
+                aria-labelledby="wp-checkins"
+              >
+                <h3
+                  id="wp-checkins"
+                  class="wp-section__title"
+                >
+                  Check-ins
+                </h3>
+                <GSkeleton
+                  v-if="isLoadingDetail"
+                  class="wp-skeleton"
+                />
+                <ol
+                  v-else-if="checkIns.length"
+                  class="wp-checkins"
+                >
+                  <li
+                    v-for="(checkIn, index) in checkIns"
+                    :key="checkIn.id ?? index"
+                  >
+                    <span>In {{ formatOrganizerDateTime(checkIn.checkInTime) }}</span>
+                    <span class="wp-muted">
+                      {{ checkIn.checkOutTime ? `Out ${formatOrganizerDateTime(checkIn.checkOutTime)}` : checkIn.isCheckedIn ? 'Still checked in' : 'No check-out recorded' }}
+                    </span>
+                  </li>
+                </ol>
+                <p
+                  v-else
+                  class="wp-muted"
+                >
+                  Not checked in yet.
+                </p>
+              </section>
+
+              <template
+                v-if="!selected.withdrawnAt"
+                #footer
+              >
+                <div
+                  v-if="!confirmingWithdraw"
+                  class="wp-footer"
+                >
+                  <GButton
+                    variant="danger"
+                    icon="material-symbols:person-remove-rounded"
+                    label="Withdraw from workshop"
+                    @click="confirmingWithdraw = true"
+                  />
+                </div>
+                <div
+                  v-else
+                  class="wp-confirm"
+                  role="group"
+                  aria-labelledby="wp-confirm-text"
+                >
+                  <p
+                    id="wp-confirm-text"
+                    class="wp-confirm__text"
+                  >
+                    Withdraw <strong>{{ selectedName }}</strong> from this workshop?
+                  </p>
+                  <GAlert
+                    v-if="withdrawError"
+                    tone="err"
+                    title="Not withdrawn"
+                    :description="withdrawError"
+                  />
+                  <div class="wp-footer">
+                    <GButton
                       variant="ghost"
-                      icon="i-lucide-x"
-                      size="xs"
-                      @click="closeParticipant"
+                      label="Keep them"
+                      :disabled="withdrawMutation.isPending.value"
+                      @click="confirmingWithdraw = false; withdrawError = ''"
+                    />
+                    <GButton
+                      variant="danger"
+                      :label="`Withdraw ${selectedName}`"
+                      :loading="withdrawMutation.isPending.value"
+                      loading-label="Withdrawing"
+                      @click="withdraw"
                     />
                   </div>
-                </template>
-
-                <div
-                  v-if="isLoadingDetail"
-                  class="text-sm text-(--ui-text-muted)"
-                >
-                  Loading participant details...
                 </div>
-
-                <div
-                  v-else-if="selectedParticipant"
-                  class="space-y-4"
-                >
-                  <div class="grid gap-4 sm:grid-cols-2">
-                    <UFormField label="Name">
-                      <UInput
-                        :model-value="selectedParticipant.name ?? '—'"
-                        disabled
-                      />
-                    </UFormField>
-                    <UFormField label="Email">
-                      <UInput
-                        :model-value="selectedParticipant.email ?? '—'"
-                        disabled
-                      />
-                    </UFormField>
-                    <UFormField label="Status">
-                      <UInput
-                        :model-value="selectedParticipant.withdrawnAt ? 'Withdrawn' : (selectedParticipant.status ?? 'Registered')"
-                        disabled
-                      />
-                    </UFormField>
-                    <UFormField label="Registered At">
-                      <UInput
-                        :model-value="formatDateTime(selectedParticipant.registeredAt)"
-                        disabled
-                      />
-                    </UFormField>
-                  </div>
-
-                  <div>
-                    <h4 class="mb-2 text-sm font-semibold">
-                      Registration Responses
-                    </h4>
-                    <div
-                      v-if="detailSubmissions.length"
-                      class="space-y-3"
-                    >
-                      <UFormField
-                        v-for="submission in detailSubmissions"
-                        :key="submission.questionId ?? submission.questionText ?? ''"
-                        :label="submission.questionText ?? 'Question'"
-                      >
-                        <UTextarea
-                          :model-value="getSubmissionValue(submission)"
-                          disabled
-                          autoresize
-                          :rows="2"
-                        />
-                      </UFormField>
-                    </div>
-                    <p
-                      v-else
-                      class="text-sm text-(--ui-text-muted)"
-                    >
-                      No registration responses found.
-                    </p>
-                  </div>
-
-                  <div>
-                    <h4 class="mb-2 text-sm font-semibold">
-                      Venue Check-ins
-                    </h4>
-                    <div
-                      v-if="selectedParticipant.venueCheckIns?.length"
-                      class="space-y-2"
-                    >
-                      <div
-                        v-for="checkIn in selectedParticipant.venueCheckIns"
-                        :key="checkIn.id ?? checkIn.checkInTime ?? ''"
-                        class="rounded-lg border border-default px-3 py-2 text-sm"
-                      >
-                        <div>{{ formatDateTime(checkIn.checkInTime) }}</div>
-                        <div
-                          v-if="checkIn.checkOutTime"
-                          class="text-xs text-(--ui-text-muted)"
-                        >
-                          Checked out {{ formatDateTime(checkIn.checkOutTime) }}
-                        </div>
-                      </div>
-                    </div>
-                    <p
-                      v-else
-                      class="text-sm text-(--ui-text-muted)"
-                    >
-                      No check-ins recorded.
-                    </p>
-                  </div>
-                </div>
-              </UCard>
-            </div>
+              </template>
+            </OrganizersDetailPane>
           </template>
-        </UModal>
+
+          <template #placeholder>
+            <GEmptyState
+              icon="material-symbols:person-rounded"
+              title="Pick a participant"
+              description="Their answers and check-ins show here."
+              :bordered="false"
+            />
+          </template>
+        </OrganizersListDetail>
       </div>
     </template>
   </GPanel>
 </template>
+
+<style scoped>
+.wp {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 88rem;
+  margin: 0 auto;
+}
+.wp-muted {
+  margin: 0;
+  color: var(--gh-text-muted);
+}
+.wp-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.wp-head__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+.wp-head__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.wp-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.wp-toolbar__filters { max-width: 100%; overflow-x: auto; }
+.wp-toolbar__search { flex: 1 1 18rem; }
+
+.wp-box {
+  border: var(--gh-border-width) solid var(--gh-line);
+  border-radius: var(--radius-gh-lg);
+  background: var(--gh-surface);
+}
+.wp-box--loading {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+.wp-skeleton {
+  display: block;
+  height: 48px;
+}
+.wp-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+}
+@media (min-width: 1024px) {
+  .wp-list {
+    max-height: calc(100dvh - 8.5rem);
+    overflow-y: auto;
+  }
+}
+.wp-list > li { border-top: var(--gh-border-width) solid var(--gh-line-soft); }
+.wp-list > li:first-child { border-top: 0; }
+.wp-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 68px;
+  padding: 10px 16px;
+  border: 0;
+  border-left: 4px solid transparent;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--gh-dur-fast) var(--ease-gh);
+}
+.wp-row:hover { background: var(--gh-ghost-hover); }
+.wp-row:focus-visible {
+  outline: 2px solid var(--gh-focus);
+  outline-offset: -2px;
+}
+.wp-row.is-selected {
+  border-left-color: var(--gh-highlight-edge);
+  background: var(--gh-highlight);
+  color: var(--gh-highlight-ink);
+}
+.wp-row.is-selected .wp-row__meta { color: inherit; }
+.wp-row__main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.wp-row__name { font-weight: 700; overflow-wrap: anywhere; }
+.wp-row__meta {
+  font-size: 14px;
+  color: var(--gh-text-muted);
+  overflow-wrap: anywhere;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wp-row { transition: none; }
+}
+
+.wp-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 12px 24px;
+  margin: 0;
+}
+.wp-facts dt {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gh-text-muted);
+}
+.wp-facts dd {
+  margin: 2px 0 0;
+  overflow-wrap: anywhere;
+}
+.wp-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.wp-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.wp-section__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+.wp-checkins {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.wp-checkins li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding-left: 12px;
+  border-left: 3px solid var(--gh-line-soft);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.wp-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.wp-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.wp-confirm__text { margin: 0; }
+</style>

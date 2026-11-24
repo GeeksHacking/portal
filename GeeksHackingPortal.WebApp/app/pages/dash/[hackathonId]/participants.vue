@@ -1,23 +1,39 @@
 <script setup lang="ts">
 import type {
-  GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusKey,
   GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem,
-  GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatusKey,
-  GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem,
   GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto,
 } from '@geekshacking/portal-sdk'
+import type { GTabItem } from '~/components/g/Tabs.vue'
+import type { GTableColumn } from '~/utils/g-table'
+import type { ReviewState } from '~/utils/participant-review'
 import {
-  geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointQueryKey,
   useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint,
   useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint,
-  useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
-import { useQueryClient } from '@tanstack/vue-query'
 import { useVirtualList } from '@vueuse/core'
-import { computed, ref } from 'vue'
 import { registrationPageConfig } from '~/config/registration-pages'
-import { HACKATHON_TIME_ZONE, HACKATHON_TIME_ZONE_LABEL } from '~/utils/hackathon-date-time'
+import {
+  applicationTimeOf,
+  formatOrganizerDateTime,
+  isReviewOverdue,
+  REVIEW_OVERDUE_DAYS,
+  reviewPriorityOf,
+  reviewStateBadge,
+  reviewStateOf,
+  waitedFor,
+} from '~/utils/participant-review'
+
+/**
+ * Hackathon participants: the organisers' review queue. Filter by state (with counts), search,
+ * sort; pick someone to read their answers and approve or reject them in the side panel (a
+ * dialog on narrow screens). The table view shows every answer in columns.
+ */
+type ParticipantItem = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem
+type RegistrationQuestion = GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto
+type FilterStatus = 'all' | ReviewState
+type SortKey = 'applicationTime' | 'name' | 'team' | 'status'
+type ViewMode = 'list' | 'table'
 
 const props = withDefaults(defineProps<{
   hackathonId?: string
@@ -27,1139 +43,631 @@ const props = withDefaults(defineProps<{
 const route = useRoute()
 const hackathonId = computed(() => props.hackathonId || (route.params.hackathonId as string | undefined) || '')
 
-const toast = useToast()
-const queryClient = useQueryClient()
+const toast = useGToast()
 
-const { data: participantsData, isLoading: isLoadingParticipants } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) })
-
-type ParticipantItem = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantItem
-type ParticipantConcludedStatus = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantConcludedStatusKey
-type ParticipantReviewStatus = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListParticipantReviewItemParticipantReviewStatusKey
-type RegistrationQuestion = GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListQuestionDto
-type RegistrationSubmission = GeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListRegistrationSubmissionItem
-
+const {
+  data: participantsData,
+  isLoading: isLoadingParticipants,
+  error: participantsError,
+} = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) })
 const participants = computed<ParticipantItem[]>(() => participantsData.value?.participants ?? [])
-const REVIEW_OVERDUE_DAYS = 5
-const REVIEW_OVERDUE_MS = REVIEW_OVERDUE_DAYS * 24 * 60 * 60 * 1000
 
-type ViewMode = 'list' | 'table'
-const viewMode = ref<ViewMode>('list')
-
-const viewOptions = [
-  { label: 'List', value: 'list', icon: 'i-lucide-list' },
-  { label: 'Table', value: 'table', icon: 'i-lucide-table' },
-] as const
-
+// ---- filters, search, sort ----
+const activeFilter = ref<FilterStatus>('all')
 const searchQuery = ref('')
-
-type SortKey = 'name' | 'team' | 'status' | 'applicationTime'
 const sortKey = ref<SortKey>('applicationTime')
 const sortDirection = ref<'asc' | 'desc'>('desc')
+const viewMode = ref<ViewMode>('list')
+
+const counts = computed(() => {
+  const result = { all: 0, pending: 0, approved: 0, rejected: 0, incomplete: 0 }
+  for (const participant of participants.value) {
+    const state = reviewStateOf(participant)
+    result[state]++
+    if (state !== 'incomplete')
+      result.all++
+  }
+  return result
+})
+
+const filterTabs = computed<GTabItem[]>(() => [
+  { value: 'all', label: `All submitted · ${counts.value.all}` },
+  { value: 'pending', label: `To review · ${counts.value.pending}` },
+  { value: 'approved', label: `Approved · ${counts.value.approved}` },
+  { value: 'rejected', label: `Rejected · ${counts.value.rejected}` },
+  { value: 'incomplete', label: `Incomplete · ${counts.value.incomplete}` },
+])
+const filterModel = computed({
+  get: () => activeFilter.value,
+  set: (value: string) => { activeFilter.value = value as FilterStatus },
+})
 
 const sortOptions = [
+  { label: 'Applied', value: 'applicationTime' },
   { label: 'Name', value: 'name' },
   { label: 'Team', value: 'team' },
   { label: 'Status', value: 'status' },
-  { label: 'Application Time', value: 'applicationTime' },
-] as const
-const tableVirtualizeOptions = { estimateSize: 65, overscan: 12 } as const
-
-// Filter state
-type FilterStatus = 'all' | 'incomplete' | 'pending' | 'approved' | 'rejected'
-const activeFilter = ref<FilterStatus>('all')
-
-function isIncomplete(p: ParticipantItem) {
-  return !p.registrationSubmissions?.length
-}
-
-function isPendingStatus(status: ParticipantConcludedStatus | null | undefined) {
-  return (
-    status === 'Pending'
-    || status === null
-    || status === undefined
-  )
-}
-
-function isPendingParticipant(participant: ParticipantItem) {
-  return !isIncomplete(participant) && isPendingStatus(participant.concludedStatus)
-}
-
-function getParticipantApplicationTimeEpoch(participant: ParticipantItem) {
-  const submissions = participant.registrationSubmissions ?? []
-  if (submissions.length === 0)
-    return 0
-  return submissions.reduce((max, s) => {
-    const updatedAt = s.updatedAt ? new Date(s.updatedAt) : null
-    const t = updatedAt && !Number.isNaN(updatedAt.getTime()) ? updatedAt.getTime() : 0
-    return t > max ? t : max
-  }, 0)
-}
-
-function getParticipantApplicationDate(participant: ParticipantItem): Date | null {
-  const submittedAtEpoch = getParticipantApplicationTimeEpoch(participant)
-  return submittedAtEpoch > 0 ? new Date(submittedAtEpoch) : null
-}
-
-function isReviewOverdue(participant: ParticipantItem) {
-  if (!isPendingParticipant(participant))
-    return false
-  const submittedAtEpoch = getParticipantApplicationTimeEpoch(participant)
-  if (!submittedAtEpoch)
-    return false
-  return Date.now() - submittedAtEpoch >= REVIEW_OVERDUE_MS
-}
-
-function getReviewPriorityBucket(participant: ParticipantItem) {
-  if (isReviewOverdue(participant))
-    return 0
-  if (isPendingParticipant(participant))
-    return 1
-  return 2
-}
-
-const statusFilteredParticipants = computed(() => {
-  const all = participants.value
-  const complete = all.filter(p => !isIncomplete(p))
-  switch (activeFilter.value) {
-    case 'incomplete':
-      return all.filter(p => isIncomplete(p))
-    case 'pending':
-      return complete.filter(p => isPendingStatus(p.concludedStatus))
-    case 'approved':
-      return complete.filter(
-        p =>
-          p.concludedStatus
-          === 'Accepted',
-      )
-    case 'rejected':
-      return complete.filter(
-        p =>
-          p.concludedStatus
-          === 'Rejected',
-      )
-    default:
-      return complete
-  }
+]
+const sortModel = computed({
+  get: () => sortKey.value,
+  set: (value) => { sortKey.value = value as SortKey },
 })
 
-const normalizedSearch = computed(() => searchQuery.value.trim().toLowerCase())
-
-const searchFilteredParticipants = computed(() => {
-  const query = normalizedSearch.value
-  if (!query)
-    return statusFilteredParticipants.value
-  return statusFilteredParticipants.value.filter(participant => matchesSearch(participant, query))
+const viewTabs: GTabItem[] = [
+  { value: 'list', label: 'Queue', icon: 'material-symbols:view-list-rounded' },
+  { value: 'table', label: 'Table', icon: 'material-symbols:table-rows-rounded' },
+]
+const viewModel = computed({
+  get: () => viewMode.value,
+  set: (value: string) => {
+    viewMode.value = value as ViewMode
+    // the table opens people in a dialog: don't pop one up just for switching views
+    selectedId.value = null
+  },
 })
 
-const sortedParticipants = computed(() => {
-  const direction = sortDirection.value === 'asc' ? 1 : -1
-  const sorted = [...searchFilteredParticipants.value]
-  sorted.sort((a, b) => {
-    const priorityComparison = getReviewPriorityBucket(a) - getReviewPriorityBucket(b)
-    if (priorityComparison !== 0) {
-      return priorityComparison
-    }
+function matchesFilter(participant: ParticipantItem, filter: FilterStatus) {
+  const state = reviewStateOf(participant)
+  return filter === 'all' ? state !== 'incomplete' : state === filter
+}
 
-    let result = 0
-    if (sortKey.value === 'team') {
-      result = compareStrings(a.teamName, b.teamName)
-    }
-    else if (sortKey.value === 'applicationTime') {
-      result = getParticipantApplicationTimeEpoch(a) - getParticipantApplicationTimeEpoch(b)
-    }
-    else if (sortKey.value === 'status') {
-      result = getStatusSortValue(a.concludedStatus) - getStatusSortValue(b.concludedStatus)
-    }
-    else {
-      result = compareStrings(a.name, b.name)
-    }
-
-    if (result === 0) {
-      result = compareStrings(a.name, b.name)
-    }
-
-    return result * direction
-  })
-  return sorted
-})
-
-const filterCounts = computed(() => {
-  const all = participants.value
-  const complete = all.filter(p => !isIncomplete(p))
-  return {
-    all: complete.length,
-    incomplete: all.filter(p => isIncomplete(p)).length,
-    pending: complete.filter(p => isPendingStatus(p.concludedStatus)).length,
-    approved: complete.filter(
-      p =>
-        p.concludedStatus
-        === 'Accepted',
-    ).length,
-    rejected: complete.filter(
-      p =>
-        p.concludedStatus
-        === 'Rejected',
-    ).length,
-  }
-})
-
-const emptyMessage = computed(() => {
-  if (searchQuery.value.trim()) {
-    return `No results for "${searchQuery.value.trim()}".`
-  }
-  if (activeFilter.value === 'all') {
-    return 'No participants found.'
-  }
-  return `No ${activeFilter.value} participants.`
-})
+function matchesSearch(participant: ParticipantItem, query: string) {
+  const id = (participant.id ?? '').toLowerCase()
+  const compactQuery = query.replace(/[^a-z0-9]/g, '')
+  if (id.includes(query) || (compactQuery && id.replace(/[^a-z0-9]/g, '').includes(compactQuery)))
+    return true
+  if ([participant.name, participant.teamName, participant.email].filter(Boolean).join(' ').toLowerCase().includes(query))
+    return true
+  return (participant.registrationSubmissions ?? []).some(submission =>
+    [submission.questionText, submission.value, submission.followUpValue].filter(Boolean).join(' ').toLowerCase().includes(query))
+}
 
 function compareStrings(a?: string | null, b?: string | null) {
   return (a ?? '').localeCompare(b ?? '', undefined, { sensitivity: 'base' })
 }
 
-function getStatusSortValue(status: ParticipantConcludedStatus | null | undefined) {
-  if (status === 'Accepted')
-    return 2
-  if (status === 'Rejected')
-    return 3
-  return 1
-}
+const statusOrder: Record<ReviewState, number> = { pending: 1, approved: 2, rejected: 3, incomplete: 4 }
 
-const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
-  dateStyle: 'medium',
-  timeStyle: 'short',
-  timeZone: HACKATHON_TIME_ZONE,
+const visibleParticipants = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase()
+  const direction = sortDirection.value === 'asc' ? 1 : -1
+  return participants.value
+    .filter(p => matchesFilter(p, activeFilter.value))
+    .filter(p => !query || matchesSearch(p, query))
+    .sort((a, b) => {
+      // overdue and waiting applications always come first
+      const priority = reviewPriorityOf(a) - reviewPriorityOf(b)
+      if (priority !== 0)
+        return priority
+      let result = 0
+      if (sortKey.value === 'team')
+        result = compareStrings(a.teamName, b.teamName)
+      else if (sortKey.value === 'applicationTime')
+        result = applicationTimeOf(a) - applicationTimeOf(b)
+      else if (sortKey.value === 'status')
+        result = statusOrder[reviewStateOf(a)] - statusOrder[reviewStateOf(b)]
+      else
+        result = compareStrings(a.name, b.name)
+      return (result || compareStrings(a.name, b.name)) * direction
+    })
 })
 
-function formatDateTime(value: Date | string | null | undefined) {
-  if (!value)
-    return '—'
-  const date = value instanceof Date ? value : new Date(value)
-  if (Number.isNaN(date.getTime()))
-    return '—'
-  return `${dateTimeFormatter.format(date)} ${HACKATHON_TIME_ZONE_LABEL}`
+const hasFilters = computed(() => !!searchQuery.value.trim() || activeFilter.value !== 'all')
+
+function clearFilters() {
+  searchQuery.value = ''
+  activeFilter.value = 'all'
 }
 
-function matchesSearch(participant: ParticipantItem, query: string) {
-  const participantId = (participant.id ?? '').toLowerCase()
-  const normalizedIdQuery = query.toLowerCase().replace(/[^a-z0-9]/g, '')
-  const normalizedParticipantId = participantId.replace(/[^a-z0-9]/g, '')
+// ---- the queue: oldest waiting first ----
+const pendingQueue = computed(() => participants.value
+  .filter(p => reviewStateOf(p) === 'pending')
+  .sort((a, b) => (reviewPriorityOf(a) - reviewPriorityOf(b)) || (applicationTimeOf(a) - applicationTimeOf(b))))
+const overdueCount = computed(() => pendingQueue.value.filter(p => isReviewOverdue(p)).length)
 
-  if (participantId.includes(query) || (normalizedIdQuery && normalizedParticipantId.includes(normalizedIdQuery)))
-    return true
+// ---- selection + detail ----
+const selectedId = ref<string | null>(null)
+const detailOpen = computed({
+  get: () => !!selectedId.value,
+  set: (value) => {
+    if (!value)
+      selectedId.value = null
+  },
+})
+const selected = computed(() => participants.value.find(p => p.id === selectedId.value) ?? null)
 
-  const base = [participant.name, participant.teamName]
-    .filter(Boolean)
-    .join(' ')
-    .toLowerCase()
+const { data: participantDetail, isLoading: isLoadingDetail } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint(
+  { path: computed(() => ({ hackathonId: hackathonId.value, userId: selectedId.value ?? '' })) },
+  { query: { enabled: computed(() => !!hackathonId.value && !!selectedId.value) } },
+)
 
-  if (base.includes(query))
-    return true
+const nextInQueue = computed(() => pendingQueue.value.find(p => p.id !== selectedId.value) ?? null)
 
-  for (const submission of participant.registrationSubmissions ?? []) {
-    const text = [submission.questionText, submission.value, submission.followUpValue]
-      .filter(Boolean)
-      .join(' ')
-      .toLowerCase()
-    if (text.includes(query))
-      return true
-  }
+const {
+  list: virtualRows,
+  containerProps,
+  wrapperProps,
+  scrollTo,
+} = useVirtualList(visibleParticipants, { itemHeight: 76, overscan: 8 })
 
-  return false
+function select(id: string | undefined) {
+  if (id)
+    selectedId.value = id
 }
 
-function formatSubmissionAnswer(submission: RegistrationSubmission) {
-  const value = (submission.value ?? '').toString().trim()
-  const followUp = (submission.followUpValue ?? '').toString().trim()
-
-  if (!value && !followUp)
-    return '—'
-  if (value && followUp)
-    return `${value}\nFollow-up: ${followUp}`
-  if (followUp)
-    return `Follow-up: ${followUp}`
-  return value
+function reviewNext() {
+  const next = nextInQueue.value
+  if (!next?.id)
+    return
+  // make sure they're in the list being shown
+  if (!matchesFilter(next, activeFilter.value))
+    activeFilter.value = 'pending'
+  if (searchQuery.value.trim() && !matchesSearch(next, searchQuery.value.trim().toLowerCase()))
+    searchQuery.value = ''
+  selectedId.value = next.id
+  nextTick(() => {
+    const index = visibleParticipants.value.findIndex(p => p.id === next.id)
+    if (index >= 0 && viewMode.value === 'list')
+      scrollTo(index)
+  })
 }
 
-// Expanded participant detail
-const expandedParticipantId = ref<string | null>(null)
+function onReviewed(decision: 'accept' | 'reject') {
+  const name = selected.value?.name || 'Participant'
+  const next = nextInQueue.value
+  toast.add({
+    tone: 'ok',
+    title: decision === 'accept' ? `Approved ${name}` : `Rejected ${name}`,
+    description: next ? `${pendingQueue.value.length} left to review.` : 'Nobody else is waiting for review.',
+    action: next ? { label: 'Review next', onClick: reviewNext } : undefined,
+  })
+}
 
-const { data: participantDetail, isLoading: isLoadingDetail } = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsGetEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value, userId: expandedParticipantId.value ?? '' })) })
-
-// Fetch registration questions for ordering
+// ---- answers in the form's question order ----
 const { data: questionsData } = useGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) })
 
 const orderedQuestions = computed<RegistrationQuestion[]>(() => {
   const categories = questionsData.value?.categories ?? []
   const ordered: RegistrationQuestion[] = []
   const seen = new Set<string>()
-  const categoryOrder = registrationPageConfig.flatMap(page => [...page.categories])
-
-  for (const categoryName of categoryOrder) {
-    const category = categories.find(c => c.name === categoryName)
-    for (const question of category?.questions ?? []) {
-      if (question.id && !seen.has(question.id)) {
-        ordered.push(question)
-        seen.add(question.id)
-      }
+  const add = (question: RegistrationQuestion) => {
+    if (question.id && !seen.has(question.id)) {
+      ordered.push(question)
+      seen.add(question.id)
     }
   }
-
-  for (const category of categories) {
-    for (const question of category.questions ?? []) {
-      if (question.id && !seen.has(question.id)) {
-        ordered.push(question)
-        seen.add(question.id)
-      }
-    }
-  }
-
+  for (const categoryName of registrationPageConfig.flatMap(page => [...page.categories]))
+    categories.find(c => c.name === categoryName)?.questions?.forEach(add)
+  for (const category of categories)
+    category.questions?.forEach(add)
   return ordered
 })
 
-// Build question ID -> order index map following registrationPageConfig category order
-const questionOrderMap = computed(() => {
-  const map = new Map<string, number>()
-  for (const [index, question] of orderedQuestions.value.entries()) {
-    if (question.id) {
-      map.set(question.id, index)
-    }
-  }
-  return map
+const questionOrder = computed(() => new Map(orderedQuestions.value.map((q, index) => [q.id ?? '', index])))
+
+const selectedAnswers = computed(() => {
+  const order = questionOrder.value
+  return [...(selected.value?.registrationSubmissions ?? [])].sort((a, b) =>
+    (order.get(a.questionId ?? '') ?? Number.MAX_SAFE_INTEGER) - (order.get(b.questionId ?? '') ?? Number.MAX_SAFE_INTEGER))
 })
 
-const participantAnswerMap = computed(() => {
-  const map = new Map<string, Record<string, string>>()
-  for (const participant of participants.value) {
-    if (!participant.id)
-      continue
-    const answers: Record<string, string> = {}
-    for (const submission of participant.registrationSubmissions ?? []) {
-      if (!submission.questionId)
-        continue
-      answers[submission.questionId] = formatSubmissionAnswer(submission)
-    }
-    map.set(participant.id, answers)
-  }
-  return map
-})
-
-function getParticipantAnswer(participantId: string, questionId: string) {
-  if (!participantId || !questionId)
-    return '—'
-  const answers = participantAnswerMap.value.get(participantId)
-  return answers?.[questionId] ?? '—'
+// ---- table view ----
+function answerText(value?: string | null, followUp?: string | null) {
+  const main = (value ?? '').trim()
+  const extra = (followUp ?? '').trim()
+  if (main && extra)
+    return `${main}\nFollow-up: ${extra}`
+  return main || (extra ? `Follow-up: ${extra}` : '')
 }
 
-const tableColumns = computed(() => {
-  const baseColumns = [
-    {
-      accessorKey: 'name',
-      header: 'Participant',
-      meta: {
-        class: {
-          th: 'min-w-[12rem]',
-          td: 'font-medium',
-        },
-      },
-    },
-    {
-      accessorKey: 'teamName',
-      header: 'Team',
-      meta: {
-        class: {
-          th: 'min-w-[10rem]',
-        },
-      },
-    },
-    {
-      id: 'status',
-      accessorKey: 'concludedStatus',
-      header: 'Status',
-      meta: {
-        class: {
-          th: 'w-[7rem]',
-        },
-      },
-    },
-    {
-      id: 'actions',
-      accessorKey: 'id',
-      header: 'Actions',
-      meta: {
-        class: {
-          th: 'w-[6rem]',
-        },
-      },
-    },
-  ]
+type TableRow = Record<string, string | number | boolean | undefined> & { id: string }
 
-  const questionColumns = orderedQuestions.value.map((question, index) => ({
-    id: question.id ? `question-${question.id}` : `question-${index}`,
+const tableRows = computed<TableRow[]>(() => visibleParticipants.value.map((p) => {
+  const row: TableRow = {
+    id: p.id ?? '',
+    name: p.name || 'Unnamed participant',
+    teamName: p.teamName || '—',
+    state: reviewStateOf(p),
+    overdue: isReviewOverdue(p),
+    applied: formatOrganizerDateTime(applicationTimeOf(p)),
+  }
+  for (const submission of p.registrationSubmissions ?? []) {
+    if (submission.questionId)
+      row[`q_${submission.questionId}`] = answerText(submission.value, submission.followUpValue)
+  }
+  return row
+}))
+
+const tableColumns = computed<GTableColumn<TableRow>[]>(() => [
+  { accessorKey: 'name', header: 'Participant', meta: { class: { th: 'min-w-[12rem]' } } },
+  { accessorKey: 'teamName', header: 'Team', meta: { class: { th: 'min-w-[10rem]' } } },
+  { id: 'status', accessorKey: 'state', header: 'Status', meta: { class: { th: 'w-[9rem]' } } },
+  { accessorKey: 'applied', header: 'Applied', meta: { class: { th: 'min-w-[11rem]', td: 'whitespace-nowrap' } } },
+  ...orderedQuestions.value.map(question => ({
+    id: `q_${question.id}`,
+    accessorKey: `q_${question.id}`,
     header: question.questionText ?? 'Question',
-    accessorFn: (row: ParticipantItem) => getParticipantAnswer(row.id ?? '', question.id ?? ''),
-    meta: {
-      class: {
-        th: 'min-w-[14rem] max-w-[22rem] text-xs whitespace-normal',
-        td: 'text-xs whitespace-pre-wrap align-top',
-      },
-    },
-  }))
-
-  return [...baseColumns, ...questionColumns]
-})
-
-const sortedSubmissions = computed(() => {
-  const submissions = participantDetail.value?.registrationSubmissions
-  if (!submissions)
-    return []
-  const order = questionOrderMap.value
-  return [...submissions].sort((a, b) => {
-    const orderA = order.get(a.questionId ?? '') ?? Number.MAX_SAFE_INTEGER
-    const orderB = order.get(b.questionId ?? '') ?? Number.MAX_SAFE_INTEGER
-    return orderA - orderB
-  })
-})
-
-function getParticipantListItemHeight(index: number) {
-  const participant = sortedParticipants.value[index]
-  if (!participant)
-    return 84
-  if (expandedParticipantId.value !== participant.id)
-    return 84
-
-  const reviewCount = participantDetail.value?.reviews?.length ?? 0
-  const submissionCount = sortedSubmissions.value.length
-  return Math.min(1400, 220 + reviewCount * 96 + submissionCount * 92)
-}
-
-const {
-  list: virtualParticipants,
-  containerProps: participantListContainerProps,
-  wrapperProps: participantListWrapperProps,
-} = useVirtualList(sortedParticipants, {
-  itemHeight: getParticipantListItemHeight,
-  overscan: 8,
-})
-
-function toggleParticipant(participantId: string) {
-  if (expandedParticipantId.value === participantId) {
-    expandedParticipantId.value = null
-  }
-  else {
-    expandedParticipantId.value = participantId
-  }
-}
-
-// Review mutation
-const reviewMutation = useGeeksHackingPortalApiEndpointsOrganizersHackathonParticipantsReviewEndpoint()
-
-// Modal state
-const isReviewModalOpen = ref(false)
-const reviewingParticipantId = ref<string | null>(null)
-const reviewReason = ref('')
-
-const pendingParticipants = computed(() => participants.value.filter(p => isPendingParticipant(p)))
-const prioritizedPendingParticipants = computed(() => {
-  return [...pendingParticipants.value].sort((a, b) => {
-    const priorityComparison = getReviewPriorityBucket(a) - getReviewPriorityBucket(b)
-    if (priorityComparison !== 0) {
-      return priorityComparison
-    }
-
-    // For review queue, older applications should be handled first.
-    return getParticipantApplicationTimeEpoch(a) - getParticipantApplicationTimeEpoch(b)
-  })
-})
-const overduePendingCount = computed(() => pendingParticipants.value.filter(p => isReviewOverdue(p)).length)
-
-const reviewingParticipant = computed(() => {
-  if (!reviewingParticipantId.value)
-    return null
-  return participants.value.find(p => p.id === reviewingParticipantId.value) ?? null
-})
-
-const reviewingParticipantName = computed(() => reviewingParticipant.value?.name ?? reviewingParticipant.value?.id ?? '')
-
-const reviewingParticipantSubmissions = computed(() => {
-  const submissions = reviewingParticipant.value?.registrationSubmissions ?? []
-  const order = questionOrderMap.value
-  return [...submissions].sort((a, b) => {
-    const orderA = order.get(a.questionId ?? '') ?? Number.MAX_SAFE_INTEGER
-    const orderB = order.get(b.questionId ?? '') ?? Number.MAX_SAFE_INTEGER
-    return orderA - orderB
-  })
-})
-
-const reviewingParticipantReviews = computed(() => {
-  return reviewingParticipant.value?.reviews ?? []
-})
-
-const isReReview = computed(() => {
-  return reviewingParticipantReviews.value.length > 0
-})
-
-const hasNoExpandedData = computed(() => {
-  return !participantDetail.value?.reviews?.length && !sortedSubmissions.value.length
-})
-
-const reviewModalTitle = computed(() => {
-  return isReReview.value ? 'Re-review Participant' : 'Review Participant'
-})
-
-const reviewModalDescription = computed(() => {
-  return isReReview.value
-    ? 'Add a new review for this participant. The latest review will be the final decision.'
-    : 'Review this participant\'s application and approve or reject it.'
-})
-
-function openReviewModal(participantId: string) {
-  if (!participantId)
-    return
-  reviewingParticipantId.value = participantId
-  reviewReason.value = ''
-  isReviewModalOpen.value = true
-}
-
-function openFirstPendingReviewModal() {
-  const firstPendingId = prioritizedPendingParticipants.value[0]?.id
-  if (!firstPendingId)
-    return
-  openReviewModal(firstPendingId)
-}
-
-function closeReviewModal() {
-  isReviewModalOpen.value = false
-  reviewingParticipantId.value = null
-  reviewReason.value = ''
-}
-
-async function handleReview(decision: 'accept' | 'reject') {
-  if (!reviewingParticipantId.value)
-    return
-
-  const trimmedReason = reviewReason.value?.trim() || null
-  if (decision === 'reject' && !trimmedReason) {
-    toast.add({
-      title: 'Reason required',
-      description: 'Please provide a reason before rejecting this participant.',
-      color: 'warning',
-    })
-    return
-  }
-
-  try {
-    await reviewMutation.mutateAsync({
-      path: { hackathonId: hackathonId.value, participantUserId: reviewingParticipantId.value },
-      body: {
-        decision,
-        reason: trimmedReason,
-      },
-    })
-    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointQueryKey({ path: { hackathonId: hackathonId.value } }) })
-    closeReviewModal()
-    toast.add({
-      title: 'Review submitted',
-      description: `Participant has been ${decision === 'accept' ? 'approved' : 'rejected'}.`,
-      color: 'success',
-    })
-  }
-  catch (error) {
-    const statusCode = getErrorStatusCode(error)
-    if (statusCode === 409) {
-      await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersHackathonParticipantsListEndpointQueryKey({ path: { hackathonId: hackathonId.value } }) })
-      closeReviewModal()
-      toast.add({
-        title: 'Already reviewed',
-        description: 'Another organizer already reviewed this participant. The list has been refreshed.',
-        color: 'warning',
-      })
-      return
-    }
-
-    toast.add({
-      title: 'Review failed',
-      description: 'Please try again.',
-      color: 'error',
-    })
-  }
-}
-
-function getErrorStatusCode(error: unknown): number | null {
-  if (!error || typeof error !== 'object')
-    return null
-  const unknownError = error as {
-    responseStatusCode?: unknown
-    statusCode?: unknown
-    response?: { status?: unknown }
-  }
-
-  if (typeof unknownError.responseStatusCode === 'number')
-    return unknownError.responseStatusCode
-  if (typeof unknownError.statusCode === 'number')
-    return unknownError.statusCode
-  if (typeof unknownError.response?.status === 'number')
-    return unknownError.response.status
-  return null
-}
-
-function getStatusColor(status: ParticipantConcludedStatus | null | undefined): 'success' | 'error' | 'warning' {
-  if (status === 'Accepted')
-    return 'success'
-  if (status === 'Rejected')
-    return 'error'
-  return 'warning'
-}
-
-function getStatusLabel(status: ParticipantConcludedStatus | null | undefined): string {
-  if (status === 'Accepted')
-    return 'Approved'
-  if (status === 'Rejected')
-    return 'Rejected'
-  return 'Pending'
-}
-
-function getReviewStatusLabel(status: ParticipantReviewStatus | null | undefined): string {
-  if (status === 'Accepted')
-    return 'Accepted'
-  if (status === 'Rejected')
-    return 'Rejected'
-  return 'Unknown'
-}
-
-function getReviewStatusColor(status: ParticipantReviewStatus | null | undefined): 'success' | 'error' | 'neutral' {
-  if (status === 'Accepted')
-    return 'success'
-  if (status === 'Rejected')
-    return 'error'
-  return 'neutral'
-}
+    meta: { class: { th: 'min-w-[14rem] max-w-[22rem] whitespace-normal', td: 'min-w-[14rem] max-w-[22rem] align-top whitespace-pre-line text-sm' } },
+  })),
+])
 </script>
 
 <template>
   <GPanel id="participants">
     <template #header>
-      <GPanelHeader title="Participants" />
+      <GPanelHeader title="Participants">
+        <template #right>
+          <GButton
+            variant="primary"
+            icon="material-symbols:fact-check-rounded"
+            :label="pendingQueue.length ? `Review next · ${pendingQueue.length}` : 'Nobody to review'"
+            :disabled="!nextInQueue"
+            @click="reviewNext"
+          />
+        </template>
+      </GPanelHeader>
     </template>
 
     <template #body>
-      <div class="space-y-3">
-        <UCard>
-          <template #header>
-            <div class="flex flex-col gap-3">
-              <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                <h3 class="text-sm font-semibold">
-                  Participants
-                </h3>
-                <div class="flex w-full flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center lg:w-auto">
-                  <UInput
-                    v-model="searchQuery"
-                    size="sm"
-                    icon="i-lucide-search"
-                    placeholder="Search participants, teams, IDs, or answers"
-                    class="w-full sm:w-60"
-                  />
-                  <USelect
-                    :model-value="sortKey"
-                    :items="sortOptions"
-                    size="sm"
-                    class="w-full sm:w-44"
-                    @update:model-value="sortKey = $event as SortKey"
-                  />
-                  <UButton
-                    size="sm"
-                    variant="ghost"
-                    :icon="sortDirection === 'asc' ? 'i-lucide-arrow-up' : 'i-lucide-arrow-down'"
-                    @click="sortDirection = sortDirection === 'asc' ? 'desc' : 'asc'"
-                  />
-                  <UTabs
-                    :items="viewOptions"
-                    :model-value="viewMode"
-                    size="sm"
-                    :content="false"
-                    @update:model-value="viewMode = $event as ViewMode"
-                  />
-                </div>
-              </div>
-              <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-                <div class="flex flex-wrap gap-1">
-                  <UButton
-                    size="xs"
-                    :variant="activeFilter === 'all' ? 'solid' : 'ghost'"
-                    :color="activeFilter === 'all' ? 'primary' : 'neutral'"
-                    @click="activeFilter = 'all'"
-                  >
-                    All ({{ filterCounts.all }})
-                  </UButton>
-                  <UButton
-                    size="xs"
-                    :variant="activeFilter === 'incomplete' ? 'solid' : 'ghost'"
-                    :color="activeFilter === 'incomplete' ? 'neutral' : 'neutral'"
-                    @click="activeFilter = 'incomplete'"
-                  >
-                    Incomplete ({{ filterCounts.incomplete }})
-                  </UButton>
-                  <UButton
-                    size="xs"
-                    :variant="activeFilter === 'pending' ? 'solid' : 'ghost'"
-                    :color="activeFilter === 'pending' ? 'warning' : 'neutral'"
-                    @click="activeFilter = 'pending'"
-                  >
-                    Pending ({{ filterCounts.pending }})
-                  </UButton>
-                  <UButton
-                    size="xs"
-                    :variant="activeFilter === 'approved' ? 'solid' : 'ghost'"
-                    :color="activeFilter === 'approved' ? 'success' : 'neutral'"
-                    @click="activeFilter = 'approved'"
-                  >
-                    Approved ({{ filterCounts.approved }})
-                  </UButton>
-                  <UButton
-                    size="xs"
-                    :variant="activeFilter === 'rejected' ? 'solid' : 'ghost'"
-                    :color="activeFilter === 'rejected' ? 'error' : 'neutral'"
-                    @click="activeFilter = 'rejected'"
-                  >
-                    Rejected ({{ filterCounts.rejected }})
-                  </UButton>
-                </div>
-                <UButton
-                  size="xs"
-                  icon="i-lucide-clipboard-check"
-                  :color="overduePendingCount > 0 ? 'error' : 'warning'"
-                  variant="soft"
-                  class="w-full justify-center sm:w-auto"
-                  :disabled="!pendingParticipants.length"
-                  @click="openFirstPendingReviewModal"
-                >
-                  Review Pending ({{ pendingParticipants.length }})
-                  <template v-if="overduePendingCount > 0">
-                    • Overdue {{ overduePendingCount }}
-                  </template>
-                </UButton>
-              </div>
+      <div class="pq">
+        <GAlert
+          v-if="participantsError && !participants.length"
+          tone="err"
+          title="Couldn't load participants"
+          :description="getApiErrorMessage(participantsError, 'Refresh the page to try again.')"
+        />
+
+        <GAlert
+          v-if="overdueCount"
+          tone="attention"
+          :title="overdueCount === 1 ? `1 application has waited ${REVIEW_OVERDUE_DAYS}+ days` : `${overdueCount} applications have waited ${REVIEW_OVERDUE_DAYS}+ days`"
+          description="They're at the top of the list. Review next starts with the oldest."
+        />
+
+        <!-- toolbar -->
+        <div class="pq-toolbar">
+          <GTabs
+            v-model="filterModel"
+            :items="filterTabs"
+            :content="false"
+            size="sm"
+            aria-label="Show participants"
+            class="pq-toolbar__filters"
+          />
+          <div class="pq-toolbar__row">
+            <GInput
+              v-model="searchQuery"
+              type="search"
+              icon="material-symbols:search-rounded"
+              placeholder="Search names, teams, emails, answers"
+              aria-label="Search participants"
+              class="pq-toolbar__search"
+            />
+            <div class="pq-toolbar__sort">
+              <GSelect
+                v-model="sortModel"
+                :items="sortOptions"
+                aria-label="Sort by"
+                class="pq-toolbar__select"
+              />
+              <GButton
+                variant="ghost"
+                :icon="sortDirection === 'asc' ? 'material-symbols:arrow-upward-rounded' : 'material-symbols:arrow-downward-rounded'"
+                :aria-label="sortDirection === 'asc' ? 'Sorted oldest or A first. Switch to newest or Z first' : 'Sorted newest or Z first. Switch to oldest or A first'"
+                :title="sortDirection === 'asc' ? 'Ascending' : 'Descending'"
+                @click="sortDirection = sortDirection === 'asc' ? 'desc' : 'asc'"
+              />
             </div>
-          </template>
-
-          <div
-            v-if="isLoadingParticipants"
-            class="text-(--ui-text-muted) text-sm"
-          >
-            Loading participants...
+            <GTabs
+              v-model="viewModel"
+              :items="viewTabs"
+              :content="false"
+              size="sm"
+              aria-label="View"
+            />
           </div>
+        </div>
 
-          <div
-            v-else-if="!participants.length"
-            class="text-(--ui-text-muted) text-sm"
-          >
-            No participants yet.
-          </div>
-
-          <div
-            v-else-if="!sortedParticipants.length"
-            class="text-(--ui-text-muted) text-sm"
-          >
-            {{ emptyMessage }}
-          </div>
-
-          <div v-else>
-            <div
-              v-if="viewMode === 'list'"
-              v-bind="participantListContainerProps"
-              class="max-h-[42rem] overflow-y-auto"
-            >
-              <div
-                v-bind="participantListWrapperProps"
-                class="divide-y divide-(--ui-border)"
-              >
-                <div
-                  v-for="{ data: participant, index } in virtualParticipants"
-                  :key="participant.id ?? index"
-                  class="py-2" :class="[
-                    isReviewOverdue(participant) ? 'rounded-md bg-error/5 px-2 -mx-2' : '',
-                  ]"
-                >
-                  <div class="flex items-center justify-between">
-                    <div class="flex-1 min-w-0">
-                      <button
-                        class="text-sm font-medium text-left hover:underline cursor-pointer text-highlighted"
-                        @click="toggleParticipant(participant.id ?? '')"
-                      >
-                        {{ participant.name ?? participant.id }}
-                        <UIcon
-                          :name="expandedParticipantId === participant.id ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
-                          class="inline-block w-4 h-4 ml-1 align-middle"
-                        />
-                      </button>
-                      <p class="text-xs text-(--ui-text-muted)">
-                        Team: {{ participant.teamName ?? 'No team' }}
-                      </p>
-                      <p class="text-xs text-(--ui-text-muted)">
-                        Applied: {{ formatDateTime(getParticipantApplicationDate(participant)) }}
-                      </p>
-                    </div>
-                    <div class="flex items-center gap-2 ml-2">
-                      <template v-if="!isIncomplete(participant)">
-                        <UBadge
-                          :color="getStatusColor(participant.concludedStatus)"
-                          variant="subtle"
-                          size="xs"
-                        >
-                          {{ getStatusLabel(participant.concludedStatus) }}
-                        </UBadge>
-                        <UBadge
-                          v-if="isReviewOverdue(participant)"
-                          color="error"
-                          variant="subtle"
-                          size="xs"
-                        >
-                          Overdue ({{ REVIEW_OVERDUE_DAYS }}d+)
-                        </UBadge>
-                        <UButton
-                          size="xs"
-                          :variant="isPendingParticipant(participant) ? 'soft' : 'ghost'"
-                          :color="isPendingParticipant(participant) ? 'warning' : 'neutral'"
-                          icon="i-lucide-clipboard-check"
-                          @click="openReviewModal(participant.id ?? '')"
-                        >
-                          {{ isPendingParticipant(participant) ? 'Review' : 'Re-review' }}
-                        </UButton>
-                      </template>
-                      <UBadge
-                        v-if="isIncomplete(participant)"
-                        color="neutral"
-                        variant="subtle"
-                        size="xs"
-                      >
-                        Incomplete
-                      </UBadge>
-                    </div>
-                  </div>
-
-                  <div
-                    v-if="expandedParticipantId === participant.id"
-                    class="mt-3 ml-2 p-4 rounded-lg bg-elevated border border-default max-h-96 overflow-y-auto"
-                  >
-                    <div
-                      v-if="isLoadingDetail"
-                      class="text-sm text-muted"
-                    >
-                      Loading form responses...
-                    </div>
-                    <div v-else>
-                      <div
-                        v-if="participantDetail?.reviews && participantDetail.reviews.length > 0"
-                        class="mb-4"
-                      >
-                        <h4 class="text-sm font-semibold mb-3">
-                          Review History ({{ participantDetail.reviews.length }})
-                        </h4>
-                        <div class="space-y-2">
-                          <div
-                            v-for="(review, reviewIndex) in participantDetail.reviews"
-                            :key="review.id ?? reviewIndex"
-                            class="rounded-lg border border-default p-3"
-                          >
-                            <div class="flex items-start justify-between mb-1">
-                              <UBadge
-                                :color="getReviewStatusColor(review.status)"
-                                variant="subtle"
-                                size="xs"
-                              >
-                                {{ getReviewStatusLabel(review.status) }}
-                              </UBadge>
-                              <span class="text-xs text-(--ui-text-muted)">
-                                {{ formatDateTime(review.createdAt) }}
-                              </span>
-                            </div>
-                            <p
-                              v-if="review.reason"
-                              class="text-xs text-(--ui-text-muted) mt-1"
-                            >
-                              {{ review.reason }}
-                            </p>
-                            <p
-                              v-else
-                              class="text-xs text-(--ui-text-muted) italic mt-1"
-                            >
-                              No reason provided
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div v-if="sortedSubmissions.length">
-                        <h4 class="text-sm font-semibold mb-3">
-                          Form Responses
-                        </h4>
-                        <div class="space-y-3">
-                          <UFormField
-                            v-for="submission in sortedSubmissions"
-                            :key="submission.questionId ?? ''"
-                            :label="submission.questionText ?? 'Question'"
-                          >
-                            <UInput
-                              :model-value="submission.value || '—'"
-                              disabled
-                              class="w-full"
-                            />
-                            <template v-if="submission.followUpValue">
-                              <p class="text-xs text-(--ui-text-muted) mt-1">
-                                Follow-up:
-                              </p>
-                              <UInput
-                                :model-value="submission.followUpValue"
-                                disabled
-                                class="w-full"
-                              />
-                            </template>
-                          </UFormField>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div
-                      v-if="hasNoExpandedData"
-                      class="text-sm text-(--ui-text-muted)"
-                    >
-                      No data found.
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div
-              v-else
-              class="overflow-x-auto"
-            >
-              <UTable
-                :data="sortedParticipants"
-                :columns="tableColumns"
-                :virtualize="tableVirtualizeOptions"
-                class="min-w-full max-h-[42rem] overflow-auto"
-              >
-                <template #name-cell="{ row }">
-                  <div class="flex items-center gap-2">
-                    <span class="text-sm font-medium">
-                      {{ row.original.name ?? row.original.id }}
-                    </span>
-                    <UBadge
-                      v-if="isReviewOverdue(row.original)"
-                      color="error"
-                      variant="subtle"
-                      size="xs"
-                    >
-                      Overdue ({{ REVIEW_OVERDUE_DAYS }}d+)
-                    </UBadge>
-                  </div>
-                </template>
-
-                <template #teamName-cell="{ row }">
-                  <span class="text-sm">
-                    {{ row.original.teamName ?? 'No team' }}
-                  </span>
-                </template>
-
-                <template #status-cell="{ row }">
-                  <template v-if="!isIncomplete(row.original)">
-                    <UBadge
-                      :color="getStatusColor(row.original.concludedStatus)"
-                      variant="subtle"
-                      size="xs"
-                    >
-                      {{ getStatusLabel(row.original.concludedStatus) }}
-                    </UBadge>
-                    <UBadge
-                      v-if="isReviewOverdue(row.original)"
-                      color="error"
-                      variant="subtle"
-                      size="xs"
-                      class="ml-1"
-                    >
-                      Overdue
-                    </UBadge>
-                  </template>
-                  <UBadge
-                    v-else
-                    color="neutral"
-                    variant="subtle"
-                    size="xs"
-                  >
-                    Incomplete
-                  </UBadge>
-                </template>
-
-                <template #actions-cell="{ row }">
-                  <div class="flex items-center gap-1">
-                    <UButton
-                      v-if="!isIncomplete(row.original)"
-                      size="xs"
-                      :variant="isPendingParticipant(row.original) ? 'soft' : 'ghost'"
-                      :color="isPendingParticipant(row.original) ? 'warning' : 'neutral'"
-                      icon="i-lucide-clipboard-check"
-                      @click="openReviewModal(row.original.id ?? '')"
-                    >
-                      {{ isPendingParticipant(row.original) ? 'Review' : 'Re-review' }}
-                    </UButton>
-                  </div>
-                </template>
-              </UTable>
-            </div>
-          </div>
-        </UCard>
-
-        <UModal
-          v-model:open="isReviewModalOpen"
-          :title="reviewModalTitle"
-          :description="reviewModalDescription"
+        <OrganizersListDetail
+          v-model:open="detailOpen"
+          :label="selected ? `Application: ${selected.name || 'participant'}` : 'Application'"
+          :dock="viewMode === 'list'"
         >
-          <template #content>
-            <div class="overflow-auto max-h-[80vh]">
-              <UCard>
-                <template #header>
-                  <div class="flex items-center justify-between">
-                    <h3 class="text-base font-semibold">
-                      {{ reviewingParticipantName || 'Participant Review' }}
-                    </h3>
-                    <UButton
-                      variant="ghost"
-                      icon="i-lucide-x"
-                      size="xs"
-                      @click="closeReviewModal"
-                    />
-                  </div>
-                </template>
-
-                <div class="space-y-4">
-                  <template v-if="reviewingParticipant">
-                    <div class="rounded-lg border border-default p-3 text-sm">
-                      <p>
-                        <strong>Team:</strong> {{ reviewingParticipant.teamName ?? 'No team' }}
-                      </p>
-                      <p>
-                        <strong>Applied:</strong> {{ formatDateTime(getParticipantApplicationDate(reviewingParticipant)) }}
-                      </p>
-                      <p>
-                        <strong>Current Status:</strong>
-                        <UBadge
-                          :color="getStatusColor(reviewingParticipant.concludedStatus)"
-                          variant="subtle"
-                          size="xs"
-                          class="ml-1"
-                        >
-                          {{ getStatusLabel(reviewingParticipant.concludedStatus) }}
-                        </UBadge>
-                      </p>
-                    </div>
-
-                    <div v-if="reviewingParticipantReviews.length > 0">
-                      <h4 class="text-sm font-semibold mb-2">
-                        Review History ({{ reviewingParticipantReviews.length }})
-                      </h4>
-                      <div class="max-h-48 overflow-y-auto rounded-lg border border-default p-3 space-y-3">
-                        <div
-                          v-for="(review, index) in reviewingParticipantReviews"
-                          :key="review.id ?? index"
-                          class="border-b border-default last:border-b-0 pb-3 last:pb-0"
-                        >
-                          <div class="flex items-start justify-between mb-1">
-                            <UBadge
-                              :color="getReviewStatusColor(review.status)"
-                              variant="subtle"
-                              size="xs"
-                            >
-                              {{ getReviewStatusLabel(review.status) }}
-                            </UBadge>
-                            <span class="text-xs text-(--ui-text-muted)">
-                              {{ formatDateTime(review.createdAt) }}
-                            </span>
-                          </div>
-                          <p
-                            v-if="review.reason"
-                            class="text-xs text-(--ui-text-muted) mt-1"
-                          >
-                            {{ review.reason }}
-                          </p>
-                          <p
-                            v-else
-                            class="text-xs text-(--ui-text-muted) italic mt-1"
-                          >
-                            No reason provided
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 class="text-sm font-semibold mb-2">
-                        Application Responses
-                      </h4>
-                      <div
-                        v-if="reviewingParticipantSubmissions.length"
-                        class="max-h-72 overflow-y-auto rounded-lg border border-default p-3 space-y-3"
-                      >
-                        <UFormField
-                          v-for="submission in reviewingParticipantSubmissions"
-                          :key="submission.questionId ?? ''"
-                          :label="submission.questionText ?? 'Question'"
-                        >
-                          <UTextarea
-                            :model-value="formatSubmissionAnswer(submission)"
-                            disabled
-                            autoresize
-                            :rows="2"
-                          />
-                        </UFormField>
-                      </div>
-                      <p
-                        v-else
-                        class="text-sm text-(--ui-text-muted)"
-                      >
-                        No form responses found.
-                      </p>
-                    </div>
-                  </template>
-
-                  <UFormField label="Review note">
-                    <UTextarea
-                      v-model="reviewReason"
-                      :rows="3"
-                      placeholder="Provide a reason for rejection (optional for approval)..."
-                    />
-                  </UFormField>
-
-                  <div class="flex justify-end gap-2">
-                    <UButton
-                      variant="ghost"
-                      :disabled="reviewMutation.isPending.value"
-                      @click="closeReviewModal"
-                    >
-                      Cancel
-                    </UButton>
-                    <UButton
-                      color="error"
-                      :disabled="reviewMutation.isPending.value || !reviewReason.trim()"
-                      :loading="reviewMutation.isPending.value"
-                      @click="handleReview('reject')"
-                    >
-                      Reject
-                    </UButton>
-                    <UButton
-                      color="success"
-                      :loading="reviewMutation.isPending.value"
-                      @click="handleReview('accept')"
-                    >
-                      Approve
-                    </UButton>
-                  </div>
-                </div>
-              </UCard>
+          <template #list>
+            <div
+              v-if="isLoadingParticipants"
+              class="pq-box pq-box--loading"
+              aria-busy="true"
+            >
+              <GSkeleton
+                v-for="i in 6"
+                :key="i"
+                class="pq-skeleton"
+              />
             </div>
+
+            <GEmptyState
+              v-else-if="!participants.length"
+              icon="material-symbols:group-off-rounded"
+              title="No participants yet"
+              description="People who sign up for this hackathon show up here."
+            />
+
+            <GEmptyState
+              v-else-if="!visibleParticipants.length"
+              icon="material-symbols:search-off-rounded"
+              :title="searchQuery.trim() ? `No one matches “${searchQuery.trim()}”` : 'No one here'"
+              :description="activeFilter === 'pending' ? 'Nobody is waiting for review.' : 'Try another search or filter.'"
+            >
+              <template
+                v-if="hasFilters"
+                #actions
+              >
+                <GButton
+                  variant="secondary"
+                  label="Show all submitted"
+                  @click="clearFilters"
+                />
+              </template>
+            </GEmptyState>
+
+            <!-- queue: virtualised; rows are a fixed 76px -->
+            <div
+              v-else-if="viewMode === 'list'"
+              v-bind="containerProps"
+              class="pq-box pq-scroll"
+            >
+              <ul
+                v-bind="wrapperProps"
+                class="pq-list"
+                :aria-label="`${visibleParticipants.length} participants`"
+              >
+                <li
+                  v-for="{ data: p, index } in virtualRows"
+                  :key="p.id ?? index"
+                >
+                  <button
+                    type="button"
+                    class="pq-row"
+                    :class="{ 'is-selected': p.id === selectedId }"
+                    :aria-current="p.id === selectedId ? 'true' : undefined"
+                    @click="select(p.id)"
+                  >
+                    <span class="pq-row__main">
+                      <span class="pq-row__name">{{ p.name || 'Unnamed participant' }}</span>
+                      <span class="pq-row__meta">
+                        {{ p.teamName || 'No team' }}
+                        <template v-if="applicationTimeOf(p)">
+                          · applied {{ waitedFor(applicationTimeOf(p)) }}
+                        </template>
+                      </span>
+                    </span>
+                    <span class="pq-row__badges">
+                      <GBadge
+                        v-if="isReviewOverdue(p)"
+                        tone="err"
+                        size="sm"
+                        icon="material-symbols:schedule-rounded"
+                        :label="`${REVIEW_OVERDUE_DAYS}d+`"
+                        :title="`Waiting ${REVIEW_OVERDUE_DAYS}+ days`"
+                      />
+                      <GBadge
+                        :tone="reviewStateBadge[reviewStateOf(p)].tone"
+                        :variant="reviewStateOf(p) === 'pending' ? 'solid' : 'soft'"
+                        size="sm"
+                        :label="reviewStateBadge[reviewStateOf(p)].label"
+                      />
+                    </span>
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            <!-- table: every answer in a column -->
+            <GTable
+              v-else
+              :data="tableRows"
+              :columns="tableColumns"
+              row-key="id"
+              manual-sort
+              :virtualize="{ estimateSize: 64, overscan: 12 }"
+              caption="Participants and their registration answers"
+              class="pq-table"
+            >
+              <template #name-cell="{ row }">
+                <button
+                  type="button"
+                  class="pq-name-link"
+                  @click="select(row.original.id)"
+                >
+                  {{ row.original.name }}
+                </button>
+              </template>
+              <template #status-cell="{ row }">
+                <span class="pq-table__badges">
+                  <GBadge
+                    :tone="reviewStateBadge[row.original.state as ReviewState].tone"
+                    :variant="row.original.state === 'pending' ? 'solid' : 'soft'"
+                    size="sm"
+                    :label="reviewStateBadge[row.original.state as ReviewState].label"
+                  />
+                  <GBadge
+                    v-if="row.original.overdue"
+                    tone="err"
+                    size="sm"
+                    :label="`${REVIEW_OVERDUE_DAYS}d+`"
+                    :title="`Waiting ${REVIEW_OVERDUE_DAYS}+ days`"
+                  />
+                </span>
+              </template>
+            </GTable>
           </template>
-        </UModal>
+
+          <template #detail="{ close }">
+            <OrganizersParticipantReview
+              v-if="selected"
+              :hackathon-id="hackathonId"
+              :participant="selected"
+              :answers="selectedAnswers"
+              :emails="participantDetail?.emailDeliveries ?? []"
+              :loading-emails="isLoadingDetail"
+              :next-name="nextInQueue?.name || (nextInQueue ? 'next applicant' : null)"
+              @close="close"
+              @reviewed="onReviewed"
+              @next="reviewNext"
+            />
+          </template>
+
+          <template #placeholder>
+            <GEmptyState
+              icon="material-symbols:fact-check-rounded"
+              :title="pendingQueue.length ? 'Pick an application' : 'All caught up'"
+              :description="pendingQueue.length ? `${pendingQueue.length} waiting for review. Choose one from the list, or press Review next.` : 'Nobody is waiting for review. Pick anyone to see their answers.'"
+              :bordered="false"
+            />
+          </template>
+        </OrganizersListDetail>
       </div>
     </template>
   </GPanel>
 </template>
+
+<style scoped>
+.pq {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 88rem;
+  margin: 0 auto;
+}
+
+.pq-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pq-toolbar__filters { max-width: 100%; overflow-x: auto; }
+.pq-toolbar__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.pq-toolbar__search { flex: 1 1 18rem; }
+.pq-toolbar__sort {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.pq-toolbar__select { width: 9rem; }
+
+.pq-box {
+  border: var(--gh-border-width) solid var(--gh-line);
+  border-radius: var(--radius-gh-lg);
+  background: var(--gh-surface);
+}
+.pq-box--loading {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+.pq-skeleton {
+  display: block;
+  height: 52px;
+}
+.pq-scroll {
+  max-height: min(70vh, 42rem);
+  overflow-y: auto;
+}
+@media (min-width: 1024px) {
+  .pq-scroll { max-height: calc(100dvh - 8.5rem); }
+}
+.pq-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pq-list > li {
+  height: 76px;
+  border-top: var(--gh-border-width) solid var(--gh-line-soft);
+}
+.pq-list > li:first-child { border-top: 0; }
+
+.pq-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  padding: 0 16px;
+  border: 0;
+  border-left: 4px solid transparent;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--gh-dur-fast) var(--ease-gh);
+}
+.pq-row:hover { background: var(--gh-ghost-hover); }
+.pq-row:focus-visible {
+  outline: 2px solid var(--gh-focus);
+  outline-offset: -2px;
+}
+/* picked: the highlight surface + edge (pale yellow in light, yellow edge in dark) */
+.pq-row.is-selected {
+  border-left-color: var(--gh-highlight-edge);
+  background: var(--gh-highlight);
+  color: var(--gh-highlight-ink);
+}
+.pq-row.is-selected .pq-row__meta { color: inherit; }
+.pq-row__main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.pq-row__name,
+.pq-row__meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pq-row__name { font-weight: 700; }
+.pq-row__meta {
+  font-size: 14px;
+  color: var(--gh-text-muted);
+}
+.pq-row__badges,
+.pq-table__badges {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pq-row { transition: none; }
+}
+
+.pq-table { max-height: calc(100dvh - 12rem); }
+.pq-name-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.pq-name-link:focus-visible {
+  outline: 2px solid var(--gh-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+</style>

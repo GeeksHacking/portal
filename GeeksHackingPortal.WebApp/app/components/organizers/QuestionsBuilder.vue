@@ -723,7 +723,9 @@ const eventNoun = isHackathon ? 'hackathon' : 'workshop'
 .qb-required {
   margin-left: 8px;
   padding: 1px 6px;
-  border: var(--gh-border-width) solid var(--gh-line);
+  /* red in both themes (--gh-err is the readable red for each surface) */
+  border: var(--gh-border-width) solid var(--gh-err);
+  color: var(--gh-err);
   border-radius: var(--radius-gh-pill);
   font-size: 12px;
   font-weight: 600;

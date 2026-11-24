@@ -310,7 +310,8 @@ watch(() => route.fullPath, () => {
 })
 
 // the card's actions, shared by the card and the details dialog
-const [DefineActions, ReuseActions] = createReusableTemplate<{ row: EventRow }>()
+// `details`: also show the Details button (not inside the Details dialog itself)
+const [DefineActions, ReuseActions] = createReusableTemplate<{ row: EventRow, details?: boolean }>()
 
 function eventDateRange(start?: string | null, end?: string | null) {
   const from = formatHackathonDate(start)
@@ -328,54 +329,66 @@ function eventDateRange(start?: string | null, end?: string | null) {
     </template>
 
     <template #body>
-      <DefineActions v-slot="{ row }">
-      <template v-if="row.hackathonCard">
+      <DefineActions v-slot="{ row, details }">
+      <!-- the next step, with Details stacked under it -->
+      <span class="ex-step">
+        <template v-if="row.hackathonCard">
+          <GButton
+            v-if="!row.hackathonCard.status?.isParticipant"
+            variant="primary"
+            size="sm"
+            icon="material-symbols:person-add-rounded"
+            label="Join event"
+            :aria-label="`Join ${row.name}`"
+            :loading="joiningId === row.hackathonCard.hackathon.id"
+            loading-label="Joining"
+            :disabled="!!joiningId && joiningId !== row.hackathonCard.hackathon.id"
+            @click="joinHackathon({ id: row.hackathonCard.hackathon.id!, shortCode: row.hackathonCard.hackathon.shortCode! })"
+          />
+          <GButton
+            v-else-if="!row.hackathonCard.registrationComplete"
+            :to="`/${row.shortCode}/registration`"
+            variant="primary"
+            size="sm"
+            icon="material-symbols:edit-note-rounded"
+            label="Continue registration"
+          />
+          <GButton
+            v-else-if="row.hackathonCard.status?.status !== 'Accepted'"
+            :to="`/dash/${row.hackathonCard.hackathon.id}/participant`"
+            variant="secondary"
+            size="sm"
+            icon="material-symbols:fact-check-rounded"
+            label="View status"
+          />
+          <GButton
+            v-else
+            :to="`/${row.shortCode}/team`"
+            variant="primary"
+            size="sm"
+            trailing-icon="material-symbols:arrow-forward-rounded"
+            label="Open event portal"
+          />
+        </template>
         <GButton
-          v-if="!row.hackathonCard.status?.isParticipant"
-          variant="primary"
-          size="sm"
-          icon="material-symbols:person-add-rounded"
-          label="Join event"
-          :aria-label="`Join ${row.name}`"
-          :loading="joiningId === row.hackathonCard.hackathon.id"
-          loading-label="Joining"
-          :disabled="!!joiningId && joiningId !== row.hackathonCard.hackathon.id"
-          @click="joinHackathon({ id: row.hackathonCard.hackathon.id!, shortCode: row.hackathonCard.hackathon.shortCode! })"
-        />
-        <GButton
-          v-else-if="!row.hackathonCard.registrationComplete"
-          :to="`/${row.shortCode}/registration`"
+          v-else-if="row.shortCode"
+          :to="`/workshops/${row.shortCode}`"
           variant="primary"
           size="sm"
           icon="material-symbols:edit-note-rounded"
-          label="Continue registration"
+          label="Register"
+          :aria-label="`Register for ${row.name}`"
         />
         <GButton
-          v-else-if="row.hackathonCard.status?.status !== 'Accepted'"
-          :to="`/dash/${row.hackathonCard.hackathon.id}/participant`"
-          variant="secondary"
+          v-if="details && row.hasMoreDetails"
+          variant="ghost"
           size="sm"
-          icon="material-symbols:fact-check-rounded"
-          label="View status"
+          icon="material-symbols:article-outline-rounded"
+          label="Details"
+          :aria-label="`Details for ${row.name}`"
+          @click="detailsKey = row.key"
         />
-        <GButton
-          v-else
-          :to="`/${row.shortCode}/team`"
-          variant="primary"
-          size="sm"
-          trailing-icon="material-symbols:arrow-forward-rounded"
-          label="Open event portal"
-        />
-      </template>
-      <GButton
-        v-else-if="row.shortCode"
-        :to="`/workshops/${row.shortCode}`"
-        variant="primary"
-        size="sm"
-        icon="material-symbols:edit-note-rounded"
-        label="Register"
-        :aria-label="`Register for ${row.name}`"
-      />
+      </span>
 
       <GButton
         v-if="row.homepageUri"
@@ -599,15 +612,9 @@ function eventDateRange(start?: string | null, end?: string | null) {
                 </dl>
 
                 <div class="ex-event__actions">
-                  <ReuseActions :row="row" />
-                  <GButton
-                    v-if="row.hasMoreDetails"
-                    variant="ghost"
-                    size="sm"
-                    icon="material-symbols:article-outline-rounded"
-                    label="Details"
-                    :aria-label="`Details for ${row.name}`"
-                    @click="detailsKey = row.key"
+                  <ReuseActions
+                    :row="row"
+                    :details="true"
                   />
                 </div>
               </article>
@@ -787,6 +794,7 @@ function eventDateRange(start?: string | null, end?: string | null) {
     gap: 24px;
   }
   .ex-list:not(.ex-list--cards) .ex-event__actions { justify-content: flex-end; }
+  .ex-list:not(.ex-list--cards) .ex-step { align-items: flex-end; }
   .ex-list:not(.ex-list--cards) .ex-event__desc { -webkit-line-clamp: 1; line-clamp: 1; }
 }
 /* cards: actions pinned to the bottom */
@@ -881,5 +889,12 @@ function eventDateRange(start?: string | null, end?: string | null) {
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
+}
+/* the next-step button with Details stacked under it */
+.ex-step {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
 }
 </style>

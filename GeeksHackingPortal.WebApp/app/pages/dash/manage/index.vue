@@ -385,7 +385,8 @@ watch(() => detailsRoute.fullPath, () => {
 })
 
 // the card's actions, shared by the card and the details dialog
-const [DefineActions, ReuseActions] = createReusableTemplate<{ row: EventRow }>()
+// `details`: also show the Details button (not inside the Details dialog itself)
+const [DefineActions, ReuseActions] = createReusableTemplate<{ row: EventRow, details?: boolean }>()
 
 function eventDateRange(start?: string | null, end?: string | null) {
   const from = formatHackathonDate(start)
@@ -417,7 +418,7 @@ useHead({ title: 'Workspace' })
     </template>
 
     <template #body>
-      <DefineActions v-slot="{ row }">
+      <DefineActions v-slot="{ row, details }">
       <!-- events this person runs -->
       <template v-if="row.kind === 'workshop' || row.isOrganizing">
         <GButton
@@ -437,25 +438,6 @@ useHead({ title: 'Workspace' })
           icon="material-symbols:edit-rounded"
           label="Edit"
           :aria-label="`Edit ${row.name}`"
-        />
-        <GButton
-          v-if="row.shortCode"
-          :to="row.kind === 'workshop' ? `/workshops/${row.shortCode}` : `/${row.shortCode}/team`"
-          variant="ghost"
-          size="sm"
-          trailing-icon="material-symbols:arrow-forward-rounded"
-          label="View page"
-          :aria-label="`View the ${row.name} page`"
-        />
-        <GButton
-          v-else-if="row.homepageUri"
-          :href="row.homepageUri"
-          target="_blank"
-          variant="ghost"
-          size="sm"
-          trailing-icon="material-symbols:open-in-new-rounded"
-          label="Website"
-          :aria-label="`${row.name} website (opens in a new tab)`"
         />
       </template>
 
@@ -498,6 +480,43 @@ useHead({ title: 'Workspace' })
           label="Open event portal"
         />
       </template>
+
+      <!-- quieter links, stacked: View page (or Website) above Details -->
+      <span
+        v-if="((row.kind === 'workshop' || row.isOrganizing) && (row.shortCode || row.homepageUri)) || (details && row.hasMoreDetails)"
+        class="ws-links"
+      >
+        <template v-if="row.kind === 'workshop' || row.isOrganizing">
+          <GButton
+            v-if="row.shortCode"
+            :to="row.kind === 'workshop' ? `/workshops/${row.shortCode}` : `/${row.shortCode}/team`"
+            variant="ghost"
+            size="sm"
+            trailing-icon="material-symbols:arrow-forward-rounded"
+            label="View page"
+            :aria-label="`View the ${row.name} page`"
+          />
+          <GButton
+            v-else-if="row.homepageUri"
+            :href="row.homepageUri"
+            target="_blank"
+            variant="ghost"
+            size="sm"
+            trailing-icon="material-symbols:open-in-new-rounded"
+            label="Website"
+            :aria-label="`${row.name} website (opens in a new tab)`"
+          />
+        </template>
+        <GButton
+          v-if="details && row.hasMoreDetails"
+          variant="ghost"
+          size="sm"
+          icon="material-symbols:article-outline-rounded"
+          label="Details"
+          :aria-label="`Details for ${row.name || 'this event'}`"
+          @click="detailsKey = row.key"
+        />
+      </span>
       </DefineActions>
 
       <div class="ws">
@@ -805,15 +824,9 @@ useHead({ title: 'Workspace' })
               </dl>
 
               <div class="ws-event__actions">
-                <ReuseActions :row="row" />
-                <GButton
-                  v-if="row.hasMoreDetails"
-                  variant="ghost"
-                  size="sm"
-                  icon="material-symbols:article-outline-rounded"
-                  label="Details"
-                  :aria-label="`Details for ${row.name || 'this event'}`"
-                  @click="detailsKey = row.key"
+                <ReuseActions
+                  :row="row"
+                  :details="true"
                 />
               </div>
             </article>
@@ -1034,6 +1047,7 @@ useHead({ title: 'Workspace' })
     justify-content: flex-end;
     max-width: 17rem;
   }
+  .ws-list:not(.ws-list--cards) .ws-links { align-items: flex-end; }
   .ws-list:not(.ws-list--cards) .ws-event__desc { -webkit-line-clamp: 1; line-clamp: 1; }
 }
 .ws-list--cards .ws-event { grid-template-rows: 1fr auto auto; }
@@ -1154,6 +1168,13 @@ useHead({ title: 'Workspace' })
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
+}
+/* View page / Website with Details stacked under it */
+.ws-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
 }
 .ws-foot {
   display: flex;

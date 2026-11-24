@@ -4,588 +4,918 @@ import type {
   GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse,
 } from '@geekshacking/portal-sdk'
 import {
+  geeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointQueryKey,
   geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryKey,
+  useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint,
   useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint,
   useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint,
   useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint,
   useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint,
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
-  useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
 import { useQueryClient } from '@tanstack/vue-query'
-import { computed, ref } from 'vue'
-import { getApiErrorMessage } from '~/utils/api-errors'
+import { useClipboard } from '@vueuse/core'
 
-type OAuthApplication = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse
-type OAuthApplicationPlatform = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformKey
+/**
+ * The OAuth apps the signed-in admin owns (apps that let people sign in with their portal
+ * account). What the API does (Endpoints/Admin/OAuthApplications):
+ * - admins only, and each admin sees and changes only the apps they own;
+ * - Web apps get a client secret, shown once: on create, when "issue a new secret" is ticked,
+ *   or when a Native app is switched to Web. Native apps have none;
+ * - deleting an app also deletes its sign-ins and tokens, so everyone using it is signed out.
+ */
+type App = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationResponse
+type Platform = GeeksHackingPortalApiEndpointsAdminOAuthApplicationsSharedOAuthApplicationPlatformKey
 
-interface ApplicationForm {
-  clientId: string
-  displayName: string
-  platform: OAuthApplicationPlatform
-  redirectUris: string[]
-  postLogoutRedirectUris: string[]
-  rotateClientSecret: boolean
-}
+useHead({ title: 'My OAuth apps' })
 
-const toast = useToast()
+const toast = useGToast()
 const queryClient = useQueryClient()
+const { copy, isSupported: canCopy } = useClipboard({ legacy: true })
 
 const { data: user, isLoading: isLoadingUser } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
-const { data: applicationsData, isLoading: isLoadingApplications } = useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint({
-  query: {
-    enabled: computed(() => user.value?.isRoot === true),
-  },
-})
+const isAdmin = computed(() => user.value?.isRoot === true)
+const enabled = { query: { enabled: isAdmin } }
+const listQuery = useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpoint(enabled)
+const analyticsQuery = useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint(enabled)
 
-const { data: analyticsData, isLoading: isLoadingAnalytics } = useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpoint({
-  query: {
-    enabled: computed(() => user.value?.isRoot === true),
-  },
-})
+const apps = computed(() => [...(listQuery.data.value?.items ?? [])]
+  .sort((a, b) => (a.displayName ?? '').localeCompare(b.displayName ?? '')))
+const usage = computed(() => new Map((analyticsQuery.data.value?.items ?? []).map(item => [item.applicationId, item])))
+const plural = (n: number, one: string, many = `${one}s`) => `${n.toLocaleString()} ${n === 1 ? one : many}`
 
-const analyticsMap = computed(() => {
-  const map = new Map()
-  if (analyticsData.value?.items) {
-    for (const item of analyticsData.value.items) {
-      map.set(item.applicationId, item)
-    }
+const PLATFORMS: { value: Platform, label: string, icon: string, description: string }[] = [
+  { value: 'Web', label: 'Web', icon: 'material-symbols:dns-rounded', description: 'Runs on a server that can keep a secret. Gets a client secret.' },
+  { value: 'Native', label: 'Native', icon: 'material-symbols:devices-rounded', description: 'A mobile, desktop or browser-only app that can\'t keep a secret. No client secret.' },
+]
+const platformOf = (value: Platform | null | undefined) => PLATFORMS.find(p => p.value === value) ?? PLATFORMS[0]!
+
+async function copyText(text: string | null | undefined, what: string) {
+  if (!text)
+    return
+  try {
+    await copy(text)
+    toast.add({ tone: 'ok', title: `Copied ${what}` })
   }
-  return map
-})
+  catch {
+    toast.add({ tone: 'err', title: 'Couldn\'t copy', description: 'Select it and copy it by hand.' })
+  }
+}
 
+async function refreshLists() {
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryKey() }),
+    queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsAdminOAuthApplicationsAnalyticsEndpointQueryKey() }),
+  ])
+}
+
+// ---- add / edit dialog ----
 const createMutation = useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsCreateEndpoint()
 const updateMutation = useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsUpdateEndpoint()
-const deleteMutation = useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint()
+const isSaving = computed(() => createMutation.isPending.value || updateMutation.isPending.value)
 
-const platformItems = [
-  { label: 'Web', value: 'Web' },
-  { label: 'Native', value: 'Native' },
-]
-
-const applications = computed(() => applicationsData.value?.items ?? [])
-const isEditorOpen = ref(false)
-const isEditing = ref(false)
-const editingApplicationId = ref<string | null>(null)
-const pendingDeleteApplication = ref<OAuthApplication | null>(null)
-const issuedSecret = ref<string | null>(null)
-const hasAttemptedSubmit = ref(false)
-
-const form = ref<ApplicationForm>({
-  clientId: '',
+const isFormOpen = ref(false)
+const editing = ref<App | null>(null)
+const form = reactive({
   displayName: '',
-  platform: 'Web',
-  redirectUris: [''],
-  postLogoutRedirectUris: [],
-  rotateClientSecret: false,
+  clientId: '',
+  platform: 'Web' as Platform,
+  redirectUris: [''] as string[],
+  postLogoutRedirectUris: [] as string[],
+  rotateSecret: false,
+})
+type FieldErrors = Partial<Record<'displayName' | 'clientId' | 'redirectUris' | 'postLogoutRedirectUris', string>>
+const errors = ref<FieldErrors>({})
+const redirectRowErrors = ref<(string | undefined)[]>([])
+const logoutRowErrors = ref<(string | undefined)[]>([])
+const formError = ref('')
+/** set after saving when the API issued a client secret: the dialog then shows it, once */
+const issued = ref<{ name: string, clientId: string, secret: string, isNew: boolean } | null>(null)
+
+const dialogTitle = computed(() => {
+  if (issued.value)
+    return issued.value.isNew ? `${issued.value.name} is ready` : `New secret for ${issued.value.name}`
+  return editing.value ? `Edit ${editing.value.displayName || 'app'}` : 'Add an app'
+})
+/** switching a Native app to Web makes the API issue a secret even without the tick */
+const getsSecretAnyway = computed(() => !!editing.value && editing.value.platform !== 'Web' && form.platform === 'Web')
+
+function clearErrors() {
+  errors.value = {}
+  redirectRowErrors.value = []
+  logoutRowErrors.value = []
+  formError.value = ''
+}
+function openAdd() {
+  editing.value = null
+  issued.value = null
+  Object.assign(form, { displayName: '', clientId: '', platform: 'Web', redirectUris: [''], postLogoutRedirectUris: [], rotateSecret: false })
+  clearErrors()
+  isFormOpen.value = true
+}
+function openEdit(app: App) {
+  editing.value = app
+  issued.value = null
+  Object.assign(form, {
+    displayName: app.displayName ?? '',
+    clientId: app.clientId ?? '',
+    platform: app.platform ?? 'Web',
+    redirectUris: app.redirectUris?.length ? [...app.redirectUris] : [''],
+    postLogoutRedirectUris: [...(app.postLogoutRedirectUris ?? [])],
+    rotateSecret: false,
+  })
+  clearErrors()
+  isFormOpen.value = true
+}
+
+// clear a field's error once it's changed
+watch(() => form.displayName, () => (errors.value.displayName = undefined))
+watch(() => form.clientId, () => (errors.value.clientId = undefined))
+watch(() => [...form.redirectUris], () => {
+  errors.value.redirectUris = undefined
+  redirectRowErrors.value = []
+})
+watch(() => [...form.postLogoutRedirectUris], () => {
+  errors.value.postLogoutRedirectUris = undefined
+  logoutRowErrors.value = []
+})
+watch(() => form.platform, () => {
+  redirectRowErrors.value = []
+  logoutRowErrors.value = []
 })
 
-const isSubmitting = computed(() => createMutation.isPending.value || updateMutation.isPending.value)
+const cleanUris = (uris: string[]) => uris.map(uri => uri.trim()).filter(Boolean)
 
-const redirectUriErrors = computed(() => hasAttemptedSubmit.value ? validateUris(form.value.redirectUris, form.value.platform) : [])
-const postLogoutRedirectUriErrors = computed(() => hasAttemptedSubmit.value ? validateUris(form.value.postLogoutRedirectUris, form.value.platform) : [])
-const redirectUrisError = computed(() => hasAttemptedSubmit.value && cleanUris(form.value.redirectUris).length === 0
-  ? 'Add at least one redirect URI.'
-  : undefined)
-
-function resetForm() {
-  form.value = {
-    clientId: '',
-    displayName: '',
-    platform: 'Web',
-    redirectUris: [''],
-    postLogoutRedirectUris: [],
-    rotateClientSecret: false,
-  }
-  issuedSecret.value = null
-  hasAttemptedSubmit.value = false
-  isEditing.value = false
-  editingApplicationId.value = null
-}
-
-function openCreateModal() {
-  resetForm()
-  isEditorOpen.value = true
-}
-
-function openEditModal(application: OAuthApplication) {
-  form.value = {
-    clientId: application.clientId ?? '',
-    displayName: application.displayName ?? '',
-    platform: application.platform ?? 'Web',
-    redirectUris: application.redirectUris?.length ? [...application.redirectUris] : [''],
-    postLogoutRedirectUris: [...(application.postLogoutRedirectUris ?? [])],
-    rotateClientSecret: false,
-  }
-  issuedSecret.value = null
-  hasAttemptedSubmit.value = false
-  isEditing.value = true
-  editingApplicationId.value = application.id ?? null
-  isEditorOpen.value = true
-}
-
-function cleanUris(uris: string[]) {
-  return uris
-    .map(uri => uri.trim())
-    .filter(Boolean)
-}
-
-// Mirrors the API's rules so each row can show its own error. Blank rows are ignored.
-function validateUris(uris: string[], platform: OAuthApplicationPlatform) {
+/** Same rules as the API's validator; blank rows are ignored. */
+function checkUris(uris: string[], platform: Platform) {
   const seen = new Set<string>()
-
   return uris.map((uri) => {
     const value = uri.trim()
     if (!value)
       return undefined
-
     let url: URL
     try {
       url = new URL(value)
     }
     catch {
-      return 'Enter an absolute URI, such as https://app.example.com/callback.'
+      return 'Use a full address, such as https://app.example.com/callback.'
     }
-
     if (platform === 'Web' && url.protocol !== 'http:' && url.protocol !== 'https:')
-      return 'Web applications must use an http or https URI.'
-
+      return 'Web apps must use an http:// or https:// address.'
     if (seen.has(url.href))
-      return 'This URI is already in the list.'
-
+      return 'This address is already in the list.'
     seen.add(url.href)
     return undefined
   })
 }
 
-function buildPayload() {
-  return {
-    clientId: form.value.clientId.trim(),
-    displayName: form.value.displayName.trim(),
-    platform: form.value.platform,
-    redirectUris: cleanUris(form.value.redirectUris),
-    postLogoutRedirectUris: cleanUris(form.value.postLogoutRedirectUris),
-  }
+function validate() {
+  const next: FieldErrors = {}
+  if (!form.displayName.trim())
+    next.displayName = 'Give the app a name.'
+  else if (form.displayName.trim().length > 200)
+    next.displayName = 'Use 200 characters or fewer.'
+  const clientId = form.clientId.trim()
+  if (!clientId)
+    next.clientId = 'Add a client ID.'
+  else if (clientId.length < 3 || clientId.length > 100)
+    next.clientId = 'Use 3 to 100 characters.'
+  else if (!/^[\w.:-]+$/.test(clientId))
+    next.clientId = 'Use only letters, numbers, dots, underscores, colons and hyphens.'
+  if (!cleanUris(form.redirectUris).length)
+    next.redirectUris = 'Add at least one redirect URI.'
+  errors.value = next
+  redirectRowErrors.value = checkUris(form.redirectUris, form.platform)
+  logoutRowErrors.value = checkUris(form.postLogoutRedirectUris, form.platform)
+  return !Object.keys(next).length && ![...redirectRowErrors.value, ...logoutRowErrors.value].some(Boolean)
 }
 
-async function handleSubmit() {
-  hasAttemptedSubmit.value = true
-  const payload = buildPayload()
-  if (!payload.clientId || !payload.displayName || payload.redirectUris.length === 0) {
-    toast.add({
-      title: 'Missing required fields',
-      color: 'error',
+/** The API names list errors like "redirectUris[2]", counting only the rows it was sent. */
+function applyApiErrors(error: unknown) {
+  const bag = getApiValidationErrors(error)
+  errors.value = {
+    displayName: getApiFieldError(bag, 'DisplayName'),
+    clientId: getApiFieldError(bag, 'ClientId'),
+    redirectUris: getApiFieldError(bag, 'RedirectUris'),
+    postLogoutRedirectUris: getApiFieldError(bag, 'PostLogoutRedirectUris'),
+  }
+  const rowErrors = (uris: string[], name: string) => {
+    let sent = -1
+    return uris.map((uri) => {
+      if (!uri.trim())
+        return undefined
+      sent++
+      return getApiFieldError(bag, `${name}[${sent}]`)
     })
+  }
+  redirectRowErrors.value = rowErrors(form.redirectUris, 'RedirectUris')
+  logoutRowErrors.value = rowErrors(form.postLogoutRedirectUris, 'PostLogoutRedirectUris')
+}
+
+function focusFirstError() {
+  nextTick(() => document.querySelector<HTMLElement>('#oa-form [aria-invalid="true"]')?.focus())
+}
+
+async function save() {
+  formError.value = ''
+  if (!validate()) {
+    focusFirstError()
     return
   }
-
-  if ([...redirectUriErrors.value, ...postLogoutRedirectUriErrors.value].some(Boolean)) {
-    toast.add({
-      title: 'Fix the highlighted URIs',
-      color: 'error',
-    })
-    return
+  const body = {
+    displayName: form.displayName.trim(),
+    clientId: form.clientId.trim(),
+    platform: form.platform,
+    redirectUris: cleanUris(form.redirectUris),
+    postLogoutRedirectUris: cleanUris(form.postLogoutRedirectUris),
   }
-
   try {
-    const response = isEditing.value && editingApplicationId.value
-      ? await updateMutation.mutateAsync({
-          path: { id: editingApplicationId.value },
-          body: {
-            ...payload,
-            rotateClientSecret: form.value.platform === 'Web' && form.value.rotateClientSecret,
-          },
-        })
-      : await createMutation.mutateAsync({ body: payload })
-
-    issuedSecret.value = response.clientSecret ?? null
-    await queryClient.invalidateQueries({
-      queryKey: geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryKey(),
-    })
-
-    toast.add({
-      title: isEditing.value ? 'OAuth application updated' : 'OAuth application created',
-      color: 'success',
-    })
-
-    if (!response.clientSecret) {
-      isEditorOpen.value = false
-      resetForm()
+    const result = editing.value?.id
+      ? await updateMutation.mutateAsync({ path: { id: editing.value.id }, body: { ...body, rotateClientSecret: form.platform === 'Web' && form.rotateSecret } })
+      : await createMutation.mutateAsync({ body })
+    const isNew = !editing.value
+    await refreshLists()
+    if (result?.clientSecret) {
+      issued.value = { name: body.displayName, clientId: body.clientId, secret: result.clientSecret, isNew }
+    }
+    else {
+      isFormOpen.value = false
+      toast.add({ tone: 'ok', title: isNew ? 'App added' : 'App saved', description: body.displayName })
     }
   }
   catch (error) {
-    toast.add({
-      title: 'Could not save OAuth application',
-      description: getApiErrorMessage(error, 'Please review the fields and try again.'),
-      color: 'error',
-    })
+    applyApiErrors(error)
+    formError.value = getApiValidationSummary(error) ?? getApiErrorMessage(error, 'The app wasn\'t saved. Try again.')
+    focusFirstError()
   }
 }
 
-async function confirmDelete() {
-  if (!pendingDeleteApplication.value?.id)
+// ---- delete (inline, one at a time) ----
+const deleteMutation = useGeeksHackingPortalApiEndpointsAdminOAuthApplicationsDeleteEndpoint()
+const confirmingId = ref<string | null>(null)
+const deleteError = ref('')
+function askDelete(app: App) {
+  confirmingId.value = app.id ?? null
+  deleteError.value = ''
+}
+async function confirmDelete(app: App) {
+  if (!app.id)
     return
-
+  deleteError.value = ''
   try {
-    await deleteMutation.mutateAsync({ path: { id: pendingDeleteApplication.value.id } })
-    await queryClient.invalidateQueries({
-      queryKey: geeksHackingPortalApiEndpointsAdminOAuthApplicationsListEndpointQueryKey(),
-    })
-    toast.add({ title: 'OAuth application deleted', color: 'success' })
-    pendingDeleteApplication.value = null
+    await deleteMutation.mutateAsync({ path: { id: app.id } })
+    confirmingId.value = null
+    await refreshLists()
+    toast.add({ tone: 'ok', title: 'App deleted', description: app.displayName ?? undefined })
   }
   catch (error) {
-    toast.add({
-      title: 'Could not delete OAuth application',
-      description: getApiErrorMessage(error, 'Please try again.'),
-      color: 'error',
-    })
+    deleteError.value = getApiErrorMessage(error, 'It wasn\'t deleted. Try again.')
   }
 }
 
-async function copySecret() {
-  if (!issuedSecret.value)
-    return
-
-  await navigator.clipboard.writeText(issuedSecret.value)
-  toast.add({ title: 'Client secret copied', color: 'success' })
-}
-
-function platformBadgeColor(platform: OAuthApplicationPlatform | null | undefined) {
-  return platform === 'Native' ? 'info' : 'primary'
+const URIS_SHOWN = 2
+const expanded = ref(new Set<string>())
+function toggleUris(id: string) {
+  const next = new Set(expanded.value)
+  if (next.has(id))
+    next.delete(id)
+  else
+    next.add(id)
+  expanded.value = next
 }
 </script>
 
 <template>
   <GPanel id="oauth-applications">
     <template #header>
-      <GPanelHeader title="OAuth Applications">
+      <GPanelHeader title="My OAuth apps">
         <template #right>
-          <UButton
-            v-if="user?.isRoot"
-            icon="i-lucide-plus"
-            size="sm"
-            @click="openCreateModal"
-          >
-            Add Application
-          </UButton>
+          <GButton
+            v-if="isAdmin && apps.length"
+            variant="primary"
+            icon="material-symbols:add-rounded"
+            label="Add app"
+            @click="openAdd"
+          />
         </template>
       </GPanelHeader>
     </template>
 
     <template #body>
-      <div
-        v-if="isLoadingUser || isLoadingApplications || isLoadingAnalytics"
-        class="text-sm text-(--ui-text-muted)"
-      >
-        Loading OAuth applications...
-      </div>
-
-      <UAlert
-        v-else-if="!user?.isRoot"
-        color="error"
-        variant="subtle"
-        icon="i-lucide-shield-alert"
-        title="Admin access required"
-      />
-
-      <div
-        v-else-if="applications.length === 0"
-        class="flex min-h-72 flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-default p-6 text-center"
-      >
-        <UIcon
-          name="i-lucide-key-round"
-          class="size-8 text-(--ui-text-muted)"
+      <div class="oa">
+        <GLoading
+          v-if="isLoadingUser || (isAdmin && listQuery.isLoading.value)"
+          label="Loading your apps…"
         />
-        <div class="space-y-1">
-          <h2 class="text-base font-semibold">
-            No OAuth applications
-          </h2>
-          <p class="text-sm text-(--ui-text-muted)">
-            Create the first client application.
-          </p>
-        </div>
-        <UButton
-          icon="i-lucide-plus"
-          @click="openCreateModal"
+
+        <GEmptyState
+          v-else-if="!isAdmin"
+          icon="material-symbols:lock-rounded"
+          title="Only admins can do this"
+          description="OAuth apps are managed by portal admins."
+          bordered
+        />
+
+        <GAlert
+          v-else-if="listQuery.error.value && !apps.length"
+          tone="err"
+          title="Couldn't load your apps"
+          :description="getApiErrorMessage(listQuery.error.value, 'Refresh to try again.')"
+        />
+
+        <GEmptyState
+          v-else-if="!apps.length"
+          icon="material-symbols:key-rounded"
+          title="No apps yet"
+          description="Add an app to let people sign in to it with their GeeksHacking account."
+          bordered
         >
-          Add Application
-        </UButton>
-      </div>
-
-      <div
-        v-else
-        class="grid gap-4 lg:grid-cols-2"
-      >
-        <UCard
-          v-for="application in applications"
-          :key="application.id"
-          :ui="{ body: 'space-y-4' }"
-        >
-          <template #header>
-            <div class="flex items-start justify-between gap-3">
-              <div class="min-w-0">
-                <h2 class="truncate text-base font-semibold">
-                  {{ application.displayName }}
-                </h2>
-                <p class="truncate text-sm text-(--ui-text-muted)">
-                  {{ application.clientId }}
-                </p>
-              </div>
-              <UBadge
-                :color="platformBadgeColor(application.platform)"
-                variant="subtle"
-              >
-                {{ application.platform }}
-              </UBadge>
-            </div>
-          </template>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div class="flex flex-col rounded-lg border border-default p-3">
-              <div class="text-xs font-medium uppercase text-(--ui-text-muted)">
-                Authorizations
-              </div>
-              <div class="mt-1 text-2xl font-semibold">
-                {{ analyticsMap.get(application.id)?.totalAuthorizations ?? 0 }}
-              </div>
-            </div>
-            <div class="flex flex-col rounded-lg border border-default p-3">
-              <div class="text-xs font-medium uppercase text-(--ui-text-muted)">
-                Unique Users
-              </div>
-              <div class="mt-1 text-2xl font-semibold">
-                {{ analyticsMap.get(application.id)?.uniqueUsers ?? 0 }}
-              </div>
-            </div>
-          </div>
-
-          <div class="space-y-3">
-            <div>
-              <div class="mb-1 text-xs font-medium uppercase text-(--ui-text-muted)">
-                Redirect URIs
-              </div>
-              <div class="space-y-1">
-                <code
-                  v-for="uri in application.redirectUris"
-                  :key="uri"
-                  class="block truncate rounded-md bg-muted px-2 py-1 text-xs"
-                >
-                  {{ uri }}
-                </code>
-              </div>
-            </div>
-
-            <div v-if="application.postLogoutRedirectUris?.length">
-              <div class="mb-1 text-xs font-medium uppercase text-(--ui-text-muted)">
-                Post Logout Redirect URIs
-              </div>
-              <div class="space-y-1">
-                <code
-                  v-for="uri in application.postLogoutRedirectUris"
-                  :key="uri"
-                  class="block truncate rounded-md bg-muted px-2 py-1 text-xs"
-                >
-                  {{ uri }}
-                </code>
-              </div>
-            </div>
-          </div>
-
-          <template #footer>
-            <div class="flex justify-end gap-2">
-              <UButton
-                variant="ghost"
-                icon="i-lucide-history"
-                size="sm"
-                :to="`/dash/oauth-applications/${application.id}`"
-              >
-                History
-              </UButton>
-              <UButton
-                variant="ghost"
-                icon="i-lucide-pencil"
-                size="sm"
-                @click="openEditModal(application)"
-              >
-                Edit
-              </UButton>
-              <UButton
-                color="error"
-                variant="ghost"
-                icon="i-lucide-trash-2"
-                size="sm"
-                @click="pendingDeleteApplication = application"
-              >
-                Delete
-              </UButton>
-            </div>
-          </template>
-        </UCard>
-      </div>
-    </template>
-  </GPanel>
-
-  <UModal v-model:open="isEditorOpen">
-    <template #content>
-      <UCard>
-        <template #header>
-          <div class="flex items-center justify-between gap-3">
-            <h2 class="text-base font-semibold">
-              {{ isEditing ? 'Edit OAuth Application' : 'Create OAuth Application' }}
-            </h2>
-            <UButton
-              variant="ghost"
-              icon="i-lucide-x"
-              size="xs"
-              @click="isEditorOpen = false"
+          <template #actions>
+            <GButton
+              variant="primary"
+              icon="material-symbols:add-rounded"
+              label="Add app"
+              @click="openAdd"
             />
-          </div>
+          </template>
+        </GEmptyState>
+
+        <template v-else>
+          <p class="oa-intro">
+            Apps that let people sign in with their GeeksHacking account. Only you can see and change the apps you own.
+          </p>
+
+          <ul class="oa-list">
+            <li
+              v-for="app in apps"
+              :key="app.id"
+              class="oa-app"
+            >
+              <div class="oa-app__head">
+                <div class="oa-app__who">
+                  <h2 class="oa-app__name">
+                    {{ app.displayName || 'Untitled app' }}
+                  </h2>
+                  <div class="oa-app__id">
+                    <span class="oa-muted">Client ID</span>
+                    <code>{{ app.clientId }}</code>
+                    <GButton
+                      v-if="canCopy"
+                      variant="ghost"
+                      size="sm"
+                      icon="material-symbols:content-copy-rounded"
+                      :aria-label="`Copy ${app.displayName}'s client ID`"
+                      @click="copyText(app.clientId, 'the client ID')"
+                    />
+                  </div>
+                </div>
+                <GBadge
+                  variant="outline"
+                  :icon="platformOf(app.platform).icon"
+                  :label="platformOf(app.platform).label"
+                />
+              </div>
+
+              <dl class="oa-facts">
+                <div>
+                  <dt>Sign-ins</dt>
+                  <dd>
+                    <GSkeleton
+                      v-if="analyticsQuery.isLoading.value"
+                      class="oa-fact-skel"
+                    />
+                    <template v-else>
+                      {{ (usage.get(app.id)?.totalAuthorizations ?? 0).toLocaleString() }}
+                    </template>
+                  </dd>
+                </div>
+                <div>
+                  <dt>People</dt>
+                  <dd>
+                    <GSkeleton
+                      v-if="analyticsQuery.isLoading.value"
+                      class="oa-fact-skel"
+                    />
+                    <template v-else>
+                      {{ (usage.get(app.id)?.uniqueUsers ?? 0).toLocaleString() }}
+                    </template>
+                  </dd>
+                </div>
+              </dl>
+
+              <div class="oa-uris">
+                <p class="oa-uris__label">
+                  Redirect URIs
+                </p>
+                <ul>
+                  <li
+                    v-for="uri in expanded.has(app.id ?? '') ? app.redirectUris : app.redirectUris?.slice(0, URIS_SHOWN)"
+                    :key="uri"
+                  >
+                    <code>{{ uri }}</code>
+                  </li>
+                </ul>
+                <template v-if="app.postLogoutRedirectUris?.length && expanded.has(app.id ?? '')">
+                  <p class="oa-uris__label">
+                    After sign-out
+                  </p>
+                  <ul>
+                    <li
+                      v-for="uri in app.postLogoutRedirectUris"
+                      :key="uri"
+                    >
+                      <code>{{ uri }}</code>
+                    </li>
+                  </ul>
+                </template>
+                <GButton
+                  v-if="(app.redirectUris?.length ?? 0) > URIS_SHOWN || app.postLogoutRedirectUris?.length"
+                  variant="ghost"
+                  size="sm"
+                  class="oa-fit"
+                  :aria-expanded="expanded.has(app.id ?? '')"
+                  :label="expanded.has(app.id ?? '') ? 'Show fewer' : `Show all addresses (${(app.redirectUris?.length ?? 0) + (app.postLogoutRedirectUris?.length ?? 0)})`"
+                  @click="toggleUris(app.id ?? '')"
+                />
+              </div>
+
+              <div
+                v-if="confirmingId === app.id"
+                class="oa-confirm"
+                role="group"
+                :aria-label="`Delete ${app.displayName}?`"
+              >
+                <p class="oa-confirm__text">
+                  <strong>Delete {{ app.displayName }}?</strong>
+                  Everyone signed in through it is signed out, and its sign-in history is deleted. This can't be undone.
+                </p>
+                <p
+                  v-if="deleteError"
+                  class="oa-error"
+                  role="alert"
+                >
+                  {{ deleteError }}
+                </p>
+                <div class="oa-actions">
+                  <GButton
+                    variant="ghost"
+                    size="sm"
+                    label="Keep it"
+                    :disabled="deleteMutation.isPending.value"
+                    @click="confirmingId = null"
+                  />
+                  <GButton
+                    variant="danger"
+                    size="sm"
+                    icon="material-symbols:delete-rounded"
+                    label="Delete app"
+                    :loading="deleteMutation.isPending.value"
+                    loading-label="Deleting"
+                    @click="confirmDelete(app)"
+                  />
+                </div>
+              </div>
+              <div
+                v-else
+                class="oa-actions"
+              >
+                <GButton
+                  variant="ghost"
+                  size="sm"
+                  icon="material-symbols:history-rounded"
+                  label="Sign-in history"
+                  :to="`/dash/oauth-applications/${app.id}`"
+                />
+                <GButton
+                  variant="secondary"
+                  size="sm"
+                  icon="material-symbols:edit-rounded"
+                  label="Edit"
+                  @click="openEdit(app)"
+                />
+                <GButton
+                  variant="ghost"
+                  size="sm"
+                  icon="material-symbols:delete-rounded"
+                  :aria-label="`Delete ${app.displayName}`"
+                  @click="askDelete(app)"
+                />
+              </div>
+            </li>
+          </ul>
         </template>
+      </div>
+
+      <GModal
+        v-model:open="isFormOpen"
+        :title="dialogTitle"
+        :description="issued ? 'Copy the client secret now and keep it somewhere safe. It won\'t be shown again.' : undefined"
+        :dismissible="!issued && !isSaving"
+        size="lg"
+      >
+        <!-- the secret, shown once -->
+        <div
+          v-if="issued"
+          class="oa-issued"
+        >
+          <dl class="oa-issued__pairs">
+            <div>
+              <dt>Client ID</dt>
+              <dd><code>{{ issued.clientId }}</code></dd>
+            </div>
+            <div>
+              <dt>Client secret</dt>
+              <dd><code class="oa-issued__secret">{{ issued.secret }}</code></dd>
+            </div>
+          </dl>
+          <GButton
+            v-if="canCopy"
+            variant="secondary"
+            icon="material-symbols:content-copy-rounded"
+            label="Copy secret"
+            @click="copyText(issued.secret, 'the client secret')"
+          />
+          <GAlert
+            v-if="!issued.isNew"
+            tone="attention"
+            description="The old secret has stopped working. Update the app with the new one."
+          />
+        </div>
 
         <form
-          class="space-y-4"
-          @submit.prevent="handleSubmit"
+          v-else
+          id="oa-form"
+          class="oa-form"
+          novalidate
+          @submit.prevent="save"
         >
-          <UAlert
-            v-if="issuedSecret"
-            color="warning"
-            variant="subtle"
-            icon="i-lucide-key-round"
-            title="Client secret issued"
-          >
-            <template #description>
-              <div class="mt-2 flex flex-col gap-2">
-                <code class="break-all rounded-md bg-default px-2 py-1 text-xs">
-                  {{ issuedSecret }}
-                </code>
-                <UButton
-                  icon="i-lucide-copy"
-                  size="xs"
-                  variant="outline"
-                  class="self-start"
-                  @click="copySecret"
-                >
-                  Copy Secret
-                </UButton>
-              </div>
-            </template>
-          </UAlert>
-
-          <div class="grid gap-4 sm:grid-cols-2">
-            <LazyUFormField
+          <div class="oa-pair">
+            <GFormField
+              label="Name"
+              required
+              :error="errors.displayName"
+            >
+              <GInput
+                v-model="form.displayName"
+                autocomplete="off"
+                placeholder="Hackathon judging app"
+                autofocus
+              />
+            </GFormField>
+            <GFormField
               label="Client ID"
               required
+              hint="What the app sends when it signs people in. Letters, numbers, dots, underscores, colons or hyphens."
+              :error="errors.clientId"
             >
-              <LazyUInput
+              <GInput
                 v-model="form.clientId"
-                placeholder="my-client"
+                autocomplete="off"
+                spellcheck="false"
+                autocapitalize="off"
+                placeholder="judging-app"
               />
-            </LazyUFormField>
-
-            <LazyUFormField
-              label="Platform"
-              required
-            >
-              <LazyUSelect
-                v-model="form.platform"
-                :items="platformItems"
-                value-key="value"
-                label-key="label"
-              />
-            </LazyUFormField>
+            </GFormField>
           </div>
 
-          <LazyUFormField
-            label="Display Name"
-            required
-          >
-            <LazyUInput
-              v-model="form.displayName"
-              placeholder="My Client Application"
-            />
-          </LazyUFormField>
+          <fieldset class="oa-platform">
+            <legend class="oa-platform__legend">
+              Kind of app
+            </legend>
+            <div class="oa-platform__options">
+              <label
+                v-for="option in PLATFORMS"
+                :key="option.value"
+                class="oa-option"
+                :class="{ 'is-on': form.platform === option.value }"
+              >
+                <input
+                  v-model="form.platform"
+                  type="radio"
+                  name="oa-platform"
+                  :value="option.value"
+                  class="sr-only"
+                >
+                <Icon
+                  :name="option.icon"
+                  class="oa-option__icon"
+                  aria-hidden="true"
+                />
+                <span>
+                  <span class="oa-option__label">{{ option.label }}</span>
+                  <span class="oa-option__text">{{ option.description }}</span>
+                </span>
+              </label>
+            </div>
+          </fieldset>
 
-          <LazyOauthUriListField
+          <OauthUriListField
             v-model="form.redirectUris"
             label="Redirect URIs"
-            description="Sign-in requests must use one of these URIs exactly."
             item-label="redirect URI"
+            hint="Where people are sent back after signing in. The app must use one of these exactly."
             placeholder="https://app.example.com/callback"
             required
-            :error="redirectUrisError"
-            :row-errors="redirectUriErrors"
+            :error="errors.redirectUris"
+            :row-errors="redirectRowErrors"
           />
-
-          <LazyOauthUriListField
+          <OauthUriListField
             v-model="form.postLogoutRedirectUris"
-            label="Post Logout Redirect URIs"
-            item-label="post logout redirect URI"
+            label="After sign-out"
+            item-label="sign-out address"
+            hint="Optional. Where people can be sent after signing out."
             placeholder="https://app.example.com/signed-out"
-            :row-errors="postLogoutRedirectUriErrors"
+            :error="errors.postLogoutRedirectUris"
+            :row-errors="logoutRowErrors"
           />
 
-          <LazyUCheckbox
-            v-if="isEditing && form.platform === 'Web'"
-            v-model="form.rotateClientSecret"
-            label="Rotate client secret"
+          <template v-if="editing && form.platform === 'Web'">
+            <GAlert
+              v-if="getsSecretAnyway"
+              tone="attention"
+              description="Switching to Web gives the app a client secret. You'll see it after saving."
+            />
+            <GCheckbox
+              v-else
+              v-model="form.rotateSecret"
+              label="Issue a new client secret"
+              description="The current secret stops working as soon as you save. You'll see the new one once."
+            />
+          </template>
+          <GAlert
+            v-if="editing && editing.platform === 'Web' && form.platform === 'Native'"
+            tone="attention"
+            description="Native apps have no client secret: the current one stops working when you save."
           />
 
-          <div class="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
-            <UButton
-              variant="ghost"
-              class="w-full sm:w-auto"
-              @click="isEditorOpen = false"
-            >
-              Close
-            </UButton>
-            <UButton
-              type="submit"
-              class="w-full sm:w-auto"
-              :loading="isSubmitting"
-            >
-              {{ isEditing ? 'Update' : 'Create' }}
-            </UButton>
-          </div>
+          <GAlert
+            v-if="formError"
+            tone="err"
+            title="Not saved"
+            :description="formError"
+          />
         </form>
-      </UCard>
-    </template>
-  </UModal>
-
-  <UModal :open="!!pendingDeleteApplication">
-    <template #content>
-      <UCard>
-        <template #header>
-          <h2 class="text-base font-semibold">
-            Delete OAuth Application
-          </h2>
-        </template>
-
-        <p class="text-sm text-(--ui-text-muted)">
-          Delete {{ pendingDeleteApplication?.displayName ?? pendingDeleteApplication?.clientId }}?
-        </p>
 
         <template #footer>
-          <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-            <UButton
+          <GButton
+            v-if="issued"
+            variant="primary"
+            label="I've copied it"
+            @click="isFormOpen = false"
+          />
+          <template v-else>
+            <GButton
               variant="ghost"
-              class="w-full sm:w-auto"
-              @click="pendingDeleteApplication = null"
-            >
-              Cancel
-            </UButton>
-            <UButton
-              color="error"
-              icon="i-lucide-trash-2"
-              class="w-full sm:w-auto"
-              :loading="deleteMutation.isPending.value"
-              @click="confirmDelete"
-            >
-              Delete
-            </UButton>
-          </div>
+              label="Cancel"
+              :disabled="isSaving"
+              @click="isFormOpen = false"
+            />
+            <GButton
+              type="submit"
+              form="oa-form"
+              variant="primary"
+              :label="editing ? 'Save changes' : 'Add app'"
+              :loading="isSaving"
+              loading-label="Saving"
+            />
+          </template>
         </template>
-      </UCard>
+      </GModal>
     </template>
-  </UModal>
+  </GPanel>
 </template>
+
+<style scoped>
+.oa {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+}
+.oa-intro {
+  margin: 0;
+  color: var(--gh-text-muted);
+}
+.oa-muted { color: var(--gh-text-muted); }
+.oa-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr));
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.oa-app {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  padding: 20px;
+  border: var(--gh-border-width) solid var(--gh-line);
+  border-radius: var(--radius-gh-lg);
+  background: var(--gh-surface);
+}
+.oa-app__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.oa-app__who { min-width: 0; }
+.oa-app__name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.oa-app__id {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 8px;
+  margin-top: 2px;
+  font-size: 14px;
+}
+.oa-app__id code { overflow-wrap: anywhere; }
+.oa-facts {
+  display: flex;
+  gap: 32px;
+  margin: 0;
+}
+.oa-facts dt {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gh-text-muted);
+}
+.oa-facts dd {
+  margin: 2px 0 0;
+  font-size: 24px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.oa-fact-skel {
+  display: block;
+  width: 3rem;
+  height: 28px;
+}
+.oa-uris {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.oa-uris__label {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gh-text-muted);
+}
+.oa-uris ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.oa-uris code {
+  display: block;
+  padding: 4px 8px;
+  border: 1px solid var(--gh-line-soft);
+  border-radius: var(--radius-gh);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.oa-fit { align-self: flex-start; }
+.oa-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--gh-line-soft);
+}
+.oa-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+  padding: 12px 14px;
+  border: var(--gh-border-width) solid var(--gh-err);
+  border-radius: var(--radius-gh);
+}
+.oa-confirm .oa-actions {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+.oa-confirm__text {
+  margin: 0;
+  font-size: 14px;
+}
+.oa-confirm__text strong {
+  display: block;
+  margin-bottom: 2px;
+}
+.oa-error {
+  margin: 0;
+  font-size: 14px;
+  color: var(--gh-err);
+}
+.oa-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.oa-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+@media (min-width: 40rem) {
+  .oa-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.oa-platform {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.oa-platform__legend {
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.oa-platform__options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 10px;
+}
+.oa-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: var(--gh-border-width) solid var(--gh-line-soft);
+  border-radius: var(--radius-gh);
+  cursor: pointer;
+}
+.oa-option:hover { background: var(--gh-ghost-hover); }
+/* chosen: same as the invite dialog's role cards (yellow fill, dark text) */
+.oa-option.is-on {
+  border-color: var(--gh-line);
+  background: var(--gh-accent);
+  color: var(--gh-on-accent);
+  box-shadow: 3px 3px 0 var(--gh-line);
+}
+.oa-option.is-on .oa-option__text { color: inherit; }
+.oa-option:has(input:focus-visible) {
+  outline: 2px solid var(--gh-focus);
+  outline-offset: 2px;
+}
+.oa-option__icon {
+  flex: none;
+  margin-top: 2px;
+  font-size: 20px;
+}
+.oa-option__label {
+  display: block;
+  font-weight: 700;
+}
+.oa-option__text {
+  display: block;
+  font-size: 13px;
+  color: var(--gh-text-muted);
+}
+.oa-issued {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+.oa-issued__pairs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+}
+.oa-issued__pairs dt {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gh-text-muted);
+}
+.oa-issued__pairs dd { margin: 4px 0 0; overflow-wrap: anywhere; }
+.oa-issued__secret {
+  display: block;
+  padding: 12px;
+  border: var(--gh-border-width) solid var(--gh-line);
+  border-radius: var(--radius-gh);
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+</style>

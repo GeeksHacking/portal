@@ -41,7 +41,8 @@ watch([isOrganizer, isCheckingAccess], ([organizer, checking]) => {
     navigateTo(`/dash/${hackathonIdOrShortCode.value}`)
 })
 
-useHead(() => ({ title: hackathon.value?.name ? `Challenges · ${hackathon.value.name}` : 'Challenge dashboard' }))
+// the layout adds the event's name: "Challenge dashboard · GeekHack · GeeksHacking"
+useHead({ title: 'Challenge dashboard' })
 
 const REFRESH_MS = 10_000
 const { data: challengesData, dataUpdatedAt, isLoading: isLoadingChallenges, error: challengesError } = useGeeksHackingPortalApiEndpointsParticipantsHackathonChallengesListEndpoint({ path: computed(() => ({ hackathonId: hackathonId.value })) }, {

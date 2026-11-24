@@ -15,10 +15,6 @@ import { githubLoginUrl } from '~/utils/login-url'
  * participant event pages (/[shortCode]/team, challenges, submission, schedule). Public pages
  * (e.g. /workshops/[slug]) use it too: signed out, the footer offers "Sign in" instead of the profile.
  */
-useHead({
-  titleTemplate: title => (title ? `${title} - GeeksHacking` : 'GeeksHacking'),
-})
-
 const { data: user, isLoading: userIsLoading } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
 
 const { data: organizerHackathons } = useGeeksHackingPortalApiEndpointsOrganizersHackathonListEndpoint({
@@ -38,6 +34,90 @@ const standaloneWorkshopId = computed(() => route.params.standaloneWorkshopId as
 const isDashRoute = computed(() => route.path === '/dash' || route.path.startsWith('/dash/'))
 // the participant event pages live at /[shortCode]/…, outside /dash
 const eventCode = computed(() => (!isDashRoute.value ? hackathonId.value : undefined))
+
+// pages under /dash/[hackathonId] that are a participant's own view, not organizer tools
+const isParticipantView = computed(() => route.path.includes('/participant/') || route.path.endsWith('/participant') || route.path.includes('/registration'))
+
+/**
+ * The event an organizer is managing on this page, if any: its name comes from the organizer
+ * lists already loaded above, so it costs no extra request. `name` is null until they load.
+ */
+const managedEvent = computed(() => {
+  if (standaloneWorkshopId.value) {
+    const workshop = organizerWorkshops.value?.standaloneWorkshops?.find(w => w.id === standaloneWorkshopId.value)
+    return { kind: 'workshop' as const, base: `/dash/standalone/${standaloneWorkshopId.value}`, name: workshop?.title || null }
+  }
+  if (isDashRoute.value && hackathonId.value && !isParticipantView.value) {
+    const hackathon = organizerHackathons.value?.hackathons?.find(h => h.id === hackathonId.value)
+    return { kind: 'hackathon' as const, base: `/dash/${hackathonId.value}`, name: hackathon?.name || null }
+  }
+  return null
+})
+
+// every page header shows the event first: "GeekHack › Stats"
+provideGPanelCrumb(computed(() => (managedEvent.value?.name ? { label: managedEvent.value.name, to: managedEvent.value.base } : null)))
+
+function managedEventItems(event: NonNullable<typeof managedEvent.value>): GNavItem[] {
+  const base = event.base
+  if (event.kind === 'workshop') {
+    return [
+      { label: 'Check-ins', icon: 'material-symbols:qr-code-2-rounded', to: `${base}/checkin` },
+      { label: 'Resources', icon: 'material-symbols:redeem-rounded', to: `${base}/resources` },
+      { label: 'Stats', icon: 'material-symbols:pie-chart-rounded', to: `${base}/stats` },
+      { label: 'Participants', icon: 'material-symbols:group-rounded', to: `${base}/participants` },
+      { label: 'Organizers', icon: 'material-symbols:manage-accounts-rounded', to: `${base}/organizers` },
+      { label: 'Data Export', icon: 'material-symbols:download-rounded', to: `${base}/infopack` },
+      { label: 'Questions', icon: 'material-symbols:help-rounded', to: `${base}/questions` },
+      { label: 'Settings', icon: 'material-symbols:settings-rounded', to: `${base}/settings` },
+    ]
+  }
+  return [
+    { label: 'Check-ins', icon: 'material-symbols:qr-code-2-rounded', to: `${base}/checkin` },
+    { label: 'Resources', icon: 'material-symbols:redeem-rounded', to: `${base}/resources` },
+    { label: 'Stats', icon: 'material-symbols:pie-chart-rounded', to: `${base}/stats` },
+    { label: 'Participants', icon: 'material-symbols:group-rounded', to: `${base}/participants` },
+    { label: 'Teams', icon: 'material-symbols:group-add-rounded', to: `${base}/teams` },
+    {
+      label: 'Challenges',
+      icon: 'material-symbols:trophy-rounded',
+      children: [
+        { label: 'Challenges', to: `${base}/challenges` },
+        { label: 'Analytics', to: `${base}/challenge-dashboard` },
+      ],
+    },
+    { label: 'Submissions', icon: 'material-symbols:description-rounded', to: `${base}/submissions` },
+    { label: 'Judges', icon: 'material-symbols:balance-rounded', to: `${base}/judges` },
+    { label: 'Organizers', icon: 'material-symbols:manage-accounts-rounded', to: `${base}/organizers` },
+    { label: 'Questions', icon: 'material-symbols:help-rounded', to: `${base}/questions` },
+    { label: 'Settings', icon: 'material-symbols:settings-rounded', to: `${base}/settings` },
+    { label: 'Data Export', icon: 'material-symbols:download-rounded', to: `${base}/infopack` },
+  ]
+}
+
+/** The sidebar label of the event page you're on, for the tab title when the page sets none. */
+const managedPageLabel = computed(() => {
+  if (!managedEvent.value)
+    return undefined
+  const at = (to?: string) => !!to && (route.path === to || route.path.startsWith(`${to}/`))
+  for (const item of managedEventItems(managedEvent.value)) {
+    const child = item.children?.find(c => at(c.to))
+    if (child)
+      return child.label === item.label ? item.label : `${item.label.replace(/s$/, '')} ${child.label.toLowerCase()}`
+    if (at(item.to))
+      return item.label
+  }
+  return undefined
+})
+
+// browser tab: "Stats · GeekHack · GeeksHacking" on an event's pages, "Explore · GeeksHacking" elsewhere
+useHead(() => {
+  // read here, not inside titleTemplate, so the title updates when the name loads
+  const eventName = managedEvent.value?.name
+  return {
+    title: managedPageLabel.value,
+    titleTemplate: (title?: string) => [title, eventName, 'GeeksHacking'].filter(Boolean).join(' · '),
+  }
+})
 
 const { data: eventHackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint(
   { path: computed(() => ({ hackathonIdOrShortCode: eventCode.value ?? '' })) },
@@ -62,52 +142,15 @@ const groups = computed<GNavGroup[]>(() => {
     })
   }
 
-  const isParticipantView = route.path.includes('/participant/') || route.path.endsWith('/participant') || route.path.includes('/registration')
-
   if (user.value?.id && isOrganizer.value) {
     const items: GNavItem[] = [
       { label: 'Workspace', icon: 'material-symbols:dashboard-rounded', to: '/dash/manage' },
     ]
-
-    if (standaloneWorkshopId.value) {
-      const base = `/dash/standalone/${standaloneWorkshopId.value}`
-      items.push(
-        { label: 'Check-ins', icon: 'material-symbols:qr-code-2-rounded', to: `${base}/checkin` },
-        { label: 'Resources', icon: 'material-symbols:redeem-rounded', to: `${base}/resources` },
-        { label: 'Stats', icon: 'material-symbols:pie-chart-rounded', to: `${base}/stats` },
-        { label: 'Participants', icon: 'material-symbols:group-rounded', to: `${base}/participants` },
-        { label: 'Organizers', icon: 'material-symbols:manage-accounts-rounded', to: `${base}/organizers` },
-        { label: 'Data Export', icon: 'material-symbols:download-rounded', to: `${base}/infopack` },
-        { label: 'Questions', icon: 'material-symbols:help-rounded', to: `${base}/questions` },
-        { label: 'Settings', icon: 'material-symbols:settings-rounded', to: `${base}/settings` },
-      )
-    }
-    else if (isDashRoute.value && hackathonId.value && !isParticipantView) {
-      const base = `/dash/${hackathonId.value}`
-      items.push(
-        { label: 'Check-ins', icon: 'material-symbols:qr-code-2-rounded', to: `${base}/checkin` },
-        { label: 'Resources', icon: 'material-symbols:redeem-rounded', to: `${base}/resources` },
-        { label: 'Stats', icon: 'material-symbols:pie-chart-rounded', to: `${base}/stats` },
-        { label: 'Participants', icon: 'material-symbols:group-rounded', to: `${base}/participants` },
-        { label: 'Teams', icon: 'material-symbols:group-add-rounded', to: `${base}/teams` },
-        {
-          label: 'Challenges',
-          icon: 'material-symbols:trophy-rounded',
-          children: [
-            { label: 'Challenges', to: `${base}/challenges` },
-            { label: 'Analytics', to: `${base}/challenge-dashboard` },
-          ],
-        },
-        { label: 'Submissions', icon: 'material-symbols:description-rounded', to: `${base}/submissions` },
-        { label: 'Judges', icon: 'material-symbols:balance-rounded', to: `${base}/judges` },
-        { label: 'Organizers', icon: 'material-symbols:manage-accounts-rounded', to: `${base}/organizers` },
-        { label: 'Questions', icon: 'material-symbols:help-rounded', to: `${base}/questions` },
-        { label: 'Settings', icon: 'material-symbols:settings-rounded', to: `${base}/settings` },
-        { label: 'Data Export', icon: 'material-symbols:download-rounded', to: `${base}/infopack` },
-      )
-    }
-
     result.push({ label: 'Organizer', items })
+
+    // the event being managed: its own group, named after it
+    if (managedEvent.value)
+      result.push({ label: managedEvent.value.name ?? 'This event', items: managedEventItems(managedEvent.value) })
   }
 
   if (user.value?.isRoot) {

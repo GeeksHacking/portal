@@ -190,6 +190,23 @@ const {
   scrollTo,
 } = useVirtualList(visibleParticipants, { itemHeight: 76, overscan: 8 })
 
+// ?participant=<id> (e.g. from a team's member list) opens that person once the list loads
+watch([participants, () => route.query.participant], ([list, wanted]) => {
+  if (typeof wanted !== 'string' || !wanted || selectedId.value === wanted)
+    return
+  const person = list.find(p => p.id === wanted)
+  if (!person)
+    return
+  if (!matchesFilter(person, activeFilter.value))
+    activeFilter.value = reviewStateOf(person)
+  selectedId.value = wanted
+  nextTick(() => {
+    const index = visibleParticipants.value.findIndex(p => p.id === wanted)
+    if (index >= 0)
+      scrollTo(index)
+  })
+}, { immediate: true })
+
 function select(id: string | undefined) {
   if (id)
     selectedId.value = id

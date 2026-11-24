@@ -170,15 +170,16 @@ watch([selectedId, () => challenges.value.length], async () => {
           </p>
         </div>
 
+        <!-- the stored criteria is a rule the API checks on submit; only describe the ones we can put into words -->
         <div
-          v-if="challenge.selectionCriteriaStmt"
+          v-if="describeChallengeRule(challenge.selectionCriteriaStmt, true)"
           class="challenges__block"
         >
           <h3 class="challenges__block-title">
-            Selection criteria
+            Who can pick it
           </h3>
           <p class="challenges__text">
-            {{ challenge.selectionCriteriaStmt }}
+            {{ describeChallengeRule(challenge.selectionCriteriaStmt, true) }}
           </p>
         </div>
       </TabsContent>

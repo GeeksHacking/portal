@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
@@ -36,10 +38,29 @@ var api = builder
     .WaitFor(db)
     .WaitFor(openIddictDb);
 
-builder
+// The WebApp imports @geekshacking/portal-sdk from WebSdk/dist. If nuxt dev starts
+// before dist is built, Vite caches the failed import and serves a blank page until
+// restarted. So "sdk" reports healthy only once every built entry point exists, and
+// "app" waits for that.
+var sdkDist = Path.GetFullPath(Path.Combine(builder.AppHostDirectory, "../GeeksHackingPortal.WebSdk/dist"));
+string[] sdkEntryPoints =
+[
+    "index.js", "hooks.js", "zod.js", "testing.js",
+    "testing/handlers.js", "testing/mocks.js", "client/index.js",
+];
+builder.Services.AddHealthChecks().AddCheck("sdk-dist", () =>
+{
+    var missing = sdkEntryPoints.Where(f => !File.Exists(Path.Combine(sdkDist, f))).ToArray();
+    return missing.Length == 0
+        ? HealthCheckResult.Healthy()
+        : HealthCheckResult.Unhealthy($"Waiting for the SDK build: {string.Join(", ", missing)}");
+});
+
+var sdk = builder
     .AddJavaScriptApp("sdk", "../GeeksHackingPortal.WebSdk")
     .WithPnpm()
     .WithReference(api)
+    .WithHealthCheck("sdk-dist")
     .WaitFor(api);
 
 builder
@@ -47,7 +68,8 @@ builder
     .WithPnpm(install: false)
     .WithReference(api)
     .WithHttpEndpoint(port: 3000, env: "PORT")
-    .WaitFor(api);
+    .WaitFor(api)
+    .WaitFor(sdk);
 
 builder
     .AddJavaScriptApp("oidc-app-playground", "../GeeksHackingPortal.OidcWebPlayground")

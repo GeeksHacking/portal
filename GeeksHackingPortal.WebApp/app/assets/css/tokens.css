@@ -1,0 +1,320 @@
+/*
+ * GeeksHacking design tokens (redesign, direction "A Offset" + accents, C as dark theme).
+ *
+ * Three layers:
+ *   1. Brand palette   raw colours from the brand guide (never use directly in components)
+ *   2. Semantic tokens --gh-* custom properties that switch between light and dark
+ *   3. Tailwind theme  utilities such as bg-gh-surface, text-gh-muted, shadow-gh-md, rounded-gh
+ *
+ * Colour rules (agreed in review, see /design-lab):
+ *   - Neutrals carry the page. Yellow is only a solid fill with dark text on top.
+ *   - Status is green / red only; "pending" is solid yellow with a dark edge.
+ *   - No tinted surfaces in dark mode: highlight with a yellow edge instead.
+ *   - Orange only appears inside the hero gradient.
+ *   - Text >= 4.5:1, UI parts >= 3:1 against what they sit on.
+ *
+ * Dark mode follows the `.dark` class (Nuxt color-mode) or `data-gh-theme="dark"` on any element.
+ * Nothing here restyles existing pages: all new utilities are prefixed with `gh`.
+ */
+
+/* ---------- 1 + 3. Brand palette and static theme values ---------- */
+@theme static {
+  --color-gh-yellow: #fff200;
+  --color-gh-yellow-tint: #fff870;
+  --color-gh-yellow-pale: #fffcc2;
+  --color-gh-canvas: #f5f5f5;
+  --color-gh-ink: #1c1b1b;
+  --color-gh-ink-2: #29282a;
+  --color-gh-ink-3: #403f41;
+  --color-gh-grey: #a09fa0;
+  --color-gh-grey-light: #cfcfcf;
+  --color-gh-orange: #f79400;
+
+  --font-display: 'Libre Franklin', 'Franklin Gothic Medium', 'Franklin Gothic', ui-sans-serif, sans-serif;
+  --font-body: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --radius-gh-sm: 6px;
+  --radius-gh: 10px;
+  --radius-gh-lg: 14px;
+  --radius-gh-pill: 999px;
+
+  --ease-gh: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ---------- 2. Semantic tokens: light ---------- */
+:root,
+[data-gh-theme='light'] {
+  --gh-bg: #fafaf7;
+  --gh-surface: #ffffff;
+  --gh-surface-sunken: #f5f5f5;
+  --gh-surface-raised: #ffffff; /* menus, modals */
+
+  --gh-text: #1c1b1b;
+  --gh-text-muted: #5e5d5f;
+  --gh-text-subtle: #6f6e70; /* placeholders, hints */
+  --gh-text-disabled: #a09fa0; /* disabled controls only (exempt from contrast rules) */
+
+  --gh-line: #1c1b1b; /* card / input outlines */
+  --gh-line-soft: #cfcfcf; /* table row dividers */
+  --gh-line-disabled: #cfcfcf;
+
+  --gh-accent: #fff200;
+  --gh-on-accent: #1c1b1b;
+  --gh-highlight: #fffcc2; /* one highlighted tile per view, save bar */
+  --gh-highlight-edge: #1c1b1b;
+  --gh-highlight-ink: #1c1b1b;
+
+  --gh-ok: #1f7a45;
+  --gh-ok-soft: #ddf3e5;
+  --gh-err: #a32d2d;
+  --gh-err-soft: #fbe3e3;
+  --gh-on-ok: #ffffff; /* text on solid status fills */
+  --gh-on-err: #ffffff;
+
+  --gh-focus: #1c1b1b;
+  --gh-shadow-color: #29282a;
+
+  /* charts: one ink ramp, dark→light (validated as an ordered ramp: each step >= 0.06 lightness
+     apart, lightest >= 2:1 on the card). Status bars use --gh-ok / --gh-accent / --gh-err beside
+     these greys; neighbours stay apart under colour-blindness (worst dE 16.4). */
+  --gh-viz-1: #1c1b1b;
+  --gh-viz-2: #6f6e70;
+  --gh-viz-3: #a09fa0;
+  --gh-viz-edge: #1c1b1b;
+  --gh-viz-track: #cfcfcf;
+
+  --gh-hero: #fff200;
+  --gh-hero-text: #1c1b1b;
+
+  /* logo (brand guide slides 1-1, 1-3): exact colours, not the UI ramp */
+  --gh-logo-frame: #fff200;
+  --gh-logo-shadow: #403f41;
+  --gh-logo-bar: #403f41;
+  --gh-logo-ink: #f5f5f5;
+  --gh-logo-mono: #1f1f1f;
+
+  /* fields: offset ring in yellow (focus) or pale red (error), each with an outline */
+  --gh-field-focus: 3px 3px 0 #fff200, 3px 3px 0 1.5px #1c1b1b;
+  --gh-field-focus-border: #1c1b1b;
+  --gh-field-error: 3px 3px 0 #fbe3e3, 3px 3px 0 1.5px #a32d2d;
+  --gh-ghost-hover: rgb(0 0 0 / 0.06);
+  --gh-option-hover: rgb(0 0 0 / 0.06); /* highlighted menu option */
+
+  /* overlays: scrim behind modals, offset shadow under menus and modals */
+  --gh-scrim: rgb(28 27 27 / 0.55);
+  --gh-shadow-overlay: 6px 6px 0 #29282a;
+
+  --gh-border-width: 1.5px;
+  --gh-tracking: 0.5px;
+
+  --gh-dur-press: 80ms;
+  --gh-dur-fast: 150ms;
+  --gh-dur-base: 250ms;
+
+  color-scheme: light;
+}
+
+/* ---------- 2. Semantic tokens: dark ---------- */
+.dark,
+[data-gh-theme='dark'] {
+  --gh-bg: #1c1b1b;
+  --gh-surface: #29282a;
+  --gh-surface-sunken: #232224;
+  --gh-surface-raised: #302f31;
+
+  --gh-text: #f2f2f2;
+  --gh-text-muted: #a09fa0;
+  --gh-text-subtle: #a09fa0;
+  --gh-text-disabled: #6c6b6d;
+
+  --gh-line: #858486;
+  --gh-line-soft: #403f41;
+  --gh-line-disabled: #333333;
+
+  --gh-accent: #fff200;
+  --gh-on-accent: #1c1b1b;
+  --gh-highlight: #29282a; /* no tints in dark: the edge does the highlighting */
+  --gh-highlight-edge: #fff200;
+  --gh-highlight-ink: #fff200;
+
+  --gh-ok: #5fd08f;
+  --gh-ok-soft: transparent;
+  --gh-err: #ff8a8a;
+  --gh-err-soft: transparent;
+  --gh-on-ok: #1c1b1b;
+  --gh-on-err: #1c1b1b;
+
+  --gh-focus: #fff200;
+  --gh-shadow-color: #000000;
+
+  --gh-viz-1: #f2f2f2;
+  --gh-viz-2: #a09fa0;
+  --gh-viz-3: #5e5d5f;
+  --gh-viz-edge: #1c1b1b;
+  --gh-viz-track: #4a494b;
+
+  /* black under the text column, orange only behind the art on the right */
+  --gh-hero: linear-gradient(100deg, #1c1b1b 0%, #1c1b1b 63%, #5a3a06 68%, #f79400 77%, #fff200 100%);
+  --gh-hero-text: #f2f2f2;
+
+  --gh-logo-frame: #fff200;
+  --gh-logo-shadow: #403f41;
+  --gh-logo-bar: #403f41;
+  --gh-logo-ink: #f5f5f5;
+  --gh-logo-mono: #fff200;
+
+  --gh-field-focus: 3px 3px 0 rgb(255 242 0 / 0.35);
+  --gh-field-focus-border: #fff200;
+  --gh-field-error: 3px 3px 0 rgb(255 138 138 / 0.3);
+  --gh-ghost-hover: rgb(255 255 255 / 0.08);
+  --gh-option-hover: rgb(255 255 255 / 0.1);
+
+  --gh-scrim: rgb(0 0 0 / 0.7);
+  --gh-shadow-overlay: 6px 6px 0 #000000;
+
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root,
+  [data-gh-theme] {
+    --gh-dur-press: 0ms;
+    --gh-dur-fast: 0ms;
+    --gh-dur-base: 0ms;
+  }
+}
+
+/* ---------- 3. Semantic tokens exposed to Tailwind (follow the theme at use time) ---------- */
+@theme inline {
+  --color-gh-bg: var(--gh-bg);
+  --color-gh-surface: var(--gh-surface);
+  --color-gh-sunken: var(--gh-surface-sunken);
+  --color-gh-raised: var(--gh-surface-raised);
+  --color-gh-text: var(--gh-text);
+  --color-gh-muted: var(--gh-text-muted);
+  --color-gh-subtle: var(--gh-text-subtle);
+  --color-gh-disabled: var(--gh-text-disabled);
+  --color-gh-line: var(--gh-line);
+  --color-gh-line-soft: var(--gh-line-soft);
+  --color-gh-accent: var(--gh-accent);
+  --color-gh-on-accent: var(--gh-on-accent);
+  --color-gh-highlight: var(--gh-highlight);
+  --color-gh-highlight-edge: var(--gh-highlight-edge);
+  --color-gh-highlight-ink: var(--gh-highlight-ink);
+  --color-gh-ok: var(--gh-ok);
+  --color-gh-ok-soft: var(--gh-ok-soft);
+  --color-gh-err: var(--gh-err);
+  --color-gh-err-soft: var(--gh-err-soft);
+  --color-gh-focus: var(--gh-focus);
+  --color-gh-viz-1: var(--gh-viz-1);
+  --color-gh-viz-2: var(--gh-viz-2);
+  --color-gh-viz-3: var(--gh-viz-3);
+  --color-gh-viz-edge: var(--gh-viz-edge);
+  --color-gh-viz-track: var(--gh-viz-track);
+
+  --shadow-gh-sm: 3px 3px 0 var(--gh-shadow-color);
+  --shadow-gh-md: 4px 4px 0 var(--gh-shadow-color);
+  --shadow-gh-lg: 8px 8px 0 var(--gh-shadow-color);
+}
+
+/* ---------- Base for redesigned screens (opt-in, so existing pages are untouched) ---------- */
+@utility gh-base {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: var(--gh-tracking);
+  background: var(--gh-bg);
+  color: var(--gh-text);
+}
+
+@utility gh-border {
+  border: var(--gh-border-width) solid var(--gh-line);
+}
+
+@utility gh-focus-ring {
+  outline: 3px solid var(--gh-focus);
+  outline-offset: 2px;
+}
+
+/* ---------- Type scale (brand guide; body uses 400 instead of the guide's 300 for legibility) ---------- */
+@utility gh-display {
+  font-family: var(--font-display);
+  font-size: 56px;
+  line-height: 1.02;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+@utility gh-h1 {
+  font-family: var(--font-display);
+  font-size: 45px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: var(--gh-tracking);
+}
+@utility gh-h2 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: var(--gh-tracking);
+}
+@utility gh-h3 {
+  font-family: var(--font-body);
+  font-size: 22px;
+  line-height: 1.3;
+  font-weight: 500;
+  letter-spacing: var(--gh-tracking);
+}
+@utility gh-h4 {
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 300;
+  letter-spacing: var(--gh-tracking);
+}
+@utility gh-body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: var(--gh-tracking);
+}
+@utility gh-small {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 400;
+  letter-spacing: var(--gh-tracking);
+}
+@utility gh-label {
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+@utility gh-strip {
+  /* the wordmark's letter-spaced label bar (D accent) */
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  padding: 3px 6px 3px 10px;
+  background: var(--gh-text);
+  color: var(--gh-bg);
+}
+@utility gh-numeral {
+  /* big section numerals (B accent) */
+  font-family: var(--font-display);
+  font-size: 72px;
+  line-height: 0.8;
+  font-weight: 600;
+}
+@utility gh-mono {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  letter-spacing: 0;
+}

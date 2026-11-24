@@ -2,6 +2,7 @@
 import {
   geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpointQueryOptions,
   useGeeksHackingPortalApiEndpointsOrganizersActivitiesRegistrationQuestionsInitializeEndpoint1,
+  useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonJoinEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonStatusEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
@@ -9,6 +10,8 @@ import { useQuery, useQueryClient } from '@tanstack/vue-query'
 
 const props = defineProps<{
   hackathonId?: string | null
+  /** inside the portal shell (dash): no standalone header or full-height page */
+  embedded?: boolean
 }>()
 
 useHead({
@@ -16,6 +19,12 @@ useHead({
 })
 
 const hackathonId = computed(() => props.hackathonId ?? null)
+
+// for "About {hackathon}" while someone decides whether to join
+const { data: hackathon } = useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint({
+  path: computed(() => ({ hackathonIdOrShortCode: hackathonId.value ?? '' })),
+  query: { enabled: computed(() => !!hackathonId.value) },
+})
 
 const setupComplete = ref(false)
 const setupError = ref<string | null>(null)
@@ -73,7 +82,11 @@ watch(
     }
     catch (error) {
       console.error('[FORM] Registration setup failed:', error)
-      setupError.value = 'Failed to initialize registration. Please try again.'
+      // only organisers can set up the questions: a participant arriving first just has to wait
+      const status = (error as { status?: number } | null)?.status
+      setupError.value = status === 401 || status === 403
+        ? 'Registration isn\'t open yet: the organisers are still setting up the questions. Try again later.'
+        : 'Failed to initialize registration. Please try again.'
     }
   },
   { immediate: true },
@@ -102,103 +115,120 @@ async function joinHackathonFromRegistration() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-(--ui-bg) text-(--ui-text) font-raleway">
-    <RegistrationFormHeader :hackathon-id="hackathonId" />
-
-    <div v-if="!hackathonId" class="mx-auto max-w-xl px-4 py-8">
-      <UAlert
-        color="warning"
-        variant="soft"
-        title="Unable to load registration"
-        description="Please return to the website and try again."
-      />
-      <UButton
-        to="/"
-        variant="link"
-        color="neutral"
-        class="mt-3 px-0"
-      >
-        Return to GeeksHacking Portal
-      </UButton>
-    </div>
+  <div
+    class="reg-page"
+    :class="{ 'reg-page--embedded': embedded }"
+  >
+    <RegistrationFormHeader
+      v-if="!embedded"
+      :hackathon-id="hackathonId"
+    />
 
     <div
-      v-else-if="isLoadingStatus || isLoading"
-      class="flex flex-col items-center justify-center gap-3 px-4 py-8 text-center"
+      v-if="!hackathonId"
+      class="reg-page__notice"
     >
-      <UIcon name="i-lucide-loader-circle" class="size-8 animate-spin text-primary" />
-      <p class="text-sm font-medium text-(--ui-text-muted)">
-        Loading registration questions...
-      </p>
+      <GAlert
+        tone="attention"
+        title="We couldn't load this registration"
+        description="Go back to the portal and open the registration link again."
+      />
+      <GButton
+        to="/"
+        variant="secondary"
+        label="Back to the portal"
+        class="self-start"
+      />
     </div>
+
+    <GLoading
+      v-else-if="isLoadingStatus || isLoading"
+      label="Loading registration questions…"
+    />
 
     <div
       v-else-if="statusError"
-      class="mx-auto max-w-xl px-4 py-8"
+      class="reg-page__notice"
     >
-      <UAlert
-        color="error"
-        variant="soft"
-        title="Unable to load your participation status"
-        description="Please return to the dashboard and try again."
+      <GAlert
+        tone="err"
+        title="We couldn't check your registration"
+        description="Go back to the portal and try again."
       />
     </div>
 
-    <!-- Setup Error State -->
     <div
       v-else-if="setupError"
-      class="mx-auto max-w-xl px-4 py-8 text-center"
+      class="reg-page__notice"
     >
-      <UAlert
-        color="error"
-        variant="soft"
-        title="Registration unavailable"
+      <GAlert
+        :tone="canJoinFromHere ? 'attention' : 'err'"
+        :title="canJoinFromHere ? 'You\'re not taking part in this hackathon' : 'Registration unavailable'"
         :description="setupError"
       />
-      <div
+      <GButton
         v-if="canJoinFromHere"
-        class="mt-4"
-      >
-        <UButton
-          color="neutral"
-          variant="solid"
-          :loading="joinMutation.isPending.value"
-          @click="joinHackathonFromRegistration"
-        >
-          Join hackathon
-        </UButton>
-      </div>
+        variant="primary"
+        label="Join hackathon"
+        :loading="joinMutation.isPending.value"
+        loading-label="Joining"
+        class="self-start"
+        @click="joinHackathonFromRegistration"
+      />
+      <RegistrationAboutEvent
+        v-if="canJoinFromHere && !embedded"
+        :name="hackathon?.name"
+        :description="hackathon?.description"
+        class="mt-2"
+      />
     </div>
 
-    <div
+    <GLoading
       v-else-if="!setupComplete"
-      class="flex flex-col items-center justify-center gap-3 px-4 py-8 text-center"
-    >
-      <UIcon name="i-lucide-loader-circle" class="size-8 animate-spin text-primary" />
-      <p class="text-sm font-medium text-(--ui-text-muted)">
-        Preparing your registration form...
-      </p>
-    </div>
+      label="Preparing your registration form…"
+    />
 
-    <!-- Error State -->
     <div
       v-else-if="error"
-      class="mx-auto max-w-xl px-4 py-8"
+      class="reg-page__notice"
     >
-      <UAlert
-        color="error"
-        variant="soft"
-        title="Error loading questions"
+      <GAlert
+        tone="err"
+        title="We couldn't load the questions"
         :description="error.message"
       />
     </div>
 
-    <!-- Render Form with Questions -->
-    <div v-else-if="questions">
-      <RegistrationDynamicForm
-        :questions="questions"
-        :hackathon-id="hackathonId!"
-      />
-    </div>
+    <RegistrationDynamicForm
+      v-else-if="questions"
+      :questions="questions"
+      :hackathon-id="hackathonId!"
+      :embedded="embedded"
+    />
   </div>
 </template>
+
+<style scoped>
+.reg-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--gh-bg);
+  color: var(--gh-text);
+  font-family: var(--font-body);
+  letter-spacing: var(--gh-tracking);
+}
+.reg-page--embedded {
+  min-height: 0;
+  background: none;
+}
+.reg-page__notice {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+</style>

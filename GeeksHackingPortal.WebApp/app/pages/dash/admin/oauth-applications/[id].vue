@@ -4,359 +4,644 @@ import {
   useGeeksHackingPortalApiEndpointsAdminOAuthDirectoryHistoryEndpoint,
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
 } from '@geekshacking/portal-sdk/hooks'
-import { computed, ref } from 'vue'
+import { useClipboard } from '@vueuse/core'
 
+/**
+ * One OAuth app from the admin directory (any owner), read-only: usage, settings in plain words,
+ * what it's allowed to do, and its sign-ins. The API returns the latest 500 sign-ins plus the total.
+ */
 const route = useRoute()
-const applicationId = computed(() => route.params.id as string)
+const appId = computed(() => (route.params.id as string | undefined) ?? '')
 
 const { data: user, isLoading: isLoadingUser } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
-const isRoot = computed(() => user.value?.isRoot === true)
+const isAdmin = computed(() => user.value?.isRoot === true)
+const options = { query: { enabled: computed(() => isAdmin.value && !!appId.value), retry: false } }
+const path = computed(() => ({ id: appId.value }))
+const detailQuery = useGeeksHackingPortalApiEndpointsAdminOAuthDirectoryGetEndpoint({ path }, options)
+const historyQuery = useGeeksHackingPortalApiEndpointsAdminOAuthDirectoryHistoryEndpoint({ path }, options)
 
-const { data: detailData, isLoading: isLoadingDetail, isError: isDetailError } = useGeeksHackingPortalApiEndpointsAdminOAuthDirectoryGetEndpoint(
-  { path: computed(() => ({ id: applicationId.value })) },
-  { query: { enabled: isRoot, retry: false } },
-)
-const { data: historyData, isLoading: isLoadingHistory } = useGeeksHackingPortalApiEndpointsAdminOAuthDirectoryHistoryEndpoint(
-  { path: computed(() => ({ id: applicationId.value })) },
-  { query: { enabled: isRoot, retry: false } },
-)
+const app = computed(() => detailQuery.data.value?.application)
+const isMine = computed(() => !!app.value?.ownerUserId && app.value.ownerUserId === user.value?.id)
+const permissions = computed(() => groupOAuthPermissions(detailQuery.data.value?.permissions))
+const requirements = computed(() => detailQuery.data.value?.requirements ?? [])
 
-const application = computed(() => detailData.value?.application)
+useHead(() => ({ title: app.value?.displayName ?? 'OAuth app' }))
 
-useHead({ title: computed(() => application.value?.displayName ?? 'OAuth Application') })
-
-const search = ref('')
-
-const historyItems = computed(() => historyData.value?.items ?? [])
-
-const filteredHistory = computed(() => {
-  const term = search.value.trim().toLowerCase()
-  if (!term)
-    return historyItems.value
-
-  return historyItems.value.filter(item => [
-    item.userName,
-    item.userEmail,
-    item.subject,
-  ].some(value => value?.toLowerCase().includes(term)))
-})
-
-const stats = computed(() => [
-  { label: 'Sign Ins', value: application.value?.totalAuthorizations ?? 0 },
-  { label: 'Active Authorizations', value: application.value?.validAuthorizations ?? 0 },
-  { label: 'Unique Users', value: application.value?.uniqueUsers ?? 0 },
-  { label: 'Tokens Issued', value: application.value?.totalTokens ?? 0 },
-])
-
-const columns = [
-  { id: 'user', header: 'User' },
-  { id: 'creationDate', accessorKey: 'creationDate', header: 'Signed In At' },
-  { id: 'status', accessorKey: 'status', header: 'Status' },
-  { id: 'scopes', accessorKey: 'scopes', header: 'Scopes' },
-  { id: 'tokenCount', accessorKey: 'tokenCount', header: 'Tokens' },
-  { id: 'lastTokenIssuedAt', accessorKey: 'lastTokenIssuedAt', header: 'Last Token Issued' },
-]
-
-function formatDate(value: string | null | undefined, fallback = '-') {
-  if (!value)
-    return fallback
-  return new Date(value).toLocaleString()
-}
-
-function statusBadgeColor(status: string | null | undefined) {
-  switch (status) {
-    case 'valid':
-      return 'success'
-    case 'revoked':
-      return 'error'
-    default:
-      return 'neutral'
+const toast = useGToast()
+const { copy, isSupported: canCopy } = useClipboard({ legacy: true })
+async function copyText(text: string | null | undefined, what: string) {
+  if (!text)
+    return
+  try {
+    await copy(text)
+    toast.add({ tone: 'ok', title: `Copied ${what}` })
+  }
+  catch {
+    toast.add({ tone: 'err', title: 'Couldn\'t copy', description: 'Select it and copy it by hand.' })
   }
 }
+
+const when = (value: string | null | undefined, fallback = '–') => (value ? formatOrganizerDateTime(value) : fallback)
+
+// ---- sign-ins ----
+const items = computed(() => historyQuery.data.value?.items ?? [])
+const total = computed(() => historyQuery.data.value?.totalCount ?? items.value.length)
+type StatusFilter = 'all' | 'valid' | 'revoked' | 'other'
+const status = ref<string>('all' satisfies StatusFilter)
+const search = ref('')
+const statusTabs = computed(() => {
+  const count = (fn: (s: string | null | undefined) => boolean) => items.value.filter(i => fn(i.status)).length
+  return [
+    { value: 'all', label: `All (${items.value.length})` },
+    { value: 'valid', label: `Allowed (${count(s => s === 'valid')})` },
+    { value: 'revoked', label: `Revoked (${count(s => s === 'revoked')})` },
+    ...(count(s => s !== 'valid' && s !== 'revoked') ? [{ value: 'other', label: `Other (${count(s => s !== 'valid' && s !== 'revoked')})` }] : []),
+  ]
+})
+const shown = computed(() => {
+  const term = search.value.trim().toLowerCase()
+  return items.value.filter((item) => {
+    const s = item.status
+    const statusOk = status.value === 'all'
+      || (status.value === 'other' ? s !== 'valid' && s !== 'revoked' : s === status.value)
+    return statusOk && (!term || [item.userName, item.userEmail, item.subject].some(v => v?.toLowerCase().includes(term)))
+  })
+})
 </script>
 
 <template>
-  <UDashboardPanel id="admin-oauth-application">
+  <GPanel id="admin-oauth-application">
     <template #header>
-      <UDashboardNavbar :title="application?.displayName ?? 'OAuth Application'">
-        <template #leading>
-          <UButton
-            variant="ghost"
-            icon="i-lucide-arrow-left"
-            to="/dash/admin/oauth-applications"
-          />
-        </template>
-      </UDashboardNavbar>
+      <GPanelHeader title="All OAuth apps" />
     </template>
 
     <template #body>
-      <div
-        v-if="isLoadingUser || (isRoot && isLoadingDetail)"
-        class="text-sm text-(--ui-text-muted)"
-      >
-        Loading OAuth application...
-      </div>
+      <div class="ap">
+        <GButton
+          to="/dash/admin/oauth-applications"
+          variant="ghost"
+          size="sm"
+          icon="material-symbols:arrow-back-rounded"
+          label="All OAuth apps"
+          class="ap-fit"
+        />
 
-      <UAlert
-        v-else-if="!isRoot"
-        color="error"
-        variant="subtle"
-        icon="i-lucide-shield-alert"
-        title="Admin access required"
-      />
+        <GLoading
+          v-if="isLoadingUser || (isAdmin && detailQuery.isLoading.value)"
+          label="Loading the app…"
+        />
 
-      <UAlert
-        v-else-if="isDetailError || !application"
-        color="warning"
-        variant="subtle"
-        icon="i-lucide-search-x"
-        title="OAuth application not found"
-      />
+        <GEmptyState
+          v-else-if="!isAdmin"
+          icon="material-symbols:lock-rounded"
+          title="Only admins can do this"
+          description="The list of OAuth apps is for portal admins."
+          bordered
+        />
 
-      <div
-        v-else
-        class="space-y-6"
-      >
-        <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <div
-            v-for="stat in stats"
-            :key="stat.label"
-            class="rounded-lg border border-default p-4"
-          >
-            <div class="text-xs font-medium uppercase text-(--ui-text-muted)">
-              {{ stat.label }}
-            </div>
-            <div class="mt-1 text-2xl font-semibold">
-              {{ stat.value }}
-            </div>
-          </div>
-        </div>
+        <GEmptyState
+          v-else-if="!app"
+          icon="material-symbols:error-rounded"
+          title="Couldn't find this app"
+          description="It may have been deleted, or the link is wrong."
+          bordered
+        />
 
-        <UCard>
-          <template #header>
-            <div class="flex items-start justify-between gap-3">
-              <div class="min-w-0">
-                <h2 class="truncate text-base font-semibold">
-                  {{ application.displayName }}
-                </h2>
-                <code class="truncate text-sm text-(--ui-text-muted)">
-                  {{ application.clientId }}
-                </code>
-              </div>
-              <UBadge
-                :color="application.platform === 'Native' ? 'info' : 'primary'"
-                variant="subtle"
-              >
-                {{ application.platform }}
-              </UBadge>
-            </div>
-          </template>
-
-          <dl class="grid gap-4 text-sm sm:grid-cols-2">
-            <div>
-              <dt class="text-xs font-medium uppercase text-(--ui-text-muted)">
-                Owner
-              </dt>
-              <dd class="mt-1">
-                <template v-if="application.ownerName || application.ownerEmail">
-                  {{ application.ownerName }}
-                  <span class="text-(--ui-text-muted)">{{ application.ownerEmail }}</span>
-                </template>
-                <span
-                  v-else
-                  class="text-(--ui-text-muted)"
-                >
-                  {{ application.ownerUserId ? `Unknown user (${application.ownerUserId})` : 'Unowned' }}
-                </span>
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs font-medium uppercase text-(--ui-text-muted)">
-                Internal ID
-              </dt>
-              <dd class="mt-1">
-                <code class="text-xs">{{ application.id }}</code>
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs font-medium uppercase text-(--ui-text-muted)">
-                Client Type
-              </dt>
-              <dd class="mt-1">
-                {{ application.clientType ?? '-' }}
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs font-medium uppercase text-(--ui-text-muted)">
-                Consent Type
-              </dt>
-              <dd class="mt-1">
-                {{ application.consentType ?? '-' }}
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs font-medium uppercase text-(--ui-text-muted)">
-                Last Sign In
-              </dt>
-              <dd class="mt-1">
-                {{ formatDate(application.lastAuthorizedAt, 'Never') }}
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs font-medium uppercase text-(--ui-text-muted)">
-                Last Token Issued
-              </dt>
-              <dd class="mt-1">
-                {{ formatDate(application.lastTokenIssuedAt, 'Never') }}
-              </dd>
-            </div>
-            <div class="sm:col-span-2">
-              <dt class="text-xs font-medium uppercase text-(--ui-text-muted)">
-                Redirect URIs
-              </dt>
-              <dd class="mt-1 space-y-1">
-                <code
-                  v-for="uri in application.redirectUris"
-                  :key="uri"
-                  class="block truncate rounded-md bg-muted px-2 py-1 text-xs"
-                >
-                  {{ uri }}
-                </code>
-              </dd>
-            </div>
-            <div
-              v-if="application.postLogoutRedirectUris?.length"
-              class="sm:col-span-2"
-            >
-              <dt class="text-xs font-medium uppercase text-(--ui-text-muted)">
-                Post Logout Redirect URIs
-              </dt>
-              <dd class="mt-1 space-y-1">
-                <code
-                  v-for="uri in application.postLogoutRedirectUris"
-                  :key="uri"
-                  class="block truncate rounded-md bg-muted px-2 py-1 text-xs"
-                >
-                  {{ uri }}
-                </code>
-              </dd>
-            </div>
-            <div class="sm:col-span-2">
-              <dt class="text-xs font-medium uppercase text-(--ui-text-muted)">
-                Permissions
-              </dt>
-              <dd class="mt-1 flex flex-wrap gap-1">
-                <UBadge
-                  v-for="permission in detailData?.permissions ?? []"
-                  :key="permission"
-                  variant="subtle"
-                  color="neutral"
-                >
-                  {{ permission }}
-                </UBadge>
-              </dd>
-            </div>
-            <div
-              v-if="detailData?.requirements?.length"
-              class="sm:col-span-2"
-            >
-              <dt class="text-xs font-medium uppercase text-(--ui-text-muted)">
-                Requirements
-              </dt>
-              <dd class="mt-1 flex flex-wrap gap-1">
-                <UBadge
-                  v-for="requirement in detailData.requirements"
-                  :key="requirement"
-                  variant="subtle"
-                  color="neutral"
-                >
-                  {{ requirement }}
-                </UBadge>
-              </dd>
-            </div>
-          </dl>
-        </UCard>
-
-        <div class="space-y-3">
-          <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <h2 class="text-base font-semibold">
-                Authentication History
+        <template v-else>
+          <!-- who and what -->
+          <div class="ap-head">
+            <div class="ap-head__who">
+              <h2 class="ap-title">
+                {{ app.displayName }}
               </h2>
-              <p class="text-sm text-(--ui-text-muted)">
-                <template v-if="historyData && (historyData.totalCount ?? 0) > historyItems.length">
-                  Showing the latest {{ historyItems.length }} of {{ historyData.totalCount }} sign ins.
-                </template>
-                <template v-else>
-                  {{ historyData?.totalCount ?? 0 }} sign ins.
-                </template>
+              <div class="ap-id">
+                <span class="ap-muted">Client ID</span>
+                <code>{{ app.clientId }}</code>
+                <GButton
+                  v-if="canCopy"
+                  variant="ghost"
+                  size="sm"
+                  icon="material-symbols:content-copy-rounded"
+                  aria-label="Copy the client ID"
+                  @click="copyText(app.clientId, 'the client ID')"
+                />
+              </div>
+              <p class="ap-owner">
+                <GBadge
+                  variant="outline"
+                  :icon="app.platform === 'Native' ? 'material-symbols:devices-rounded' : 'material-symbols:dns-rounded'"
+                  :label="app.platform ?? 'Web'"
+                />
+                <span>
+                  Owned by
+                  <template v-if="app.ownerName || app.ownerEmail">
+                    <strong>{{ app.ownerName || app.ownerEmail }}</strong><template v-if="app.ownerName && app.ownerEmail">
+                      ({{ app.ownerEmail }})
+                    </template>
+                  </template>
+                  <span
+                    v-else
+                    class="ap-muted"
+                  >{{ app.ownerUserId ? 'an unknown user' : 'no one' }}</span>
+                </span>
+                <GBadge
+                  v-if="isMine"
+                  size="sm"
+                  label="You"
+                />
               </p>
             </div>
-            <UInput
-              v-model="search"
-              icon="i-lucide-search"
-              placeholder="Search by user"
-              class="w-full sm:max-w-xs"
+            <GButton
+              v-if="isMine"
+              variant="secondary"
+              icon="material-symbols:edit-rounded"
+              label="Edit in My OAuth apps"
+              to="/dash/oauth-applications"
             />
           </div>
 
-          <UCard :ui="{ body: 'p-0 sm:p-0' }">
-            <UTable
-              :data="filteredHistory"
-              :columns="columns"
-              :loading="isLoadingHistory"
+          <div class="ap-tiles">
+            <GStatTile
+              label="Sign-ins"
+              :value="app.totalAuthorizations ?? 0"
+              icon="material-symbols:login-rounded"
+              :hint="`Last ${when(app.lastAuthorizedAt, 'never')}`"
+            />
+            <GStatTile
+              label="Still allowed"
+              :value="app.validAuthorizations ?? 0"
+              icon="material-symbols:verified-user-rounded"
+              hint="Sign-ins not revoked"
+            />
+            <GStatTile
+              label="People"
+              :value="app.uniqueUsers ?? 0"
+              icon="material-symbols:group-rounded"
+              hint="Who have signed in"
+            />
+            <GStatTile
+              label="Tokens issued"
+              :value="app.totalTokens ?? 0"
+              icon="material-symbols:key-rounded"
+              :hint="`Last ${when(app.lastTokenIssuedAt, 'never')}`"
+            />
+          </div>
+
+          <div class="ap-grid">
+            <section
+              class="ap-card"
+              aria-labelledby="ap-settings"
             >
-              <template #user-cell="{ row }">
-                <div class="min-w-0">
-                  <div class="truncate">
-                    {{ row.original.userName ?? 'Unknown user' }}
-                  </div>
-                  <div class="truncate text-xs text-(--ui-text-muted)">
-                    {{ row.original.userEmail ?? row.original.subject }}
-                  </div>
+              <h3
+                id="ap-settings"
+                class="ap-card__title"
+              >
+                Settings
+              </h3>
+              <dl class="ap-dl">
+                <div>
+                  <dt>Client type</dt>
+                  <dd>{{ oauthClientTypeLabel(app.clientType) }}</dd>
                 </div>
-              </template>
-              <template #creationDate-cell="{ row }">
-                {{ formatDate(row.original.creationDate) }}
-              </template>
-              <template #status-cell="{ row }">
-                <UBadge
-                  :color="statusBadgeColor(row.original.status)"
-                  variant="subtle"
+                <div>
+                  <dt>Consent</dt>
+                  <dd>{{ oauthConsentTypeLabel(app.consentType) }}</dd>
+                </div>
+                <div>
+                  <dt>Redirect URIs</dt>
+                  <dd>
+                    <ul class="ap-uris">
+                      <li
+                        v-for="uri in app.redirectUris"
+                        :key="uri"
+                      >
+                        <code>{{ uri }}</code>
+                      </li>
+                    </ul>
+                  </dd>
+                </div>
+                <div v-if="app.postLogoutRedirectUris?.length">
+                  <dt>After sign-out</dt>
+                  <dd>
+                    <ul class="ap-uris">
+                      <li
+                        v-for="uri in app.postLogoutRedirectUris"
+                        :key="uri"
+                      >
+                        <code>{{ uri }}</code>
+                      </li>
+                    </ul>
+                  </dd>
+                </div>
+                <div>
+                  <dt>Internal ID</dt>
+                  <dd><code class="ap-small">{{ app.id }}</code></dd>
+                </div>
+              </dl>
+            </section>
+
+            <section
+              class="ap-card"
+              aria-labelledby="ap-allowed"
+            >
+              <h3
+                id="ap-allowed"
+                class="ap-card__title"
+              >
+                What it's allowed to do
+              </h3>
+              <p
+                v-if="!permissions.length && !requirements.length"
+                class="ap-muted"
+              >
+                No permissions recorded.
+              </p>
+              <dl
+                v-else
+                class="ap-dl"
+              >
+                <div
+                  v-for="group in permissions"
+                  :key="group.group"
                 >
-                  {{ row.original.status ?? 'unknown' }}
-                </UBadge>
-              </template>
-              <template #scopes-cell="{ row }">
-                <div class="flex flex-wrap gap-1">
-                  <UBadge
-                    v-for="scope in row.original.scopes ?? []"
-                    :key="scope"
-                    variant="subtle"
-                    color="neutral"
-                  >
-                    {{ scope }}
-                  </UBadge>
+                  <dt>{{ group.title }}</dt>
+                  <dd>
+                    <ul class="ap-perms">
+                      <li
+                        v-for="item in group.items"
+                        :key="item.code"
+                      >
+                        {{ item.label }} <code>{{ item.code }}</code>
+                      </li>
+                    </ul>
+                  </dd>
                 </div>
-              </template>
-              <template #lastTokenIssuedAt-cell="{ row }">
-                {{ formatDate(row.original.lastTokenIssuedAt) }}
-              </template>
-              <template #empty>
-                <div class="flex flex-col items-center justify-center py-6 text-center">
-                  <UIcon
-                    name="i-lucide-history"
-                    class="mb-4 size-8 text-(--ui-text-muted)"
+                <div v-if="requirements.length">
+                  <dt>Requirements</dt>
+                  <dd>
+                    <ul class="ap-perms">
+                      <li
+                        v-for="code in requirements"
+                        :key="code"
+                      >
+                        {{ oauthRequirementLabel(code) }} <code>{{ code }}</code>
+                      </li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+            </section>
+          </div>
+
+          <!-- sign-ins -->
+          <section
+            class="ap-history"
+            aria-labelledby="ap-history"
+          >
+            <div class="ap-history__head">
+              <div>
+                <h3
+                  id="ap-history"
+                  class="ap-card__title"
+                >
+                  Sign-ins
+                </h3>
+                <p class="ap-muted">
+                  <template v-if="total > items.length">
+                    The latest {{ items.length.toLocaleString() }} of {{ total.toLocaleString() }}, newest first.
+                  </template>
+                  <template v-else-if="items.length">
+                    {{ total.toLocaleString() }} {{ total === 1 ? 'sign-in' : 'sign-ins' }}, newest first.
+                  </template>
+                </p>
+              </div>
+            </div>
+
+            <GLoading
+              v-if="historyQuery.isLoading.value"
+              label="Loading sign-ins…"
+            />
+            <GAlert
+              v-else-if="historyQuery.error.value"
+              tone="err"
+              title="Couldn't load sign-ins"
+              :description="getApiErrorMessage(historyQuery.error.value, 'Refresh to try again.')"
+            />
+            <GEmptyState
+              v-else-if="!items.length"
+              size="sm"
+              icon="material-symbols:history-rounded"
+              title="No sign-ins yet"
+              description="Each time someone allows this app to use their GeeksHacking account, it shows here."
+              bordered
+            />
+            <template v-else>
+              <div class="ap-controls">
+                <GTabs
+                  v-model="status"
+                  :items="statusTabs"
+                  :content="false"
+                  size="sm"
+                  aria-label="Sign-in status"
+                />
+                <GFormField
+                  label="Find a person"
+                  hide-label
+                  class="ap-search"
+                >
+                  <GInput
+                    v-model="search"
+                    type="search"
+                    icon="material-symbols:search-rounded"
+                    placeholder="Find by name or email"
                   />
-                  <p class="text-sm text-(--ui-text-muted)">
-                    {{ search ? 'No sign ins match your search.' : 'No sign in history found.' }}
-                  </p>
-                </div>
-              </template>
-            </UTable>
-          </UCard>
-        </div>
+                </GFormField>
+              </div>
+
+              <p
+                v-if="!shown.length"
+                class="ap-muted"
+              >
+                {{ search ? `No one matches “${search}”.` : 'No sign-ins with this status.' }}
+              </p>
+              <div
+                v-else
+                class="ap-table-wrap"
+              >
+                <table class="ap-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">
+                        Person
+                      </th>
+                      <th scope="col">
+                        When
+                      </th>
+                      <th scope="col">
+                        Status
+                      </th>
+                      <th scope="col">
+                        Allowed
+                      </th>
+                      <th scope="col">
+                        Tokens
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="item in shown"
+                      :key="item.id"
+                    >
+                      <th scope="row">
+                        <span class="ap-name">{{ item.userName || 'Unknown user' }}</span>
+                        <span class="ap-sub">{{ item.userEmail || item.subject }}</span>
+                      </th>
+                      <td class="ap-when">
+                        {{ when(item.creationDate) }}
+                      </td>
+                      <td>
+                        <GBadge
+                          :tone="oauthStatusBadge(item.status).tone"
+                          variant="outline"
+                          size="sm"
+                          :label="oauthStatusBadge(item.status).label"
+                        />
+                      </td>
+                      <td>
+                        <ul
+                          v-if="oauthScopesOf(item.scopes).length"
+                          class="ap-scopes"
+                        >
+                          <li
+                            v-for="scope in oauthScopesOf(item.scopes)"
+                            :key="scope"
+                          >
+                            <code>{{ scope }}</code>
+                          </li>
+                        </ul>
+                        <span
+                          v-else
+                          class="ap-muted"
+                        >–</span>
+                      </td>
+                      <td>
+                        <span class="ap-name">{{ (item.tokenCount ?? 0).toLocaleString() }} {{ item.tokenCount === 1 ? 'token' : 'tokens' }}</span>
+                        <span
+                          v-if="item.lastTokenIssuedAt"
+                          class="ap-sub"
+                        >last {{ when(item.lastTokenIssuedAt) }}</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </template>
+          </section>
+        </template>
       </div>
     </template>
-  </UDashboardPanel>
+  </GPanel>
 </template>
+
+<style scoped>
+.ap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+}
+.ap-fit { align-self: flex-start; }
+.ap-muted {
+  margin: 0;
+  color: var(--gh-text-muted);
+}
+.ap-small { font-size: 13px; overflow-wrap: anywhere; }
+.ap-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px 24px;
+}
+.ap-head__who {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.ap-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.ap-id {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 8px;
+}
+.ap-id code { overflow-wrap: anywhere; }
+.ap-owner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 0;
+}
+.ap-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+@media (min-width: 60rem) { .ap-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.ap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+  gap: 20px;
+}
+.ap-card,
+.ap-history {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+.ap-card {
+  padding: 20px;
+  border: var(--gh-border-width) solid var(--gh-line);
+  border-radius: var(--radius-gh-lg);
+  background: var(--gh-surface);
+}
+.ap-card__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+.ap-dl {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+}
+.ap-dl dt {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gh-text-muted);
+}
+.ap-dl dd { margin: 4px 0 0; min-width: 0; }
+.ap-uris,
+.ap-perms {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ap-uris code {
+  display: block;
+  padding: 4px 8px;
+  border: 1px solid var(--gh-line-soft);
+  border-radius: var(--radius-gh);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.ap-perms li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+}
+.ap-perms code {
+  font-size: 12px;
+  color: var(--gh-text-muted);
+}
+.ap-history__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ap-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+}
+.ap-search { flex: 0 1 22rem; }
+.ap-table-wrap {
+  overflow-x: auto;
+  border: var(--gh-border-width) solid var(--gh-line);
+  border-radius: var(--radius-gh-lg);
+  background: var(--gh-surface);
+}
+.ap-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.ap-table th,
+.ap-table td {
+  padding: 12px 16px;
+  border-top: 1px solid var(--gh-line-soft);
+  text-align: left;
+  vertical-align: top;
+}
+.ap-table thead th {
+  border-top: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gh-text-muted);
+}
+.ap-name {
+  display: block;
+  font-weight: 600;
+}
+.ap-sub {
+  display: block;
+  font-weight: 400;
+  color: var(--gh-text-muted);
+  overflow-wrap: anywhere;
+}
+.ap-when { white-space: nowrap; }
+.ap-scopes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ap-scopes code {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 1px solid var(--gh-line-soft);
+  border-radius: var(--radius-gh-pill);
+  font-size: 12px;
+}
+@media (max-width: 48rem) {
+  .ap-table,
+  .ap-table tbody { display: block; }
+  .ap-table thead { display: none; }
+  .ap-table tr {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--gh-line-soft);
+  }
+  .ap-table tbody tr:first-child { border-top: 0; }
+  .ap-table th,
+  .ap-table td {
+    padding: 0;
+    border-top: 0;
+  }
+  .ap-when { white-space: normal; color: var(--gh-text-muted); }
+}
+</style>

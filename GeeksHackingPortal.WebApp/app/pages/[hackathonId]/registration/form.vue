@@ -51,10 +51,11 @@ watchEffect(() => {
     return
   }
 
-  // Registration already complete - redirect to team page
+  // Registration already complete - redirect to team page.
+  // An event with no questions yet isn't "complete": the form sets them up.
   // Guard with current participant status to avoid redirect loops when cached
   // submissions exist for users who have withdrawn.
-  if (statusData.value?.isParticipant && submissionsData.value?.requiredQuestionsRemaining === 0) {
+  if (statusData.value?.isParticipant && submissionsData.value?.requiredQuestionsRemaining === 0 && (submissionsData.value?.totalQuestions ?? 0) > 0) {
     navigateTo({ path: `/${hackathon.value.shortCode}/team`, query: route.query }, { replace: true })
     return
   }
@@ -66,15 +67,11 @@ watchEffect(() => {
 
 <template>
   <!-- Show loading while checking auth -->
-  <div
+  <GLoading
     v-if="isLoading || !showForm"
-    class="min-h-screen flex flex-col items-center justify-center gap-4 bg-(--ui-bg) px-4 text-(--ui-text)"
-  >
-    <p class="text-sm font-medium text-(--ui-text-muted) animate-pulse">
-      Checking your session...
-    </p>
-    <UIcon name="i-lucide-loader-circle" class="w-8 h-8 animate-spin text-primary" />
-  </div>
+    page
+    label="Checking your session…"
+  />
 
   <!-- Show form if authenticated -->
   <RegistrationFormPage

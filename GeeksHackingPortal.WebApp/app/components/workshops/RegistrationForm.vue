@@ -11,6 +11,12 @@ import {
 import { useQueryClient } from '@tanstack/vue-query'
 import { getApiValidationErrors } from '~/utils/api-errors'
 
+/**
+ * The workshop's registration questions, grouped by category. Mirrors the hackathon form
+ * (RegistrationDynamicForm): required marks, follow-up fields for options that ask for detail,
+ * "N required answers left", and on a failed submit an alert plus focus on the first bad answer.
+ * Answers are final once submitted.
+ */
 const props = defineProps<{
   standaloneWorkshopId: string
   workshopTitle?: string
@@ -38,7 +44,7 @@ const questionTypeValues = {
   Dropdown: 'Dropdown',
 } as const satisfies Record<string, QuestionType>
 
-const toast = useToast()
+const toast = useGToast()
 const queryClient = useQueryClient()
 
 const { data: userData } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint({
@@ -204,6 +210,11 @@ function shouldSpanFullWidth(question: { isLong: boolean, type?: QuestionType, c
   return question.isLong || question.type === questionTypeValues.Boolean
 }
 
+// Required = marked required, or a follow-up question that is currently shown
+function isRequiredQuestion(question: { isRequired?: boolean | null, conditionalLogic?: string | null }) {
+  return !!question.isRequired || !!question.conditionalLogic
+}
+
 function parseErrorsToFields(error: unknown) {
   const errorBag = getApiValidationErrors(error)
   const questionById = new Map(
@@ -223,34 +234,38 @@ function parseErrorsToFields(error: unknown) {
   }
 }
 
-const isFormValid = computed(() => {
-  const requiredQuestions = allQuestions.value.filter(question =>
-    isQuestionVisible(question.conditionalLogic) && Boolean(question.isRequired || question.conditionalLogic),
-  )
-
-  return requiredQuestions.every((question) => {
+// Visible required questions (and their follow-up texts) that still need an answer
+const missingAnswers = computed(() => {
+  const missing: string[] = []
+  for (const question of allQuestions.value) {
+    if (!isQuestionVisible(question.conditionalLogic) || !isRequiredQuestion(question))
+      continue
     const key = question.questionKey
-    if (!key)
-      return false
+    if (!key) {
+      missing.push(question.id ?? '?')
+      continue
+    }
 
     const value = state[key]
     const hasValue = Array.isArray(value) ? value.length > 0 : value !== '' && value !== null && value !== undefined
-    if (!hasValue)
-      return false
+    if (!hasValue) {
+      missing.push(key)
+      continue
+    }
 
-    const items = (question.options ?? []).map(option => ({
-      label: String(option.optionText ?? ''),
-      value: String(option.optionValue ?? ''),
-      hasFollowUpText: option.hasFollowUpText ?? false,
-      followUpPlaceholder: option.followUpPlaceholder ?? '',
-    }))
-
-    return getSelectedFollowUpOptions(key, items).every((item) => {
-      const followUpValue = followUpState[`${key}:${item.value}`]
-      return followUpValue && followUpValue.trim() !== ''
-    })
-  })
+    const selectedValues = Array.isArray(value) ? value : [value]
+    for (const option of question.options ?? []) {
+      const optionValue = String(option.optionValue ?? '')
+      if (option.hasFollowUpText && selectedValues.includes(optionValue) && !followUpState[`${key}:${optionValue}`]?.trim())
+        missing.push(`${key}:${optionValue}`)
+    }
+  }
+  return missing
 })
+
+const isFormValid = computed(() => missingAnswers.value.length === 0)
+
+const formEl = ref<HTMLFormElement | null>(null)
 
 async function submitRegistration() {
   const submissions = Object.entries(state)
@@ -321,7 +336,7 @@ async function submitRegistration() {
     toast.add({
       title: 'Registration saved',
       description: props.workshopTitle ? `Your answers for ${props.workshopTitle} have been saved.` : 'Your answers have been saved.',
-      color: 'success',
+      tone: 'ok',
     })
 
     emit('submitted')
@@ -330,165 +345,255 @@ async function submitRegistration() {
     submissionError.value = true
     parseErrorsToFields(error)
     console.error('Failed to submit standalone workshop registration', error)
+    // take the user to the first answer that needs fixing
+    await nextTick()
+    formEl.value?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus()
   }
 }
 </script>
 
 <template>
-  <UForm
-    :state="state"
-    class="space-y-5 sm:space-y-6"
-    @submit="submitRegistration"
+  <form
+    ref="formEl"
+    class="ws-form"
+    novalidate
+    @submit.prevent="submitRegistration"
   >
-    <div
-      v-for="category in formattedCategories"
+    <p class="ws-form__lead">
+      Questions marked <span aria-hidden="true">*</span><span class="sr-only">with an asterisk</span> are required. Your answers are only shared with the organisers and can't be changed after you submit.
+    </p>
+
+    <section
+      v-for="(category, categoryIndex) in formattedCategories"
       :key="category.name"
-      class="rounded-[1.5rem] border border-(--ui-border) bg-(--ui-bg) p-4 shadow-xl shadow-black/8 ring-1 ring-(--ui-border) transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-black/12 sm:p-5"
+      class="ws-form__section"
+      :aria-labelledby="`ws-category-${categoryIndex}`"
     >
-      <div class="space-y-1 border-b border-(--ui-border) pb-3">
-        <h3 class="text-sm font-semibold tracking-[0.02em] text-(--ui-text-highlighted) sm:text-base">
-          {{ category.name }}
-        </h3>
-      </div>
+      <h3
+        :id="`ws-category-${categoryIndex}`"
+        class="ws-form__section-title"
+      >
+        {{ category.name }}
+      </h3>
 
-      <div class="grid gap-4 pt-4 md:grid-cols-2 md:gap-5">
-        <UFormField
+      <div class="ws-form__grid">
+        <template
           v-for="question in category.questions"
-          v-show="isQuestionVisible(question.conditionalLogic)"
           :key="question.key"
-          :name="question.questionKey ?? question.key"
-          :class="shouldSpanFullWidth(question) ? 'md:col-span-2' : ''"
-          :ui="{
-            container: 'space-y-2',
-            label: 'text-sm leading-6 font-medium text-(--ui-text-highlighted)',
-            help: 'text-xs leading-5 text-(--ui-text-muted)',
-            error: 'text-sm text-error',
-          }"
         >
-          <template #label>
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="min-w-0">{{ question.questionText }}</span>
-              <UBadge
-                v-if="question.isRequired"
-                size="xs"
-                color="error"
-                variant="subtle"
-              >
-                Required
-              </UBadge>
-            </div>
-          </template>
-
-          <UTextarea
-            v-if="question.type === questionTypeValues.LongText && !question.hasOptions"
-            v-model="state[question.questionKey ?? ''] as string"
-            :rows="4"
-            autoresize
-            class="w-full"
-          />
-
-          <USelectMenu
-            v-else-if="question.hasOptions && question.isMultiSelect"
-            v-model="state[question.questionKey ?? ''] as string[]"
-            :items="question.items"
-            multiple
-            value-key="value"
-            label-key="label"
-            :search="false"
-            placeholder="Select all that apply"
-            class="w-full"
-          />
-
-          <USelect
-            v-else-if="question.hasOptions"
-            v-model="state[question.questionKey ?? ''] as string"
-            :items="question.items"
-            value-key="value"
-            label-key="label"
-            placeholder="Choose an option"
-            class="w-full"
-          />
-
-          <USelect
-            v-else-if="question.type === questionTypeValues.Boolean"
-            v-model="state[question.questionKey ?? ''] as string"
-            :items="[
-              { label: 'Yes', value: 'true' },
-              { label: 'No', value: 'false' },
-            ]"
-            value-key="value"
-            label-key="label"
-            placeholder="Choose yes or no"
-            class="w-full"
-          />
-
-          <UInput
-            v-else
-            v-model="state[question.questionKey ?? ''] as string"
-            :type="getInputType(question.type)"
-            class="w-full"
-          />
-
           <div
-            v-for="followUpOption in getSelectedFollowUpOptions(question.questionKey ?? '', question.items)"
-            :key="`${question.key}-${followUpOption.value}-follow-up`"
-            class="mt-3 rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) p-3 shadow-md shadow-black/5"
+            v-if="isQuestionVisible(question.conditionalLogic)"
+            class="ws-form__question"
+            :class="{ 'ws-form__question--wide': shouldSpanFullWidth(question) }"
           >
-            <UFormField
-              :label="followUpOption.followUpPlaceholder || `Please specify for ${followUpOption.label}`"
-              :ui="{ label: 'text-xs font-medium tracking-[0.01em] text-(--ui-text-muted)' }"
+            <!-- a single option (e.g. consent): a labelled checkbox under the question; the checkbox carries the required mark -->
+            <fieldset
+              v-if="question.hasOptions && !question.isMultiSelect && question.items.length === 1"
+              class="ws-form__fieldset"
+              :aria-describedby="[question.helpText ? `ws-q-${question.key}-hint` : '', fieldErrors[question.questionKey ?? ''] ? `ws-q-${question.key}-error` : ''].filter(Boolean).join(' ') || undefined"
             >
-              <UInput
-                v-model="followUpState[`${question.questionKey}:${followUpOption.value}`]"
-                class="w-full"
+              <legend class="ws-form__legend">
+                {{ question.questionText ?? '' }}
+              </legend>
+              <GCheckbox
+                :model-value="state[question.questionKey ?? ''] === question.items[0]?.value"
+                :label="question.items[0]?.label"
+                :required="isRequiredQuestion(question)"
+                :invalid="!!fieldErrors[question.questionKey ?? '']"
+                @update:model-value="(checked: boolean) => {
+                  const value = question.items[0]?.value
+                  if (value !== undefined)
+                    state[question.questionKey ?? ''] = checked ? value : ''
+                }"
               />
-            </UFormField>
+              <p
+                v-if="question.helpText"
+                :id="`ws-q-${question.key}-hint`"
+                class="ws-form__hint"
+              >
+                {{ question.helpText }}
+              </p>
+              <p
+                v-if="fieldErrors[question.questionKey ?? '']"
+                :id="`ws-q-${question.key}-error`"
+                class="ws-form__error"
+              >
+                {{ fieldErrors[question.questionKey ?? ''] }}
+              </p>
+            </fieldset>
+
+            <GFormField
+              v-else
+              :label="question.questionText ?? ''"
+              :hint="question.helpText ?? undefined"
+              :error="fieldErrors[question.questionKey ?? '']"
+              :required="isRequiredQuestion(question)"
+            >
+              <GSelect
+                v-if="question.hasOptions && question.isMultiSelect"
+                v-model="state[question.questionKey ?? ''] as string[]"
+                :items="question.items"
+                multiple
+                placeholder="Select all that apply"
+              />
+              <GSelect
+                v-else-if="question.hasOptions"
+                v-model="state[question.questionKey ?? ''] as string"
+                :items="question.items"
+                placeholder="Select one"
+              />
+              <GSelect
+                v-else-if="question.type === questionTypeValues.Boolean"
+                v-model="state[question.questionKey ?? ''] as string"
+                :items="[{ label: 'Yes', value: 'true' }, { label: 'No', value: 'false' }]"
+                placeholder="Yes or no"
+              />
+              <GTextarea
+                v-else-if="question.type === questionTypeValues.LongText"
+                v-model="state[question.questionKey ?? ''] as string"
+                :rows="4"
+                autoresize
+              />
+              <GInput
+                v-else
+                v-model="state[question.questionKey ?? ''] as string"
+                :type="getInputType(question.type)"
+                :inputmode="question.type === questionTypeValues.Number ? 'numeric' : undefined"
+                :autocomplete="question.type === questionTypeValues.Phone ? 'tel' : question.type === questionTypeValues.Email ? 'email' : undefined"
+              />
+            </GFormField>
+
+            <!-- options that ask for more detail -->
+            <GFormField
+              v-for="followUpOption in getSelectedFollowUpOptions(question.questionKey ?? '', question.items)"
+              :key="`${question.key}-${followUpOption.value}-follow-up`"
+              :label="followUpOption.followUpPlaceholder || `Tell us more about “${followUpOption.label}”`"
+              required
+              class="ws-form__followup"
+            >
+              <GInput v-model="followUpState[`${question.questionKey}:${followUpOption.value}`]" />
+            </GFormField>
           </div>
-
-          <template
-            v-if="question.helpText"
-            #help
-          >
-            {{ question.helpText }}
-          </template>
-
-          <p
-            v-if="fieldErrors[question.questionKey ?? '']"
-            class="mt-2 text-sm text-error"
-          >
-            {{ fieldErrors[question.questionKey ?? ''] }}
-          </p>
-        </UFormField>
+        </template>
       </div>
+    </section>
+
+    <GAlert
+      v-if="submissionError"
+      tone="err"
+      title="Some answers need fixing"
+      description="Check the highlighted questions, then submit again."
+    />
+
+    <div class="ws-form__submit">
+      <p
+        class="ws-form__remaining"
+        aria-live="polite"
+      >
+        <template v-if="missingAnswers.length">
+          {{ missingAnswers.length === 1 ? '1 required answer left' : `${missingAnswers.length} required answers left` }}
+        </template>
+        <template v-else>
+          All required answers filled in
+        </template>
+      </p>
+      <GButton
+        type="submit"
+        variant="primary"
+        size="lg"
+        label="Complete registration"
+        :disabled="!isFormValid"
+        :loading="submitMutation.isPending.value"
+        loading-label="Submitting"
+      />
     </div>
-
-    <div class="rounded-[1.5rem] border border-(--ui-border) bg-(--ui-bg) px-4 py-4 shadow-xl shadow-black/8 ring-1 ring-(--ui-border) sm:px-5 sm:py-5">
-      <div class="flex flex-col gap-4">
-        <div class="text-sm leading-6 text-(--ui-text-muted)">
-          Step 3 of 3: review your answers before submitting. They cannot be changed after signup is complete.
-        </div>
-
-        <div class="flex flex-col items-stretch gap-2">
-          <UButton
-            type="submit"
-            size="lg"
-            icon="i-lucide-arrow-right"
-            trailing
-            :loading="submitMutation.isPending.value"
-            :disabled="!isFormValid"
-            class="w-full justify-center"
-          >
-            Complete registration
-          </UButton>
-
-          <p
-            v-if="submissionError"
-            class="text-sm text-error"
-          >
-            One or more fields need attention.
-          </p>
-        </div>
-      </div>
-    </div>
-  </UForm>
+  </form>
 </template>
+
+<style scoped>
+.ws-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  min-width: 0;
+}
+.ws-form__lead {
+  max-width: 65ch;
+  margin: 0;
+  color: var(--gh-text-muted);
+}
+.ws-form__section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ws-form__section-title {
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: var(--gh-border-width) solid var(--gh-line-soft);
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+}
+.ws-form__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px 24px;
+}
+@media (min-width: 768px) {
+  .ws-form__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ws-form__question--wide { grid-column: 1 / -1; }
+}
+.ws-form__question {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.ws-form__followup {
+  padding-left: 14px;
+  border-left: 3px solid var(--gh-accent);
+}
+.ws-form__fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.ws-form__legend {
+  padding: 0;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.ws-form__required,
+.ws-form__error {
+  color: var(--gh-err);
+}
+.ws-form__hint,
+.ws-form__error {
+  margin: 0;
+  font-size: 13px;
+}
+.ws-form__hint {
+  color: var(--gh-text-muted);
+}
+.ws-form__submit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+  padding-top: 20px;
+  border-top: var(--gh-border-width) solid var(--gh-line-soft);
+}
+.ws-form__remaining {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gh-text-muted);
+}
+</style>

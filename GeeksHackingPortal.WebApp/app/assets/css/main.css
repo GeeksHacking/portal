@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+@import "./tokens.css";
+@import "./prose.css";
 
 @theme {
     --font-sans: ui-sans-serif, system-ui, sans-serif;

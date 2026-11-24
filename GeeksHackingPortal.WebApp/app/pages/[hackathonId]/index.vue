@@ -31,11 +31,9 @@ watch(
 </script>
 
 <template>
-  <!-- Loading state while checking participant status -->
-  <div class="min-h-screen flex flex-col items-center justify-center gap-4">
-    <p class="text-sm font-medium text-gray-600 animate-pulse">
-      Authenticating...
-    </p>
-    <UIcon name="i-lucide-loader-circle" class="w-8 h-8 animate-spin text-primary" />
-  </div>
+  <!-- shown while checking participant status, then redirected -->
+  <GLoading
+    page
+    label="Checking your session…"
+  />
 </template>

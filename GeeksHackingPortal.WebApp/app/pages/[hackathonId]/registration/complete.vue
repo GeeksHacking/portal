@@ -11,7 +11,7 @@ definePageMeta({
 })
 
 useHead({
-  titleTemplate: title => (title ? `${title} - GeeksHacking Portal` : 'GeeksHacking Portal'),
+  title: 'Registration complete',
 })
 
 const route = useRoute()
@@ -58,62 +58,44 @@ watchEffect(() => {
 
 <template>
   <!-- Show loading while checking auth -->
-  <div
+  <GLoading
     v-if="isLoading || !showPage"
-    class="min-h-screen flex flex-col items-center justify-center gap-4 bg-(--ui-bg) px-4 text-(--ui-text)"
-  >
-    <p class="text-sm font-medium text-(--ui-text-muted) animate-pulse">
-      Checking your session...
-    </p>
-    <UIcon name="i-lucide-loader-circle" class="w-8 h-8 animate-spin text-primary" />
-  </div>
+    page
+    label="Checking your session…"
+  />
 
-  <!-- Show content if authenticated -->
-  <div
-    v-else
-    class="min-h-screen bg-(--ui-bg) font-raleway flex items-center justify-center px-4 text-(--ui-text)"
-  >
-    <div class="w-full flex justify-center">
-      <div class="flex flex-col items-center gap-6 max-w-2xl">
-        <img
-          src="/logos/geekshacking.svg"
-          alt="GeeksHacking Portal"
-          class="w-full max-w-xl h-auto"
-        >
-
-        <div class="flex flex-col items-center gap-4 mt-8">
-          <h1 class="font-raleway text-2xl md:text-3xl font-semibold text-(--ui-text-highlighted) text-center">
-            Registration Complete!
-          </h1>
-
-          <div class="font-raleway text-base md:text-lg font-normal text-(--ui-text) text-center max-w-lg space-y-4">
-            <p>Our team will review your details and notify you once your registration is verified.</p>
-
-            <p>You may check your application status below or return to GeeksHacking Portal.</p>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-3 mt-8 w-full max-w-sm">
-          <UButton
-            :to="statusPagePath"
-            size="xl"
-            color="neutral"
-            class="w-full justify-center"
-          >
-            Check Registration Status
-          </UButton>
-
-          <UButton
-            to="/"
-            size="xl"
-            color="neutral"
-            variant="outline"
-            class="w-full justify-center"
-          >
-            Return to GeeksHacking Portal
-          </UButton>
-        </div>
-      </div>
+  <AuthFrame v-else>
+    <GLabelStrip
+      as="p"
+      :label="hackathon?.name ? `Registration · ${hackathon.name}` : 'Registration'"
+      class="self-start"
+    />
+    <div class="flex flex-col gap-3">
+      <h1 class="font-display text-[32px] leading-tight font-bold">
+        You're registered
+      </h1>
+      <p class="text-gh-muted">
+        Thanks for signing up. The organisers will review your answers and email you once they've decided. Check your spam folder if nothing arrives.
+      </p>
     </div>
-  </div>
+    <RegistrationSteps :current="2" />
+    <p class="gh-small text-gh-muted">
+      Once you're approved you can form or join a team in the portal.
+    </p>
+    <div class="flex flex-col gap-3">
+      <GButton
+        :to="statusPagePath ?? undefined"
+        variant="primary"
+        size="lg"
+        block
+        label="Check my registration status"
+      />
+      <GButton
+        to="/dash"
+        variant="ghost"
+        block
+        label="Go to the portal"
+      />
+    </div>
+  </AuthFrame>
 </template>

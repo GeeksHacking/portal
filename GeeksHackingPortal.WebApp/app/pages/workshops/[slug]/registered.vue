@@ -1,37 +1,35 @@
 <script setup lang="ts">
-import type {
-  GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto,
-  GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto,
-} from '@geekshacking/portal-sdk'
-import { useQueryClient } from '@tanstack/vue-query'
 import {
+  geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpointQueryKey,
+  geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointQueryKey,
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint,
-  geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointQueryKey,
 } from '@geekshacking/portal-sdk/hooks'
-import { HACKATHON_TIME_ZONE, HACKATHON_TIME_ZONE_LABEL, isSameHackathonDay } from '~/utils/hackathon-date-time'
+import { useQueryClient } from '@tanstack/vue-query'
 import { githubLoginUrl } from '~/utils/login-url'
 
+/**
+ * "Your registration" for a workshop, inside the portal shell: confirmation, when and where,
+ * add-to-calendar, the saved answers and a way to withdraw. Only for people who finished
+ * registering; everyone else is sent to the workshop page (or to sign in).
+ */
 definePageMeta({
   auth: false,
+  layout: 'portal',
 })
 
 const route = useRoute()
-const toast = useToast()
+const toast = useGToast()
 const queryClient = useQueryClient()
 const config = useRuntimeConfig()
 
 const slug = computed(() => (route.params.slug as string | undefined) ?? '')
 const registrationPath = computed(() => `/workshops/${slug.value}`)
 const loginUrl = computed(() => githubLoginUrl(config.public.api, route.fullPath))
-
-function goToWorkshopDetails() {
-  navigateTo(registrationPath.value)
-}
 
 const { data: workshop, isLoading: isLoadingWorkshop, error: workshopError } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsGetEndpoint({ path: computed(() => ({ standaloneWorkshopIdOrShortCode: slug.value })) })
 const workshopId = computed(() => workshop.value?.id ?? '')
@@ -45,45 +43,13 @@ const { data: user, isLoading: isLoadingUser, isError: isAuthError } = useGeeksH
 })
 
 const { data: statusData, isLoading: isLoadingStatus } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpoint({ path: computed(() => ({ standaloneWorkshopId: workshopId.value })) }, { query: { enabled: computed(() => !!workshopId.value && !!user.value) } })
+const isRegistered = computed(() => statusData.value?.isRegistered === true)
 
-const { data: questionsData, isLoading: isLoadingQuestions } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListEndpoint({ path: computed(() => ({ standaloneWorkshopId: workshopId.value })) }, { query: { enabled: computed(() => !!workshopId.value && statusData.value?.isRegistered === true) } })
-
-const { data: submissionsData, isLoading: isLoadingSubmissions } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint({ path: computed(() => ({ standaloneWorkshopId: workshopId.value })) }, { query: { enabled: computed(() => !!workshopId.value && statusData.value?.isRegistered === true) } })
-
-const withdrawMutation = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint()
-const isWithdrawModalOpen = ref(false)
-
-const canWithdraw = computed(() =>
-  !!workshop.value?.endTime && new Date(workshop.value.endTime).getTime() > Date.now(),
-)
-
-async function withdrawFromWorkshop() {
-  if (!workshopId.value)
-    return
-
-  try {
-    await withdrawMutation.mutateAsync({ path: { standaloneWorkshopId: workshopId.value } })
-    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointQueryKey({ path: { standaloneWorkshopId: workshopId.value } }) })
-    isWithdrawModalOpen.value = false
-    toast.add({
-      title: 'Withdrawn',
-      description: 'You have withdrawn from this workshop.',
-      color: 'success',
-    })
-    await navigateTo(registrationPath.value, { replace: true })
-  }
-  catch (error) {
-    console.error('Failed to withdraw from workshop', error)
-    toast.add({
-      title: 'Could not withdraw',
-      description: 'Please try again in a moment.',
-      color: 'error',
-    })
-  }
-}
+const { data: questionsData, isLoading: isLoadingQuestions } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListEndpoint({ path: computed(() => ({ standaloneWorkshopId: workshopId.value })) }, { query: { enabled: computed(() => !!workshopId.value && isRegistered.value) } })
+const { data: submissionsData, isLoading: isLoadingSubmissions } = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpoint({ path: computed(() => ({ standaloneWorkshopId: workshopId.value })) }, { query: { enabled: computed(() => !!workshopId.value && isRegistered.value) } })
 
 useHead(() => ({
-  title: workshop.value?.title ? `Registration Complete - ${workshop.value.title}` : 'Registration Complete - GeeksHacking',
+  title: workshop.value?.title ? `Your registration · ${workshop.value.title}` : 'Your registration',
 }))
 
 const isLoading = computed(() =>
@@ -94,8 +60,10 @@ const isLoading = computed(() =>
   || isLoadingSubmissions.value,
 )
 
+// Only for finished registrations: sign in first, and anyone not (fully) registered goes to the workshop page
+const isLeaving = ref(false)
 watchEffect(() => {
-  if (isLoadingWorkshop.value || !workshop.value)
+  if (isLeaving.value || isLoadingWorkshop.value || !workshop.value)
     return
 
   if (!isLoadingUser.value && (!user.value || isAuthError.value)) {
@@ -108,68 +76,52 @@ watchEffect(() => {
     return
   }
 
-  if (!isLoadingSubmissions.value && submissionsData.value && (submissionsData.value.requiredQuestionsRemaining ?? 0) > 0) {
+  if (!isLoadingSubmissions.value && submissionsData.value && (submissionsData.value.requiredQuestionsRemaining ?? 0) > 0)
     navigateTo(registrationPath.value, { replace: true })
+})
+
+const formattedDateTime = computed(() => formatWorkshopWhen(workshop.value?.startTime, workshop.value?.endTime))
+const registeredAtLabel = computed(() => formatWorkshopRegisteredAt(statusData.value?.registeredAt))
+const { answerGroups, savedAnswersCount, totalQuestionsCount } = useWorkshopAnswers(questionsData, submissionsData)
+
+// ---- withdraw ---------------------------------------------------------------------------------
+const withdrawMutation = useGeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsWithdrawEndpoint()
+const isWithdrawModalOpen = ref(false)
+const withdrawError = ref('')
+
+const canWithdraw = computed(() =>
+  !!workshop.value?.endTime && new Date(workshop.value.endTime).getTime() > Date.now(),
+)
+
+watch(isWithdrawModalOpen, (open) => {
+  if (open)
+    withdrawError.value = ''
+})
+
+async function withdrawFromWorkshop() {
+  if (!workshopId.value)
+    return
+
+  withdrawError.value = ''
+  try {
+    await withdrawMutation.mutateAsync({ path: { standaloneWorkshopId: workshopId.value } })
+    isLeaving.value = true
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsStatusEndpointQueryKey({ path: { standaloneWorkshopId: workshopId.value } }) }),
+      queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListEndpointQueryKey({ path: { standaloneWorkshopId: workshopId.value } }) }),
+    ])
+    isWithdrawModalOpen.value = false
+    toast.add({ title: 'You\'ve withdrawn', description: workshop.value?.title ? `You're no longer registered for ${workshop.value.title}.` : undefined, tone: 'ok' })
+    await navigateTo(registrationPath.value, { replace: true })
   }
-})
-
-const questionById = computed(() => {
-  const questions = questionsData.value?.categories?.flatMap(category => category.questions ?? []) ?? []
-  return new Map(questions.filter(question => question.id).map(question => [question.id as string, question]))
-})
-
-const registeredAtLabel = computed(() => {
-  if (!statusData.value?.registeredAt)
-    return 'Registration date unavailable'
-
-  return new Intl.DateTimeFormat(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone: HACKATHON_TIME_ZONE,
-  }).format(new Date(statusData.value.registeredAt))
-})
-
-const formattedDateTime = computed(() => {
-  if (!workshop.value?.startTime || !workshop.value?.endTime) {
-    return {
-      dateLabel: 'Date to be announced',
-      timeLabel: 'Time to be announced',
-    }
+  catch (error) {
+    console.error('Failed to withdraw from workshop', error)
+    isLeaving.value = false
+    withdrawError.value = getApiErrorMessage(error, 'We couldn\'t withdraw you. Try again in a moment.')
   }
+}
 
-  const start = new Date(workshop.value.startTime)
-  const end = new Date(workshop.value.endTime)
-  const sameDay = isSameHackathonDay(start, end)
-
-  const dateFormatter = new Intl.DateTimeFormat(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    timeZone: HACKATHON_TIME_ZONE,
-  })
-
-  const dateWithYearFormatter = new Intl.DateTimeFormat(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    timeZone: HACKATHON_TIME_ZONE,
-  })
-
-  const timeFormatter = new Intl.DateTimeFormat(undefined, {
-    hour: 'numeric',
-    minute: '2-digit',
-    timeZone: HACKATHON_TIME_ZONE,
-  })
-
-  return {
-    dateLabel: sameDay
-      ? dateWithYearFormatter.format(start)
-      : `${dateFormatter.format(start)} to ${dateWithYearFormatter.format(end)}`,
-    timeLabel: `${timeFormatter.format(start)} to ${timeFormatter.format(end)} ${HACKATHON_TIME_ZONE_LABEL}`,
-  }
-})
-
+// ---- calendar ---------------------------------------------------------------------------------
 function formatCalendarDate(value: string | undefined) {
   if (!value)
     return ''
@@ -246,445 +198,340 @@ function downloadCalendarFile() {
   link.click()
   URL.revokeObjectURL(url)
 }
-
-type AnswerDetail = {
-  key: string
-  question: string
-  answers: string[]
-  followUps: { label: string, value: string }[]
-}
-
-type AnswerGroup = {
-  name: string
-  details: AnswerDetail[]
-}
-
-const allQuestions = computed(() =>
-  questionsData.value?.categories?.flatMap(category => category.questions ?? []) ?? [],
-)
-
-function parseJsonValue(value: string | null | undefined) {
-  if (!value)
-    return null
-
-  try {
-    return JSON.parse(value) as unknown
-  }
-  catch {
-    return null
-  }
-}
-
-function optionLabel(question: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto | undefined, value: string) {
-  const option = question?.options?.find(item => item.optionValue === value)
-  return option?.optionText ?? value
-}
-
-function formatAnswerValue(
-  value: string | null | undefined,
-  question: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto | undefined,
-) {
-  const rawValue = value ?? ''
-  const parsed = parseJsonValue(rawValue)
-
-  if (Array.isArray(parsed)) {
-    return parsed.map(item => optionLabel(question, String(item)))
-  }
-
-  if (rawValue === 'true')
-    return ['Yes']
-  if (rawValue === 'false')
-    return ['No']
-
-  return [optionLabel(question, rawValue)]
-}
-
-function formatAnswers(submission: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto) {
-  const question = submission.questionId ? questionById.value.get(submission.questionId) : undefined
-  return formatAnswerValue(submission.value, question)
-}
-
-function formatFollowUpValue(
-  followUpValue: string | null | undefined,
-  question: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationQuestionsListQuestionDto | undefined,
-) {
-  if (!followUpValue)
-    return []
-
-  const parsed = parseJsonValue(followUpValue)
-  if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-    return Object.entries(parsed as Record<string, string>)
-      .filter(([, value]) => Boolean(value))
-      .map(([optionValue, value]) => ({
-        label: optionLabel(question, optionValue),
-        value,
-      }))
-  }
-
-  return [{ label: 'Additional details', value: followUpValue }]
-}
-
-function formatFollowUps(submission: GeeksHackingPortalApiEndpointsParticipantsStandaloneWorkshopsRegistrationSubmissionsListSubmissionDto) {
-  const question = submission.questionId ? questionById.value.get(submission.questionId) : undefined
-  return formatFollowUpValue(submission.followUpValue, question)
-}
-
-function addAnswerDetail(groups: Map<string, AnswerDetail[]>, category: string, detail: AnswerDetail) {
-  const details = groups.get(category) ?? []
-  details.push(detail)
-  groups.set(category, details)
-}
-
-const answerGroups = computed<AnswerGroup[]>(() => {
-  const groups = new Map<string, AnswerDetail[]>()
-  const submissions = submissionsData.value?.submissions ?? []
-
-  if (submissions.length > 0) {
-    for (const submission of submissions) {
-      const category = submission.category || 'Registration details'
-      addAnswerDetail(groups, category, {
-        key: submission.questionId ?? `${category}-${groups.get(category)?.length ?? 0}`,
-        question: submission.questionText ?? submission.questionKey ?? 'Question',
-        answers: formatAnswers(submission),
-        followUps: formatFollowUps(submission),
-      })
-    }
-
-    return Array.from(groups.entries()).map(([name, details]) => ({ name, details }))
-  }
-
-  for (const category of questionsData.value?.categories ?? []) {
-    for (const question of category.questions ?? []) {
-      const submission = question.currentSubmission
-      if (!submission?.value)
-        continue
-
-      addAnswerDetail(groups, category.name ?? 'Registration details', {
-        key: question.id ?? question.questionKey ?? `${category.name}-${groups.get(category.name ?? '')?.length ?? 0}`,
-        question: question.questionText ?? question.questionKey ?? 'Question',
-        answers: formatAnswerValue(submission.value, question),
-        followUps: formatFollowUpValue(submission.followUpValue, question),
-      })
-    }
-  }
-
-  return Array.from(groups.entries()).map(([name, details]) => ({ name, details }))
-})
-
-const savedAnswersCount = computed(() => {
-  const fallbackCount = answerGroups.value.reduce((count, group) => count + group.details.length, 0)
-  const apiCount = submissionsData.value?.answeredQuestions ?? 0
-  return apiCount > 0 ? apiCount : fallbackCount
-})
-
-const totalQuestionsCount = computed(() => {
-  const apiCount = submissionsData.value?.totalQuestions ?? 0
-  return apiCount > 0 ? apiCount : allQuestions.value.length
-})
 </script>
 
 <template>
-  <div class="min-h-screen bg-(--ui-bg) text-(--ui-text)">
-    <div class="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-4 py-6 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between border-b border-(--ui-border) pb-4">
-        <NuxtLink
-          to="/"
-          class="text-sm font-medium tracking-[0.18em] text-(--ui-text-muted) uppercase transition-colors hover:text-(--ui-text-highlighted)"
-        >
-          GeeksHacking
-        </NuxtLink>
-
-        <div />
-      </div>
-
-      <div
-        v-if="isLoading"
-        class="flex flex-1 items-center justify-center"
+  <GPanel id="workshop-registration">
+    <template #header>
+      <GPanelHeader
+        title="Your registration"
+        as="p"
       >
-        <div class="space-y-3 text-center">
-          <UIcon
-            name="i-lucide-loader-circle"
-            class="mx-auto size-8 animate-spin text-primary"
+        <template #right>
+          <WorkshopsCheckinQr
+            v-if="workshop && isRegistered"
+            :workshop-id="workshopId"
+            :user-id="user?.id ?? ''"
+            :registration-id="statusData?.registrationId"
+            :workshop-title="workshop.title"
           />
-          <p class="text-sm text-(--ui-text-muted)">
-            Loading your registration...
-          </p>
-        </div>
-      </div>
+        </template>
+      </GPanelHeader>
+    </template>
 
-      <div
-        v-else-if="workshopError || !workshop"
-        class="flex flex-1 items-center justify-center"
-      >
-        <UCard class="max-w-xl">
-          <div class="space-y-3 text-center">
-            <p class="text-lg font-semibold text-(--ui-text-highlighted)">
-              Workshop not found
-            </p>
-            <p class="text-sm text-(--ui-text-muted)">
-              This workshop may no longer be public, or the link may be incorrect.
-            </p>
-          </div>
-        </UCard>
-      </div>
+    <template #body>
+      <div class="wr">
+        <GLoading
+          v-if="isLoading"
+          label="Loading your registration…"
+        />
 
-      <div
-        v-else
-        class="flex flex-1 justify-center py-8 lg:py-10"
-      >
-        <div class="w-full space-y-6">
-          <UCard
-            :ui="{ body: 'p-6 sm:p-8' }"
-            class="overflow-hidden border-success/30 bg-success/5 shadow-2xl shadow-success/10 ring-1 ring-success/25"
-          >
-            <div class="space-y-7">
-              <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-                <div class="flex gap-4">
-                  <div class="flex size-14 shrink-0 items-center justify-center rounded-full bg-success text-white shadow-lg shadow-success/25 ring-4 ring-success/15">
-                    <UIcon
-                      name="i-lucide-check"
-                      class="size-7"
-                    />
-                  </div>
-                  <div class="space-y-2">
-                    <UBadge
-                      color="success"
-                      variant="solid"
-                      size="sm"
-                    >
-                      Signup successful
-                    </UBadge>
-                    <h1 class="text-3xl font-semibold tracking-tight text-(--ui-text-highlighted) sm:text-4xl">
-                      You’re registered for {{ workshop.title }}
-                    </h1>
-                    <p class="max-w-2xl text-sm leading-6 text-(--ui-text-muted)">
-                      Your signup is complete. A copy of your submitted details is below for reference.
-                    </p>
-                  </div>
-                </div>
-              </div>
+        <GEmptyState
+          v-else-if="workshopError || !workshop"
+          icon="material-symbols:search-off-rounded"
+          title="Workshop not found"
+          description="It may no longer be public, or the link may be wrong."
+        >
+          <template #actions>
+            <GButton
+              to="/dash"
+              variant="secondary"
+              icon="material-symbols:explore-rounded"
+              label="Explore events"
+            />
+          </template>
+        </GEmptyState>
 
-              <UAlert
-                color="success"
-                variant="subtle"
-                icon="i-lucide-check-circle-2"
-                title="You are all set"
-                description="If something looks incorrect, contact the workshop organizer."
+        <template v-else-if="isRegistered">
+          <!-- confirmation -->
+          <header class="wr-head">
+            <div class="flex flex-wrap items-center gap-2">
+              <GLabelStrip label="Workshop" />
+              <GBadge
+                tone="ok"
+                icon="material-symbols:check-circle-rounded"
+                label="You're registered"
               />
+            </div>
+            <h1 class="wr-head__title">
+              {{ workshop.title }}
+            </h1>
+            <p class="wr-head__lead">
+              Your registration is complete. If something below looks wrong, contact the organisers.
+            </p>
+          </header>
 
-              <div class="grid gap-3 sm:grid-cols-2">
-                <div class="rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) p-4 shadow-lg shadow-black/5">
-                  <p class="text-xs font-medium tracking-[0.14em] text-(--ui-text-muted) uppercase">
-                    Registered
-                  </p>
-                  <p class="mt-2 text-sm font-semibold text-(--ui-text-highlighted)">
-                    {{ registeredAtLabel }}
-                  </p>
-                </div>
-
-                <div class="rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) p-4 shadow-lg shadow-black/5">
-                  <p class="text-xs font-medium tracking-[0.14em] text-(--ui-text-muted) uppercase">
-                    Answers saved
-                  </p>
-                  <p class="mt-2 text-sm font-semibold text-(--ui-text-highlighted)">
-                    {{ savedAnswersCount }} of {{ totalQuestionsCount }}
-                  </p>
-                </div>
+          <!-- when, where, calendar -->
+          <section
+            class="wr-card"
+            aria-labelledby="wr-details-title"
+          >
+            <h2
+              id="wr-details-title"
+              class="wr-card__title"
+            >
+              Details
+            </h2>
+            <dl class="wr-facts">
+              <div>
+                <dt>When</dt>
+                <dd>
+                  {{ formattedDateTime.dateLabel }}
+                  <span class="wr-facts__sub">{{ formattedDateTime.timeLabel }}</span>
+                </dd>
               </div>
-
-              <div class="grid gap-3 sm:grid-cols-2">
-                <div class="rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) p-4 shadow-lg shadow-black/5">
-                  <p class="text-xs font-medium tracking-[0.14em] text-(--ui-text-muted) uppercase">
-                    Date / time
-                  </p>
-                  <p class="mt-2 text-sm font-semibold leading-6 text-(--ui-text-highlighted)">
-                    {{ formattedDateTime.dateLabel }}
-                  </p>
-                  <p class="mt-1 text-sm leading-6 text-(--ui-text-muted)">
-                    {{ formattedDateTime.timeLabel }}
-                  </p>
-                </div>
-
-                <div class="rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) p-4 shadow-lg shadow-black/5">
-                  <p class="text-xs font-medium tracking-[0.14em] text-(--ui-text-muted) uppercase">
-                    Location
-                  </p>
-                  <p class="mt-2 text-sm font-semibold leading-6 text-(--ui-text-highlighted)">
-                    {{ workshop.location || 'To be announced' }}
-                  </p>
-                </div>
+              <div>
+                <dt>Where</dt>
+                <dd>{{ workshop.location || 'To be announced' }}</dd>
               </div>
+              <div>
+                <dt>Registered</dt>
+                <dd>{{ registeredAtLabel }}</dd>
+              </div>
+              <div>
+                <dt>Answers saved</dt>
+                <dd>{{ savedAnswersCount }} of {{ totalQuestionsCount }}</dd>
+              </div>
+            </dl>
 
+            <div
+              v-if="calendarEvent"
+              class="wr-calendar"
+            >
+              <p class="wr-calendar__text">
+                Add it to your calendar so you have the time and place handy.
+              </p>
               <div class="flex flex-wrap gap-2">
-                <UButton
-                  color="neutral"
-                  variant="outline"
-                  icon="i-lucide-arrow-left"
-                  @click="goToWorkshopDetails"
-                >
-                  View workshop details
-                </UButton>
-                <UButton
-                  v-if="workshop.homepageUri"
-                  :to="workshop.homepageUri"
-                  external
+                <GButton
+                  :href="googleCalendarUrl"
                   target="_blank"
-                  color="neutral"
-                  variant="ghost"
-                  icon="i-lucide-arrow-up-right"
-                >
-                  Visit event site
-                </UButton>
-                <UButton
-                  v-if="canWithdraw"
-                  color="error"
-                  variant="soft"
-                  icon="i-lucide-user-minus"
-                  @click="isWithdrawModalOpen = true"
-                >
-                  Withdraw
-                </UButton>
-              </div>
-
-              <div
-                v-if="calendarEvent"
-                class="flex flex-col gap-3 rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) p-4 shadow-lg shadow-black/5 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div class="space-y-1">
-                  <p class="text-sm font-semibold text-(--ui-text-highlighted)">
-                    Add this workshop to your calendar
-                  </p>
-                  <p class="text-sm leading-6 text-(--ui-text-muted)">
-                    Save the date so you have the workshop time and location handy.
-                  </p>
-                </div>
-
-                <div class="flex flex-col gap-2 sm:flex-row">
-                  <UButton
-                    :to="googleCalendarUrl"
-                    external
-                    target="_blank"
-                    color="neutral"
-                    variant="outline"
-                    icon="i-lucide-calendar-plus"
-                  >
-                    Google Calendar
-                  </UButton>
-                  <UButton
-                    color="neutral"
-                    variant="soft"
-                    icon="i-lucide-download"
-                    @click="downloadCalendarFile"
-                  >
-                    Download .ics
-                  </UButton>
-                </div>
+                  size="sm"
+                  icon="material-symbols:calendar-add-on-rounded"
+                  label="Google Calendar"
+                  aria-label="Add to Google Calendar (opens in a new tab)"
+                />
+                <GButton
+                  size="sm"
+                  icon="material-symbols:download-rounded"
+                  label="Download .ics"
+                  aria-label="Download a calendar file (.ics)"
+                  @click="downloadCalendarFile"
+                />
               </div>
             </div>
-          </UCard>
 
-          <div
-            v-if="answerGroups.length"
-            class="space-y-4"
+            <div class="wr-actions">
+              <GButton
+                :to="registrationPath"
+                variant="ghost"
+                icon="material-symbols:arrow-back-rounded"
+                label="Workshop details"
+              />
+              <GButton
+                v-if="workshop.homepageUri"
+                :href="workshop.homepageUri"
+                target="_blank"
+                variant="ghost"
+                trailing-icon="material-symbols:open-in-new-rounded"
+                label="Event site"
+                aria-label="Event site (opens in a new tab)"
+              />
+            </div>
+          </section>
+
+          <!-- answers -->
+          <section
+            class="wr-section"
+            aria-labelledby="wr-answers-title"
           >
-            <UCard
-              v-for="group in answerGroups"
-              :key="group.name"
-              :ui="{ body: 'p-5 sm:p-6' }"
-              class="border-(--ui-border) bg-(--ui-bg-elevated) shadow-xl shadow-black/8 ring-1 ring-(--ui-border)"
+            <h2
+              id="wr-answers-title"
+              class="wr-card__title"
             >
-              <div class="space-y-5">
-                <div class="flex flex-wrap items-center justify-between gap-3">
-                  <h2 class="text-base font-semibold text-(--ui-text-highlighted)">
-                    {{ group.name }}
-                  </h2>
-                </div>
+              Your answers
+            </h2>
+            <WorkshopsAnswerList :groups="answerGroups" />
+          </section>
 
-                <div class="divide-y divide-(--ui-border)">
-                  <div
-                    v-for="detail in group.details"
-                    :key="detail.key"
-                    class="grid gap-3 py-4 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] sm:gap-6"
-                  >
-                    <div class="space-y-1">
-                      <p class="text-sm font-medium leading-6 text-(--ui-text-highlighted)">
-                        {{ detail.question }}
-                      </p>
-                    </div>
-                    <div class="space-y-2">
-                      <div class="grid gap-2">
-                        <div
-                          v-for="answer in detail.answers"
-                          :key="answer"
-                          class="rounded-xl border border-(--ui-border) bg-(--ui-bg) px-3 py-2 text-sm leading-6 text-(--ui-text-highlighted) shadow-sm"
-                        >
-                          {{ answer }}
-                        </div>
-                      </div>
-
-                      <div
-                        v-if="detail.followUps.length"
-                        class="space-y-2"
-                      >
-                        <div
-                          v-for="followUp in detail.followUps"
-                          :key="`${detail.key}-${followUp.label}`"
-                          class="rounded-xl border border-(--ui-border) bg-(--ui-bg) p-3"
-                        >
-                          <p class="text-xs font-medium text-(--ui-text-muted)">
-                            {{ followUp.label }}
-                          </p>
-                          <p class="mt-1 text-sm leading-6 text-(--ui-text-highlighted)">
-                            {{ followUp.value }}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </UCard>
-          </div>
-
-          <UAlert
-            v-else
-            color="neutral"
-            variant="soft"
-            icon="i-lucide-info"
-            title="No question responses"
-            description="This workshop did not require any registration questions."
-          />
-        </div>
+          <!-- withdraw -->
+          <section
+            v-if="canWithdraw"
+            class="wr-withdraw"
+            aria-labelledby="wr-withdraw-title"
+          >
+            <div class="wr-withdraw__body">
+              <h2
+                id="wr-withdraw-title"
+                class="wr-withdraw__title"
+              >
+                Can't make it?
+              </h2>
+              <p class="wr-withdraw__text">
+                Withdraw to free up your spot for someone else. You can register again later if there's still room.
+              </p>
+            </div>
+            <GButton
+              variant="danger"
+              icon="material-symbols:person-remove-rounded"
+              label="Withdraw"
+              @click="isWithdrawModalOpen = true"
+            />
+          </section>
+        </template>
       </div>
-    </div>
+    </template>
+  </GPanel>
 
-    <UModal
-      v-model:open="isWithdrawModalOpen"
-      title="Withdraw from workshop"
-      description="This cancels your registration for this workshop."
-    >
-      <template #content>
-        <UCard>
-          <p class="text-sm text-(--ui-text-muted)">
-            Are you sure you want to withdraw? You can register again later if spots are still available.
-          </p>
-          <div class="mt-4 flex justify-end gap-2">
-            <UButton
-              variant="ghost"
-              @click="isWithdrawModalOpen = false"
-            >
-              Cancel
-            </UButton>
-            <UButton
-              color="error"
-              :loading="withdrawMutation.isPending.value"
-              @click="withdrawFromWorkshop"
-            >
-              Withdraw
-            </UButton>
-          </div>
-        </UCard>
-      </template>
-    </UModal>
-  </div>
+  <GModal
+    v-model:open="isWithdrawModalOpen"
+    :title="`Withdraw from ${workshop?.title ?? 'this workshop'}?`"
+    description="Your registration and answers are cancelled. You can register again later if there's still room."
+    size="sm"
+  >
+    <GAlert
+      v-if="withdrawError"
+      tone="err"
+      title="Not withdrawn"
+      :description="withdrawError"
+    />
+    <template #footer>
+      <GButton
+        variant="ghost"
+        label="Stay registered"
+        @click="isWithdrawModalOpen = false"
+      />
+      <GButton
+        variant="danger"
+        label="Withdraw"
+        :loading="withdrawMutation.isPending.value"
+        loading-label="Withdrawing"
+        @click="withdrawFromWorkshop"
+      />
+    </template>
+  </GModal>
 </template>
+
+<style scoped>
+.wr {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 56rem;
+  margin: 0 auto;
+}
+.wr-head {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.wr-head__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4.5vw, 40px);
+  font-weight: 700;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+.wr-head__lead {
+  max-width: 65ch;
+  margin: 0;
+  color: var(--gh-text-muted);
+}
+.wr-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  padding: 20px;
+  border: var(--gh-border-width) solid var(--gh-line);
+  border-radius: var(--radius-gh-lg);
+  background: var(--gh-surface);
+}
+@media (min-width: 640px) {
+  .wr-card { padding: 24px; }
+}
+.wr-card__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.wr-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.wr-facts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px 24px;
+  margin: 0;
+}
+@media (min-width: 640px) {
+  .wr-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.wr-facts dt {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gh-text-muted);
+}
+.wr-facts dd {
+  margin: 2px 0 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.wr-facts__sub {
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--gh-text-muted);
+}
+.wr-calendar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+  padding-top: 16px;
+  border-top: var(--gh-border-width) solid var(--gh-line-soft);
+}
+.wr-calendar__text {
+  margin: 0;
+  font-size: 14px;
+  color: var(--gh-text-muted);
+}
+.wr-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -8px 0 -8px -12px;
+}
+.wr-withdraw {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  padding: 20px;
+  border: var(--gh-border-width) dashed var(--gh-line);
+  border-radius: var(--radius-gh-lg);
+}
+.wr-withdraw__body {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+.wr-withdraw__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+.wr-withdraw__text {
+  max-width: 60ch;
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--gh-text-muted);
+}
+</style>

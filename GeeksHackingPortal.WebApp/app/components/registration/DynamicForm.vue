@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpointStatus200 } from '@geekshacking/portal-sdk'
 import {
+  geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListEndpointQueryKey,
   useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonGetEndpoint,
   useGeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsSubmitEndpoint,
@@ -13,6 +14,8 @@ import { getApiValidationErrors } from '~/utils/api-errors'
 const props = defineProps<{
   hackathonId: string
   questions: GeeksHackingPortalApiEndpointsParticipantsHackathonRegistrationQuestionsListEndpointStatus200
+  /** inside the portal shell: no intro heading (the panel has one) */
+  embedded?: boolean
 }>()
 
 const router = useRouter()
@@ -71,7 +74,6 @@ const formattedSections = computed(() => {
 const state = reactive<Record<string, string | string[]>>({})
 const followUpState = reactive<Record<string, string>>({}) // key: "questionKey:optionValue" -> follow-up text
 const isDataReady = ref(false)
-const isTshirtImageModalOpen = ref(false)
 
 // Get selected options that have follow-up text for a question
 interface FormattedItem { label: string, value: string, hasFollowUpText: boolean, followUpPlaceholder: string }
@@ -224,13 +226,13 @@ async function onSubmit() {
     submissionError.value = false
     await submitRegistrationMutation.mutateAsync({ path: { hackathonId: props.hackathonId }, body: { submissions } })
 
-    // Remove cached submissions so status page fetches fresh data
+    // Remove cached submissions so the status page fetches fresh data
     queryClient.removeQueries({
-      queryKey: ['hackathons', props.hackathonId, 'registration', 'submissions'],
+      queryKey: geeksHackingPortalApiEndpointsParticipantsHackathonRegistrationSubmissionsListEndpointQueryKey({ path: { hackathonId: props.hackathonId } }),
     })
 
     router.push({
-      path: `${registrationPath.value}/complete`,
+      path: props.embedded ? `/dash/${props.hackathonId}/registration/complete` : `${registrationPath.value}/complete`,
       query: route.query.joinCode ? { joinCode: route.query.joinCode } : undefined,
     })
   }
@@ -238,6 +240,9 @@ async function onSubmit() {
     submissionError.value = true
     parseErrorsToFields(error)
     console.error('[FORM] Submission failed:', error)
+    // take the user to the first answer that needs fixing
+    await nextTick()
+    document.querySelector<HTMLElement>('.reg-form [aria-invalid="true"]')?.focus()
   }
 }
 
@@ -259,28 +264,6 @@ function parseErrorsToFields(error: unknown) {
   }
 }
 
-function getCategoryGroupName(sectionIndex: number, categoryName: string) {
-  const logisticsCategories = ['Hackathon Preferences', 'Dietary & Preferences']
-
-  if (sectionIndex === 1 && logisticsCategories.includes(categoryName))
-    return 'Logistics'
-  return null
-}
-
-function getSectionIcon(sectionIndex: number, sectionName: string | null) {
-  if (sectionName === 'Skills')
-    return '/logos/skills.svg'
-  if (sectionName === 'Logistics')
-    return '/logos/logistics.svg'
-  if (sectionIndex === 0)
-    return '/logos/personaldetails.svg'
-  if (sectionIndex === 1)
-    return '/logos/logistics.svg'
-  if (sectionIndex === 2)
-    return '/logos/outreach.svg'
-  return '/logos/personaldetails.svg'
-}
-
 // Check if a question should span full width
 function shouldBeFullWidth(question: { id?: string | null, isLong: boolean, conditionalLogic?: string | null }, categoryQuestions: { id?: string | null, isLong: boolean, conditionalLogic?: string | null }[]) {
   if (question.isLong)
@@ -300,448 +283,559 @@ function shouldBeFullWidth(question: { id?: string | null, isLong: boolean, cond
   return false
 }
 
-const isFormValid = computed(() => {
-  if (!props.questions?.categories)
-    return false
+// Required = marked required, or a follow-up question that is currently shown
+function isRequiredQuestion(question: { isRequired?: boolean | null, conditionalLogic?: string | null }) {
+  return !!question.isRequired || !!question.conditionalLogic
+}
 
-  if (!isProfileNameValid.value)
-    return false
-
-  // Only validate required questions that are currently visible
-  // Conditional questions (those with conditionalLogic) are implicitly required when visible
-  const allRequiredQuestions = allQuestions.value.filter((q) => {
-    const isVisible = isQuestionVisible(q.conditionalLogic)
-    // Question should be validated if:
-    // 1. It's marked as required AND visible, OR
-    // 2. It has conditional logic AND is visible (conditional questions are implicitly required when shown)
-    return isVisible && (q.isRequired || q.conditionalLogic)
-  })
-
-  return allRequiredQuestions.every((question) => {
+// Visible required questions (and their follow-up texts) that still need an answer
+const missingAnswers = computed(() => {
+  const missing: string[] = []
+  for (const question of allQuestions.value) {
+    if (!isQuestionVisible(question.conditionalLogic) || !isRequiredQuestion(question))
+      continue
     const key = question.questionKey
-    if (!key)
-      return false
+    if (!key) {
+      missing.push(question.id ?? '?')
+      continue
+    }
 
     const value = state[key]
-
-    // Check if main value is filled
-    let isMainValueFilled = false
-    if (Array.isArray(value)) {
-      isMainValueFilled = value.length > 0
-    }
-    else {
-      isMainValueFilled = value !== '' && value !== null && value !== undefined
+    const isMainValueFilled = Array.isArray(value)
+      ? value.length > 0
+      : value !== '' && value !== null && value !== undefined
+    if (!isMainValueFilled) {
+      missing.push(key)
+      continue
     }
 
-    if (!isMainValueFilled)
-      return false
-
-    // Check if any selected options require follow-up text
+    // selected options that ask for more detail need that text too
     const selectedValues = Array.isArray(value) ? value : [value]
-    const items = (question.options || []).map(opt => ({
-      label: String(opt.optionText ?? ''),
-      value: String(opt.optionValue ?? ''),
-      hasFollowUpText: opt.hasFollowUpText ?? false,
-      followUpPlaceholder: opt.followUpPlaceholder ?? '',
-    }))
-
-    const followUpOptions = items.filter(item =>
-      selectedValues.includes(item.value) && item.hasFollowUpText,
-    )
-
-    // Validate that all required follow-up fields are filled
-    return followUpOptions.every((followUpOption) => {
-      const followUpKey = `${key}:${followUpOption.value}`
-      const followUpValue = followUpState[followUpKey]
-      return followUpValue && followUpValue.trim() !== ''
-    })
-  })
+    for (const option of question.options ?? []) {
+      const optionValue = String(option.optionValue ?? '')
+      if (option.hasFollowUpText && selectedValues.includes(optionValue) && !followUpState[`${key}:${optionValue}`]?.trim())
+        missing.push(`${key}:${optionValue}`)
+    }
+  }
+  if (!profileName.firstName.trim())
+    missing.push('profile_first_name')
+  if (!profileName.lastName.trim())
+    missing.push('profile_last_name')
+  return missing
 })
+
+const isFormValid = computed(() => !!props.questions?.categories && isProfileNameValid.value && missingAnswers.value.length === 0)
+
+const isTshirtImageModalOpen = ref(false)
+
+// free-text question types → the matching input, so phones get the right keyboard
+function inputTypeFor(type: string | null | undefined) {
+  switch (type) {
+    case 'Url': return 'url'
+    case 'Email': return 'email'
+    case 'Phone': return 'tel'
+    case 'Number': return 'number'
+    case 'Date': return 'date'
+    default: return 'text'
+  }
+}
+
+const followLinks = [
+  { name: 'Instagram', url: 'https://www.instagram.com/geekshacking', icon: 'fa6-brands:instagram' },
+  { name: 'LinkedIn', url: 'https://www.linkedin.com/company/geekshacking/', icon: 'fa6-brands:linkedin' },
+  { name: 'Facebook', url: 'https://www.facebook.com/GeeksHacking', icon: 'fa6-brands:facebook' },
+]
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col items-center bg-(--ui-bg) text-(--ui-text) px-4 pt-8 md:pt-16 pb-24">
-    <div class="w-full max-w-2xl">
-      <UForm
-        v-if="isDataReady"
-        :state="state"
-        @submit="onSubmit"
+  <div
+    class="reg-form"
+    :class="{ 'reg-form--embedded': embedded }"
+  >
+    <form
+      v-if="isDataReady"
+      class="reg-form__inner"
+      novalidate
+      @submit.prevent="onSubmit"
+    >
+      <div
+        v-if="!embedded"
+        class="reg-form__intro"
       >
-        <!-- Loop through all sections -->
-        <div class="space-y-12">
-          <template
-            v-for="section in formattedSections"
-            :key="section.sectionIndex"
+        <GLabelStrip label="Registration" />
+        <h1 class="reg-form__title">
+          {{ hackathon?.name ? `Register for ${hackathon.name}` : 'Register' }}
+        </h1>
+        <p class="reg-form__lead">
+          It takes about five minutes. Questions marked <span aria-hidden="true">*</span><span class="sr-only">with an asterisk</span> are required, and your answers are only shared with the organisers.
+        </p>
+        <RegistrationAboutEvent
+          :name="hackathon?.name"
+          :description="hackathon?.description"
+          class="mt-2"
+        />
+      </div>
+
+      <section
+        v-for="section in formattedSections"
+        :key="section.sectionIndex"
+        class="reg-form__section"
+        :aria-labelledby="`reg-section-${section.sectionIndex}`"
+      >
+        <GSectionHeading
+          :id="`reg-section-${section.sectionIndex}`"
+          :numeral="section.sectionIndex + 1"
+          :label="`Part ${section.sectionIndex + 1} of ${formattedSections.length}`"
+          :title="section.pageName"
+          :level="2"
+        />
+
+        <!-- profile name: lives on the user profile, shown in Personal Details -->
+        <div
+          v-if="section.sectionIndex === 0"
+          class="reg-form__grid"
+        >
+          <GFormField
+            label="First name"
+            required
           >
-            <div class="space-y-6">
-              <!-- Section header (for sections 0 and 2, show main title) -->
+            <GInput
+              v-model="profileName.firstName"
+              autocomplete="given-name"
+            />
+          </GFormField>
+          <GFormField
+            label="Last name"
+            required
+          >
+            <GInput
+              v-model="profileName.lastName"
+              autocomplete="family-name"
+            />
+          </GFormField>
+          <p class="reg-form__note">
+            This is your GeeksHacking profile name. Organizers of every hackathon and workshop you join see it, and changing it here updates it everywhere.
+          </p>
+        </div>
+
+        <div class="reg-form__grid">
+          <template
+            v-for="category in section.categories"
+            :key="category.name"
+          >
+            <template
+              v-for="question in category.questions"
+              :key="question.id ?? ''"
+            >
               <div
-                v-if="section.sectionIndex !== 1"
-                class="flex items-center"
+                v-if="isQuestionVisible(question.conditionalLogic)"
+                class="reg-form__question"
+                :class="{ 'reg-form__question--wide': shouldBeFullWidth(question, category.questions) }"
               >
-                <img
-                  :src="getSectionIcon(section.sectionIndex, null)"
-                  alt="icon"
-                  class="w-8 h-8 md:w-10 md:h-10"
+                <!-- a single option (e.g. consent): a labelled checkbox under the question; the checkbox carries the required mark -->
+                <fieldset
+                  v-if="question.hasOptions && !question.isMultiSelect && question.items.length === 1"
+                  class="reg-form__fieldset"
+                  :aria-describedby="[question.helpText ? `q-${question.id}-hint` : '', fieldErrors[question.questionKey ?? ''] ? `q-${question.id}-error` : ''].filter(Boolean).join(' ') || undefined"
                 >
-                <h2 class="ml-3 font-raleway text-lg md:text-xl font-normal text-(--ui-text-highlighted)">
-                  {{ section.pageName }}
-                </h2>
-              </div>
-
-              <!-- Profile name fields (in Personal Details section) -->
-              <div
-                v-if="section.sectionIndex === 0"
-                class="grid grid-cols-1 md:grid-cols-2 gap-6"
-              >
-                <UFormField
-                  name="profile_first_name"
-                  class="col-span-1"
-                >
-                  <template #label>
-                    <span class="font-raleway text-base font-normal text-(--ui-text-highlighted)">
-                      First Name
-                    </span>
-                  </template>
-                  <UInput
-                    v-model="profileName.firstName"
-                    type="text"
-                    autocomplete="given-name"
-                    class="w-full"
-                    size="lg"
+                  <legend class="reg-form__legend">
+                    {{ question.questionText ?? '' }}
+                  </legend>
+                  <GCheckbox
+                    :model-value="state[question.questionKey ?? ''] === question.items[0]?.value"
+                    :label="question.items[0]?.label"
+                    :required="isRequiredQuestion(question)"
+                    :invalid="!!fieldErrors[question.questionKey ?? '']"
+                    @update:model-value="(checked: boolean) => {
+                      const value = question.items[0]?.value
+                      if (value !== undefined)
+                        state[question.questionKey ?? ''] = checked ? value : ''
+                    }"
                   />
-                </UFormField>
+                  <p
+                    v-if="question.helpText"
+                    :id="`q-${question.id}-hint`"
+                    class="reg-form__hint"
+                  >
+                    {{ question.helpText }}
+                  </p>
+                  <p
+                    v-if="fieldErrors[question.questionKey ?? '']"
+                    :id="`q-${question.id}-error`"
+                    class="reg-form__error"
+                  >
+                    {{ fieldErrors[question.questionKey ?? ''] }}
+                  </p>
+                </fieldset>
 
-                <UFormField
-                  name="profile_last_name"
-                  class="col-span-1"
+                <GFormField
+                  v-else
+                  :label="question.questionText ?? ''"
+                  :hint="question.helpText ?? undefined"
+                  :error="fieldErrors[question.questionKey ?? '']"
+                  :required="isRequiredQuestion(question)"
                 >
-                  <template #label>
-                    <span class="font-raleway text-base font-normal text-(--ui-text-highlighted)">
-                      Last Name
-                    </span>
-                  </template>
-                  <UInput
-                    v-model="profileName.lastName"
-                    type="text"
-                    autocomplete="family-name"
-                    class="w-full"
-                    size="lg"
+                  <GSelect
+                    v-if="question.hasOptions && question.isMultiSelect"
+                    v-model="state[question.questionKey ?? ''] as string[]"
+                    :items="question.items"
+                    multiple
+                    placeholder="Select all that apply"
                   />
-                </UFormField>
+                  <GSelect
+                    v-else-if="question.hasOptions"
+                    v-model="state[question.questionKey ?? ''] as string"
+                    :items="question.items"
+                    placeholder="Select one"
+                  />
+                  <GTextarea
+                    v-else-if="question.type === 'LongText'"
+                    v-model="state[question.questionKey ?? ''] as string"
+                    :rows="4"
+                    autoresize
+                  />
+                  <GInput
+                    v-else
+                    v-model="state[question.questionKey ?? ''] as string"
+                    :type="inputTypeFor(question.type)"
+                    :inputmode="question.type === 'Number' ? 'numeric' : undefined"
+                    :autocomplete="question.type === 'Phone' ? 'tel' : question.type === 'Email' ? 'email' : undefined"
+                  />
+                </GFormField>
 
-                <p class="md:col-span-2 -mt-3 text-sm text-(--ui-text-muted)">
-                  This is your GeeksHacking profile name. Organizers of every hackathon and workshop you join see it, and changing it here updates it everywhere.
-                </p>
-              </div>
-
-              <!-- Single continuous grid for all categories in section -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <template
-                  v-for="(category, catIndex) in section.categories"
-                  :key="category.name"
+                <!-- options that ask for more detail -->
+                <GFormField
+                  v-for="followUpOption in getSelectedFollowUpOptions(question.questionKey ?? '', question.items)"
+                  :key="`${question.questionKey}-${followUpOption.value}-followup`"
+                  :label="followUpOption.followUpPlaceholder || `Tell us more about “${followUpOption.label}”`"
+                  required
+                  class="reg-form__followup"
                 >
-                  <!-- For section 1, show Skills/Logistics subheadings -->
-                  <div
-                    v-if="getCategoryGroupName(section.sectionIndex, category.name ?? '') && (catIndex === 0 || getCategoryGroupName(section.sectionIndex, category.name ?? '') !== getCategoryGroupName(section.sectionIndex, section.categories[catIndex - 1]?.name ?? ''))"
-                    class="md:col-span-2 flex items-center mb-2 mt-4"
+                  <GInput v-model="followUpState[`${question.questionKey}:${followUpOption.value}`]" />
+                </GFormField>
+
+                <!-- T-shirt size guide -->
+                <button
+                  v-if="question.questionKey === 'tshirt_size'"
+                  type="button"
+                  class="reg-form__guide"
+                  @click="isTshirtImageModalOpen = true"
+                >
+                  <img
+                    src="/appendix/tshirtsize.jpg"
+                    alt=""
+                    class="reg-form__guide-img"
                   >
-                    <img
-                      :src="getSectionIcon(section.sectionIndex, getCategoryGroupName(section.sectionIndex, category.name ?? ''))"
-                      alt="icon"
-                      class="w-8 h-8 md:w-10 md:h-10"
-                    >
-                    <h2 class="ml-3 font-raleway text-lg md:text-xl font-normal text-(--ui-text-highlighted)">
-                      {{ getCategoryGroupName(section.sectionIndex, category.name ?? '') }}
-                    </h2>
-                  </div>
-
-                  <template
-                    v-for="question in category.questions"
-                    :key="question.id ?? ''"
-                  >
-                    <UFormField
-                      v-if="isQuestionVisible(question.conditionalLogic)"
-                      :name="question.questionKey || ''"
-                      :class="[shouldBeFullWidth(question, category.questions) ? 'md:col-span-2' : 'col-span-1']"
-                    >
-                      <template #label>
-                        <span class="font-raleway text-base font-normal text-(--ui-text-highlighted)">
-                          {{ question.questionText ?? '' }}
-                        </span>
-                      </template>
-
-                      <USelectMenu
-                        v-if="question.hasOptions && question.isMultiSelect"
-                        v-model="state[question.questionKey ?? ''] as string[]"
-                        :items="question.items"
-                        multiple
-                        :search="false"
-                        value-key="value"
-                        label-key="label"
-                        placeholder="Select options"
-                        class="w-full"
-                        size="lg"
-                        :ui-menu="{
-                          option: {
-                            base: 'whitespace-normal break-words py-2',
-                          },
-                        }"
-                      >
-                        <template #option="{ option }">
-                          <span class="block whitespace-normal break-words">{{ option.label }}</span>
-                        </template>
-                      </USelectMenu>
-
-                      <!-- Single checkbox for single-option questions -->
-                      <UCheckbox
-                        v-else-if="question.hasOptions && question.items.length === 1"
-                        :model-value="state[question.questionKey ?? ''] === question.items[0]?.value"
-                        :label="question.items[0]?.label"
-                        class="font-raleway text-base"
-                        @update:model-value="(checked) => {
-                          const value = question.items[0]?.value
-                          if (value !== undefined) {
-                            state[question.questionKey ?? ''] = checked ? value : ''
-                          }
-                        }"
-                      />
-
-                      <USelect
-                        v-else-if="question.hasOptions"
-                        v-model="state[question.questionKey ?? ''] as string"
-                        :items="question.items"
-                        value-key="value"
-                        label-key="label"
-                        placeholder="Select one"
-                        class="w-full"
-                        size="lg"
-                        :ui-menu="{
-                          option: {
-                            base: 'whitespace-normal break-words py-2',
-                          },
-                        }"
-                      >
-                        <template #option="{ option }">
-                          <span class="block whitespace-normal break-words">{{ option.label }}</span>
-                        </template>
-                      </USelect>
-
-                      <UInput
-                        v-else
-                        v-model="state[question.questionKey ?? ''] as string"
-                        type="text"
-                        class="w-full"
-                        size="lg"
-                      />
-
-                      <!-- Follow-up text fields for selected options -->
-                      <div
-                        v-for="followUpOption in getSelectedFollowUpOptions(question.questionKey ?? '', question.items)"
-                        :key="`${question.questionKey}-${followUpOption.value}-followup`"
-                        class="mt-3"
-                      >
-                        <label class="block font-raleway text-base font-normal text-(--ui-text-highlighted) mb-1">
-                          {{ followUpOption.followUpPlaceholder || `Please specify for "${followUpOption.label}"` }}
-                        </label>
-                        <UInput
-                          v-model="followUpState[`${question.questionKey}:${followUpOption.value}`]"
-                          type="text"
-                          class="w-full"
-                          size="lg"
-                        />
-                      </div>
-
-                      <!-- T-shirt size guide image -->
-                      <div
-                        v-if="question.questionKey === 'tshirt_size'"
-                        class="mt-2"
-                      >
-                        <div
-                          role="button"
-                          tabindex="0"
-                          class="cursor-pointer"
-                          @click="() => {
-                            console.log('Image clicked, opening modal')
-                            isTshirtImageModalOpen = true
-                            console.log('Modal state:', isTshirtImageModalOpen)
-                          }"
-                          @keydown.enter="() => { isTshirtImageModalOpen = true }"
-                          @keydown.space.prevent="() => { isTshirtImageModalOpen = true }"
-                        >
-                          <img
-                            src="/appendix/tshirtsize.jpg"
-                            alt="T-shirt size guide"
-                            class="rounded-lg max-w-full hover:opacity-90 transition-opacity"
-                          >
-                          <p class="text-xs text-(--ui-text-muted) mt-1 font-raleway">
-                            <span class="md:hidden">Pinch to zoom</span>
-                            <span class="hidden md:inline">Click to view larger or download</span>
-                          </p>
-                        </div>
-                      </div>
-
-                      <!-- Help text below the field -->
-                      <p
-                        v-if="question.helpText"
-                        class="mt-1 text-xs text-(--ui-text-muted) font-raleway"
-                      >
-                        {{ question.helpText }}
-                      </p>
-
-                      <div
-                        v-if="fieldErrors[question.questionKey ?? '']"
-                        class="mt-1"
-                      >
-                        <span class="font-raleway text-sm text-error">
-                          {{ fieldErrors[question.questionKey ?? ''] }}
-                        </span>
-                      </div>
-                    </UFormField>
-                  </template>
-                </template>
+                  <span class="reg-form__guide-label">
+                    <Icon
+                      name="material-symbols:zoom-in-rounded"
+                      aria-hidden="true"
+                    />
+                    View the T-shirt size guide
+                  </span>
+                </button>
               </div>
-            </div>
+            </template>
           </template>
         </div>
+      </section>
 
-        <!-- Social media links -->
-        <div class="mt-8 font-raleway">
-          <p class="text-md mb-3">
-            Please take some time to follow us!
-          </p>
-          <div class="flex gap-6">
-            <a
-              href="https://www.instagram.com/geekshacking"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-(--ui-text-muted) transition-colors hover:text-primary"
-            >
-              <Icon
-                name="fa6-brands:instagram"
-                class="size-8"
-              />
-            </a>
-            <a
-              href="https://www.linkedin.com/company/geekshacking/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-(--ui-text-muted) transition-colors hover:text-primary"
-            >
-              <Icon
-                name="fa6-brands:linkedin"
-                class="size-8"
-              />
-            </a>
-            <a
-              href="https://www.facebook.com/GeeksHacking"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-(--ui-text-muted) transition-colors hover:text-primary"
-            >
-              <Icon
-                name="fa6-brands:facebook"
-                class="size-8"
-              />
-            </a>
-          </div>
-        </div>
-
-        <!-- Submit button at the bottom -->
-        <div class="mt-12">
-          <div class="flex justify-end">
-            <UButton
-              type="submit"
-              size="xl"
-              :disabled="!isFormValid || isSubmitting"
-              :loading="isSubmitting"
-              color="neutral"
-              class="px-8 font-raleway disabled:cursor-not-allowed"
-            >
-              SUBMIT
-            </UButton>
-          </div>
-          <div
-            v-if="submissionError"
-            class="mt-2 text-right"
+      <!-- follow us -->
+      <section
+        class="reg-form__follow"
+        aria-labelledby="reg-follow"
+      >
+        <h2
+          id="reg-follow"
+          class="reg-form__follow-title"
+        >
+          Follow GeeksHacking
+        </h2>
+        <p class="reg-form__note">
+          Event updates and new workshops go out on our socials first.
+        </p>
+        <ul class="flex gap-2">
+          <li
+            v-for="social in followLinks"
+            :key="social.name"
           >
-            <span class="font-raleway text-sm text-error">
-              One or more errors in the fields, please check!
-            </span>
-          </div>
-        </div>
-      </UForm>
-    </div>
-
-    <!-- T-shirt size image modal -->
-    <UModal v-model:open="isTshirtImageModalOpen">
-      <template #content>
-        <div class="p-6 max-w-6xl mx-auto bg-(--ui-bg) text-(--ui-text)">
-          <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-raleway font-semibold text-(--ui-text-highlighted)">
-              T-shirt Size Guide
-            </h3>
-            <UButton
-              type="button"
-              icon="i-lucide-x"
-              color="neutral"
-              variant="ghost"
-              aria-label="Close"
-              @click="isTshirtImageModalOpen = false"
-            />
-          </div>
-
-          <div class="overflow-auto max-h-[70vh]">
-            <a
-              href="/appendix/tshirtsize.jpg"
+            <GButton
+              :href="social.url"
               target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src="/appendix/tshirtsize.jpg"
-                alt="T-shirt size guide"
-                class="w-full h-auto rounded-lg cursor-zoom-in hover:opacity-90 transition-opacity"
-                title="Click to open full size in new tab"
-              >
-            </a>
-          </div>
+              variant="secondary"
+              :icon="social.icon"
+              :aria-label="`${social.name} (opens in a new tab)`"
+            />
+          </li>
+        </ul>
+      </section>
 
-          <div class="mt-4 flex justify-between items-center text-xs text-(--ui-text-muted) font-raleway">
-            <div>
-              <span class="hidden sm:hidden md:block">Click image to open full size in new tab</span>
-              <span class="block md:hidden">Pinch to zoom</span>
-            </div>
-            <a
-              href="/appendix/tshirtsize.jpg"
-              download="tshirt-size-guide.jpg"
-              class="text-(--ui-text-highlighted) underline"
-            >
-              Download
-            </a>
-          </div>
+      <GAlert
+        v-if="submissionError"
+        tone="err"
+        title="Some answers need fixing"
+        description="Check the highlighted questions, then submit again."
+        class="-mb-6"
+      />
+
+      <!-- submit -->
+      <div class="reg-form__submit">
+        <div class="reg-form__submit-row">
+          <p
+            class="reg-form__remaining"
+            aria-live="polite"
+          >
+            <template v-if="missingAnswers.length">
+              {{ missingAnswers.length === 1 ? '1 required answer left' : `${missingAnswers.length} required answers left` }}
+            </template>
+            <template v-else>
+              All required answers filled in
+            </template>
+          </p>
+          <GButton
+            type="submit"
+            variant="primary"
+            size="lg"
+            label="Submit registration"
+            :disabled="!isFormValid"
+            :loading="isSubmitting"
+            loading-label="Submitting"
+          />
         </div>
+      </div>
+    </form>
+
+    <!-- T-shirt size guide, full size -->
+    <GModal
+      v-model:open="isTshirtImageModalOpen"
+      title="T-shirt size guide"
+      size="lg"
+    >
+      <div class="flex flex-col gap-3">
+        <a
+          href="/appendix/tshirtsize.jpg"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="reg-form__guide-full"
+        >
+          <img
+            src="/appendix/tshirtsize.jpg"
+            alt="T-shirt size guide: chest width and body length for each size"
+            class="h-auto w-full"
+          >
+          <span class="sr-only">(opens full size in a new tab)</span>
+        </a>
+        <p class="gh-small text-gh-muted">
+          Select the image to open it full size, or pinch to zoom on a phone.
+        </p>
+      </div>
+      <template #footer>
+        <GButton
+          href="/appendix/tshirtsize.jpg"
+          download="tshirt-size-guide.jpg"
+          variant="secondary"
+          icon="material-symbols:download-rounded"
+          label="Download"
+        />
+        <GButton
+          variant="primary"
+          label="Done"
+          @click="isTshirtImageModalOpen = false"
+        />
       </template>
-    </UModal>
+    </GModal>
   </div>
 </template>
 
-<style>
-/* Global styles for dropdown options to enable text wrapping */
-[role="option"],
-[role="option"] span,
-.ui-select-menu-option,
-.ui-select-option {
-  white-space: normal !important;
-  word-wrap: break-word !important;
-  word-break: break-word !important;
-  padding-top: 0.5rem !important;
-  padding-bottom: 0.5rem !important;
-  line-height: 1.4 !important;
-  min-height: auto !important;
+<style scoped>
+.reg-form {
+  display: flex;
+  justify-content: center;
+  padding: 32px 16px 96px;
+  color: var(--gh-text);
+  font-family: var(--font-body);
+  letter-spacing: var(--gh-tracking);
+}
+.reg-form--embedded {
+  padding: 0 0 32px;
+}
+.reg-form__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  width: 100%;
+  max-width: 48rem;
 }
 
-/* Target Nuxt UI specific classes */
-[data-headlessui-state] {
-  white-space: normal !important;
+.reg-form__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.reg-form__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 700;
+  line-height: 1.1;
+}
+.reg-form__lead {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--gh-text-muted);
+}
+
+.reg-form__section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.reg-form__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px 24px;
+}
+@media (min-width: 768px) {
+  .reg-form__grid { grid-template-columns: 1fr 1fr; }
+  .reg-form__question--wide,
+  .reg-form__note { grid-column: 1 / -1; }
+}
+.reg-form__question {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.reg-form__note {
+  margin: -8px 0 0;
+  font-size: 13px;
+  color: var(--gh-text-muted);
+}
+.reg-form__followup {
+  padding-left: 14px;
+  border-left: 3px solid var(--gh-accent);
+}
+
+/* single-checkbox question */
+.reg-form__fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.reg-form__legend {
+  padding: 0;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.reg-form__required,
+.reg-form__error {
+  color: var(--gh-err);
+}
+.reg-form__hint,
+.reg-form__error {
+  margin: 0;
+  font-size: 13px;
+}
+.reg-form__hint {
+  color: var(--gh-text-muted);
+}
+
+/* T-shirt guide */
+.reg-form__guide {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+  padding: 0;
+  border: var(--gh-border-width) solid var(--gh-line);
+  border-radius: var(--radius-gh);
+  background: var(--gh-surface);
+  color: var(--gh-text);
+  font: inherit;
+  text-align: left;
+  cursor: zoom-in;
+}
+.reg-form__guide:focus-visible {
+  outline: 3px solid var(--gh-focus);
+  outline-offset: 2px;
+}
+.reg-form__guide-img {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  object-position: top;
+}
+.reg-form__guide-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-top: var(--gh-border-width) solid var(--gh-line);
+  font-size: 14px;
+  font-weight: 600;
+}
+.reg-form__guide:hover .reg-form__guide-label {
+  background: var(--gh-ghost-hover);
+}
+.reg-form__guide-full {
+  display: block;
+  overflow: hidden;
+  border: var(--gh-border-width) solid var(--gh-line);
+  border-radius: var(--radius-gh);
+  cursor: zoom-in;
+}
+.reg-form__guide-full:focus-visible {
+  outline: 3px solid var(--gh-focus);
+  outline-offset: 2px;
+}
+
+.reg-form__follow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: var(--gh-border-width) solid var(--gh-line-soft);
+}
+.reg-form__follow .reg-form__note {
+  margin: 0;
+}
+.reg-form__follow-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.reg-form__submit {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 -16px -32px;
+  padding: 16px;
+  border-top: var(--gh-border-width) solid var(--gh-line);
+  background: var(--gh-bg);
+}
+.reg-form__submit-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.reg-form__remaining {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gh-text-muted);
 }
 </style>

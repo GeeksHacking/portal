@@ -122,9 +122,16 @@ export function getApiErrorMessage(error: unknown, fallback: string): string {
 
   if (error && typeof error === 'object') {
     const candidate = error as ApiErrorLike
-    if (typeof candidate.message === 'string' && candidate.message.trim())
+    if (typeof candidate.message === 'string' && candidate.message.trim() && !isTransportErrorMessage(candidate.message))
       return candidate.message
   }
 
   return fallback
+}
+
+// The HTTP client's and browser's own wording ("Request failed with status 500 Internal Server
+// Error", "Failed to fetch") means nothing to people: use the caller's fallback instead.
+function isTransportErrorMessage(message: string) {
+  return /^request failed with status \d+/i.test(message.trim())
+    || /^(?:failed to fetch|load failed|networkerror when attempting to fetch resource\.?)$/i.test(message.trim())
 }

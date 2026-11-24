@@ -32,6 +32,9 @@ importers:
       '@geekshacking/portal-sdk':
         specifier: workspace:*
         version: link:../GeeksHackingPortal.WebSdk
+      '@internationalized/date':
+        specifier: 3.12.4
+        version: 3.12.4
       '@nuxt/fonts':
         specifier: ^0.14.0
         version: 0.14.0(@nuxt/schema@4.6.0)(confbox@0.3.1)(db0@0.3.4)(dotenv@17.4.2)(esbuild@0.28.2)(giget@3.3.1)(ioredis@5.11.1(supports-color@10.2.2))(jiti@2.7.0)(magic-string@1.4.3)(mlly@1.8.2)(oxc-parser@0.140.0)(rolldown@1.2.12)(rollup@4.64.1)(vite@8.3.3)
@@ -53,6 +56,18 @@ importers:
       '@tanstack/vue-query':
         specifier: ^5.104.1
         version: 5.104.1(vue@3.5.43(typescript@7.0.2))
+      '@tiptap/extension-placeholder':
+        specifier: 3.31.4
+        version: 3.31.4(@tiptap/extensions@3.31.4(@tiptap/core@3.31.4(@tiptap/pm@3.31.4))(@tiptap/pm@3.31.4))
+      '@tiptap/markdown':
+        specifier: 3.31.4
+        version: 3.31.4(@tiptap/core@3.31.4(@tiptap/pm@3.31.4))(@tiptap/pm@3.31.4)
+      '@tiptap/starter-kit':
+        specifier: 3.31.4
+        version: 3.31.4
+      '@tiptap/vue-3':
+        specifier: 3.31.4
+        version: 3.31.4(@floating-ui/dom@1.8.0)(@tiptap/core@3.31.4(@tiptap/pm@3.31.4))(@tiptap/pm@3.31.4)(vue@3.5.43(typescript@7.0.2))
       '@types/node':
         specifier: ^26.6.4
         version: 26.6.4
@@ -77,6 +92,9 @@ importers:
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4
+      reka-ui:
+        specifier: 2.10.5
+        version: 2.10.5(vue@3.5.43(typescript@7.0.2))
       tailwindcss:
         specifier: ^4.3.3
         version: 4.3.3

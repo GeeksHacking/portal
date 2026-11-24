@@ -17,6 +17,12 @@ import { formatHackathonDateTimeInput, HACKATHON_TIME_ZONE_LABEL, serializeHacka
  */
 const props = defineProps<{
   workshopId?: string
+  /**
+   * The workshop's own Settings page: open to its organisers (the API lets any organiser of the
+   * workshop update it; the workspace pages stay admin-only), saves in place instead of going back
+   * to the workspace.
+   */
+  settings?: boolean
 }>()
 
 const toast = useGToast()
@@ -25,9 +31,11 @@ const isEditing = computed(() => !!props.workshopId)
 
 const { data: user, isLoading: isLoadingUser } = useGeeksHackingPortalApiEndpointsAuthWhoAmIEndpoint()
 const isAdmin = computed(() => !!user.value?.isRoot)
+const canEdit = computed(() => isAdmin.value || (props.settings && isEditing.value))
+const backTo = computed(() => (props.settings ? `/dash/standalone/${props.workshopId}` : '/dash/manage'))
 
 const { data: workshopsData, isLoading: isLoadingWorkshops, error: loadError } = useGeeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpoint({
-  query: { enabled: computed(() => isEditing.value && isAdmin.value) },
+  query: { enabled: computed(() => isEditing.value && canEdit.value) },
 })
 const workshop = computed(() => workshopsData.value?.standaloneWorkshops?.find(w => w.id === props.workshopId))
 
@@ -57,11 +65,8 @@ const isDirty = computed(() => JSON.stringify(form.value) !== snapshot.value)
 
 // load once: the list refetches in the background and mustn't overwrite what's being typed
 let loaded = false
-watch(workshop, (value) => {
-  if (!value || loaded)
-    return
-  loaded = true
-  form.value = {
+function fromWorkshop(value: NonNullable<typeof workshop.value>): Form {
+  return {
     title: value.title ?? '',
     shortCode: value.shortCode ?? '',
     homepageUri: value.homepageUri ?? '',
@@ -73,10 +78,24 @@ watch(workshop, (value) => {
     isPublished: value.isPublished ?? false,
     emailTemplates: { ...(value.emailTemplates ?? {}) },
   }
+}
+watch(workshop, (value) => {
+  if (!value || loaded)
+    return
+  loaded = true
+  form.value = fromWorkshop(value)
   snapshot.value = JSON.stringify(form.value)
 }, { immediate: true })
 
-useHead(() => ({ title: isEditing.value ? `Edit ${workshop.value?.title ?? 'workshop'}` : 'New workshop' }))
+/** Settings: throw away edits and show what's saved (the latest copy from the server). */
+function discard() {
+  errors.value = {}
+  saveError.value = ''
+  form.value = workshop.value ? fromWorkshop(workshop.value) : JSON.parse(snapshot.value)
+  snapshot.value = JSON.stringify(form.value)
+}
+
+useHead(() => ({ title: props.settings ? `Settings · ${workshop.value?.title ?? 'Workshop'}` : isEditing.value ? `Edit ${workshop.value?.title ?? 'workshop'}` : 'New workshop' }))
 
 // ---- validation (same rules as the old pop-up) --------------------------------------------------
 const errors = ref<Partial<Record<keyof Form, string>>>({})
@@ -173,9 +192,10 @@ async function save() {
       await createMutation.mutateAsync({ body })
       toast.add({ title: 'Workshop created', description: body.title, tone: 'ok' })
     }
-    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryKey() })
     snapshot.value = JSON.stringify(form.value)
-    await navigateTo('/dash/manage')
+    await queryClient.invalidateQueries({ queryKey: geeksHackingPortalApiEndpointsOrganizersStandaloneWorkshopsListEndpointQueryKey() })
+    if (!props.settings)
+      await navigateTo('/dash/manage')
   }
   catch (error) {
     console.error('Failed to save workshop', error)
@@ -197,12 +217,12 @@ const sections = [
 
 <template>
   <GLoading
-    v-if="isLoadingUser || (isEditing && isAdmin && isLoadingWorkshops)"
+    v-if="isLoadingUser || (isEditing && canEdit && isLoadingWorkshops)"
     :label="isEditing ? 'Loading the workshop…' : 'Loading…'"
   />
 
   <GEmptyState
-    v-else-if="!isAdmin"
+    v-else-if="!canEdit"
     icon="material-symbols:lock-rounded"
     title="Only admins can do this"
     description="Ask a portal admin to create or edit workshops."
@@ -222,11 +242,12 @@ const sections = [
     v-else-if="isEditing && !workshop"
     icon="material-symbols:error-rounded"
     title="Couldn't find this workshop"
-    :description="loadError ? getApiErrorMessage(loadError, 'Try again in a moment.') : 'It may have been removed, or the link is wrong.'"
+    :description="loadError ? getApiErrorMessage(loadError, 'Try again in a moment.') : settings ? 'You may not be one of its organisers, or it was removed.' : 'It may have been removed, or the link is wrong.'"
     bordered
   >
     <template #actions>
       <GButton
+        v-if="!settings"
         to="/dash/manage"
         variant="secondary"
         icon="material-symbols:arrow-back-rounded"
@@ -237,14 +258,17 @@ const sections = [
 
   <OrganizersEventFormShell
     v-else
-    eyebrow="Workshop"
+    :eyebrow="settings ? 'Workshop settings' : 'Workshop'"
     :title="isEditing ? (workshop?.title || 'Edit workshop') : 'New workshop'"
     :sections="sections"
     :save-label="isEditing ? 'Save changes' : 'Create workshop'"
     :saving="isSaving"
     :dirty="isDirty"
     :error="saveError"
+    :back-to="backTo"
+    :in-place="settings"
     @submit="save"
+    @discard="discard"
   >
     <OrganizersFormSection
       id="wf-basics"

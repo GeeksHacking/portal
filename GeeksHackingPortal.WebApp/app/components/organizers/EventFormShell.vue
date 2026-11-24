@@ -9,7 +9,7 @@
  * - Leaving with unsaved changes (`dirty`) asks first, both inside the app and when closing the tab.
  *   The page clears `dirty` (e.g. by resetting its snapshot) before navigating away after a save.
  */
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   title: string
   /** small label above the title, e.g. "Hackathon" */
   eyebrow?: string
@@ -21,9 +21,16 @@ const props = defineProps<{
   error?: string
   /** where Cancel and Back go */
   backTo?: string
-}>()
+  /**
+   * The form is the page itself (an event's Settings), not a trip from the workspace:
+   * no Back link, and Cancel becomes "Discard changes" (emits `discard`, shown only when dirty).
+   */
+  inPlace?: boolean
+  /** show "Fields marked * are required" (turn off when no field is marked) */
+  requiredNote?: boolean
+}>(), { requiredNote: true })
 
-const emit = defineEmits<{ submit: [] }>()
+const emit = defineEmits<{ submit: [], discard: [] }>()
 
 const formId = `event-form-${useId()}`
 const backTo = computed(() => props.backTo ?? '/dash/manage')
@@ -118,6 +125,7 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload)
   >
     <div class="ef-head">
       <GButton
+        v-if="!inPlace"
         :to="backTo"
         variant="ghost"
         size="sm"
@@ -134,7 +142,10 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload)
       <h1 class="ef-head__title">
         {{ title }}
       </h1>
-      <p class="ef-head__note">
+      <p
+        v-if="requiredNote"
+        class="ef-head__note"
+      >
         Fields marked <span
           class="ef-head__req"
           aria-hidden="true"
@@ -196,6 +207,15 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload)
         </p>
         <div class="ef-bar__actions">
           <GButton
+            v-if="inPlace"
+            v-show="dirty"
+            variant="ghost"
+            label="Discard changes"
+            :disabled="saving"
+            @click="emit('discard')"
+          />
+          <GButton
+            v-else
             :to="backTo"
             variant="ghost"
             label="Cancel"
